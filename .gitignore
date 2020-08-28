@@ -1,0 +1,11 @@
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# IDEs
+.vscode
+.idea
+.atom-build.json
+.project

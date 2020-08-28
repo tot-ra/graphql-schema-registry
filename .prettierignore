@@ -1,0 +1,8 @@
+.coverage
+.vscode
+.idea
+.nyc_output
+dist
+coverage
+node_modules
+mysql
