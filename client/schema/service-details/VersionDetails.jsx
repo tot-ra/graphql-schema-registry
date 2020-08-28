@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import {Button, ButtonGroup} from '@material-ui/core';
-import Tabs from '@material-ui/core/Tabs';
+import {Button, ButtonGroup, Tabs, Tab} from '@material-ui/core';
+import TabPanel from '../../components/TabPanel';
 
 import { useQuery } from '@apollo/client';
 import { useRouteMatch } from 'react-router-dom';
@@ -17,7 +17,12 @@ import CodeDiff from './CodeDiff';
 
 const VersionDetails = () => {
 	const [revealed, setRevealed] = useState(null);
-	const [activeTab, setTab] = useState(1);
+	const [value, setValue] = React.useState(0);
+
+	const handleChange = (event, newValue) => {
+		setValue(newValue);
+	};
+
 	const onClick = () => setRevealed((revealed) => !revealed);
 
 	const schemaId = useSchemaParam();
@@ -33,60 +38,7 @@ const VersionDetails = () => {
 	const { id, addedTime, typeDefs, previousSchema, containers } = data.schema;
 	const addedTimestamp = new Date(addedTime);
 
-	let panelContent = '';
-
 	const oldCode = previousSchema ? previousSchema.typeDefs : '';
-
-	switch (activeTab) {
-		case 0:
-			panelContent = <CodeDiff oldCode={oldCode} newCode={typeDefs} />;
-			break;
-		case 1:
-			panelContent = (
-				<EntryPanel>
-					<QueryDocument
-						revealed={revealed}
-						onClick={onClick}
-						query={typeDefs}
-						lines="35"
-					/>
-				</EntryPanel>
-			);
-			break;
-		case 2:
-			if (data.schema.containerCount > 0) {
-				panelContent = (
-					<table width="100%">
-						<thead>
-							<tr>
-								<th width="180">Docker container id</th>
-								<th>Time added</th>
-								<th>Link</th>
-							</tr>
-						</thead>
-						<tbody>
-							{containers.map((row) => {
-								if (row.version !== 'latest') {
-									return (
-										<tr key={row.version}>
-											<td>{row.version}</td>
-											<td>{row.addedTime}</td>
-											<td>
-												<a href={row.commitLink}>github</a>
-											</td>
-										</tr>
-									);
-								}
-							})}
-						</tbody>
-					</table>
-				);
-			} else {
-				panelContent = <div>No real containers use this schema</div>;
-			}
-
-			break;
-	}
 
 	let commitButton;
 
@@ -115,38 +67,51 @@ const VersionDetails = () => {
 					Added {format(addedTimestamp, 'HH:mm, d MMMM yyyy (z)', { timeZone: 'UTC' })}
 				</div>
 
-				<Tabs
-					tabs={
-						<React.Fragment>
-							<Tabs.Tab
-								onClick={() => {
-									setTab(0);
-								}}
-								active={activeTab === 0}
-							>
-								Diff with previous
-							</Tabs.Tab>
-							<Tabs.Tab
-								onClick={() => {
-									setTab(1);
-								}}
-								active={activeTab === 1}
-							>
-								Definition
-							</Tabs.Tab>
-							<Tabs.Tab
-								onClick={() => {
-									setTab(2);
-								}}
-								active={activeTab === 2}
-							>
-								{`Containers (${data.schema.containerCount})`}
-							</Tabs.Tab>
-						</React.Fragment>
-					}
-				>
-					<Container>{panelContent}</Container>
+				<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+					<Tab label="Diff with previous" />
+					<Tab label="Definition" />
+					<Tab label={`Containers (${data.schema.containerCount})`} />
 				</Tabs>
+				<TabPanel value={value} index={0}>
+					<CodeDiff oldCode={oldCode} newCode={typeDefs} />;
+				</TabPanel>
+				<TabPanel value={value} index={1}>
+					<EntryPanel>
+						<QueryDocument
+							revealed={revealed}
+							onClick={onClick}
+							query={typeDefs}
+							lines="35"
+						/>
+					</EntryPanel>
+				</TabPanel>
+				<TabPanel value={value} index={2}>
+					{/*<table width="100%">*/}
+					{/*	<thead>*/}
+					{/*	<tr>*/}
+					{/*		<th width="180">Docker container id</th>*/}
+					{/*		<th>Time added</th>*/}
+					{/*		<th>Link</th>*/}
+					{/*	</tr>*/}
+					{/*	</thead>*/}
+					{/*	<tbody>*/}
+					{/*	{containers.map((row) => {*/}
+					{/*		if (row.version !== 'latest') {*/}
+					{/*			return (*/}
+					{/*				<tr key={row.version}>*/}
+					{/*					<td>{row.version}</td>*/}
+					{/*					<td>{row.addedTime}</td>*/}
+					{/*					<td>*/}
+					{/*						<a href={row.commitLink}>github</a>*/}
+					{/*					</td>*/}
+					{/*				</tr>*/}
+					{/*			);*/}
+					{/*		}*/}
+					{/*	})}*/}
+					{/*	</tbody>*/}
+					{/*</table>*/}
+				</TabPanel>
+
 			</div>
 		</Container>
 	);

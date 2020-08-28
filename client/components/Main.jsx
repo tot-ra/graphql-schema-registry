@@ -1,8 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Tabs, Box, Tab, Container, AppBar} from '@material-ui/core';
 import {HashRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import {hot} from 'react-hot-loader';
+
+import TabPanel from './TabPanel';
 
 import Schema from '../schema';
 import PersistedQueries, {Tab as PersistedQueriesTab} from '../persisted-queries';
@@ -21,32 +22,6 @@ const UITabs = [
 		component: PersistedQueries
 	}
 ];
-
-function TabPanel(props) {
-	const { children, value, index, ...other } = props;
-
-	return (
-		<div
-			role="tabpanel"
-			hidden={value !== index}
-			id={`simple-tabpanel-${index}`}
-			aria-labelledby={`simple-tab-${index}`}
-			{...other}
-		>
-			{value === index && (
-				<Box p={3} key={index}>
-					{children}
-				</Box>
-			)}
-		</div>
-	);
-}
-
-TabPanel.propTypes = {
-	children: PropTypes.node,
-	index: PropTypes.any.isRequired,
-	value: PropTypes.any.isRequired,
-};
 
 const Main = () => {
 	const [value, setValue] = React.useState(0);
