@@ -2,12 +2,12 @@ import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import FilterNoneIcon from '@material-ui/icons/FilterNone';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TypeDefs from '../components/TypeDefs';
+import SourceCodeWithHighlight from './SourceCodeWithHighlight';
 import { RelativeWrapper, CopyButton, RevealQuery } from './styled';
 import { splitQuery } from '../utils';
 import { useClipboard } from '../utils/useClipboard';
 
-const QueryDocument = ({ query, revealed, onClick, lines = 4 }) => {
+const SourceCodeWithHighlightAndCopy = ({ query, revealed, onClick, lines = 4 }) => {
 	const [copied, updateClipboard] = useClipboard();
 
 	const onCopy = (e) => {
@@ -29,10 +29,10 @@ const QueryDocument = ({ query, revealed, onClick, lines = 4 }) => {
 				</CopyButton>
 			)}
 
-			<TypeDefs code={revealed ? query : splitQuery(query, lines)} />
+			<SourceCodeWithHighlight code={revealed ? query : splitQuery(query, lines)} />
 			<RevealQuery>{revealed ? null : <ExpandMoreIcon />}</RevealQuery>
 		</RelativeWrapper>
 	);
 };
 
-export default QueryDocument;
+export default SourceCodeWithHighlightAndCopy;

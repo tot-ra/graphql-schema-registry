@@ -12,49 +12,19 @@ export const FlexRow = styled.div`
 export const ColumnPanel = styled.div`
 	min-width: 200px;
 	flex-shrink: 0;
-	border-right: 1px solid ${colors.black.hex12};
-`;
-
-const headerStyle = css`
-	height: 57px;
-	box-sizing: border-box;
-	border-bottom: 1px solid ${colors.black.hex12};
-`;
-
-export const FilterInput = styled(TextField)`
-	transition: 0.2s;
-	// margin: -16px -16px 16px;
-	${headerStyle}
-	&:focus-within {
-		border-bottom-color: ${colors.black.hex64};
-	}
-	&:hover {
-		border-bottom-color: ${colors.black.hex32};
-	}
-	input[type='text'] {
-		// padding-top: 12px;
-		// padding-bottom: 12px;
-		// margin: 8px 0;
-		// height: 40px;
-		// border: none !important;
-		// box-shadow: none !important;
-	}
+	border-right: 1px solid ${colors.black.hex256};
 `;
 
 export const Container = styled.section`
 	flex: 100%;
 	overflow: hidden;
 `;
-
-export const ServiceDetailsHeader = styled.header`
-	display: flex;
-	align-items: center;
-	${headerStyle}
-`;
-
-export const Heading = styled.h2`
+export const VersionHeaderTitle = styled.h2`
 	font-weight: 400;
 	margin: ${({ noMargin }) => (noMargin ? 0 : '0 16px')};
+`;
+export const VersionHeaderTime = styled.div`
+	color: gray;
 `;
 
 export const SelectServiceGuide = styled.h1`
@@ -63,12 +33,18 @@ export const SelectServiceGuide = styled.h1`
 	font-weight: 400;
 `;
 
+export const VersionHeader = styled.div`
+	display:flex;
+	justify-content: space-between;
+	padding: 20px;
+`;
 export const VersionRow = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+
 	& > :last-child {
-		color: ${({ selected }) => (selected ? 'white' : colors.black.hex32)};
+		color: ${colors.black.hex64}
 	}
 `;
 

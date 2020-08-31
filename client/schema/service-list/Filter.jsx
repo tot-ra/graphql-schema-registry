@@ -1,19 +1,19 @@
 import React from 'react';
 
-import { FilterInput } from '../styled';
-import Tooltip from '@material-ui/core/Tooltip';
+import {TextField, Tooltip} from '@material-ui/core';
 
-const Filter = ({ filterValue, setFilterValue }) => {
+const Filter = ({filterValue, setFilterValue}) => {
 	return (
 		<Tooltip
 			placement="right"
 			title="Add ! character in the beginning to exclude text in definitions"
 		>
-			<FilterInput
-				placeholder="Definition or container part.."
+			<TextField
 				value={filterValue}
 				onChange={(e) => setFilterValue(e.target.value)}
-			/>
+				variant="outlined"
+				label="Search.."/>
+
 		</Tooltip>
 	);
 };

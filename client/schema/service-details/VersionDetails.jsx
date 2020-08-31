@@ -4,13 +4,12 @@ import TabPanel from '../../components/TabPanel';
 
 import { useQuery } from '@apollo/client';
 import { useRouteMatch } from 'react-router-dom';
-import { Container, VersionRow, Heading } from '../styled';
+import { Container, VersionHeader, VersionHeaderTitle, VersionHeaderTime } from '../styled';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 
 import { SCHEMA_DETAILS } from '../../utils/queries';
 import { format } from 'date-fns';
-import { EntryPanel } from '../../components/styled';
-import QueryDocument from '../../persisted-queries/QueryDocument';
+import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighlightAndCopy';
 
 import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
@@ -55,17 +54,16 @@ const VersionDetails = () => {
 	return (
 		<Container>
 			<div>
-				<VersionRow>
-					<Heading noMargin>Schema #{id}</Heading>
-
+				<VersionHeader>
+					<VersionHeaderTitle noMargin>Schema #{id}</VersionHeaderTitle>
+					<VersionHeaderTime>
+						Added {format(addedTimestamp, 'HH:mm, d MMMM yyyy (z)', { timeZone: 'UTC' })}
+					</VersionHeaderTime>
 					<ButtonGroup>
 						<DeactivateButton schema={data.schema} />
 						{commitButton}
 					</ButtonGroup>
-				</VersionRow>
-				<div>
-					Added {format(addedTimestamp, 'HH:mm, d MMMM yyyy (z)', { timeZone: 'UTC' })}
-				</div>
+				</VersionHeader>
 
 				<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
 					<Tab label="Diff with previous" />
@@ -73,17 +71,15 @@ const VersionDetails = () => {
 					<Tab label={`Containers (${data.schema.containerCount})`} />
 				</Tabs>
 				<TabPanel value={value} index={0}>
-					<CodeDiff oldCode={oldCode} newCode={typeDefs} />;
+					<CodeDiff oldCode={oldCode} newCode={typeDefs} />
 				</TabPanel>
 				<TabPanel value={value} index={1}>
-					<EntryPanel>
-						<QueryDocument
+						<SourceCodeWithHighlightAndCopy
 							revealed={revealed}
 							onClick={onClick}
 							query={typeDefs}
 							lines="35"
 						/>
-					</EntryPanel>
 				</TabPanel>
 				<TabPanel value={value} index={2}>
 					{/*<table width="100%">*/}

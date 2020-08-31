@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { EntryPanel } from '../components/styled';
 import QueryName from './QueryName';
-import QueryDocument from './QueryDocument';
+import SourceCodeWithHighlightAndCopy from '../components/SourceCodeWithHighlightAndCopy';
 
 const PersistedQuery = ({ query }) => {
 	const [revealed, setRevealed] = useState(null);
@@ -11,7 +11,7 @@ const PersistedQuery = ({ query }) => {
 	return (
 		<EntryPanel>
 			<QueryName revealed={revealed} onClick={onClick} entry={query} />
-			<QueryDocument revealed={revealed} onClick={onClick} query={query.query} />
+			<SourceCodeWithHighlightAndCopy revealed={revealed} onClick={onClick} query={query.query} />
 		</EntryPanel>
 	);
 };

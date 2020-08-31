@@ -27,8 +27,9 @@ const DeactivateSchemaButton = ({ schema }) => {
 
 			{schema.isActive && (
 				<Button
-					color="red"
-					loading={deleting}
+					variant="contained"
+					color="secondary"
+					disabled={deleting}
 					onClick={() => {
 						deactivateSchema({
 							variables: {
@@ -37,14 +38,15 @@ const DeactivateSchemaButton = ({ schema }) => {
 						});
 					}}
 				>
-					<DeleteIcon color="white" />
+					<DeleteIcon />
 					Deactivate
 				</Button>
 			)}
 			{!schema.isActive && (
 				<Button
-					color="green"
-					loading={activating}
+					variant="contained"
+					color="primary"
+					disabled={activating}
 					onClick={() => {
 						activateSchema({
 							variables: {

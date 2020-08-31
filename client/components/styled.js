@@ -1,13 +1,6 @@
 import styled from 'styled-components';
-import { Spacing } from '@pipedrive/convention-ui-react';
-import Container from '@material-ui/core/Container';
+import { Container, Button } from '@material-ui/core';
 import { colors, elevations } from '../utils';
-
-export const PluginWrapper = styled.div`
-	--bo-sidebar-width: 64px;
-	max-width: calc(100vw - var(--bo-sidebar-width));
-	box-sizing: border-box;
-`;
 
 export const EntryPanel = styled(Container)`
 	transition: 0.2s ease-in;
@@ -57,4 +50,34 @@ export const FlexCenter = styled.div`
 
 export const OverflowScroll = styled.div`
 	overflow: auto;
+
+	& > pre {
+		margin:0
+	}
+`;
+
+export const RevealQuery = styled.div`
+	position: absolute;
+	bottom: 15px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	transition: transform 0.2s;
+	cursor: pointer;
+`;
+
+export const RelativeWrapper = styled.div`
+	position: relative;
+
+	&:hover ${RevealQuery} {
+		transform: translateY(4px);
+	}
+`;
+
+export const CopyButton = styled(Button)`
+	position: absolute;
+	top: 16px;
+	right: 8px;
+	width: 100px;
+	z-index: 2;
 `;

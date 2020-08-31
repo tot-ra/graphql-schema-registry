@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 
 import { Container } from '../styled';
 import Empty from './Empty';
-import Header from './Header';
 import ServiceSchemas from './ServiceSchemas';
 
 import { SERVICES_LIST } from '../../utils/queries';
@@ -24,7 +23,6 @@ const ServiceDetails = () => {
 
 	return (
 		<Container>
-			<Header service={service} />
 			<ServiceSchemas service={service} />
 		</Container>
 	);

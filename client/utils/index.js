@@ -9,7 +9,8 @@ export const colors = {
 		hex12: '#444444',
 		hex24: '#555555',
 		hex32: '#666666',
-		hex64: '#777777'
+		hex64: '#777777',
+		hex256: '#EEEEEE'
 	}
 };
 
