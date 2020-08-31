@@ -23,7 +23,7 @@ const headerStyle = css`
 
 export const FilterInput = styled(TextField)`
 	transition: 0.2s;
-	margin: -16px -16px 16px;
+	// margin: -16px -16px 16px;
 	${headerStyle}
 	&:focus-within {
 		border-bottom-color: ${colors.black.hex64};
@@ -32,12 +32,12 @@ export const FilterInput = styled(TextField)`
 		border-bottom-color: ${colors.black.hex32};
 	}
 	input[type='text'] {
-		padding-top: 12px;
-		padding-bottom: 12px;
-		margin: 8px 0;
-		height: 40px;
-		border: none !important;
-		box-shadow: none !important;
+		// padding-top: 12px;
+		// padding-bottom: 12px;
+		// margin: 8px 0;
+		// height: 40px;
+		// border: none !important;
+		// box-shadow: none !important;
 	}
 `;
 
