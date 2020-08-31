@@ -78,6 +78,5 @@ export const CopyButton = styled(Button)`
 	position: absolute;
 	top: 16px;
 	right: 8px;
-	width: 100px;
 	z-index: 2;
 `;

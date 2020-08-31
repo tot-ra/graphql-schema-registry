@@ -18,14 +18,20 @@ const SourceCodeWithHighlightAndCopy = ({ query, revealed, onClick, lines = 4 })
 	return (
 		<RelativeWrapper onClick={revealed ? null : onClick}>
 			{copied ? (
-				<CopyButton>
-					<CheckIcon />
-					<span>Copied</span>
+				<CopyButton
+					startIcon={<CheckIcon />}
+					size="small"
+					variant="contained">
+
+					Copied
 				</CopyButton>
 			) : (
-				<CopyButton onClick={onCopy}>
-					<FilterNoneIcon />
-					<span>Copy</span>
+				<CopyButton
+					startIcon={<FilterNoneIcon />}
+					size="small"
+					variant="contained"
+					onClick={onCopy}>
+					Copy
 				</CopyButton>
 			)}
 
