@@ -11,9 +11,11 @@ const typeDefs = gql`
 	}
 `;
 
+typeDefs.toString = function() { return this.loc.source.body; };
+
 const resolvers = {
 	Query: {
-		hello: () => "world"
+		hello: () => "Hello"
 	}
 };
 
@@ -33,6 +35,8 @@ app.listen({ port: 6101 }, () => {
 // register schema
 (async () => {
 	try {
+		console.log('Registering schema', typeDefs.toString());
+
 		await request({
 			timeout: 5000,
 			baseUrl: "http://localhost:6001", // graphql-schema-registry service URL
@@ -42,7 +46,7 @@ app.listen({ port: 6101 }, () => {
 			body: {
 				name: "service_a", // service name
 				version: "v1", //service version, like docker container hash. Use 'latest' for dev env
-				type_defs: printSchema(typeDefs)
+				type_defs: typeDefs.toString()
 			}
 		});
 		console.info("Schema registered successfully!");

@@ -30,4 +30,4 @@ http://localhost:6001/
 
 - Open gateway's playground UI in the browser and try to make request to both services
 http://localhost:6100
-<img width="730" alt="Screenshot 2020-09-01 at 23 21 42" src="https://user-images.githubusercontent.com/445122/91902158-f3ac3980-eca9-11ea-8278-ff8f176a9249.png">
+<img width="681" alt="Screenshot 2020-09-01 at 23 46 09" src="https://user-images.githubusercontent.com/445122/91904286-5a7f2200-ecad-11ea-9d63-43a96f96e886.png">
