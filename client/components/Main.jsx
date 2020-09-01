@@ -1,24 +1,31 @@
-import React from 'react';
-import {Tabs, Box, Tab, Container, AppBar} from '@material-ui/core';
-import {HashRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
-import {hot} from 'react-hot-loader';
+import React from "react";
+import { Tabs, Box, Tab, Container, AppBar } from "@material-ui/core";
+import {
+	HashRouter as Router,
+	Switch,
+	Route,
+	Redirect
+} from "react-router-dom";
+import { hot } from "react-hot-loader";
 
-import TabPanel from './TabPanel';
+import TabPanel from "./TabPanel";
 
-import Schema from '../schema';
-import PersistedQueries, {Tab as PersistedQueriesTab} from '../persisted-queries';
+import Schema from "../schema";
+import PersistedQueries, {
+	Tab as PersistedQueriesTab
+} from "../persisted-queries";
 
 const UITabs = [
 	{
-		Title: (<span>Schema</span>),
-		href: '/schema',
-		icon: 'dashboard',
+		Title: <span>Schema</span>,
+		href: "/schema",
+		icon: "dashboard",
 		component: Schema
 	},
 	{
-		Title: (<PersistedQueriesTab />),
-		icon: 'ac-document',
-		href: '/persisted-queries',
+		Title: <PersistedQueriesTab />,
+		icon: "ac-document",
+		href: "/persisted-queries",
 		component: PersistedQueries
 	}
 ];
@@ -33,22 +40,29 @@ const Main = () => {
 	return (
 		<Router>
 			<AppBar position="static">
-				<Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
+				<Tabs
+					value={value}
+					onChange={handleChange}
+					aria-label="simple tabs example"
+				>
 					{/*<React.Fragment>*/}
-						{UITabs.map((tab, i) => (
-							<Tab key={i} label={tab.Title}/>
-						))}
+					{UITabs.map((tab, i) => (
+						<Tab key={i} label={tab.Title} />
+					))}
 					{/*</React.Fragment>*/}
 				</Tabs>
 			</AppBar>
 
 			{UITabs.map((tab, index) => (
 				<TabPanel key={index} index={index} value={value}>
-					<Route key={tab.href} path={`${tab.href}*`} component={tab.component}/>
+					<Route
+						key={tab.href}
+						path={`${tab.href}*`}
+						component={tab.component}
+					/>
 				</TabPanel>
 			))}
-			<Redirect to="/schema"/>
-
+			<Redirect to="/schema" />
 		</Router>
 	);
 };

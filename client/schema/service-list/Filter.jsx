@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import {TextField, Tooltip} from '@material-ui/core';
+import { TextField, Tooltip } from "@material-ui/core";
 
-const Filter = ({filterValue, setFilterValue}) => {
+const Filter = ({ filterValue, setFilterValue }) => {
 	return (
 		<Tooltip
 			placement="right"
@@ -10,10 +10,10 @@ const Filter = ({filterValue, setFilterValue}) => {
 		>
 			<TextField
 				value={filterValue}
-				onChange={(e) => setFilterValue(e.target.value)}
+				onChange={e => setFilterValue(e.target.value)}
 				variant="outlined"
-				label="Search.."/>
-
+				label="Search.."
+			/>
 		</Tooltip>
 	);
 };

@@ -1,7 +1,7 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-exports.router = (router) => {
+exports.router = router => {
 	// diplomat.registerAssets({
 	// 	version: process.env.DOCKER_TAG,
 	// 	originPath: '/assets',
@@ -30,17 +30,21 @@ exports.router = (router) => {
 	// 	);
 	// }
 
-	const webpack = require('webpack');
-	const devWebpackConfig = require('../../webpack.config')({ production: false });
+	const webpack = require("webpack");
+	const devWebpackConfig = require("../../webpack.config")({
+		production: false
+	});
 
 	const compiler = webpack(devWebpackConfig);
 
-	router.use(require('webpack-dev-middleware')(compiler, { publicPath: '/assets/' }));
+	router.use(
+		require("webpack-dev-middleware")(compiler, { publicPath: "/assets/" })
+	);
 };
 
 exports.indexHtml = () => {
-	const assetsDomain = 'localhost:6001';
-	const assetsVersion = 'latest';
+	const assetsDomain = "localhost:6001";
+	const assetsVersion = "latest";
 
 	return function indexHtml(req, res) {
 		res.send(`

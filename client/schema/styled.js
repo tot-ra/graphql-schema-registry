@@ -1,6 +1,6 @@
-import styled, { css } from 'styled-components';
-import TextField from '@material-ui/core/TextField';
-import { colors } from '../utils';
+import styled, { css } from "styled-components";
+import TextField from "@material-ui/core/TextField";
+import { colors } from "../utils";
 
 export const FlexRow = styled.div`
 	display: flex;
@@ -21,7 +21,7 @@ export const Container = styled.section`
 `;
 export const VersionHeaderTitle = styled.h2`
 	font-weight: 400;
-	margin: ${({ noMargin }) => (noMargin ? 0 : '0 16px')};
+	margin: ${({ noMargin }) => (noMargin ? 0 : "0 16px")};
 `;
 export const VersionHeaderTime = styled.div`
 	color: gray;
@@ -34,7 +34,7 @@ export const SelectServiceGuide = styled.h1`
 `;
 
 export const VersionHeader = styled.div`
-	display:flex;
+	display: flex;
 	justify-content: space-between;
 	padding: 20px;
 `;
@@ -44,7 +44,7 @@ export const VersionRow = styled.div`
 	align-items: center;
 
 	& > :last-child {
-		color: ${colors.black.hex64}
+		color: ${colors.black.hex64};
 	}
 `;
 

@@ -1,22 +1,22 @@
-const logger = require('../logger');
-const { parse } = require('graphql');
-const { composeAndValidate } = require('@apollo/federation');
+const logger = require("../logger");
+const { parse } = require("graphql");
+const { composeAndValidate } = require("@apollo/federation");
 
-const { PublicError } = require('./error');
+const { PublicError } = require("./error");
 
-exports.composeAndValidateSchema = (servicesSchemaMap) => {
+exports.composeAndValidateSchema = servicesSchemaMap => {
 	let schema;
 	let errors = [];
 
 	try {
-		const serviceList = servicesSchemaMap.map((schema) => {
+		const serviceList = servicesSchemaMap.map(schema => {
 			let typeDefs;
 
 			typeDefs = parse(schema.type_defs);
 
 			return {
 				name: schema.name,
-				url: '',
+				url: "",
 				typeDefs
 			};
 		});
@@ -29,7 +29,7 @@ exports.composeAndValidateSchema = (servicesSchemaMap) => {
 	}
 
 	if (errors && errors.length) {
-		throw new PublicError('Schema validation failed', {
+		throw new PublicError("Schema validation failed", {
 			details: errors
 		});
 	}

@@ -1,16 +1,16 @@
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require("apollo-server-express");
 
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
+const typeDefs = require("./schema");
+const resolvers = require("./resolvers");
 
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: (req) => ({
-		dataloaders: require('./dataloader')(req)
+	context: req => ({
+		dataloaders: require("./dataloader")(req)
 	})
 });
 
-module.exports = (app) => {
+module.exports = app => {
 	server.applyMiddleware({ app });
 };

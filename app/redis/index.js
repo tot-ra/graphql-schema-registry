@@ -1,9 +1,10 @@
-const diplomat = require('../diplomat');
-const log = require('../logger');
-const redis = require('async-redis');
+const diplomat = require("../diplomat");
+const log = require("../logger");
+const redis = require("async-redis");
 
 const DEFAULT_TTL = 24 * 3600;
-const redisServiceName = process.env.REDIS_SCHEMA_REGISTRY || 'schema-registry-redis';
+const redisServiceName =
+	process.env.REDIS_SCHEMA_REGISTRY || "schema-registry-redis";
 
 const redisWrapper = {
 	redisInstance: null,
@@ -15,9 +16,9 @@ const redisWrapper = {
 
 		const redisOptions = {
 			db: 2,
-			retry_strategy: (options) => {
-				if (options.error && options.error.code === 'ECONNREFUSED') {
-					log.error('Redis server refused the connection', {
+			retry_strategy: options => {
+				if (options.error && options.error.code === "ECONNREFUSED") {
+					log.error("Redis server refused the connection", {
 						original_error: options.error
 					});
 				}
@@ -26,43 +27,48 @@ const redisWrapper = {
 				return Math.min(options.attempt * 100, 3000);
 			}
 		};
-		const { host, port } = await diplomat.getServiceInstance(redisServiceName);
+		const { host, port } = await diplomat.getServiceInstance(
+			redisServiceName
+		);
 
 		this.redisInstance = redis.createClient(port, host, redisOptions);
 
-		this.redisInstance.on('ready', redisWrapper.onReady);
-		this.redisInstance.on('connect', redisWrapper.onConnect);
-		this.redisInstance.on('reconnecting', redisWrapper.onReconnecting);
-		this.redisInstance.on('error', redisWrapper.onError);
-		this.redisInstance.on('end', redisWrapper.onEnd);
+		this.redisInstance.on("ready", redisWrapper.onReady);
+		this.redisInstance.on("connect", redisWrapper.onConnect);
+		this.redisInstance.on("reconnecting", redisWrapper.onReconnecting);
+		this.redisInstance.on("error", redisWrapper.onError);
+		this.redisInstance.on("end", redisWrapper.onEnd);
 
 		return this.redisInstance;
 	},
 
-	get: async (key) => {
+	get: async key => {
 		return await (await redisWrapper.getInstance()).get(key);
 	},
 
 	set: async (key, value, ttl = DEFAULT_TTL) => {
-		await (await redisWrapper.getInstance()).set(key, value, 'EX', ttl);
+		await (await redisWrapper.getInstance()).set(key, value, "EX", ttl);
 	},
 
-	delete: async (key) => {
+	delete: async key => {
 		return await (await redisWrapper.getInstance()).del(key);
 	},
 
 	onEnd: function() {
-		log.info('Redis server connection has closed!');
+		log.info("Redis server connection has closed!");
 	},
 
 	onError: function(error) {
-		log.error(`An error occurred while fetching data from Redis : ${error.message}`, {
-			original_error: error
-		});
+		log.error(
+			`An error occurred while fetching data from Redis : ${error.message}`,
+			{
+				original_error: error
+			}
+		);
 	},
 
 	onReconnecting: function() {
-		log.info('Redis client is reconnecting to the server!');
+		log.info("Redis client is reconnecting to the server!");
 	},
 
 	onConnect: function() {
@@ -70,7 +76,7 @@ const redisWrapper = {
 	},
 
 	onReady: function() {
-		log.info('Redis client is ready!');
+		log.info("Redis client is ready!");
 	}
 };
 

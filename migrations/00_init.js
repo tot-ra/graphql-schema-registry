@@ -1,4 +1,4 @@
-exports.up = async (knex) => {
+exports.up = async knex => {
 	await knex.raw(`
 		CREATE TABLE \`persisted_queries\`
 		(
@@ -67,5 +67,4 @@ exports.up = async (knex) => {
 	`);
 };
 
-exports.down = async (knex) => {
-};
+exports.down = async knex => {};

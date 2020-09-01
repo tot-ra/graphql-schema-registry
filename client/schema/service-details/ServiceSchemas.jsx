@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
 
-import SpinnerCenter from '../../components/SpinnerCenter';
-import { ColumnPanel, FlexRow } from '../styled';
-import VersionsList from './VersionsList';
-import VersionDetails from './VersionDetails';
+import SpinnerCenter from "../../components/SpinnerCenter";
+import { ColumnPanel, FlexRow } from "../styled";
+import VersionsList from "./VersionsList";
+import VersionDetails from "./VersionDetails";
 
-import { SERVICE_SCHEMAS } from '../../utils/queries';
-import Filter from '../service-list/Filter';
+import { SERVICE_SCHEMAS } from "../../utils/queries";
+import Filter from "../service-list/Filter";
 
 const ServiceSchemas = ({ service }) => {
-	const [filterValue, setFilterValue] = useState('');
+	const [filterValue, setFilterValue] = useState("");
 	const { loading, data, error } = useServiceSchemas(service.id, filterValue);
 
 	const content = loading ? (
@@ -26,7 +26,10 @@ const ServiceSchemas = ({ service }) => {
 	return (
 		<FlexRow>
 			<ColumnPanel all="m">
-				<Filter filterValue={filterValue} setFilterValue={setFilterValue} />
+				<Filter
+					filterValue={filterValue}
+					setFilterValue={setFilterValue}
+				/>
 				{content}
 			</ColumnPanel>
 			<VersionDetails />

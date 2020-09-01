@@ -1,17 +1,17 @@
-const path = require('path');
-const webpack = require('webpack');
-const merge = require('webpack-merge');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const path = require("path");
+const webpack = require("webpack");
+const merge = require("webpack-merge");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 
-const config = (env) => ({
+const config = env => ({
 	output: {
-		path: path.resolve('./dist/assets'),
-		filename: '[name].js',
-		libraryTarget: 'umd',
-		chunkFilename: '[name].[contenthash].js',
-		crossOriginLoading: 'anonymous',
+		path: path.resolve("./dist/assets"),
+		filename: "[name].js",
+		libraryTarget: "umd",
+		chunkFilename: "[name].[contenthash].js",
+		crossOriginLoading: "anonymous",
 		pathinfo: true
 	},
 
@@ -20,38 +20,38 @@ const config = (env) => ({
 			{
 				test: /.jsx?$/,
 				use: {
-					loader: 'babel-loader'
+					loader: "babel-loader"
 				},
-				include: [path.resolve(__dirname, './client')]
+				include: [path.resolve(__dirname, "./client")]
 			},
 			{
 				test: /\.(png|jpg|svg)$/,
-				loader: 'file-loader',
+				loader: "file-loader",
 				options: {
-					name: '[name].[ext]'
+					name: "[name].[ext]"
 				}
 			},
 			{
 				test: /\.(p|post)?css$/,
-				use: [MiniCssExtractPlugin.loader, 'css-loader']
+				use: [MiniCssExtractPlugin.loader, "css-loader"]
 			}
 		]
 	},
 
 	resolve: {
-		extensions: ['.js', '.jsx', '.json']
+		extensions: [".js", ".jsx", ".json"]
 	},
 
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: '[name].css?v=[contenthash]'
+			filename: "[name].css?v=[contenthash]"
 		})
 	]
 });
 
 function createConfigDev(name, entry) {
 	return {
-		mode: 'development',
+		mode: "development",
 		name,
 		entry: {
 			[name]: [
@@ -59,15 +59,15 @@ function createConfigDev(name, entry) {
 				entry
 			]
 		},
-		stats: 'minimal',
-		devtool: 'eval-cheap-source-map',
+		stats: "minimal",
+		devtool: "eval-cheap-source-map",
 		plugins: [new webpack.HotModuleReplacementPlugin()]
 	};
 }
 
 function createConfigProd(name, entry) {
 	return {
-		mode: 'production',
+		mode: "production",
 		entry: {
 			[name]: [entry]
 		},
@@ -86,10 +86,16 @@ function createConfigProd(name, entry) {
 }
 
 const standalone = {
-	dev: createConfigDev('management-ui-standalone', './client/entry-standalone.jsx'),
-	prod: createConfigProd('management-ui-standalone', './client/entry-standalone.jsx')
+	dev: createConfigDev(
+		"management-ui-standalone",
+		"./client/entry-standalone.jsx"
+	),
+	prod: createConfigProd(
+		"management-ui-standalone",
+		"./client/entry-standalone.jsx"
+	)
 };
 
-module.exports = (env) => [
+module.exports = env => [
 	merge(config(env), env.production ? standalone.prod : standalone.dev)
 ];

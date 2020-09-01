@@ -14,7 +14,8 @@ services:
     volumes:
       - gql-schema-registry-db-volume:/var/lib/mysql
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'healthcheck']
+      test:
+        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "healthcheck"]
       timeout: 5s
       retries: 10
     networks:
@@ -53,7 +54,7 @@ services:
     ports:
       - 6004:6379
     environment:
-      SERVICE_NAME: 'gql-schema-registry-redis'
+      SERVICE_NAME: "gql-schema-registry-redis"
     networks:
       gql-schema:
         aliases:

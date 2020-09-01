@@ -1,22 +1,22 @@
 module.exports = {
 	presets: [
 		[
-			'@babel/preset-env',
+			"@babel/preset-env",
 			{
 				modules: false,
-				targets: { node: 'current' }
+				targets: { node: "current" }
 			}
 		],
-		'@babel/preset-react'
+		"@babel/preset-react"
 	],
 	plugins: [
-		['babel-plugin-styled-components'],
-		['@babel/plugin-transform-runtime'],
+		["babel-plugin-styled-components"],
+		["@babel/plugin-transform-runtime"],
 		[
-			'prismjs',
+			"prismjs",
 			{
-				languages: ['graphql'],
-				theme: 'okaidia',
+				languages: ["graphql"],
+				theme: "okaidia",
 				css: true
 			}
 		]

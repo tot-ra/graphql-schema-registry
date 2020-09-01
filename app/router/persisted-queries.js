@@ -1,5 +1,5 @@
-const Joi = require('@hapi/joi');
-const { get, set, getSince } = require('../database/persisted_queries');
+const Joi = require("@hapi/joi");
+const { get, set, getSince } = require("../database/persisted_queries");
 
 exports.get = async (req, res) => {
 	const key = Joi.attempt(req.query.key, Joi.string().required());

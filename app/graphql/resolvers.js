@@ -1,27 +1,33 @@
-const isUndefined = require('lodash/isUndefined');
+const isUndefined = require("lodash/isUndefined");
 
-const { deactivateSchema, activateSchema } = require('../controller/schema');
-const { getSchemaById, getSchemaBefore } = require('../database/schema');
-const { getSchemaContainers, getSchemaContainerCount, isDev } = require('../database/containers');
-const { getServices } = require('../database/services');
+const { deactivateSchema, activateSchema } = require("../controller/schema");
+const { getSchemaById, getSchemaBefore } = require("../database/schema");
+const {
+	getSchemaContainers,
+	getSchemaContainerCount,
+	isDev
+} = require("../database/containers");
+const { getServices } = require("../database/services");
 
 const {
 	count: countPersistedQueries,
 	list: listPersistedQueries,
 	get: getPeristedQuery
-} = require('../database/persisted_queries');
+} = require("../database/persisted_queries");
 
-const dateTime = new Intl.DateTimeFormat('en-GB', {
-	weekday: 'long',
-	year: 'numeric',
-	month: 'long',
-	day: 'numeric'
+const dateTime = new Intl.DateTimeFormat("en-GB", {
+	weekday: "long",
+	year: "numeric",
+	month: "long",
+	day: "numeric"
 });
 
 module.exports = {
 	Query: {
-		services: async (parent, { limit, offset }) => getServices({ limit, offset }),
-		service: async (parent, { id }, { dataloaders }) => dataloaders.services.load(id),
+		services: async (parent, { limit, offset }) =>
+			getServices({ limit, offset }),
+		service: async (parent, { id }, { dataloaders }) =>
+			dataloaders.services.load(id),
 		schema: async (parent, { id }) => await getSchemaById({ id }),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
@@ -69,12 +75,13 @@ module.exports = {
 		}
 	},
 	SchemaDefinition: {
-		service: (parent, args, { dataloaders }) => dataloaders.services.load(parent.service_id),
-		containers: (parent) =>
+		service: (parent, args, { dataloaders }) =>
+			dataloaders.services.load(parent.service_id),
+		containers: parent =>
 			getSchemaContainers({
 				schemaId: parent.id
 			}),
-		previousSchema: async (parent) => {
+		previousSchema: async parent => {
 			const previousSchema = await getSchemaBefore({
 				addedTime: parent.added_time,
 				serviceId: parent.service_id,
@@ -87,24 +94,25 @@ module.exports = {
 
 			return previousSchema;
 		},
-		addedTime: (parent) => (parent.added_time ? parent.added_time : null),
-		isActive: (parent) => parent.is_active,
-		typeDefs: (parent) => parent.type_defs,
-		containerCount: (parent) => getSchemaContainerCount({ schemaId: parent.id }),
-		isDev: (parent) => isDev({ schemaId: parent.id })
+		addedTime: parent => (parent.added_time ? parent.added_time : null),
+		isActive: parent => parent.is_active,
+		typeDefs: parent => parent.type_defs,
+		containerCount: parent =>
+			getSchemaContainerCount({ schemaId: parent.id }),
+		isDev: parent => isDev({ schemaId: parent.id })
 	},
 	Container: {
-		commitLink: (parent) => {
-			if (parent.version === 'latest') {
+		commitLink: parent => {
+			if (parent.version === "latest") {
 				return null;
 			}
 
 			return `https://github.com/pipedrive/${parent.serviceName}/commit/${
-				parent.version.split('_')[0]
+				parent.version.split("_")[0]
 			}`;
 		}
 	},
 	PersistedQuery: {
-		addedTime: (parent) => dateTime.format(parent.added_time)
+		addedTime: parent => dateTime.format(parent.added_time)
 	}
 };

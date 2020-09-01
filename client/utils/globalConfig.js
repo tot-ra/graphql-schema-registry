@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export const GlobalConfigContext = React.createContext();
 
@@ -8,15 +8,15 @@ class GlobalConfig {
 	}
 
 	get host() {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	get graphqlPath() {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 
 	get env() {
-		throw new Error('Not implemented');
+		throw new Error("Not implemented");
 	}
 }
 
@@ -34,7 +34,7 @@ class BackofficeConfig extends GlobalConfig {
 	}
 
 	get graphqlPath() {
-		return '/schema-registry-graphql';
+		return "/schema-registry-graphql";
 	}
 
 	get env() {
@@ -48,11 +48,11 @@ class StandaloneConfig extends GlobalConfig {
 	}
 
 	get graphqlPath() {
-		return '/graphql';
+		return "/graphql";
 	}
 
 	get env() {
-		return 'dev';
+		return "dev";
 	}
 }
 

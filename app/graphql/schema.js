@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+const { gql } = require("apollo-server-express");
 
 module.exports = gql`
 	scalar Time
@@ -10,7 +10,11 @@ module.exports = gql`
 		service(id: Int!): Service
 		schema(id: Int!): SchemaDefinition!
 
-		persistedQueries(searchFragment: String, limit: Int, offset: Int): [PersistedQuery]
+		persistedQueries(
+			searchFragment: String
+			limit: Int
+			offset: Int
+		): [PersistedQuery]
 		persistedQuery(key: String!): PersistedQuery
 		persistedQueriesCount: Int!
 	}

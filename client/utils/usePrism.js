@@ -1,5 +1,5 @@
-import React, { useRef, useLayoutEffect } from 'react';
-import Prism from 'prismjs';
+import React, { useRef, useLayoutEffect } from "react";
+import Prism from "prismjs";
 
 function usePrism(code) {
 	const ref = useRef();

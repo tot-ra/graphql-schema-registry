@@ -4,6 +4,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 (based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/)
 
 ## Features
+
 - Stores versioned schema for graphql-federated services
 - Serves schema for graphql gateway based on provided services & their versions
 - Validates new schema to be compatible with other _running_ services
@@ -12,8 +13,8 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
 
-
 ## Installation
+
 ```
 npm install
 npm run build
@@ -25,9 +26,11 @@ Open http://localhost:6001
 ## Use cases
 
 ### Validating schema from codeship / deploy
+
 On pre-commit / deploy make a POST /schema/validate to see if its compatible with current schema.
 
 ### Schema registration
+
 On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
 Make sure to handle failure.
 
@@ -41,7 +44,6 @@ To create new DB migration, use:
 npm install knex -g
 knex migrate:make my_migration_name_here --migrations-directory migrations
 ```
-
 
 ## Architecture
 
@@ -63,13 +65,19 @@ Backend (`/app` folder)
 - mysql 8
 
 ### Components
+graphql-schema-registry service is one of the components for graphql federation, but it needs tight
+integraiton with gateway. Check *examples* folder on how to implement it. Note however, that
+gateway is very simplified and does not have proper error handling, cost limits or fail-safe mechanisms.
+
 ![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png?v=2)
 
 ### DB structure
+
 Migrations are done using knex
 ![](https://app.lucidchart.com/publicSegments/view/74fc86d4-671e-4644-a198-41d7ff681cae/image.png)
 
 ## API documentation
+
 ### Rest API
 
 #### GET /schema/latest
@@ -81,6 +89,7 @@ Simplified version of /schema/compose where latest versions from different servi
 Lists schema based on passed services & their versions. Used by graphql gateway to fetch schema based on current containers
 
 ##### Input params
+
 - services{ name, version}
 
 If `services` is not passed, schema-registry tries to find most recent versions. Logic behind the scenes is that schema with _highest_ `added_time` OR `updated_time` is picked as latest. If time is the same, `schema.id` is used.

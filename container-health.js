@@ -1,19 +1,19 @@
 /**
  * This script is meant to be used inside container to check the health of a service
  */
-const http = require('http');
+const http = require("http");
 
 const options = {
 	// we run check from docker container, so it should be local
-	host: 'localhost',
+	host: "localhost",
 	// client port
 	port: 3000,
 	// health endpoint to call
-	path: '/health-schema-registry'
+	path: "/health-schema-registry"
 };
 
-const req = http.request(options, (response) => {
-	response.on('end', () => {
+const req = http.request(options, response => {
+	response.on("end", () => {
 		if (response.statusCode === 200) {
 			process.exit(0);
 		} else {
@@ -22,7 +22,7 @@ const req = http.request(options, (response) => {
 	});
 });
 
-req.on('error', () => {
+req.on("error", () => {
 	process.exit(1);
 });
 

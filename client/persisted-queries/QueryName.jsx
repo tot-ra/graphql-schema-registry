@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 // import { Icon } from '@pipedrive/convention-ui-react';
 
-import { EntryName } from '../components/styled';
+import { EntryName } from "../components/styled";
 
-import { DocumentQueryEntry } from './styled';
+import { DocumentQueryEntry } from "./styled";
 
 const QueryName = ({ entry, revealed, onClick }) => {
 	return (
@@ -12,7 +12,7 @@ const QueryName = ({ entry, revealed, onClick }) => {
 				<EntryName>{entry.key}</EntryName>
 				<div>{entry.addedTime}</div>
 			</div>
-			<Icon icon={revealed ? 'arrow-up' : 'arrow-down'} />
+			<Icon icon={revealed ? "arrow-up" : "arrow-down"} />
 		</DocumentQueryEntry>
 	);
 };
