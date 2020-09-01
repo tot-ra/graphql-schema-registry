@@ -16,6 +16,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ## Installation
 
 ```
+nvm use
 npm install
 npm run build
 docker-compose up
@@ -66,7 +67,7 @@ Backend (`/app` folder)
 
 ### Components
 graphql-schema-registry service is one of the components for graphql federation, but it needs tight
-integraiton with gateway. Check *examples* folder on how to implement it. Note however, that
+integraiton with gateway. Check out [examples folder](examples/README.md) on how to implement it. Note however, that
 gateway is very simplified and does not have proper error handling, cost limits or fail-safe mechanisms.
 
 ![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png?v=2)
