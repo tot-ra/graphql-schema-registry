@@ -1,14 +1,17 @@
 # graphql-schema-registry
 
-Graphql schema storage as dockerized on-premise service for [federated apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)
+Graphql schema storage as dockerized on-premise service for federated graphql gateway server
+(based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/)
 
+## Features
 - Stores versioned schema for graphql-federated services
 - Serves schema for graphql gateway based on provided services & their versions
 - Validates new schema to be compatible with other _running_ services
 - Provides UI for developers to see stored schema & its history diff
-- Stores & shows in UI persisted queries passed by the gateway
+- Stores & shows in UI persisted queries passed by the gateway for debugging
 
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
+
 
 ## Installation
 ```
@@ -22,11 +25,11 @@ Open http://localhost:6001
 ## Use cases
 
 ### Validating schema from codeship / deploy
-On pre-commit / deploy make a POST /schema/validate to see if its compatible with curren schema
+On pre-commit / deploy make a POST /schema/validate to see if its compatible with current schema.
 
-### Pushing schema
-On service start-up (runtime), make POST to /schema/push.
-Make sure to gracefully handle failure
+### Schema registration
+On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
+Make sure to handle failure.
 
 ## Development
 
@@ -52,6 +55,7 @@ Frontend (`/client` folder)
 
 Backend (`/app` folder)
 
+- nodejs 14
 - express, hapi/joi
 - apollo-server-express, dataloader
 - redis 3
@@ -59,7 +63,7 @@ Backend (`/app` folder)
 - mysql 8
 
 ### Components
-![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png)
+![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png?v=2)
 
 ### DB structure
 Migrations are done using knex
