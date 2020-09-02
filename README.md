@@ -66,6 +66,7 @@ Backend (`/app` folder)
 - mysql 8
 
 ### Components
+
 graphql-schema-registry service is one of the components for graphql federation, but it needs tight
 integraiton with gateway. Check out [examples folder](examples/README.md) on how to implement it. Note however, that
 gateway is very simplified and does not have proper error handling, cost limits or fail-safe mechanisms.

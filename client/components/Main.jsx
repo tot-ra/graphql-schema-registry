@@ -1,15 +1,10 @@
 import React from "react";
 import { Tabs, Box, Tab, Container, AppBar } from "@material-ui/core";
-import {
-	HashRouter as Router,
-	Switch,
-	Route,
-	Redirect
-} from "react-router-dom";
+import { HashRouter as Router, Route, Redirect } from "react-router-dom";
 import { hot } from "react-hot-loader";
 
+import TopMenu from "./TopMenu";
 import TabPanel from "./TabPanel";
-
 import Schema from "../schema";
 import PersistedQueries, {
 	Tab as PersistedQueriesTab
@@ -31,7 +26,7 @@ const UITabs = [
 ];
 
 const Main = () => {
-	const [value, setValue] = React.useState(0);
+	const [selectedTab, setValue] = React.useState(0);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
@@ -39,22 +34,14 @@ const Main = () => {
 
 	return (
 		<Router>
-			<AppBar position="static">
-				<Tabs
-					value={value}
-					onChange={handleChange}
-					aria-label="simple tabs example"
-				>
-					{/*<React.Fragment>*/}
-					{UITabs.map((tab, i) => (
-						<Tab key={i} label={tab.Title} />
-					))}
-					{/*</React.Fragment>*/}
-				</Tabs>
-			</AppBar>
+			<TopMenu
+				UITabs={UITabs}
+				selectedTab={selectedTab}
+				handleChange={handleChange}
+			/>
 
 			{UITabs.map((tab, index) => (
-				<TabPanel key={index} index={index} value={value}>
+				<TabPanel key={index} index={index} value={selectedTab}>
 					<Route
 						key={tab.href}
 						path={`${tab.href}*`}

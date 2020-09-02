@@ -12,7 +12,6 @@ const QueryName = ({ entry, revealed, onClick }) => {
 				<EntryName>{entry.key}</EntryName>
 				<div>{entry.addedTime}</div>
 			</div>
-			<Icon icon={revealed ? "arrow-up" : "arrow-down"} />
 		</DocumentQueryEntry>
 	);
 };

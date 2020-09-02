@@ -62,15 +62,17 @@ const VersionDetails = () => {
 		<Container>
 			<div>
 				<VersionHeader>
-					<VersionHeaderTitle noMargin>
-						Schema #{id}
-					</VersionHeaderTitle>
-					<VersionHeaderTime>
-						Added{" "}
-						{format(addedTimestamp, "HH:mm, d MMMM yyyy (z)", {
-							timeZone: "UTC"
-						})}
-					</VersionHeaderTime>
+					<div>
+						<VersionHeaderTitle noMargin>
+							Schema #{id}
+						</VersionHeaderTitle>
+						<VersionHeaderTime>
+							Added{" "}
+							{format(addedTimestamp, "HH:mm, d MMMM yyyy (z)", {
+								timeZone: "UTC"
+							})}
+						</VersionHeaderTime>
+					</div>
 					<ButtonGroup>
 						<DeactivateButton schema={data.schema} />
 						{commitButton}

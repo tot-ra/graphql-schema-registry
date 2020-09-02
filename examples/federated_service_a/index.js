@@ -11,7 +11,9 @@ const typeDefs = gql`
 	}
 `;
 
-typeDefs.toString = function() { return this.loc.source.body; };
+typeDefs.toString = function() {
+	return this.loc.source.body;
+};
 
 const resolvers = {
 	Query: {
@@ -35,7 +37,7 @@ app.listen({ port: 6101 }, () => {
 // register schema
 (async () => {
 	try {
-		console.log('Registering schema', typeDefs.toString());
+		console.log("Registering schema", typeDefs.toString());
 
 		await request({
 			timeout: 5000,
