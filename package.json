@@ -4,13 +4,11 @@
   "description": "Graphql schema registry",
   "main": "schema-registry.js",
   "scripts": {
+    "format": "prettier --write '**/*.{js,jsx,json,md,yml,yaml,graphql}'",
     "build": "rimraf dist && mkdirp dist && webpack --env.production --bail",
     "coverage": "npm test -- --coverage",
     "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml",
-    "lint": "node-hooks lint .",
-    "lint-fix": "node node_modules/eslint/bin/eslint.js -f json --fix --ext .js . >/dev/null",
-    "npm-version-check": "node-hooks npm-version-check",
-    "format": "prettier --write '**/*.{js,jsx,json,md,yml,yaml,graphql}'"
+    "npm-version-check": "node-hooks npm-version-check"
   },
   "repository": {
     "type": "git",
@@ -34,7 +32,6 @@
     "@apollo/client": "^3.0.0-beta.33",
     "@apollo/federation": "^0.11.0",
     "@graphql-inspector/core": "^1.27.0",
-    "@hapi/joi": "^15.1.1",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "apollo-server-express": "^2.16.1",
@@ -45,6 +42,7 @@
     "express": "^4.17.1",
     "graphql": "^14.7.0",
     "graphql-voyager": "^1.0.0-rc.28",
+    "joi": "^17.2.1",
     "knex": "^0.20.2",
     "lodash": "^4.17.20",
     "mysql2": "^2.0.1",

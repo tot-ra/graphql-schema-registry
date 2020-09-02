@@ -1,4 +1,4 @@
-const Joi = require('@hapi/joi');
+const Joi = require('joi');
 const { get, set, getSince } = require('../database/persisted_queries');
 
 exports.get = async (req, res) => {
