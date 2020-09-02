@@ -19,7 +19,6 @@
   "keywords": [
     "graphql"
   ],
-
   "husky": {
     "hooks": {
       "pre-commit": "npm run format",
