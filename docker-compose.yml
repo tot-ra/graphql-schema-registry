@@ -50,7 +50,7 @@ services:
           - 'gql-schema-registry'
 
   gql-schema-registry-redis:
-    image: redis:3-alpine
+    image: redis:6-alpine
     ports:
       - 6004:6379
     environment:
