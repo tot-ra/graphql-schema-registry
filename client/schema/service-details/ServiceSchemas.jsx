@@ -42,6 +42,6 @@ export default ServiceSchemas;
 function useServiceSchemas(serviceId, filterValue) {
 	return useQuery(SERVICE_SCHEMAS, {
 		variables: { id: serviceId, filter: filterValue },
-		skip: !serviceId
+		skip: !serviceId,
 	});
 }

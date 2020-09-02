@@ -16,16 +16,16 @@ const redisWrapper = {
 
 		const redisOptions = {
 			db: 2,
-			retry_strategy: options => {
+			retry_strategy: (options) => {
 				if (options.error && options.error.code === "ECONNREFUSED") {
 					log.error("Redis server refused the connection", {
-						original_error: options.error
+						original_error: options.error,
 					});
 				}
 
 				// reconnect after
 				return Math.min(options.attempt * 100, 3000);
-			}
+			},
 		};
 		const { host, port } = await diplomat.getServiceInstance(
 			redisServiceName
@@ -42,7 +42,7 @@ const redisWrapper = {
 		return this.redisInstance;
 	},
 
-	get: async key => {
+	get: async (key) => {
 		return await (await redisWrapper.getInstance()).get(key);
 	},
 
@@ -50,34 +50,34 @@ const redisWrapper = {
 		await (await redisWrapper.getInstance()).set(key, value, "EX", ttl);
 	},
 
-	delete: async key => {
+	delete: async (key) => {
 		return await (await redisWrapper.getInstance()).del(key);
 	},
 
-	onEnd: function() {
+	onEnd: function () {
 		log.info("Redis server connection has closed!");
 	},
 
-	onError: function(error) {
+	onError: function (error) {
 		log.error(
 			`An error occurred while fetching data from Redis : ${error.message}`,
 			{
-				original_error: error
+				original_error: error,
 			}
 		);
 	},
 
-	onReconnecting: function() {
+	onReconnecting: function () {
 		log.info("Redis client is reconnecting to the server!");
 	},
 
-	onConnect: function() {
+	onConnect: function () {
 		log.info(`Redis client is connected`);
 	},
 
-	onReady: function() {
+	onReady: function () {
 		log.info("Redis client is ready!");
-	}
+	},
 };
 
 module.exports = redisWrapper;

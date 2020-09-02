@@ -6,7 +6,7 @@ import SourceCodeWithHighlightAndCopy from "../components/SourceCodeWithHighligh
 
 const PersistedQuery = ({ query }) => {
 	const [revealed, setRevealed] = useState(null);
-	const onClick = () => setRevealed(revealed => !revealed);
+	const onClick = () => setRevealed((revealed) => !revealed);
 
 	return (
 		<EntryPanel>

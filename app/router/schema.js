@@ -4,7 +4,7 @@ const {
 	validateSchema,
 	pushAndValidateSchema,
 	deactivateSchema,
-	diffSchemas
+	diffSchemas,
 } = require("../controller/schema");
 
 exports.composeLatest = async (req, res) => {
@@ -12,7 +12,7 @@ exports.composeLatest = async (req, res) => {
 
 	return res.json({
 		success: true,
-		data: schema
+		data: schema,
 	});
 };
 
@@ -25,11 +25,11 @@ exports.compose = async (req, res) => {
 					.items(
 						Joi.object().keys({
 							name: Joi.string(),
-							version: Joi.string()
+							version: Joi.string(),
 						})
 					)
 					.unique("name")
-					.optional()
+					.optional(),
 			})
 			.options({ stripUnknown: true })
 	);
@@ -38,7 +38,7 @@ exports.compose = async (req, res) => {
 
 	return res.json({
 		success: true,
-		data: schema
+		data: schema,
 	});
 };
 
@@ -46,21 +46,15 @@ exports.push = async (req, res) => {
 	const service = Joi.attempt(
 		req.body,
 		Joi.object().keys({
-			name: Joi.string()
-				.min(3)
-				.max(200)
-				.required(),
-			version: Joi.string()
-				.min(1)
-				.max(100)
-				.required(),
-			type_defs: Joi.string().required()
+			name: Joi.string().min(3).max(200).required(),
+			version: Joi.string().min(1).max(100).required(),
+			type_defs: Joi.string().required(),
 		})
 	);
 
 	return res.json({
 		success: true,
-		data: await pushAndValidateSchema({ service })
+		data: await pushAndValidateSchema({ service }),
 	});
 };
 
@@ -68,21 +62,15 @@ exports.validate = async (req, res) => {
 	const service = Joi.attempt(
 		req.body,
 		Joi.object().keys({
-			name: Joi.string()
-				.min(3)
-				.max(200)
-				.required(),
-			version: Joi.string()
-				.min(1)
-				.max(100)
-				.required(),
-			type_defs: Joi.string().required()
+			name: Joi.string().min(3).max(200).required(),
+			version: Joi.string().min(1).max(100).required(),
+			type_defs: Joi.string().required(),
 		})
 	);
 
 	return res.json({
 		success: true,
-		data: await validateSchema({ service })
+		data: await validateSchema({ service }),
 	});
 };
 
@@ -90,12 +78,8 @@ exports.delete = async (req, res) => {
 	const body = Joi.attempt(
 		req.body,
 		Joi.object().keys({
-			name: Joi.string()
-				.min(3)
-				.max(200),
-			version: Joi.string()
-				.min(1)
-				.max(100)
+			name: Joi.string().min(3).max(200),
+			version: Joi.string().min(1).max(100),
 		})
 	);
 
@@ -103,7 +87,7 @@ exports.delete = async (req, res) => {
 
 	return res.json({
 		success: true,
-		data: null
+		data: null,
 	});
 };
 
@@ -111,20 +95,14 @@ exports.diff = async (req, res) => {
 	const service = Joi.attempt(
 		req.body,
 		Joi.object().keys({
-			name: Joi.string()
-				.min(3)
-				.max(200)
-				.required(),
-			version: Joi.string()
-				.min(1)
-				.max(100)
-				.required(),
-			type_defs: Joi.string().required()
+			name: Joi.string().min(3).max(200).required(),
+			version: Joi.string().min(1).max(100).required(),
+			type_defs: Joi.string().required(),
 		})
 	);
 
 	return res.json({
 		success: true,
-		data: await diffSchemas({ service })
+		data: await diffSchemas({ service }),
 	});
 };

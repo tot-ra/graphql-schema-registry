@@ -7,7 +7,7 @@ exports.get = async (req, res) => {
 
 	return res.json({
 		success: true,
-		data: persistedQuery ? persistedQuery.query : null
+		data: persistedQuery ? persistedQuery.query : null,
 	});
 };
 
@@ -16,18 +16,18 @@ exports.create = async (req, res) => {
 		req.body,
 		Joi.object().keys({
 			key: Joi.string().required(),
-			value: Joi.string().required()
+			value: Joi.string().required(),
 		})
 	);
 
 	await set({
 		persistedQuery: {
 			key,
-			query: value
-		}
+			query: value,
+		},
 	});
 
 	return res.json({
-		success: true
+		success: true,
 	});
 };

@@ -11,18 +11,18 @@ const typeDefs = gql`
 	}
 `;
 
-typeDefs.toString = function() {
+typeDefs.toString = function () {
 	return this.loc.source.body;
 };
 
 const resolvers = {
 	Query: {
-		hello: () => "Hello"
-	}
+		hello: () => "Hello",
+	},
 };
 
 const server = new ApolloServer({
-	schema: buildFederatedSchema([{ typeDefs, resolvers }])
+	schema: buildFederatedSchema([{ typeDefs, resolvers }]),
 });
 
 const router = express.Router();
@@ -48,8 +48,8 @@ app.listen({ port: 6101 }, () => {
 			body: {
 				name: "service_a", // service name
 				version: "v1", //service version, like docker container hash. Use 'latest' for dev env
-				type_defs: typeDefs.toString()
-			}
+				type_defs: typeDefs.toString(),
+			},
 		});
 		console.info("Schema registered successfully!");
 	} catch (err) {

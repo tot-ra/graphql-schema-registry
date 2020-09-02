@@ -11,22 +11,20 @@ exports.getSchemasAddedAfter = async ({ trx = knex, since }) => {
 	return trx("container_schema")
 		.select(["container_schema.*", "services.name"])
 		.leftJoin("services", "container_schema.service_id", "services.id")
-		.andWhere(knex => {
+		.andWhere((knex) => {
 			return knex.where("schema.added_time", ">", since);
 		})
 		.limit(100);
 };
 
 exports.getLatestAddedDate = async () => {
-	const latest = await knex("schema")
-		.max("added_time as added_time")
-		.first();
+	const latest = await knex("schema").max("added_time as added_time").first();
 
 	return latest.added_time;
 };
 
 exports.getSchemaLastUpdated = async ({ trx = knex, services }) => {
-	const names = services.map(service => service.name);
+	const names = services.map((service) => service.name);
 
 	if (!names || !names.length) {
 		return [];
@@ -97,7 +95,7 @@ exports.getSchemaLastUpdated = async ({ trx = knex, services }) => {
 exports.getLastUpdatedForActiveServices = async ({ trx = knex }) => {
 	return exports.getSchemaLastUpdated({
 		trx,
-		services: await getActiveServices({ trx })
+		services: await getActiveServices({ trx }),
 	});
 };
 
@@ -109,12 +107,12 @@ exports.getSchemaByServiceVersions = async ({ trx = knex, services }) => {
 			"container_schema.*",
 			"services.name",
 			"schema.is_active",
-			"schema.type_defs"
+			"schema.type_defs",
 		])
 		.innerJoin("services", "container_schema.service_id", "services.id")
 		.innerJoin("schema", "container_schema.schema_id", "schema.id")
-		.where(query => {
-			services.forEach(service => {
+		.where((query) => {
+			services.forEach((service) => {
 				const skip =
 					!service.name ||
 					!service.version ||
@@ -122,16 +120,16 @@ exports.getSchemaByServiceVersions = async ({ trx = knex, services }) => {
 
 				query.orWhere({
 					"services.name": skip ? null : service.name,
-					"container_schema.version": skip ? null : service.version
+					"container_schema.version": skip ? null : service.version,
 				});
 			});
 		})
 		.andWhere({
-			"services.is_active": true
+			"services.is_active": true,
 		});
 
 	const servicesToFallback = services.reduce((result, service) => {
-		if (!schema.find(schema => schema.name === service.name)) {
+		if (!schema.find((schema) => schema.name === service.name)) {
 			result.push(service);
 
 			if (!isDevVersion(service.version)) {
@@ -140,7 +138,7 @@ exports.getSchemaByServiceVersions = async ({ trx = knex, services }) => {
 						`Unable to find "${service.name}:${service.version}" schema, fallback to the latest`
 					),
 					{
-						service
+						service,
 					}
 				);
 			}
@@ -152,21 +150,21 @@ exports.getSchemaByServiceVersions = async ({ trx = knex, services }) => {
 	schema.push(
 		...(await exports.getSchemaLastUpdated({
 			trx,
-			services: servicesToFallback
+			services: servicesToFallback,
 		}))
 	);
 
 	const missingServices = [];
 
-	services.forEach(service => {
-		if (!schema.find(schema => schema.name === service.name)) {
+	services.forEach((service) => {
+		if (!schema.find((schema) => schema.name === service.name)) {
 			missingServices.push(service);
 		}
 	});
 
 	if (missingServices.length) {
 		logger.warn(new Error("Unable to find schema for requested services"), {
-			missingServices
+			missingServices,
 		});
 	}
 
@@ -191,12 +189,10 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 
 	// SCHEMA
 	let schemaId = (
-		await trx("schema")
-			.select("id")
-			.where({
-				service_id: serviceId,
-				type_defs: service.type_defs
-			})
+		await trx("schema").select("id").where({
+			service_id: serviceId,
+			type_defs: service.type_defs,
+		})
 	)[0]?.id;
 
 	if (schemaId) {
@@ -208,7 +204,7 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 			{
 				service_id: serviceId,
 				type_defs: service.type_defs,
-				added_time: addedTime
+				added_time: addedTime,
 			},
 			["id"]
 		);
@@ -221,12 +217,10 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 
 	if (isDevVersion(service.version)) {
 		containerId = (
-			await trx("container_schema")
-				.select("id")
-				.where({
-					service_id: serviceId,
-					version: service.version
-				})
+			await trx("container_schema").select("id").where({
+				service_id: serviceId,
+				version: service.version,
+			})
 		)[0]?.id;
 
 		// switch "latest" version between schemas
@@ -234,21 +228,19 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 			await trx("container_schema")
 				.where({
 					service_id: serviceId,
-					version: service.version
+					version: service.version,
 				})
 				.update({
-					schema_id: schemaId
+					schema_id: schemaId,
 				});
 		}
 	} else {
 		containerId = (
-			await trx("container_schema")
-				.select("id")
-				.where({
-					schema_id: schemaId,
-					service_id: serviceId,
-					version: service.version
-				})
+			await trx("container_schema").select("id").where({
+				schema_id: schemaId,
+				service_id: serviceId,
+				version: service.version,
+			})
 		)[0]?.id;
 	}
 
@@ -258,7 +250,7 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 				schema_id: schemaId,
 				service_id: serviceId,
 				version: service.version,
-				added_time: addedTime
+				added_time: addedTime,
 			},
 			["id"]
 		);
@@ -268,7 +260,7 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 
 	const result = await exports.getSchemaByServiceVersions({
 		trx,
-		services: [service]
+		services: [service],
 	});
 
 	return result[0];
@@ -277,10 +269,10 @@ exports.registerSchema = async ({ trx = knex, service }) => {
 exports.toggleSchema = async ({ trx, id }, isActive) => {
 	return trx("schema")
 		.update({
-			"schema.is_active": isActive
+			"schema.is_active": isActive,
 		})
 		.where({
-			id
+			id,
 		});
 };
 
@@ -289,13 +281,13 @@ exports.getSchemasForServices = async ({
 	limit = 100,
 	offset = 0,
 	filter = "",
-	trx = knex
+	trx = knex,
 }) => {
 	const schemas = await trx("schema")
 		.select("schema.*")
 		.leftJoin("container_schema", "container_schema.schema_id", "schema.id")
 		.whereIn("schema.service_id", serviceIds)
-		.andWhere(builder => {
+		.andWhere((builder) => {
 			const result = builder.where(
 				"container_schema.version",
 				"like",
@@ -332,10 +324,7 @@ exports.getSchemaBefore = async ({ trx = knex, addedTime, id, serviceId }) => {
 		.first();
 };
 exports.getSchemaById = async ({ trx = knex, id }) => {
-	return trx("schema")
-		.select("schema.*")
-		.where("schema.id", id)
-		.first();
+	return trx("schema").select("schema.*").where("schema.id", id).first();
 };
 
 exports.deleteSchema = async ({ trx, name, version }) => {
@@ -344,6 +333,6 @@ exports.deleteSchema = async ({ trx, name, version }) => {
 		.leftJoin("services", "container_schema.service_id", "services.id")
 		.where({
 			"services.name": name,
-			"container_schema.version": version
+			"container_schema.version": version,
 		});
 };

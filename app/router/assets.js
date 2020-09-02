@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
-exports.router = router => {
+exports.router = (router) => {
 	const webpack = require("webpack");
 	const devWebpackConfig = require("../../webpack.config")({
-		production: false
+		production: false,
 	});
 
 	const compiler = webpack(devWebpackConfig);

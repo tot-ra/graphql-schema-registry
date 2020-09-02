@@ -6,7 +6,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 
 import {
 	DEACTIVATE_SCHEMA_ENTRY,
-	ACTIVATE_SCHEMA_ENTRY
+	ACTIVATE_SCHEMA_ENTRY,
 } from "../../utils/mutations";
 import { useParams } from "react-router-dom";
 
@@ -14,12 +14,12 @@ const DeactivateSchemaButton = ({ schema }) => {
 	const { serviceName } = useParams();
 	const [
 		deactivateSchema,
-		{ loading: deleting, error: deleteError }
+		{ loading: deleting, error: deleteError },
 	] = useMutation(DEACTIVATE_SCHEMA_ENTRY);
 
 	const [
 		activateSchema,
-		{ loading: activating, error: activateError }
+		{ loading: activating, error: activateError },
 	] = useMutation(ACTIVATE_SCHEMA_ENTRY);
 
 	const deleteErrorMessage = deleteError ? deleteError.message : null;
@@ -38,8 +38,8 @@ const DeactivateSchemaButton = ({ schema }) => {
 					onClick={() => {
 						deactivateSchema({
 							variables: {
-								id: schema.id
-							}
+								id: schema.id,
+							},
 						});
 					}}
 				>
@@ -55,8 +55,8 @@ const DeactivateSchemaButton = ({ schema }) => {
 					onClick={() => {
 						activateSchema({
 							variables: {
-								id: schema.id
-							}
+								id: schema.id,
+							},
 						});
 					}}
 				>

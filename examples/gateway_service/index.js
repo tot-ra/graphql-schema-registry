@@ -5,7 +5,7 @@ const router = express.Router();
 const { json } = require("body-parser");
 const {
 	runHttpQuery,
-	convertNodeHttpToRequest
+	convertNodeHttpToRequest,
 } = require("apollo-server-core");
 
 const { introspectionQuery } = require("graphql");
@@ -36,14 +36,14 @@ app.listen(6100, () => {
 const gateway = new CustomGateway({
 	serviceList: [],
 	debug: true,
-	buildService: service => new RemoteGraphQLDataSource(this, service),
-	experimental_pollInterval: 10000 // 10 sec
+	buildService: (service) => new RemoteGraphQLDataSource(this, service),
+	experimental_pollInterval: 10000, // 10 sec
 });
 
 const apolloServerBase = new ApolloServerBase({
 	gateway,
 	subscriptions: false,
-	debug: true
+	debug: true,
 });
 
 const handleGraphqlRequest = async (req, res) => {
@@ -51,7 +51,7 @@ const handleGraphqlRequest = async (req, res) => {
 		method: req.method,
 		query: req.body,
 		options: await apolloServerBase.graphQLServerOptions({ req, res }),
-		request: convertNodeHttpToRequest(req)
+		request: convertNodeHttpToRequest(req),
 	});
 
 	if (responseInit.headers) {

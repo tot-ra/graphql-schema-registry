@@ -5,21 +5,21 @@ const { getSchemaById, getSchemaBefore } = require("../database/schema");
 const {
 	getSchemaContainers,
 	getSchemaContainerCount,
-	isDev
+	isDev,
 } = require("../database/containers");
 const { getServices } = require("../database/services");
 const config = require("../config");
 const {
 	count: countPersistedQueries,
 	list: listPersistedQueries,
-	get: getPeristedQuery
+	get: getPeristedQuery,
 } = require("../database/persisted_queries");
 
 const dateTime = new Intl.DateTimeFormat("en-GB", {
 	weekday: "long",
 	year: "numeric",
 	month: "long",
-	day: "numeric"
+	day: "numeric",
 });
 
 module.exports = {
@@ -34,13 +34,13 @@ module.exports = {
 			return await listPersistedQueries({
 				searchFragment,
 				limit,
-				offset
+				offset,
 			});
 		},
 		persistedQuery: async (parent, { key }) => {
 			return await getPeristedQuery({ key });
 		},
-		persistedQueriesCount: async () => await countPersistedQueries()
+		persistedQueriesCount: async () => await countPersistedQueries(),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
@@ -49,7 +49,7 @@ module.exports = {
 
 			return {
 				...result,
-				isActive: result.is_active
+				isActive: result.is_active,
 			};
 		},
 		activateSchema: async (parent, { id }) => {
@@ -58,9 +58,9 @@ module.exports = {
 
 			return {
 				...result,
-				isActive: result.is_active
+				isActive: result.is_active,
 			};
-		}
+		},
 	},
 	Service: {
 		schemas: async ({ id }, { limit, offset, filter }, { dataloaders }) => {
@@ -68,24 +68,24 @@ module.exports = {
 				serviceId: id,
 				limit,
 				offset,
-				filter
+				filter,
 			});
 
 			return schemas;
-		}
+		},
 	},
 	SchemaDefinition: {
 		service: (parent, args, { dataloaders }) =>
 			dataloaders.services.load(parent.service_id),
-		containers: parent =>
+		containers: (parent) =>
 			getSchemaContainers({
-				schemaId: parent.id
+				schemaId: parent.id,
 			}),
-		previousSchema: async parent => {
+		previousSchema: async (parent) => {
 			const previousSchema = await getSchemaBefore({
 				addedTime: parent.added_time,
 				serviceId: parent.service_id,
-				id: parent.id
+				id: parent.id,
 			});
 
 			if (isUndefined(previousSchema)) {
@@ -94,15 +94,15 @@ module.exports = {
 
 			return previousSchema;
 		},
-		addedTime: parent => (parent.added_time ? parent.added_time : null),
-		isActive: parent => parent.is_active,
-		typeDefs: parent => parent.type_defs,
-		containerCount: parent =>
+		addedTime: (parent) => (parent.added_time ? parent.added_time : null),
+		isActive: (parent) => parent.is_active,
+		typeDefs: (parent) => parent.type_defs,
+		containerCount: (parent) =>
 			getSchemaContainerCount({ schemaId: parent.id }),
-		isDev: parent => isDev({ schemaId: parent.id })
+		isDev: (parent) => isDev({ schemaId: parent.id }),
 	},
 	Container: {
-		commitLink: parent => {
+		commitLink: (parent) => {
 			if (parent.version === "latest") {
 				return null;
 			}
@@ -111,9 +111,9 @@ module.exports = {
 				parent.serviceName,
 				parent.version.split("_")[0]
 			);
-		}
+		},
 	},
 	PersistedQuery: {
-		addedTime: parent => dateTime.format(parent.added_time)
-	}
+		addedTime: (parent) => dateTime.format(parent.added_time),
+	},
 };

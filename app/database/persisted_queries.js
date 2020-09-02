@@ -10,7 +10,7 @@ module.exports.count = async () => {
 module.exports.list = async ({
 	searchFragment = "",
 	limit = 100,
-	offset = 0
+	offset = 0,
 }) => {
 	const rows = await knex("persisted_queries")
 		.select(["query", "key", "added_time"])
@@ -31,7 +31,7 @@ module.exports.get = async ({ key, trx = knex }) => {
 	const rows = await trx("persisted_queries")
 		.select(["query", "key", "added_time"])
 		.where({
-			key
+			key,
 		})
 		.limit(1);
 
@@ -59,7 +59,7 @@ exports.set = async ({ persistedQuery, ttl = DEFAULT_TTL }) => {
 exports.getSince = async ({ since = 0 }) =>
 	await knex("persisted_queries")
 		.select(["query", "key", "added_time", "updated_time"])
-		.where(knex => {
+		.where((knex) => {
 			return knex
 				.where("added_time", ">", since)
 				.orWhere("updated_time", ">", since);

@@ -17,8 +17,8 @@ class CustomGateway extends ApolloGateway {
 				url: "InternalError",
 				typeDefs: parse(
 					`type InternalError { message: String! } extend type Query { internalError: InternalError }`
-				)
-			}
+				),
+			},
 		];
 	}
 
@@ -37,12 +37,12 @@ class CustomGateway extends ApolloGateway {
 			return await this.tryToLoadServiceDefinitions();
 		} catch (error) {
 			console.error(`Polling schema failed: ${error.message}`, {
-				original_error: error
+				original_error: error,
 			});
 
 			return {
 				serviceDefinitions: this.serviceDefinitionsCache,
-				isNewSchema: false
+				isNewSchema: false,
 			};
 		}
 	}
@@ -53,7 +53,7 @@ class CustomGateway extends ApolloGateway {
 		this.config.serviceList = await getServiceListWithTypeDefs();
 
 		// for each service, fetch its introspection schema
-		const serviceDefinitions = this.config.serviceList.map(service => {
+		const serviceDefinitions = this.config.serviceList.map((service) => {
 			const previousDefinition = this.serviceSdlCache.get(service.name);
 
 			// this lets us know if any downstream service has changed
@@ -66,7 +66,7 @@ class CustomGateway extends ApolloGateway {
 
 			return {
 				...service,
-				typeDefs: parse(service.typeDefs)
+				typeDefs: parse(service.typeDefs),
 			};
 		});
 
@@ -77,7 +77,7 @@ class CustomGateway extends ApolloGateway {
 
 		return {
 			serviceDefinitions: this.serviceDefinitionsCache,
-			isNewSchema
+			isNewSchema,
 		};
 	}
 }
@@ -96,7 +96,7 @@ function validateSchema(serviceList) {
 			"Schema validation failed, falling back to previous schema",
 			{
 				errors: JSON.stringify(errors),
-				serviceList
+				serviceList,
 			}
 		);
 

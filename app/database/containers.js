@@ -4,7 +4,7 @@ exports.getSchemaContainers = async ({
 	schemaId,
 	limit = 100,
 	offset = 0,
-	trx = knex
+	trx = knex,
 }) => {
 	return trx("container_schema")
 		.select(

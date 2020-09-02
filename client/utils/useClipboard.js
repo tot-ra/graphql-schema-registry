@@ -6,11 +6,11 @@ export function useClipboard() {
 	const timeout = useRef(null);
 
 	useEffect(() => {
-		requestPermission().then(isAllowed => setAllowed(isAllowed));
+		requestPermission().then((isAllowed) => setAllowed(isAllowed));
 	}, []);
 
 	const updateCopied = useCallback(
-		text => {
+		(text) => {
 			clearTimeout(timeout.current);
 			setCopied(false);
 
@@ -34,7 +34,7 @@ function requestPermission() {
 	return navigator.permissions
 		.query({ name: "clipboard-write" })
 		.then(
-			result => result.state === "granted" || result.state === "prompt"
+			(result) => result.state === "granted" || result.state === "prompt"
 		);
 }
 

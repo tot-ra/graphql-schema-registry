@@ -6,13 +6,13 @@ exports.getServiceListWithTypeDefs = async () => {
 	const services = [
 		{
 			name: "service_a",
-			version: "v1" // use docker hash of the containers
+			version: "v1", // use docker hash of the containers
 		},
 
 		{
 			name: "service_b",
-			version: "v1"
-		}
+			version: "v1",
+		},
 	];
 	const serviceTypeDefinitions = await request({
 		baseUrl: "http://localhost:6001",
@@ -20,12 +20,14 @@ exports.getServiceListWithTypeDefs = async () => {
 		url: "/schema/compose",
 		json: true,
 		body: {
-			services
-		}
+			services,
+		},
 	});
 
-	return get(serviceTypeDefinitions, "data", []).map(schema => {
-		const service = services.find(service => service.name === schema.name);
+	return get(serviceTypeDefinitions, "data", []).map((schema) => {
+		const service = services.find(
+			(service) => service.name === schema.name
+		);
 
 		if (!service) {
 			console.warn(
@@ -43,7 +45,7 @@ exports.getServiceListWithTypeDefs = async () => {
 			version: schema.version,
 			typeDefs: schema.type_defs,
 			typeDefsOriginal: schema.type_defs_original,
-			...(service ? service : {})
+			...(service ? service : {}),
 		};
 	});
 };

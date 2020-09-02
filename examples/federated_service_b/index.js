@@ -14,7 +14,7 @@ var schema = buildSchema(`
 var root = {
 	world: () => {
 		return "World!";
-	}
+	},
 };
 
 var app = express();
@@ -23,7 +23,7 @@ app.use(
 	graphqlHTTP({
 		schema: schema,
 		rootValue: root,
-		graphiql: true
+		graphiql: true,
 	})
 );
 app.listen(6102);
@@ -40,8 +40,8 @@ console.log("Running a GraphQL API server at http://localhost:6102/graphql");
 			body: {
 				name: "service_b", // service name
 				version: "v1", //service version, like docker container hash. Use 'latest' for dev env
-				type_defs: printSchema(schema)
-			}
+				type_defs: printSchema(schema),
+			},
 		});
 		console.info("Schema registered successfully!");
 	} catch (err) {

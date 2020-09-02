@@ -12,7 +12,7 @@ const ServiceDetails = () => {
 	const { serviceName } = useParams();
 	const { data } = useQuery(SERVICES_LIST);
 	const service = data?.services.find(
-		service => service.name === serviceName
+		(service) => service.name === serviceName
 	);
 
 	if (!data) {

@@ -27,17 +27,17 @@ const newStyles = {
 			codeFoldContentColor: "#aeb4d6",
 			diffViewerTitleBackground: "#2f323e",
 			diffViewerTitleColor: "#555a7b",
-			diffViewerTitleBorderColor: "#353846"
-		}
+			diffViewerTitleBorderColor: "#353846",
+		},
 	},
 	line: {
 		padding: "10px 2px",
 		"&:hover": {
-			background: "#000e95"
-		}
-	}
+			background: "#000e95",
+		},
+	},
 };
-const CodeDiff = props => {
+const CodeDiff = (props) => {
 	return (
 		<ReactDiffViewer
 			oldValue={props.oldCode}

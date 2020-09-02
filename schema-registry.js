@@ -1,15 +1,15 @@
 const logger = require("./app/logger");
 
-process.on("unhandledRejection", error => {
+process.on("unhandledRejection", (error) => {
 	logger.error(`unhandledRejection: ${error.message}`, {
-		original_error: error
+		original_error: error,
 	});
 	setTimeout(() => process.exit(), 3000);
 });
 
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
 	logger.error(`uncaughtException: ${error.message}`, {
-		original_error: error
+		original_error: error,
 	});
 	setTimeout(() => process.exit(), 3000);
 });
@@ -26,7 +26,7 @@ async function warmup() {
 		logger.info("Warm up complete");
 	} catch (error) {
 		logger.error(`Service failed to warm up: ${error.message}`, {
-			original_error: error
+			original_error: error,
 		});
 
 		setTimeout(() => warmup(), 10000);

@@ -5,14 +5,14 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
-const config = env => ({
+const config = (env) => ({
 	output: {
 		path: path.resolve("./dist/assets"),
 		filename: "[name].js",
 		libraryTarget: "umd",
 		chunkFilename: "[name].[contenthash].js",
 		crossOriginLoading: "anonymous",
-		pathinfo: true
+		pathinfo: true,
 	},
 
 	module: {
@@ -20,33 +20,33 @@ const config = env => ({
 			{
 				test: /.jsx?$/,
 				use: {
-					loader: "babel-loader"
+					loader: "babel-loader",
 				},
-				include: [path.resolve(__dirname, "./client")]
+				include: [path.resolve(__dirname, "./client")],
 			},
 			{
 				test: /\.(png|jpg|svg)$/,
 				loader: "file-loader",
 				options: {
-					name: "[name].[ext]"
-				}
+					name: "[name].[ext]",
+				},
 			},
 			{
 				test: /\.(p|post)?css$/,
-				use: [MiniCssExtractPlugin.loader, "css-loader"]
-			}
-		]
+				use: [MiniCssExtractPlugin.loader, "css-loader"],
+			},
+		],
 	},
 
 	resolve: {
-		extensions: [".js", ".jsx", ".json"]
+		extensions: [".js", ".jsx", ".json"],
 	},
 
 	plugins: [
 		new MiniCssExtractPlugin({
-			filename: "[name].css?v=[contenthash]"
-		})
-	]
+			filename: "[name].css?v=[contenthash]",
+		}),
+	],
 });
 
 function createConfigDev(name, entry) {
@@ -56,12 +56,12 @@ function createConfigDev(name, entry) {
 		entry: {
 			[name]: [
 				`webpack-hot-middleware/client?path=/__webpack_hmr&reload=true&name=${name}`,
-				entry
-			]
+				entry,
+			],
 		},
 		stats: "minimal",
 		devtool: "eval-cheap-source-map",
-		plugins: [new webpack.HotModuleReplacementPlugin()]
+		plugins: [new webpack.HotModuleReplacementPlugin()],
 	};
 }
 
@@ -69,7 +69,7 @@ function createConfigProd(name, entry) {
 	return {
 		mode: "production",
 		entry: {
-			[name]: [entry]
+			[name]: [entry],
 		},
 		optimization: {
 			namedModules: true,
@@ -77,11 +77,11 @@ function createConfigProd(name, entry) {
 			minimizer: [
 				new TerserPlugin({
 					parallel: true,
-					sourceMap: false
-				})
-			]
+					sourceMap: false,
+				}),
+			],
 		},
-		plugins: [new OptimizeCssAssetsPlugin()]
+		plugins: [new OptimizeCssAssetsPlugin()],
 	};
 }
 
@@ -93,9 +93,9 @@ const standalone = {
 	prod: createConfigProd(
 		"management-ui-standalone",
 		"./client/entry-standalone.jsx"
-	)
+	),
 };
 
-module.exports = env => [
-	merge(config(env), env.production ? standalone.prod : standalone.dev)
+module.exports = (env) => [
+	merge(config(env), env.production ? standalone.prod : standalone.dev),
 ];

@@ -11,11 +11,11 @@ const SourceCodeWithHighlightAndCopy = ({
 	query,
 	revealed,
 	onClick,
-	lines = 4
+	lines = 4,
 }) => {
 	const [copied, updateClipboard] = useClipboard();
 
-	const onCopy = e => {
+	const onCopy = (e) => {
 		e.stopPropagation();
 		updateClipboard(query);
 	};

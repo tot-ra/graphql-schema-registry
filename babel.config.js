@@ -4,10 +4,10 @@ module.exports = {
 			"@babel/preset-env",
 			{
 				modules: false,
-				targets: { node: "current" }
-			}
+				targets: { node: "current" },
+			},
 		],
-		"@babel/preset-react"
+		"@babel/preset-react",
 	],
 	plugins: [
 		["babel-plugin-styled-components"],
@@ -17,8 +17,8 @@ module.exports = {
 			{
 				languages: ["graphql"],
 				theme: "okaidia",
-				css: true
-			}
-		]
-	]
+				css: true,
+			},
+		],
+	],
 };

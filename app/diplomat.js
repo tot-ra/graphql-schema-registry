@@ -1,10 +1,10 @@
 module.exports = {
-	getServiceInstance: name => {
+	getServiceInstance: (name) => {
 		const address = {
 			host: "",
 			port: "",
 			username: "",
-			secret: ""
+			secret: "",
 		};
 		switch (name) {
 			case "gql-schema-registry-db":
@@ -21,5 +21,5 @@ module.exports = {
 		}
 
 		throw new Error(`undefined service ${name} networkaddress`);
-	}
+	},
 };

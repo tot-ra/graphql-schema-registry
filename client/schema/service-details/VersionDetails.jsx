@@ -8,7 +8,7 @@ import {
 	Container,
 	VersionHeader,
 	VersionHeaderTitle,
-	VersionHeaderTime
+	VersionHeaderTime,
 } from "../styled";
 import CallMergeIcon from "@material-ui/icons/CallMerge";
 
@@ -27,12 +27,12 @@ const VersionDetails = () => {
 		setValue(newValue);
 	};
 
-	const onClick = () => setRevealed(revealed => !revealed);
+	const onClick = () => setRevealed((revealed) => !revealed);
 
 	const schemaId = useSchemaParam();
 	const { data, loading } = useQuery(SCHEMA_DETAILS, {
 		variables: { schemaId },
-		skip: !schemaId
+		skip: !schemaId,
 	});
 
 	if (loading || !data) {
@@ -69,7 +69,7 @@ const VersionDetails = () => {
 						<VersionHeaderTime>
 							Added{" "}
 							{format(addedTimestamp, "HH:mm, d MMMM yyyy (z)", {
-								timeZone: "UTC"
+								timeZone: "UTC",
 							})}
 						</VersionHeaderTime>
 					</div>
@@ -109,7 +109,7 @@ const VersionDetails = () => {
 							</tr>
 						</thead>
 						<tbody>
-							{containers.map(row => {
+							{containers.map((row) => {
 								if (row.version !== "latest") {
 									return (
 										<tr key={row.version}>

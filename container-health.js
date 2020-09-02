@@ -9,10 +9,10 @@ const options = {
 	// client port
 	port: 3000,
 	// health endpoint to call
-	path: "/health-schema-registry"
+	path: "/health-schema-registry",
 };
 
-const req = http.request(options, response => {
+const req = http.request(options, (response) => {
 	response.on("end", () => {
 		if (response.statusCode === 200) {
 			process.exit(0);

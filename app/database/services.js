@@ -7,16 +7,11 @@ exports.getActiveServices = async ({ trx = knex } = {}) => {
 };
 
 exports.getServicesByIds = async ({ trx = knex, ids } = {}) => {
-	return await trx("services")
-		.select("*")
-		.whereIn("id", ids);
+	return await trx("services").select("*").whereIn("id", ids);
 };
 
 exports.getServices = async ({ limit = 100, offset = 0, trx = knex } = {}) => {
-	return await trx("services")
-		.select("*")
-		.limit(limit)
-		.offset(offset);
+	return await trx("services").select("*").limit(limit).offset(offset);
 };
 
 exports.getService = async ({ trx = knex, name }) => {
@@ -43,13 +38,11 @@ exports.insertService = async ({ trx = knex, name }) => {
 exports.toggleService = async ({ trx = knex, name }, isActive) => {
 	return await trx("services")
 		.update({
-			is_active: isActive
+			is_active: isActive,
 		})
 		.where("name", name);
 };
 
 exports.deleteService = async ({ trx = knex, name }) => {
-	return await trx("services")
-		.delete()
-		.where("name", name);
+	return await trx("services").delete().where("name", name);
 };

@@ -7,7 +7,7 @@ const {
 	getLastUpdatedForActiveServices,
 	getSchemaByServiceVersions,
 	registerSchema,
-	toggleSchema
+	toggleSchema,
 } = require("../database/schema");
 
 async function getAndValidateSchema({ trx, services } = {}) {
@@ -18,7 +18,7 @@ async function getAndValidateSchema({ trx, services } = {}) {
 	logger.info(
 		"Validating schema. Got services schemas from DB transaction..",
 		{
-			schemas
+			schemas,
 		}
 	);
 
@@ -30,11 +30,11 @@ async function getAndValidateSchema({ trx, services } = {}) {
 exports.getAndValidateSchema = getAndValidateSchema;
 
 exports.pushAndValidateSchema = async ({ service }) => {
-	return await transact(async trx => {
+	return await transact(async (trx) => {
 		const schema = await registerSchema({ trx, service });
 
 		logger.info("Registered service new schema in DB transaction..", {
-			schema
+			schema,
 		});
 
 		await getAndValidateSchema({ trx });
@@ -44,39 +44,39 @@ exports.pushAndValidateSchema = async ({ service }) => {
 };
 
 exports.validateSchema = async ({ service }) => {
-	return await transact(async trx => {
+	return await transact(async (trx) => {
 		const schemas = await getLastUpdatedForActiveServices({ trx });
 
 		composeAndValidateSchema(
 			schemas
-				.filter(schema => schema.name !== service.name)
+				.filter((schema) => schema.name !== service.name)
 				.concat(service)
 		);
 	});
 };
 
 exports.deactivateSchema = async ({ id }) => {
-	return await transact(async trx => {
+	return await transact(async (trx) => {
 		await toggleSchema({ trx, id }, false);
 		await getAndValidateSchema({ trx });
 	});
 };
 
 exports.activateSchema = async ({ id }) => {
-	return await transact(async trx => {
+	return await transact(async (trx) => {
 		await toggleSchema({ trx, id }, true);
 		await getAndValidateSchema({ trx });
 	});
 };
 
 exports.diffSchemas = async ({ service }) => {
-	return await transact(async trx => {
+	return await transact(async (trx) => {
 		const schemas = await getLastUpdatedForActiveServices({ trx });
 
 		const original = composeAndValidateSchema(schemas);
 		const updated = composeAndValidateSchema(
 			schemas
-				.filter(schema => schema.name !== service.name)
+				.filter((schema) => schema.name !== service.name)
 				.concat(service)
 		);
 

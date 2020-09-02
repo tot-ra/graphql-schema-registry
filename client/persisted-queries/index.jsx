@@ -19,7 +19,7 @@ const PersistedQueries = () => {
 
 	return (
 		<div>
-			{data.persistedQueries.map(query => (
+			{data.persistedQueries.map((query) => (
 				<PersistedQuery key={query.key} query={query} />
 			))}
 		</div>

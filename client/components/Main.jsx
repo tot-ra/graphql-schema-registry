@@ -7,7 +7,7 @@ import TopMenu from "./TopMenu";
 import TabPanel from "./TabPanel";
 import Schema from "../schema";
 import PersistedQueries, {
-	Tab as PersistedQueriesTab
+	Tab as PersistedQueriesTab,
 } from "../persisted-queries";
 
 const UITabs = [
@@ -15,14 +15,14 @@ const UITabs = [
 		Title: <span>Schema</span>,
 		href: "/schema",
 		icon: "dashboard",
-		component: Schema
+		component: Schema,
 	},
 	{
 		Title: <PersistedQueriesTab />,
 		icon: "ac-document",
 		href: "/persisted-queries",
-		component: PersistedQueries
-	}
+		component: PersistedQueries,
+	},
 ];
 
 const Main = () => {

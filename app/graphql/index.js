@@ -6,11 +6,11 @@ const resolvers = require("./resolvers");
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: req => ({
-		dataloaders: require("./dataloader")(req)
-	})
+	context: (req) => ({
+		dataloaders: require("./dataloader")(req),
+	}),
 });
 
-module.exports = app => {
+module.exports = (app) => {
 	server.applyMiddleware({ app });
 };

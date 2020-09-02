@@ -3,7 +3,7 @@ import {
 	ApolloClient,
 	InMemoryCache,
 	HttpLink,
-	ApolloProvider
+	ApolloProvider,
 } from "@apollo/client";
 
 import { GlobalConfigContext, createConfig } from "./utils/globalConfig";
@@ -19,8 +19,8 @@ const App = ({ api }) => {
 		cache: new InMemoryCache(),
 		link: new HttpLink({
 			uri: config.grapqhlEndpoint,
-			credentials: "include"
-		})
+			credentials: "include",
+		}),
 	});
 
 	return (

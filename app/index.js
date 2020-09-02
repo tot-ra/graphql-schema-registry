@@ -47,7 +47,7 @@ app.use((err, req, res, next) => {
 	// NOSONAR - Don't remove the next argument!!!
 	const errorDetails = {
 		correlationId: get(req, "correlationId", null),
-		url: req.url
+		url: req.url,
 	};
 
 	if (err.isJoi || err.isDisplayedToUser) {
@@ -56,13 +56,13 @@ app.use((err, req, res, next) => {
 		return res.status(err.statusCode || 400).json({
 			success: false,
 			message: get(err, "details[0].message") || err.message,
-			details: get(err, "details") || null
+			details: get(err, "details") || null,
 		});
 	}
 
 	logger.error(`A server error occurred: ${err.message}`, {
 		original_error: err,
-		...errorDetails
+		...errorDetails,
 	});
 
 	return res

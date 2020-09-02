@@ -19,7 +19,7 @@ const VersionsList = ({ service }) => {
 
 	return (
 		<List component="nav">
-			{service.schemas.map(schema => {
+			{service.schemas.map((schema) => {
 				const today = new Date();
 				const date = new Date(schema.addedTime);
 				const icon = schema.isDev ? (
@@ -52,7 +52,7 @@ const VersionsList = ({ service }) => {
 									<span>
 										added{" "}
 										{formatDistance(date, today, {
-											addSuffix: true
+											addSuffix: true,
 										})}
 									</span>
 								</VersionRow>

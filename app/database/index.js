@@ -27,14 +27,14 @@ const connection = knex({
 		warn: logger.info,
 		error: logger.error,
 		deprecate: logger.info,
-		debug: logger.debug
+		debug: logger.debug,
 	},
 	connection: async () => {
 		const {
 			host,
 			port,
 			username,
-			secret
+			secret,
 		} = await diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
 
 		logger.info(`connecting to DB ${host}:${port}`);
@@ -46,9 +46,9 @@ const connection = knex({
 			password: secret,
 			database: "schema_registry",
 			connectTimeout: 5000,
-			expirationChecker: () => true
+			expirationChecker: () => true,
 		};
-	}
+	},
 });
 
 connection.on("query", logQuery);
@@ -56,7 +56,7 @@ connection.on("query-error", logQueryError);
 
 exports.knex = connection;
 
-exports.transact = async fn => {
+exports.transact = async (fn) => {
 	const trx = await exports.knex.transaction();
 
 	try {

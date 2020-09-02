@@ -26,7 +26,7 @@ const ServiceList = () => {
 	return (
 		<ColumnPanel>
 			<List component="nav">
-				{data.services.map(service => (
+				{data.services.map((service) => (
 					<ListItem
 						key={service.name}
 						button

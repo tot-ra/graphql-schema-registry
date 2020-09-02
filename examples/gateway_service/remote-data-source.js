@@ -26,12 +26,12 @@ class RemoteGraphQLDataSource {
 		request.http = {
 			method: "POST",
 			url,
-			headers
+			headers,
 		};
 		const { http, ...graphqlRequest } = request;
 		const options = {
 			...http,
-			body: JSON.stringify(graphqlRequest)
+			body: JSON.stringify(graphqlRequest),
 		};
 
 		const httpRequest = new Request(request.http.url, options);
@@ -39,7 +39,7 @@ class RemoteGraphQLDataSource {
 		const body = await httpResponse.json();
 		return {
 			...body,
-			http: httpResponse
+			http: httpResponse,
 		};
 	}
 }
