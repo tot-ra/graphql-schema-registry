@@ -1,9 +1,5 @@
 FROM node:14-alpine
 
-# setup env for consul to be able to track state of service
-ENV SERVICE_DESC="Schema registry" \
-	SERVICE_5850_IGNORE=true
-
 USER nobody
 
 # ensure all directories exist

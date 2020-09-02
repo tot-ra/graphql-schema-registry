@@ -2,34 +2,6 @@ const fs = require("fs");
 const path = require("path");
 
 exports.router = router => {
-	// diplomat.registerAssets({
-	// 	version: process.env.DOCKER_TAG,
-	// 	originPath: '/assets',
-	// 	components: {
-	// 		'management-ui': {
-	// 			js: 'management-ui.js',
-	// 			css: 'management-ui.css'
-	// 		},
-	// 		'management-ui-standalone': {
-	// 			js: 'management-ui-standalone.js',
-	// 			css: 'management-ui-standalone.css'
-	// 		}
-	// 	}
-	// });
-	//
-	// if (gluon.isProdMode() || !process.env.WITH_WEBPACK) {
-	// 	const express = require('express');
-	//
-	// 	return router.use(
-	// 		'/assets',
-	// 		express.static('dist/assets', {
-	// 			etag: false,
-	// 			// One week
-	// 			maxage: 604800000
-	// 		})
-	// 	);
-	// }
-
 	const webpack = require("webpack");
 	const devWebpackConfig = require("../../webpack.config")({
 		production: false

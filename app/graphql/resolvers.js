@@ -8,7 +8,7 @@ const {
 	isDev
 } = require("../database/containers");
 const { getServices } = require("../database/services");
-
+const config = require("../config");
 const {
 	count: countPersistedQueries,
 	list: listPersistedQueries,
@@ -107,9 +107,10 @@ module.exports = {
 				return null;
 			}
 
-			return `https://github.com/pipedrive/${parent.serviceName}/commit/${
+			return config.formatCommitLink(
+				parent.serviceName,
 				parent.version.split("_")[0]
-			}`;
+			);
 		}
 	},
 	PersistedQuery: {

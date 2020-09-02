@@ -33,8 +33,8 @@ services:
       - 6002:5850
     environment:
       - ENV_ID=dev
+      - SERVICE_5850_IGNORE=true
       - WITH_WEBPACK=${WITH_WEBPACK-1}
-      - DOCKER_TAG=${DOCKER_TAG-latest}
       - SERVICE_NAME=schema-registry
       - SERVICE_3000_NAME=schema-registry
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db

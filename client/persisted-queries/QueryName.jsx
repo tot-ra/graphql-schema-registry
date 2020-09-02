@@ -1,5 +1,4 @@
 import React from "react";
-// import { Icon } from '@pipedrive/convention-ui-react';
 
 import { EntryName } from "../components/styled";
 

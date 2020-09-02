@@ -100,30 +100,32 @@ const VersionDetails = () => {
 					/>
 				</TabPanel>
 				<TabPanel value={value} index={2}>
-					{/*<table width="100%">*/}
-					{/*	<thead>*/}
-					{/*	<tr>*/}
-					{/*		<th width="180">Docker container id</th>*/}
-					{/*		<th>Time added</th>*/}
-					{/*		<th>Link</th>*/}
-					{/*	</tr>*/}
-					{/*	</thead>*/}
-					{/*	<tbody>*/}
-					{/*	{containers.map((row) => {*/}
-					{/*		if (row.version !== 'latest') {*/}
-					{/*			return (*/}
-					{/*				<tr key={row.version}>*/}
-					{/*					<td>{row.version}</td>*/}
-					{/*					<td>{row.addedTime}</td>*/}
-					{/*					<td>*/}
-					{/*						<a href={row.commitLink}>github</a>*/}
-					{/*					</td>*/}
-					{/*				</tr>*/}
-					{/*			);*/}
-					{/*		}*/}
-					{/*	})}*/}
-					{/*	</tbody>*/}
-					{/*</table>*/}
+					<table width="100%">
+						<thead>
+							<tr>
+								<th width="180">Docker container id</th>
+								<th>Time added</th>
+								<th>Link</th>
+							</tr>
+						</thead>
+						<tbody>
+							{containers.map(row => {
+								if (row.version !== "latest") {
+									return (
+										<tr key={row.version}>
+											<td>{row.version}</td>
+											<td>{row.addedTime}</td>
+											<td>
+												<a href={row.commitLink}>
+													github
+												</a>
+											</td>
+										</tr>
+									);
+								}
+							})}
+						</tbody>
+					</table>
 				</TabPanel>
 			</div>
 		</Container>
