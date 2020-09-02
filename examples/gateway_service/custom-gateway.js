@@ -1,9 +1,9 @@
-const _ = require("lodash");
-const { parse } = require("graphql");
-const { ApolloGateway } = require("@apollo/gateway");
-const { composeAndValidate } = require("@apollo/federation");
+const _ = require('lodash');
+const { parse } = require('graphql');
+const { ApolloGateway } = require('@apollo/gateway');
+const { composeAndValidate } = require('@apollo/federation');
 
-const { getServiceListWithTypeDefs } = require("./poll-schema-registry");
+const { getServiceListWithTypeDefs } = require('./poll-schema-registry');
 
 class CustomGateway extends ApolloGateway {
 	constructor(...args) {
@@ -13,8 +13,8 @@ class CustomGateway extends ApolloGateway {
 			// Temporary workaround just to make sure that the array won't be empty
 			// If "serviceDefinitions" is empty, uncaught expection will be trown by the library
 			{
-				name: "InternalError",
-				url: "InternalError",
+				name: 'InternalError',
+				url: 'InternalError',
 				typeDefs: parse(
 					`type InternalError { message: String! } extend type Query { internalError: InternalError }`
 				),
@@ -93,7 +93,7 @@ function validateSchema(serviceList) {
 
 	if (errors && errors.length) {
 		console.error(
-			"Schema validation failed, falling back to previous schema",
+			'Schema validation failed, falling back to previous schema',
 			{
 				errors: JSON.stringify(errors),
 				serviceList,

@@ -1,7 +1,7 @@
-import { AppBar, Tab, Tabs } from "@material-ui/core";
-import React from "react";
+import { AppBar, Tab, Tabs } from '@material-ui/core';
+import React from 'react';
 
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 export default ({ UITabs, selectedTab, handleChange }) => {
 	let history = useHistory();

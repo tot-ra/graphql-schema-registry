@@ -1,18 +1,18 @@
-const { knex } = require("./index");
-const redis = require("../redis");
+const { knex } = require('./index');
+const redis = require('../redis');
 const DEFAULT_TTL = 12 * 3600;
 
 const PersistedQueriesModel = {
 	count: async function () {
 		return (
-			await knex("persisted_queries").count("key", { as: "amount" })
+			await knex('persisted_queries').count('key', { as: 'amount' })
 		)[0].amount;
 	},
 
-	list: async function ({ searchFragment = "", limit = 100, offset = 0 }) {
-		return knex("persisted_queries")
-			.select(["query", "key", "added_time"])
-			.where("query", "like", `%${searchFragment}%`)
+	list: async function ({ searchFragment = '', limit = 100, offset = 0 }) {
+		return knex('persisted_queries')
+			.select(['query', 'key', 'added_time'])
+			.where('query', 'like', `%${searchFragment}%`)
 			.offset(offset)
 			.limit(limit);
 	},
@@ -24,8 +24,8 @@ const PersistedQueriesModel = {
 			return JSON.parse(cachedPersistedQuery);
 		}
 
-		const rows = await trx("persisted_queries")
-			.select(["query", "key", "added_time"])
+		const rows = await trx('persisted_queries')
+			.select(['query', 'key', 'added_time'])
 			.where({
 				key,
 			})
@@ -42,10 +42,10 @@ const PersistedQueriesModel = {
 
 	set: async function ({ persistedQuery, ttl = DEFAULT_TTL }) {
 		await knex.raw(
-			knex("persisted_queries")
+			knex('persisted_queries')
 				.insert(persistedQuery)
 				.toString()
-				.replace(/^insert/i, "insert ignore")
+				.replace(/^insert/i, 'insert ignore')
 		);
 
 		// no need to wait until it finishes
@@ -57,19 +57,19 @@ const PersistedQueriesModel = {
 	},
 
 	getSince: async function ({ since = 0 }) {
-		await knex("persisted_queries")
-			.select(["query", "key", "added_time", "updated_time"])
+		await knex('persisted_queries')
+			.select(['query', 'key', 'added_time', 'updated_time'])
 			.where((knex) => {
 				return knex
-					.where("added_time", ">", since)
-					.orWhere("updated_time", ">", since);
+					.where('added_time', '>', since)
+					.orWhere('updated_time', '>', since);
 			})
 			.limit(100);
 	},
 
 	getLatestAddTime: async function () {
-		const latest = await knex("persisted_queries")
-			.max("added_time as added_time")
+		const latest = await knex('persisted_queries')
+			.max('added_time as added_time')
 			.first();
 
 		return latest.added_time;

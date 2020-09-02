@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export function useClipboard() {
 	const [allowed, setAllowed] = useState(false);
@@ -32,9 +32,9 @@ export function useClipboard() {
 
 function requestPermission() {
 	return navigator.permissions
-		.query({ name: "clipboard-write" })
+		.query({ name: 'clipboard-write' })
 		.then(
-			(result) => result.state === "granted" || result.state === "prompt"
+			(result) => result.state === 'granted' || result.state === 'prompt'
 		);
 }
 
@@ -43,5 +43,5 @@ function updateClipboard(text) {
 }
 
 function notAllowed() {
-	console.error("Not allowed to write to clipboard"); // eslint-disable-line
+	console.error('Not allowed to write to clipboard'); // eslint-disable-line
 }

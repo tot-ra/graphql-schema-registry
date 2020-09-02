@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import usePrism from "../utils/usePrism";
-import { OverflowScroll } from "./styled";
+import usePrism from '../utils/usePrism';
+import { OverflowScroll } from './styled';
 
 const SourceCodeWithHighlight = ({ code }) => {
 	const Highlighed = usePrism(code);

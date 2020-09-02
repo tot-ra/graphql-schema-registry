@@ -1,25 +1,25 @@
-const isUndefined = require("lodash/isUndefined");
+const isUndefined = require('lodash/isUndefined');
 
-const { deactivateSchema, activateSchema } = require("../controller/schema");
-const { getSchemaById, getSchemaBefore } = require("../database/schema");
+const { deactivateSchema, activateSchema } = require('../controller/schema');
+const { getSchemaById, getSchemaBefore } = require('../database/schema');
 const {
 	getSchemaContainers,
 	getSchemaContainerCount,
 	isDev,
-} = require("../database/containers");
-const { getServices } = require("../database/services");
-const config = require("../config");
+} = require('../database/containers');
+const { getServices } = require('../database/services');
+const config = require('../config');
 const {
 	count: countPersistedQueries,
 	list: listPersistedQueries,
 	get: getPeristedQuery,
-} = require("../database/persisted_queries");
+} = require('../database/persisted_queries');
 
-const dateTime = new Intl.DateTimeFormat("en-GB", {
-	weekday: "long",
-	year: "numeric",
-	month: "long",
-	day: "numeric",
+const dateTime = new Intl.DateTimeFormat('en-GB', {
+	weekday: 'long',
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
 });
 
 module.exports = {
@@ -103,13 +103,13 @@ module.exports = {
 	},
 	Container: {
 		commitLink: (parent) => {
-			if (parent.version === "latest") {
+			if (parent.version === 'latest') {
 				return null;
 			}
 
 			return config.formatCommitLink(
 				parent.serviceName,
-				parent.version.split("_")[0]
+				parent.version.split('_')[0]
 			);
 		},
 	},

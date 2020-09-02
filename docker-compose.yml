@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 services:
   gql-schema-registry-db:
     image: mysql:8
@@ -15,13 +15,13 @@ services:
       - gql-schema-registry-db-volume:/var/lib/mysql
     healthcheck:
       test:
-        ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "healthcheck"]
+        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'healthcheck']
       timeout: 5s
       retries: 10
     networks:
       gql-schema:
         aliases:
-          - "gql-schema-registry-db"
+          - 'gql-schema-registry-db'
 
   gql-schema-registry:
     build: .
@@ -47,18 +47,18 @@ services:
     networks:
       gql-schema:
         aliases:
-          - "gql-schema-registry"
+          - 'gql-schema-registry'
 
   gql-schema-registry-redis:
     image: redis:3-alpine
     ports:
       - 6004:6379
     environment:
-      SERVICE_NAME: "gql-schema-registry-redis"
+      SERVICE_NAME: 'gql-schema-registry-redis'
     networks:
       gql-schema:
         aliases:
-          - "gql-schema-registry-redis"
+          - 'gql-schema-registry-redis'
 networks:
   gql-schema:
 

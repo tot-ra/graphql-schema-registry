@@ -25,6 +25,9 @@
       "pre-push": "npm run format"
     }
   },
+  "prettier": {
+    "singleQuote": true
+  },
   "license": "MIT",
   "private": false,
   "dependencies": {

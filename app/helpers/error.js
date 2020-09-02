@@ -1,6 +1,6 @@
 exports.PublicError = class PublicError extends Error {
 	constructor(message, props) {
-		if (typeof message === "object") {
+		if (typeof message === 'object') {
 			super(message.message);
 
 			Object.assign(this, message);
@@ -18,7 +18,7 @@ exports.PublicError.prototype.isDisplayedToUser = true;
 
 exports.InternalError = class InternalError extends Error {
 	constructor(message, props) {
-		if (typeof message === "object") {
+		if (typeof message === 'object') {
 			super(message.message);
 
 			Object.assign(this, message);

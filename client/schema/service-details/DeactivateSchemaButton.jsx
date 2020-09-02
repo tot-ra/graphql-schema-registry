@@ -1,14 +1,14 @@
-import React from "react";
-import { useMutation } from "@apollo/client";
-import { Button } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import React from 'react';
+import { useMutation } from '@apollo/client';
+import { Button } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
 import {
 	DEACTIVATE_SCHEMA_ENTRY,
 	ACTIVATE_SCHEMA_ENTRY,
-} from "../../utils/mutations";
-import { useParams } from "react-router-dom";
+} from '../../utils/mutations';
+import { useParams } from 'react-router-dom';
 
 const DeactivateSchemaButton = ({ schema }) => {
 	const { serviceName } = useParams();

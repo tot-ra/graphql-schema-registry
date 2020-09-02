@@ -1,6 +1,6 @@
-import React from "react";
-import Tabs from "@material-ui/core/Tabs";
-import { Link, useRouteMatch } from "react-router-dom";
+import React from 'react';
+import Tabs from '@material-ui/core/Tabs';
+import { Link, useRouteMatch } from 'react-router-dom';
 
 const TopLevelTab = ({ tab }) => {
 	const match = useRouteMatch(tab.href);

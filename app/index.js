@@ -1,7 +1,7 @@
-const express = require("express");
-const logger = require("./logger");
-const { get } = require("lodash");
-const initGraphql = require("./graphql");
+const express = require('express');
+const logger = require('./logger');
+const { get } = require('lodash');
+const initGraphql = require('./graphql');
 
 const app = express();
 
@@ -28,25 +28,25 @@ function monitorConnections() {
 
 app.get(`/health`, (req, res) => {
 	if (terminated) {
-		logger.info("health check failed due to application terminating");
+		logger.info('health check failed due to application terminating');
 
-		return res.status(429).send("terminated");
+		return res.status(429).send('terminated');
 	}
 
-	return res.status(200).send("ok");
+	return res.status(200).send('ok');
 });
 
 // log every request to the console in dev
-app.use(require("morgan")("dev"));
+app.use(require('morgan')('dev'));
 
-app.use(require("./router"));
+app.use(require('./router'));
 initGraphql(app);
 
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
 	// NOSONAR - Don't remove the next argument!!!
 	const errorDetails = {
-		correlationId: get(req, "correlationId", null),
+		correlationId: get(req, 'correlationId', null),
 		url: req.url,
 	};
 
@@ -55,8 +55,8 @@ app.use((err, req, res, next) => {
 
 		return res.status(err.statusCode || 400).json({
 			success: false,
-			message: get(err, "details[0].message") || err.message,
-			details: get(err, "details") || null,
+			message: get(err, 'details[0].message') || err.message,
+			details: get(err, 'details') || null,
 		});
 	}
 
@@ -68,28 +68,28 @@ app.use((err, req, res, next) => {
 	return res
 		.status(500)
 		.end(
-			"Whoops! Something broke in our servers and we cannot serve you this page at the moment."
+			'Whoops! Something broke in our servers and we cannot serve you this page at the moment.'
 		);
 });
 
-app.all("*", (req, res) => {
+app.all('*', (req, res) => {
 	logger.warn(`Wrong endpoint requested: ${req.url}`);
 
-	return res.status(404).send("404 - Not found!");
+	return res.status(404).send('404 - Not found!');
 });
 
-process.on("SIGTERM", () => {
+process.on('SIGTERM', () => {
 	terminated = true;
 
 	if (!server) {
 		return null;
 	}
 
-	logger.info("Starting server shutdown.");
+	logger.info('Starting server shutdown.');
 
 	setTimeout(() => {
 		server.close(() => {
-			logger.info("Server shutdown complete. Exiting process.");
+			logger.info('Server shutdown complete. Exiting process.');
 			setTimeout(() => process.exit(0), 1000);
 		});
 	}, 19 * 1000);
@@ -103,7 +103,7 @@ exports.init = async () => {
 	}
 
 	server = app.listen(3000, () => {
-		logger.info("Server listening on port: 3000");
+		logger.info('Server listening on port: 3000');
 	});
 
 	return server;

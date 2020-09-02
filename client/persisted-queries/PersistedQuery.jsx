@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { EntryPanel } from "../components/styled";
-import QueryName from "./QueryName";
-import SourceCodeWithHighlightAndCopy from "../components/SourceCodeWithHighlightAndCopy";
+import { EntryPanel } from '../components/styled';
+import QueryName from './QueryName';
+import SourceCodeWithHighlightAndCopy from '../components/SourceCodeWithHighlightAndCopy';
 
 const PersistedQuery = ({ query }) => {
 	const [revealed, setRevealed] = useState(null);

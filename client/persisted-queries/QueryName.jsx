@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { EntryName } from "../components/styled";
+import { EntryName } from '../components/styled';
 
-import { DocumentQueryEntry } from "./styled";
+import { DocumentQueryEntry } from './styled';
 
 const QueryName = ({ entry, revealed, onClick }) => {
 	return (

@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { TextField, Tooltip } from "@material-ui/core";
+import { TextField, Tooltip } from '@material-ui/core';
 
 const Filter = ({ filterValue, setFilterValue }) => {
 	return (

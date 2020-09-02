@@ -1,12 +1,12 @@
-import React from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
-import { format, formatDistance } from "date-fns";
+import React from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
+import { format, formatDistance } from 'date-fns';
 
-import { EntryGrid } from "../../components/styled";
-import { VersionRow, VersionTag } from "../styled";
-import DeveloperModeIcon from "@material-ui/icons/DeveloperMode";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import { List, ListItem, Tooltip } from "@material-ui/core";
+import { EntryGrid } from '../../components/styled';
+import { VersionRow, VersionTag } from '../styled';
+import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { List, ListItem, Tooltip } from '@material-ui/core';
 
 const VersionsList = ({ service }) => {
 	const { serviceName, schemaId } = useParams();
@@ -38,7 +38,7 @@ const VersionsList = ({ service }) => {
 						button
 						key={schema.id}
 						selected={selectedSchema === schema.id}
-						className={schema.isActive ? "" : "deleted"}
+						className={schema.isActive ? '' : 'deleted'}
 						onClick={() =>
 							history.push(`/${serviceName}/${schema.id}`)
 						}
@@ -50,7 +50,7 @@ const VersionsList = ({ service }) => {
 									selected={selectedSchema === schema.id}
 								>
 									<span>
-										added{" "}
+										added{' '}
 										{formatDistance(date, today, {
 											addSuffix: true,
 										})}

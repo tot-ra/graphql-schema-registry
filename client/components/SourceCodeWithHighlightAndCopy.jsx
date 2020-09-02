@@ -1,11 +1,11 @@
-import React from "react";
-import CheckIcon from "@material-ui/icons/Check";
-import FilterNoneIcon from "@material-ui/icons/FilterNone";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import SourceCodeWithHighlight from "./SourceCodeWithHighlight";
-import { RelativeWrapper, CopyButton, RevealQuery } from "./styled";
-import { splitQuery } from "../utils";
-import { useClipboard } from "../utils/useClipboard";
+import React from 'react';
+import CheckIcon from '@material-ui/icons/Check';
+import FilterNoneIcon from '@material-ui/icons/FilterNone';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SourceCodeWithHighlight from './SourceCodeWithHighlight';
+import { RelativeWrapper, CopyButton, RevealQuery } from './styled';
+import { splitQuery } from '../utils';
+import { useClipboard } from '../utils/useClipboard';
 
 const SourceCodeWithHighlightAndCopy = ({
 	query,

@@ -1,14 +1,14 @@
-const { diff } = require("@graphql-inspector/core");
-const logger = require("../logger");
+const { diff } = require('@graphql-inspector/core');
+const logger = require('../logger');
 
-const { transact } = require("../database");
-const { composeAndValidateSchema } = require("../helpers/federation");
+const { transact } = require('../database');
+const { composeAndValidateSchema } = require('../helpers/federation');
 const {
 	getLastUpdatedForActiveServices,
 	getSchemaByServiceVersions,
 	registerSchema,
 	toggleSchema,
-} = require("../database/schema");
+} = require('../database/schema');
 
 async function getAndValidateSchema({ trx, services } = {}) {
 	const schemas = services
@@ -16,7 +16,7 @@ async function getAndValidateSchema({ trx, services } = {}) {
 		: await getLastUpdatedForActiveServices({ trx });
 
 	logger.info(
-		"Validating schema. Got services schemas from DB transaction..",
+		'Validating schema. Got services schemas from DB transaction..',
 		{
 			schemas,
 		}
@@ -33,7 +33,7 @@ exports.pushAndValidateSchema = async ({ service }) => {
 	return await transact(async (trx) => {
 		const schema = await registerSchema({ trx, service });
 
-		logger.info("Registered service new schema in DB transaction..", {
+		logger.info('Registered service new schema in DB transaction..', {
 			schema,
 		});
 

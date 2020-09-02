@@ -1,11 +1,11 @@
-const Joi = require("@hapi/joi");
+const Joi = require('@hapi/joi');
 const {
 	getAndValidateSchema,
 	validateSchema,
 	pushAndValidateSchema,
 	deactivateSchema,
 	diffSchemas,
-} = require("../controller/schema");
+} = require('../controller/schema');
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -28,7 +28,7 @@ exports.compose = async (req, res) => {
 							version: Joi.string(),
 						})
 					)
-					.unique("name")
+					.unique('name')
 					.optional(),
 			})
 			.options({ stripUnknown: true })

@@ -1,12 +1,12 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import { useParams } from 'react-router-dom';
 
-import { Container } from "../styled";
-import Empty from "./Empty";
-import ServiceSchemas from "./ServiceSchemas";
+import { Container } from '../styled';
+import Empty from './Empty';
+import ServiceSchemas from './ServiceSchemas';
 
-import { SERVICES_LIST } from "../../utils/queries";
+import { SERVICES_LIST } from '../../utils/queries';
 
 const ServiceDetails = () => {
 	const { serviceName } = useParams();

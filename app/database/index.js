@@ -1,14 +1,14 @@
-const diplomat = require("../diplomat");
-const logger = require("../logger");
+const diplomat = require('../diplomat');
+const logger = require('../logger');
 
 const DB_SCHEMA_REGISTRY =
-	process.env.DB_SCHEMA_REGISTRY || "db-schema_registry";
-const knex = require("knex");
+	process.env.DB_SCHEMA_REGISTRY || 'db-schema_registry';
+const knex = require('knex');
 
 function cleanupSQL(sql) {
 	return sql.replace(
 		/(\(\?(?:, \?)+\))(, \(\?(?:, \?)+\))+/,
-		(match, first) => `${first}/* ×${match.split("),").length} */`
+		(match, first) => `${first}/* ×${match.split('),').length} */`
 	);
 }
 
@@ -22,7 +22,7 @@ function logQueryError(error, { sql }) {
 }
 
 const connection = knex({
-	client: "mysql2",
+	client: 'mysql2',
 	log: {
 		warn: logger.info,
 		error: logger.error,
@@ -44,15 +44,15 @@ const connection = knex({
 			port,
 			user: username,
 			password: secret,
-			database: "schema_registry",
+			database: 'schema_registry',
 			connectTimeout: 5000,
 			expirationChecker: () => true,
 		};
 	},
 });
 
-connection.on("query", logQuery);
-connection.on("query-error", logQueryError);
+connection.on('query', logQuery);
+connection.on('query-error', logQueryError);
 
 exports.knex = connection;
 

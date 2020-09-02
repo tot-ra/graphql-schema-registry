@@ -1,10 +1,10 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
+import React from 'react';
+import { useQuery } from '@apollo/client';
 
-import SpinnerCenter from "../components/SpinnerCenter";
-import PersistedQuery from "./PersistedQuery";
+import SpinnerCenter from '../components/SpinnerCenter';
+import PersistedQuery from './PersistedQuery';
 
-import { PERSISTED_QUERIES } from "../utils/queries";
+import { PERSISTED_QUERIES } from '../utils/queries';
 
 const PersistedQueries = () => {
 	const { loading, data } = useQuery(PERSISTED_QUERIES);
@@ -26,6 +26,6 @@ const PersistedQueries = () => {
 	);
 };
 
-export { default as Tab } from "./Tab";
+export { default as Tab } from './Tab';
 
 export default PersistedQueries;

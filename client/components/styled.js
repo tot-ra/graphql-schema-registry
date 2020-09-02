@@ -1,14 +1,14 @@
-import styled from "styled-components";
-import { Container, Button } from "@material-ui/core";
-import { colors, elevations } from "../utils";
+import styled from 'styled-components';
+import { Container, Button } from '@material-ui/core';
+import { colors, elevations } from '../utils';
 
 export const EntryPanel = styled(Container)`
 	transition: 0.2s ease-in;
 	box-shadow: ${elevations[2]};
-	cursor: ${({ onClick }) => onClick && "pointer"};
+	cursor: ${({ onClick }) => onClick && 'pointer'};
 	margin-bottom: 16px;
 	background-color: ${({ selected }) => selected && colors.green.hex};
-	color: ${({ selected }) => selected && "white"};
+	color: ${({ selected }) => selected && 'white'};
 
 	&.deleted {
 		background-color: #cccccc;

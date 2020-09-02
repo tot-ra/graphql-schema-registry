@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { Container, SelectServiceGuide } from "../styled";
+import { Container, SelectServiceGuide } from '../styled';
 
 const Empty = () => {
 	return (
