@@ -26,7 +26,7 @@ Open http://localhost:6001
 
 ## Use cases
 
-### Validating schema from codeship / deploy
+### Validating schema on deploy
 
 On pre-commit / deploy make a POST /schema/validate to see if its compatible with current schema.
 
@@ -68,7 +68,7 @@ Backend (`/app` folder)
 ### Components
 
 graphql-schema-registry service is one of the components for graphql federation, but it needs tight
-integraiton with gateway. Check out [examples folder](examples/README.md) on how to implement it. Note however, that
+integration with gateway. Check out [examples folder](examples/README.md) on how to implement it. Note however, that
 gateway is very simplified and does not have proper error handling, cost limits or fail-safe mechanisms.
 
 ![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png?v=2)
