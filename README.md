@@ -35,17 +35,6 @@ On pre-commit / deploy make a POST /schema/validate to see if its compatible wit
 On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
 Make sure to handle failure.
 
-## Development
-
-### DB migrations
-
-To create new DB migration, use:
-
-```bash
-npm install knex -g
-knex migrate:make my_migration_name_here --migrations-directory migrations
-```
-
 ## Architecture
 
 ### Tech stack
@@ -77,6 +66,30 @@ gateway is very simplified and does not have proper error handling, cost limits 
 
 Migrations are done using knex
 ![](https://app.lucidchart.com/publicSegments/view/74fc86d4-671e-4644-a198-41d7ff681cae/image.png)
+
+## Development
+
+### DB migrations
+
+To create new DB migration, use:
+
+```bash
+npm install knex -g
+knex migrate:make my_migration_name_here --migrations-directory migrations
+```
+
+### Contribution
+- Before making PR, make sure to run `npm run version` & fill [CHANGELOG](CHANGELOG.md)
+
+#### Honorable mentions
+Original internal mission that resulted in this project consisted of (in alphabetical order):
+- [aleksandergasna](https://github.com/aleksandergasna)
+- [ErikSchults](https://github.com/ErikSchults)
+- [LexSwed](https://github.com/LexSwed)
+- [tot-ra](https://github.com/tot-ra)
+
+
+
 
 ## API documentation
 

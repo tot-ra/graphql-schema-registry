@@ -5,10 +5,10 @@
   "main": "schema-registry.js",
   "scripts": {
     "format": "prettier --write '**/*.{js,jsx,json,md,yml,yaml,graphql}'",
+    "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md",
     "build": "rimraf dist && mkdirp dist && webpack --env.production --bail",
     "coverage": "npm test -- --coverage",
-    "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml",
-    "npm-version-check": "node-hooks npm-version-check"
+    "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml"
   },
   "repository": {
     "type": "git",
@@ -63,6 +63,7 @@
     "babel-plugin-prismjs": "^1.1.1",
     "babel-plugin-styled-components": "^1.10.7",
     "chai": "^4.2.0",
+    "changelog-verify": "^1.1.2",
     "commander": "^6.0.0",
     "css-loader": "^3.4.0",
     "eslint": "^6.6.0",
@@ -90,6 +91,7 @@
     "sinon": "^8.0.1",
     "terser-webpack-plugin": "^2.3.8",
     "uid": "0.0.2",
+    "version-changelog": "^3.1.1",
     "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.7.2",
