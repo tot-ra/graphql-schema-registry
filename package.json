@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema-registry",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Graphql schema registry",
   "main": "schema-registry.js",
   "scripts": {
@@ -47,7 +47,7 @@
     "lodash": "^4.17.20",
     "mysql2": "^2.0.1",
     "object-hash": "^2.0.1",
-    "prismjs": "^1.19.0",
+    "prismjs": "^1.21.0",
     "react-diff-viewer": "^3.1.1",
     "react-router-dom": "^5.1.2",
     "request-promise": "^4.2.5",
