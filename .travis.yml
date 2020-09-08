@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - "14"
+  - '14'
 
 notifications:
   email:
@@ -10,8 +10,8 @@ notifications:
     on_success: change
     on_failure: change
 
-script: "npm run test-travis"
+script: 'npm run test-travis'
 
-after_script: "cat ./coverage/lcov.info"
+after_script: 'cat ./coverage/lcov.info'
 
 sudo: false

@@ -2,7 +2,7 @@ const { assert } = require('chai');
 const sinon = require('sinon');
 
 const mockLogger = {
-	debug: sinon.stub()
+	debug: sinon.stub(),
 };
 
 const objectUnderTest = require('./schema');
@@ -12,7 +12,7 @@ describe('app/database/schema.js', () => {
 
 	beforeEach(() => {
 		knexMock = {
-			raw: sinon.spy()
+			raw: sinon.spy(),
 		};
 	});
 
@@ -30,7 +30,7 @@ describe('app/database/schema.js', () => {
 				version: 'a1',
 				added_time: '2020-02-02T10:00:00.000Z',
 				is_active: 1,
-				name: 'xxx'
+				name: 'xxx',
 			};
 
 			knexMock.raw = async () => [
@@ -42,14 +42,14 @@ describe('app/database/schema.js', () => {
 						version: 'a1',
 						added_time: '2020-01-01T09:00:00.000Z',
 						is_active: 1,
-						name: 'xxx'
+						name: 'xxx',
 					},
-					correctVersion
-				]
+					correctVersion,
+				],
 			];
 			const result = await objectUnderTest.getSchemaLastUpdated({
 				trx: knexMock,
-				services: ['xxx']
+				services: ['xxx'],
 			});
 
 			assert.deepEqual(result, [correctVersion]);
@@ -64,7 +64,7 @@ describe('app/database/schema.js', () => {
 				version: 'a1',
 				added_time: time,
 				is_active: 1,
-				name: 'xxx'
+				name: 'xxx',
 			};
 
 			knexMock.raw = async () => [
@@ -76,14 +76,14 @@ describe('app/database/schema.js', () => {
 						version: 'a1',
 						added_time: time,
 						is_active: 1,
-						name: 'xxx'
+						name: 'xxx',
 					},
-					correctVersion
-				]
+					correctVersion,
+				],
 			];
 			const result = await objectUnderTest.getSchemaLastUpdated({
 				trx: knexMock,
-				services: ['xxx']
+				services: ['xxx'],
 			});
 
 			assert.deepEqual(result, [correctVersion]);
@@ -93,7 +93,7 @@ describe('app/database/schema.js', () => {
 			it('should return [] if no service names were passed', async () => {
 				const result = await objectUnderTest.getSchemaLastUpdated({
 					trx: knexMock,
-					services: []
+					services: [],
 				});
 
 				assert.deepEqual(result, []);
@@ -103,7 +103,7 @@ describe('app/database/schema.js', () => {
 				knexMock.raw = async () => [];
 				const result = await objectUnderTest.getSchemaLastUpdated({
 					trx: knexMock,
-					services: ['xxx']
+					services: ['xxx'],
 				});
 
 				assert.deepEqual(result, []);
@@ -113,7 +113,7 @@ describe('app/database/schema.js', () => {
 				knexMock.raw = async () => [[]];
 				const result = await objectUnderTest.getSchemaLastUpdated({
 					trx: knexMock,
-					services: ['xxx']
+					services: ['xxx'],
 				});
 
 				assert.deepEqual(result, []);
@@ -123,7 +123,7 @@ describe('app/database/schema.js', () => {
 				knexMock.raw = async () => null;
 				const result = await objectUnderTest.getSchemaLastUpdated({
 					trx: knexMock,
-					services: ['xxx']
+					services: ['xxx'],
 				});
 
 				assert.deepEqual(result, []);
