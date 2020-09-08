@@ -7,6 +7,7 @@ export const FlexRow = styled.div`
 	flex-flow: row nowrap;
 	overflow: hidden;
 	height: 100%;
+	justify-content: space-between;
 `;
 
 export const ColumnPanel = styled.div`
@@ -48,11 +49,22 @@ export const VersionRow = styled.div`
 	}
 `;
 
-export const VersionTag = styled.p`
+export const VersionTag = styled.div`
 	padding: 0;
 	margin: 0;
 	font-weight: 600;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+`;
+
+export const VersionChars = styled.div`
+	opacity: 0.5;
+	font-weight: 300;
+`;
+export const VersionCharsPositive = styled.div`
+	color: ${({ selected }) => (selected ? 'green' : 'green')};
+`;
+export const VersionCharsNegative = styled.div`
+	color: ${({ selected }) => (selected ? 'red' : 'red')};
 `;

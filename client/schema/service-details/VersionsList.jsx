@@ -3,10 +3,11 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { format, formatDistance } from 'date-fns';
 
 import { EntryGrid } from '../../components/styled';
-import { VersionRow, VersionTag } from '../styled';
+import { FlexRow, VersionRow, VersionTag } from '../styled';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { List, ListItem, Tooltip } from '@material-ui/core';
+import VersionCharDelta from './VersionCharDelta';
 
 const VersionsList = ({ service }) => {
 	const { serviceName, schemaId } = useParams();
@@ -45,7 +46,13 @@ const VersionsList = ({ service }) => {
 					>
 						<EntryGrid>
 							<div>
-								<VersionTag>#{schema.id}</VersionTag>
+								<FlexRow>
+									<VersionTag>#{schema.id}</VersionTag>
+									<VersionCharDelta
+										selected={selectedSchema === schema.id}
+										schema={schema}
+									/>
+								</FlexRow>
 								<VersionRow
 									selected={selectedSchema === schema.id}
 								>

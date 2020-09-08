@@ -7,7 +7,11 @@ const assets = require('./assets');
 const schema = require('./schema');
 const persistedQuery = require('./persisted-queries');
 
-router.use(json());
+router.use(
+	json({
+		limit: '16mb',
+	})
+);
 router.use(asyncWrap(require('../middleware/parse-request')));
 
 router.get('/', assets.indexHtml());

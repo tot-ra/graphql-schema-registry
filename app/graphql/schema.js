@@ -30,6 +30,7 @@ module.exports = gql`
 		isActive: Boolean!
 		typeDefs: String
 		addedTime: DateTime
+		characters: Int
 
 		isDev: Boolean!
 		containerCount: Int!
