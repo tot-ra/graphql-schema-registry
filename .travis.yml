@@ -11,6 +11,7 @@ notifications:
     on_failure: change
 
 script: 'npm run test-travis'
+after_success: 'npm run coverage'
 
 after_script: 'cat ./coverage/lcov.info'
 
