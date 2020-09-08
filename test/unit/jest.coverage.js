@@ -2,7 +2,7 @@ module.exports = {
 	rootDir: '../..',
 	resetModules: true,
 	resetMocks: true,
-	coverageReporters: ['text','json', 'lcov', 'clover'],
+	coverageReporters: ['text', 'json', 'lcov', 'clover'],
 	collectCoverage: true,
 	collectCoverageFrom: ['<rootDir>/app/**/*.js'],
 	coveragePathIgnorePatterns: [

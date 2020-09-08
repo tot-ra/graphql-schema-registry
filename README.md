@@ -5,6 +5,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 ![](https://img.shields.io/travis/pipedrive/graphql-schema-registry/master?logo=travis)
 ![](https://img.shields.io/github/v/release/pipedrive/graphql-schema-registry?sort=semver)
+![](https://img.shields.io/coveralls/github/pipedrive/graphql-schema-registry/master?logo=coveralls)
 
 ## Features
 
