@@ -4,6 +4,8 @@
   "description": "Graphql schema registry",
   "main": "schema-registry.js",
   "scripts": {
+    "test": "./node_modules/.bin/jest --config test/unit/jest.config.js",
+    "test-travis": "npm run test",
     "format": "prettier --write '**/*.{js,jsx,json,md,yml,yaml,graphql}'",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md",
     "build": "rimraf dist && mkdirp dist && webpack --env.production --bail",
