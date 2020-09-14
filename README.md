@@ -79,17 +79,17 @@ knex migrate:make my_migration_name_here --migrations-directory migrations
 ```
 
 ### Contribution
+
 - Before making PR, make sure to run `npm run version` & fill [CHANGELOG](CHANGELOG.md)
 
 #### Honorable mentions
+
 Original internal mission that resulted in this project consisted of (in alphabetical order):
+
 - [aleksandergasna](https://github.com/aleksandergasna)
 - [ErikSchults](https://github.com/ErikSchults)
 - [LexSwed](https://github.com/LexSwed)
 - [tot-ra](https://github.com/tot-ra)
-
-
-
 
 ## API documentation
 

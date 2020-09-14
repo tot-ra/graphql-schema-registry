@@ -10,7 +10,11 @@ function isDevVersion(version) {
 const schemaModel = {
 	getSchemasAddedAfter: async function ({ trx = knex, since }) {
 		return trx('container_schema')
-			.select(['container_schema.*', 'services.name'])
+			.select([
+				'container_schema.*',
+				'services.name',
+				knex.raw('CHAR_LENGTH(schema.type_defs) as characters'),
+			])
 			.leftJoin('services', 'container_schema.service_id', 'services.id')
 			.andWhere((knex) => {
 				return knex.where('schema.added_time', '>', since);
@@ -292,7 +296,10 @@ const schemaModel = {
 		trx = knex,
 	}) {
 		const schemas = await trx('schema')
-			.select('schema.*')
+			.select(
+				'schema.*',
+				knex.raw('CHAR_LENGTH(schema.type_defs) as characters')
+			)
 			.leftJoin(
 				'container_schema',
 				'container_schema.schema_id',
@@ -328,7 +335,10 @@ const schemaModel = {
 
 	getSchemaBefore: async function ({ trx = knex, addedTime, id, serviceId }) {
 		return trx('schema')
-			.select('*')
+			.select(
+				'schema.*',
+				knex.raw('CHAR_LENGTH(schema.type_defs) as characters')
+			)
 			.where('added_time', '<=', addedTime)
 			.andWhere('id', '!=', id)
 			.andWhere('service_id', '=', serviceId)
@@ -337,7 +347,13 @@ const schemaModel = {
 	},
 
 	getSchemaById: async function ({ trx = knex, id }) {
-		return trx('schema').select('schema.*').where('schema.id', id).first();
+		return trx('schema')
+			.select(
+				'schema.*',
+				knex.raw('CHAR_LENGTH(schema.type_defs) as characters')
+			)
+			.where('schema.id', id)
+			.first();
 	},
 
 	deleteSchema: async function ({ trx, name, version }) {

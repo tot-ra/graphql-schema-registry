@@ -35,6 +35,11 @@ export const SERVICE_SCHEMAS = gql`
 				addedTime
 				typeDefs
 				isDev
+
+				characters
+				previousSchema {
+					characters
+				}
 			}
 		}
 	}
