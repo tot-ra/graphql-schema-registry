@@ -1,0 +1,18 @@
+language: node_js
+
+node_js:
+  - '14'
+
+notifications:
+  email:
+    recipients:
+      - artjom.kurapov@pipedrive.com
+    on_success: change
+    on_failure: change
+
+script: 'npm run test-travis'
+after_success: 'npm run coverage'
+
+after_script: 'cat ./coverage/lcov.info'
+
+sudo: false
