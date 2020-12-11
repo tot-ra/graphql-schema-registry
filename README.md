@@ -20,11 +20,13 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
 
 ## Roadmap
+
 - client tracking (for breaking changes)
 - schema usage tracking (for breaking changes)
 - separate APQs (use cache only) from backend-registered persisted queries (use DB only)
 
 ## Installation
+
 Assuming you have [nvm](https://github.com/nvm-sh/nvm) & [docker](https://www.docker.com/) installed:
 
 ```
@@ -37,7 +39,8 @@ docker-compose up --build
 Open http://localhost:6001
 
 ## Configuration
-We rely on docker network and uses hostnames from `docker-compose.yml`. 
+
+We rely on docker network and uses hostnames from `docker-compose.yml`.
 Check `app/config.js` to see credentials that node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
 
 ## Use cases
