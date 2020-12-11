@@ -58,6 +58,9 @@ REDIS_USERNAME (defaults to '')
 REDIS_SECRET (defaults to '')
 ```
 
+`ASSETS_URL` is another environment variable that can be configured to control the url that web assets are served from. This can be used either when running the Node process locally in development mode,
+or when the registry sits behind a reverse proxy.
+
 ## Use cases
 
 ### Validating schema on deploy

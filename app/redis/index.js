@@ -14,7 +14,14 @@ const redisWrapper = {
 			return this.redisInstance;
 		}
 
+		const { host, port, password } = await diplomat.getServiceInstance(
+			redisServiceName
+		);
+
 		const redisOptions = {
+			host: host,
+			port: port,
+			password: password,
 			db: 2,
 			retry_strategy: (options) => {
 				if (options.error && options.error.code === 'ECONNREFUSED') {
@@ -27,11 +34,8 @@ const redisWrapper = {
 				return Math.min(options.attempt * 100, 3000);
 			},
 		};
-		const { host, port } = await diplomat.getServiceInstance(
-			redisServiceName
-		);
 
-		this.redisInstance = redis.createClient(port, host, redisOptions);
+		this.redisInstance = redis.createClient(redisOptions);
 
 		this.redisInstance.on('ready', redisWrapper.onReady);
 		this.redisInstance.on('connect', redisWrapper.onConnect);
