@@ -13,7 +13,6 @@ module.exports = {
 		'gql-schema-registry-redis': {
 			host: process.env.REDIS_HOST || 'gql-schema-registry-redis',
 			port: process.env.REDIS_PORT || '6379',
-			username: process.env.REDIS_USERNAME || '',
 			secret: process.env.REDIS_SECRET || '',
 		},
 	},
