@@ -1,6 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-
 exports.router = (router) => {
 	const webpack = require('webpack');
 	const devWebpackConfig = require('../../webpack.config')({
@@ -15,7 +12,7 @@ exports.router = (router) => {
 };
 
 exports.indexHtml = () => {
-	const assetsDomain = 'localhost:6001';
+	const assetsDomain = process.env.ASSETS_DOMAIN || 'localhost:6001';
 	const assetsVersion = 'latest';
 
 	return function indexHtml(req, res) {
