@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema-registry",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Graphql schema registry",
   "main": "schema-registry.js",
   "scripts": {

@@ -9,3 +9,5 @@ node_modules/
 .idea
 .atom-build.json
 .project
+coverage
+dist
