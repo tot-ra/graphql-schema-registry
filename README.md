@@ -43,6 +43,24 @@ Open http://localhost:6001
 We rely on docker network and uses hostnames from `docker-compose.yml`.
 Check `app/config.js` to see credentials that node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
 
+`app/config.js` will look for the following environment variables and will use their values if available for connecting to MySQL and Redis. The names of the
+variables should be self-explanatory.
+
+```shell
+DB_HOST (defaults to 'gql-schema-registry-db')
+DB_USERNAME (defaults to 'root')
+DB_PASSWORD (defaults to 'root')
+DB_PORT (defaults to 3306)
+
+REDIS_HOST (defaults to 'gql-schema-registry-redis')
+REDIS_PORT (defauts to 6379)
+REDIS_USERNAME (defaults to '')
+REDIS_SECRET (defaults to '')
+```
+
+`ASSETS_URL` is another environment variable that can be configured to control the url that web assets are served from. This can be used either when running the Node process locally in development mode,
+or when the registry sits behind a reverse proxy.
+
 ## Use cases
 
 ### Validating schema on deploy
@@ -69,7 +87,7 @@ Backend (`/app` folder)
 - nodejs 14
 - express, hapi/joi
 - apollo-server-express, dataloader
-- redis 3
+- redis 6
 - knex
 - mysql 8
 
