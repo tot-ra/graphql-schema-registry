@@ -54,7 +54,6 @@ DB_PORT (defaults to 3306)
 
 REDIS_HOST (defaults to 'gql-schema-registry-redis')
 REDIS_PORT (defauts to 6379)
-REDIS_USERNAME (defaults to '')
 REDIS_SECRET (defaults to '')
 ```
 
