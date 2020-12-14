@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.0] - 2020-12-14
 
 ### Added
+
 - Custom directives are supported in /schema/validate and /schema/push APIs
 - dependencies updated
 
