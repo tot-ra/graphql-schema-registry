@@ -173,14 +173,13 @@ Compares schemas and finds breaking or dangerous changes between provided and la
 - version
 - type_defs
 
-#### DELETE /schema/delete
+#### DELETE /schema/delete/:schemaId
 
 Deletes specified schema
 
 ##### Input params
 
-- name
-- version
+- schemaId
 
 #### GET /persisted_query
 

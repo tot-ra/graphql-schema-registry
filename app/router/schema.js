@@ -75,15 +75,7 @@ exports.validate = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-	const body = Joi.attempt(
-		req.body,
-		Joi.object().keys({
-			name: Joi.string().min(3).max(200),
-			version: Joi.string().min(1).max(100),
-		})
-	);
-
-	await deactivateSchema({ ...body });
+	await deactivateSchema({ id: req.params.schemaId });
 
 	return res.json({
 		success: true,
