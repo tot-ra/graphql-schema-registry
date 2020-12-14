@@ -75,20 +75,14 @@ Make sure to handle failure.
 
 ### Tech stack
 
-Frontend (`/client` folder)
-
-- react
-- apollo client
-- styled-components
-
-Backend (`/app` folder)
-
-- nodejs 14
-- express, hapi/joi
-- apollo-server-express, dataloader
-- redis 6
-- knex
-- mysql 8
+|Frontend (`/client` folder)| Backend (`/app` folder)
+|------|------|
+|react|nodejs 14|
+|apollo client|express, hapi/joi|
+|styled-components|apollo-server-express, dataloader|
+||redis 6|
+||knex|
+||mysql 8|
 
 ### Components
 
