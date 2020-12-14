@@ -127,39 +127,82 @@ Original internal mission that resulted in this project consisted of (in alphabe
 - [LexSwed](https://github.com/LexSwed)
 - [tot-ra](https://github.com/tot-ra)
 
-## API documentation
+## Rest API documentation
 
-### Rest API
-
-#### GET /schema/latest
+### GET /schema/latest
 
 Simplified version of /schema/compose where latest versions from different services is composed. Needed mostly for debugging
 
-#### POST /schema/compose
+### POST /schema/compose
 
-Lists schema based on passed services & their versions. Used by graphql gateway to fetch schema based on current containers
+Lists schema based on passed services & their versions. 
+Used by graphql gateway to fetch schema based on current containers
 
-##### Input params
+#### Request params (optional, raw body)
+```json
+{
+  "services": [
+    {"name": "service_a", "version": "ke9j34fuuei"},
+    {"name": "service_b", "version": "e302fj38fj3"},
+  ]
+}
+```
+
+#### Response example
+- ✅ 200
+```json
+{
+    "success": true,
+    "data": [
+        {
+            "id": 2,
+            "service_id": 3,
+            "version": "ke9j34fuuei",
+            "name": "service_a",
+            "added_time": "2020-12-11T11:59:40.000Z",
+            "type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n",
+            "is_active": 1
+        },
+        {
+            "id": 3,
+            "service_id": 4,
+            "version": "v1",
+            "name": "service_b",
+            "added_time": "2020-12-14T18:51:04.000Z",
+            "type_defs": "type Query {\n  world: String\n}\n",
+            "is_active": 1
+        }
+    ]
+}
+```
+- ❌ 400 "services[0].version" must be a string
+- ❌ 500 Internal error (DB is down)
+
+#### Request params
 
 - services{ name, version}
 
 If `services` is not passed, schema-registry tries to find most recent versions. Logic behind the scenes is that schema with _highest_ `added_time` OR `updated_time` is picked as latest. If time is the same, `schema.id` is used.
 
-#### POST /schema/push
+### POST /schema/push
 
 Validates and registers new schema for a service.
 
-##### Input params
+#### Request params (optional, raw body)
 
-- name
-- version
-- type_defs
+```json
+{
+  "name": "service_a",
+  "version": "ke9j34fuuei",
+  "type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n"
+}
+```
 
 #### POST /schema/validate
 
 Validates schema, without adding to DB
 
-##### Input params
+##### Request params (raw body)
 
 - name
 - version
@@ -177,23 +220,32 @@ Compares schemas and finds breaking or dangerous changes between provided and la
 
 Deletes specified schema
 
-##### Input params
+##### Request params
 
-- schemaId
+| Property                  | Type    | Comments                            |
+| ------------------------- | ------- | ----------------------------------- |
+| `schemaId`                | number  | ID of sechema                       |
+
 
 #### GET /persisted_query
 
 Looks up persisted query from DB & caches it in redis if its found
 
-##### Input params
+##### Request params (query)
 
-- key
+
+| Property                  | Type    | Comments                            |
+| ------------------------- | ------- | ----------------------------------- |
+| `key`                | string  | hash of APQ (with `apq:` prefix)                       |
 
 #### POST /persisted_query
 
 Adds persisted query to DB & redis cache
 
-##### Input params
+##### Request params (raw body)
 
-- key
-- value
+
+| Property                  | Type    | Comments                            |
+| ------------------------- | ------- | ----------------------------------- |
+| `key`                | string  | hash of APQ (with `apq:` prefix)                       |
+| `value`                | string  | Graphql query                       |
