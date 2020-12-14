@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.7] - 2020-12-14
 
 ### Fixed
+
 - /schema/delete endpoint uses schema id instead of name & version, same as graphql
 
 ## [1.0.6] - 2020-12-11
