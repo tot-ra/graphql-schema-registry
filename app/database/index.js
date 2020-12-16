@@ -2,7 +2,7 @@ const diplomat = require('../diplomat');
 const logger = require('../logger');
 
 const DB_SCHEMA_REGISTRY =
-	process.env.DB_SCHEMA_REGISTRY || 'db-schema_registry';
+	process.env.DB_SCHEMA_REGISTRY || 'gql-schema-registry-db';
 const knex = require('knex');
 
 function cleanupSQL(sql) {
