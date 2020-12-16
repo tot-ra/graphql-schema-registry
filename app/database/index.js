@@ -35,6 +35,7 @@ const connection = knex({
 			port,
 			username,
 			secret,
+			name,
 		} = await diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
 
 		logger.info(`connecting to DB ${host}:${port}`);
@@ -44,7 +45,7 @@ const connection = knex({
 			port,
 			user: username,
 			password: secret,
-			database: 'schema_registry',
+			database: name,
 			connectTimeout: 5000,
 			expirationChecker: () => true,
 		};
