@@ -51,6 +51,7 @@ DB_HOST (defaults to 'gql-schema-registry-db')
 DB_USERNAME (defaults to 'root')
 DB_PASSWORD (defaults to 'root')
 DB_PORT (defaults to 3306)
+DB_NAME (defaults to 'schema-registry')
 
 REDIS_HOST (defaults to 'gql-schema-registry-redis')
 REDIS_PORT (defauts to 6379)
