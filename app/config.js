@@ -9,6 +9,7 @@ module.exports = {
 			port: process.env.DB_PORT || '3306',
 			username: process.env.DB_USERNAME || 'root',
 			secret: process.env.DB_SECRET || 'root',
+			name: process.env.DB_NAME || 'schema_registry',
 		},
 		'gql-schema-registry-redis': {
 			host: process.env.REDIS_HOST || 'gql-schema-registry-redis',
