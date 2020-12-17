@@ -49,7 +49,7 @@ variables should be self-explanatory.
 ```shell
 DB_HOST (defaults to 'gql-schema-registry-db')
 DB_USERNAME (defaults to 'root')
-DB_PASSWORD (defaults to 'root')
+DB_SECRET (defaults to 'root')
 DB_PORT (defaults to 3306)
 DB_NAME (defaults to 'schema-registry')
 
@@ -130,7 +130,7 @@ Simplified version of /schema/compose where latest versions from different servi
 
 ### POST /schema/compose
 
-Lists schema based on passed services & their versions. 
+Lists schema based on passed services & their versions.
 Used by graphql gateway to fetch schema based on current containers
 
 #### Request params (optional, raw body)
