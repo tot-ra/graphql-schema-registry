@@ -106,6 +106,19 @@ npm install knex -g
 knex migrate:make my_migration_name_here --migrations-directory migrations
 ```
 
+If not using the default configuration of executing DB migrations on registry startup, you can run the following `npm`
+command prior to starting the registry:
+
+```bash
+npm run migrate-db
+```
+
+The command can be prefixed with any environment variable necessary to configure your DB connection, such as:
+
+```bash
+DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
+```
+
 ### Contribution
 
 - Before making PR, make sure to run `npm run version` & fill [CHANGELOG](CHANGELOG.md)
