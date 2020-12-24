@@ -43,23 +43,20 @@ Open http://localhost:6001
 We rely on docker network and uses hostnames from `docker-compose.yml`.
 Check `app/config.js` to see credentials that node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
 
-`app/config.js` will look for the following environment variables and will use their values if available for connecting to MySQL and Redis. The names of the
-variables should be self-explanatory.
+The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
-```shell
-DB_HOST (defaults to 'gql-schema-registry-db')
-DB_USERNAME (defaults to 'root')
-DB_SECRET (defaults to 'root')
-DB_PORT (defaults to 3306)
-DB_NAME (defaults to 'schema-registry')
-
-REDIS_HOST (defaults to 'gql-schema-registry-redis')
-REDIS_PORT (defauts to 6379)
-REDIS_SECRET (defaults to '')
-```
-
-`ASSETS_URL` is another environment variable that can be configured to control the url that web assets are served from. This can be used either when running the Node process locally in development mode,
-or when the registry sits behind a reverse proxy.
+|Variable Name| Description | Default
+|------|------|------|
+| DB_HOST | Host name of the MySQL server | gql-schema-registry-db |
+| DB_USERNAME | Username to connect to MySQL | root |
+| DB_SECRET | Password used to connect to MySQL | root |
+| DB_PORT | Port used when connecting to MySQL | 3306 |
+| DB_NAME | Name of the MySQL database to connect to | schema-registry |
+| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not | true |
+| REDIS_HOST | Host name of the Redis server | gql-schema-registry-redis |
+| REDIS_PORT | Port used when connecting to Redis | 6379 |
+| REDIS_SECRET | Password used to connect to MySQL | Empty |
+| ASSETS_URL | Controls the url that web assets are served from | localhost:6001 |
 
 ## Use cases
 
@@ -107,6 +104,19 @@ To create new DB migration, use:
 ```bash
 npm install knex -g
 knex migrate:make my_migration_name_here --migrations-directory migrations
+```
+
+If not using the default configuration of executing DB migrations on registry startup, you can run the following `npm`
+command prior to starting the registry:
+
+```bash
+npm run migrate-db
+```
+
+The command can be prefixed with any environment variable necessary to configure your DB connection, such as:
+
+```bash
+DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ### Contribution
