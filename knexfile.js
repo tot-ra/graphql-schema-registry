@@ -1,6 +1,5 @@
 const diplomat = require('./app/diplomat')
-const path = require('path');
-const fs = require('fs');
+const CustomSqlMigrationSource = require('./app/database/sql-migration-source');
 
 const DB_SCHEMA_REGISTRY = process.env.DB_SCHEMA_REGISTRY || 'gql-schema-registry-db';
 const {
@@ -11,47 +10,6 @@ const {
 	secret,
 	name,
 } = diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
-
-class CustomSqlMigrationSource {
-	constructor(migrationDirectory) {
-		this.migrationDirectory = migrationDirectory;
-	}
-
-	getMigrations() {
-		const absoluteDir = path.resolve(process.cwd(), this.migrationDirectory);
-		const files = fs.readdirSync(absoluteDir)
-			.filter(f => f.endsWith(".sql"))
-			.sort();
-
-		//The Knex migrationsLister.js code assumes that migrations are returned as an array of objects each having
-		//a 'file' property.
-		const transformed = files.reduce((acc, file) => {
-			acc.push({ file: file })
-			return acc;
-		}, []);
-
-		return Promise.resolve(transformed);
-	}
-
-	getMigrationName(migration) {
-		return migration.file;
-	}
-
-	getMigration(migration) {
-		const migrationPath = path.resolve(process.cwd(), this.migrationDirectory, this.getMigrationName(migration));
-
-		return {
-			up: async function up(knex) {
-				const sql = fs.readFileSync(migrationPath, 'utf8');
-
-				return knex.raw(sql);
-			},
-			down: async function down(knex) {
-				//noop
-			}
-		}
-	}
-}
 
 module.exports = {
 	client: client,
