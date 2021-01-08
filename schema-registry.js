@@ -28,7 +28,10 @@ async function warmup() {
 	try {
 
 		if (executeMigrations === 'true') {
-			await require('./app/database').knex.migrate.latest({ migrationSource: new CustomSqlMigrationSource('./migrations') });
+			await require('./app/database').knex.migrate.latest({
+					migrationSource: new CustomSqlMigrationSource('./migrations'),
+					disableMigrationsListValidation: true,
+				});
 		}
 
 		await require('./app').init();
