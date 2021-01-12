@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.2.0] - 2021-01-12
+### Changed
+- SQL migrations are now using sql files instead of js files, in case you need to ALTER DB with separate process and user
+
+
 ## [1.1.4] - 2020-12-22
 ### Added
 - New environment variable controlling the execution of DB migrations on application startup.
