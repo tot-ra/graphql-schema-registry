@@ -102,8 +102,7 @@ Migrations are done using knex
 To create new DB migration, use:
 
 ```bash
-npm install knex -g
-knex migrate:make my_migration_name_here --migrations-directory migrations
+npm run new-db-migration
 ```
 
 If not using the default configuration of executing DB migrations on service startup, you can run the following `npm`

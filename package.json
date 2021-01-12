@@ -12,7 +12,8 @@
     "build": "rimraf dist && mkdirp dist && webpack --env.production --bail",
     "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml",
     "migrate-db": "knex migrate:latest",
-    "new-db-migration": "knex migrate:make rename-me"
+    "new-db-migration": "knex migrate:make --stub ./migrations/sql.stub rename_me",
+    "list-db-migrations": "knex migrate:list"
   },
   "repository": {
     "type": "git",

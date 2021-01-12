@@ -49,6 +49,7 @@ const connection = knex({
 			database: name,
 			connectTimeout: 5000,
 			expirationChecker: () => true,
+			multipleStatements: true,
 		};
 	},
 });

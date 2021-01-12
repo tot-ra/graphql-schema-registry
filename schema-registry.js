@@ -1,4 +1,5 @@
 const logger = require('./app/logger');
+const CustomSqlMigrationSource = require('./app/database/sql-migration-source');
 
 process.on('unhandledRejection', (error) => {
 	logger.error(`unhandledRejection: ${error.message}`, {
@@ -27,7 +28,10 @@ async function warmup() {
 	try {
 
 		if (executeMigrations === 'true') {
-			await require('./app/database').knex.migrate.latest();
+			await require('./app/database').knex.migrate.latest({
+					migrationSource: new CustomSqlMigrationSource('./migrations'),
+					disableMigrationsListValidation: true,
+				});
 		}
 
 		await require('./app').init();
