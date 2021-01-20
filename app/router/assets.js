@@ -1,14 +1,19 @@
 exports.router = (router) => {
-	const webpack = require('webpack');
-	const devWebpackConfig = require('../../webpack.config')({
-		production: false,
-	});
+	if (process.env.NODE_ENV === 'production') {
+		router.use(require('express').static('dist'));
+	}
+	else {
+		const webpack = require('webpack');
+		const devWebpackConfig = require('../../webpack.config')({
+			production: false,
+		});
 
-	const compiler = webpack(devWebpackConfig);
+		const compiler = webpack(devWebpackConfig);
 
-	router.use(
-		require('webpack-dev-middleware')(compiler, { publicPath: '/assets/' })
-	);
+		router.use(
+			require('webpack-dev-middleware')(compiler, { publicPath: '/assets/' })
+		);
+	}
 };
 
 exports.indexHtml = () => {
