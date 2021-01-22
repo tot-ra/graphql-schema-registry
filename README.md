@@ -56,7 +56,7 @@ The following are the different environment variables that are looked up that al
 | REDIS_HOST | Host name of the Redis server | gql-schema-registry-redis |
 | REDIS_PORT | Port used when connecting to Redis | 6379 |
 | REDIS_SECRET | Password used to connect to MySQL | Empty |
-| ASSETS_URL | Controls the url that web assets are served from | localhost:6001 |
+| ASSETS_URL | Controls the root url from which web assets are served from | http://localhost:6001 |
 
 ## Use cases
 
