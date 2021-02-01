@@ -62,6 +62,7 @@ The following are the different environment variables that are looked up that al
 **Note** about `NODE_ENV`: setting the `NODE_ENV` environment variable to *production* will tell the registry
 to serve web assets (js, css) from their compiled versions in the `dist/assets` directory.
 
+
 ## Use cases
 
 ### Validating schema on deploy
