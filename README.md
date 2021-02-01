@@ -45,18 +45,23 @@ Check `app/config.js` to see credentials that node service uses to connect to my
 
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
-|Variable Name| Description | Default
-|------|------|------|
-| DB_HOST | Host name of the MySQL server | gql-schema-registry-db |
-| DB_USERNAME | Username to connect to MySQL | root |
-| DB_SECRET | Password used to connect to MySQL | root |
-| DB_PORT | Port used when connecting to MySQL | 3306 |
-| DB_NAME | Name of the MySQL database to connect to | schema-registry |
-| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not | true |
-| REDIS_HOST | Host name of the Redis server | gql-schema-registry-redis |
-| REDIS_PORT | Port used when connecting to Redis | 6379 |
-| REDIS_SECRET | Password used to connect to MySQL | Empty |
-| ASSETS_URL | Controls the root url from which web assets are served from | http://localhost:6001 |
+|Variable Name          | Description                                                               | Default
+|-----------------------|---------------------------------------------------------------------------|------|
+| DB_HOST               | Host name of the MySQL server                                             | gql-schema-registry-db |
+| DB_USERNAME           | Username to connect to MySQL                                              | root |
+| DB_SECRET             | Password used to connect to MySQL                                         | root |
+| DB_PORT               | Port used when connecting to MySQL                                        | 3306 |
+| DB_NAME               | Name of the MySQL database to connect to                                  | schema-registry |
+| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not  | true |
+| REDIS_HOST            | Host name of the Redis server                                             | gql-schema-registry-redis |
+| REDIS_PORT            | Port used when connecting to Redis                                        | 6379 |
+| REDIS_SECRET          | Password used to connect to MySQL                                         | Empty |
+| ASSETS_URL            | Controls the url that web assets are served from                          | localhost:6001 |
+| NODE_ENV              | Specifies the environment. Use *production* for production like deployment| Empty |
+
+**Note** about `NODE_ENV`: setting the `NODE_ENV` environment variable to *production* will tell the registry
+to serve web assets (js, css) from their compiled versions in the `dist/assets` directory.
+
 
 ## Use cases
 
