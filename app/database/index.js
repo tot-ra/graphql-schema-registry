@@ -54,7 +54,9 @@ const connection = knex({
 	},
 });
 
-connection.on('query', logQuery);
+if (process.env.NODE_ENV != 'production') {
+	connection.on('query', logQuery);
+}
 connection.on('query-error', logQueryError);
 
 exports.knex = connection;

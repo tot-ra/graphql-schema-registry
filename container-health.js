@@ -9,7 +9,7 @@ const options = {
 	// client port
 	port: 3000,
 	// health endpoint to call
-	path: '/health-schema-registry',
+	path: '/health',
 };
 
 const req = http.request(options, (response) => {
