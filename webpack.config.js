@@ -97,5 +97,5 @@ const standalone = {
 };
 
 module.exports = (env) => [
-	merge(config(env), env.production ? standalone.prod : standalone.dev),
+	merge(config(env), env && env.production ? standalone.prod : standalone.dev),
 ];

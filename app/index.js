@@ -37,7 +37,9 @@ app.get(`/health`, (req, res) => {
 });
 
 // log every request to the console in dev
-app.use(require('morgan')('dev'));
+if (process.env.NODE_ENV !== 'production') {
+	app.use(require('morgan')('dev'));
+}
 
 app.use(require('./router'));
 initGraphql(app);
