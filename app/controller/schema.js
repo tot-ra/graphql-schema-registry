@@ -22,7 +22,9 @@ async function getAndValidateSchema({ trx, services } = {}) {
 		}
 	);
 
-	composeAndValidateSchema(schemas);
+	if (schemas && schemas.length) {
+		composeAndValidateSchema(schemas);
+	}
 
 	return schemas;
 }
@@ -73,13 +75,15 @@ exports.diffSchemas = async ({ service }) => {
 	return await transact(async (trx) => {
 		const schemas = await getLastUpdatedForActiveServices({ trx });
 
-		const original = composeAndValidateSchema(schemas);
-		const updated = composeAndValidateSchema(
-			schemas
-				.filter((schema) => schema.name !== service.name)
-				.concat(service)
-		);
+		if (schemas && schemas.length) {
+			const original = composeAndValidateSchema(schemas);
+			const updated = composeAndValidateSchema(
+				schemas
+					.filter((schema) => schema.name !== service.name)
+					.concat(service)
+			);
 
-		return diff(original, updated);
+			return diff(original, updated);
+		}
 	});
 };
