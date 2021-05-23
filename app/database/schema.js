@@ -42,6 +42,7 @@ const schemaModel = {
 						t1.service_id,
 						t1.version,
 						t3.name,
+						t3.url,
 						t4.added_time,
 						t4.type_defs,
 						t4.is_active
@@ -113,6 +114,7 @@ const schemaModel = {
 			.select([
 				'container_schema.*',
 				'services.name',
+				'services.url',
 				'schema.is_active',
 				'schema.type_defs',
 			])
@@ -192,7 +194,11 @@ const schemaModel = {
 		let existingService = await getService({ trx, name: service.name });
 
 		if (!existingService) {
-			existingService = await insertService({ trx, name: service.name });
+			existingService = await insertService({ trx, name: service.name, url: service.url });
+		} else if (service.url && existingService.url != service.url ) {
+			await trx('services')
+				.where('id', '=', existingService.id)
+				.update({ url: service.url });
 		}
 
 		const serviceId = existingService.id;

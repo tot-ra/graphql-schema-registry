@@ -16,7 +16,7 @@ exports.composeAndValidateSchema = (servicesSchemaMap) => {
 
 			return {
 				name: schema.name,
-				url: '',
+				url: schema.url,
 				typeDefs,
 			};
 		});

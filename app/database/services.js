@@ -3,7 +3,7 @@ const { knex } = require('./index');
 const servicesModel = {
 	getActiveServices: async function ({ trx = knex } = {}) {
 		return trx('services')
-			.select('services.id', 'services.name')
+			.select('services.id', 'services.name', 'services.url')
 			.where('is_active', true);
 	},
 
@@ -24,8 +24,8 @@ const servicesModel = {
 		return service[0];
 	},
 
-	insertService: async function ({ trx = knex, name }) {
-		await trx('services').insert({ name });
+	insertService: async function ({ trx = knex, name, url }) {
+		await trx('services').insert({ name, url });
 
 		const service = await servicesModel.getService({ trx, name });
 

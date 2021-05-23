@@ -10,16 +10,8 @@ class RemoteGraphQLDataSource {
 	}
 
 	async process({ request, context = {} }) {
-		// use service discovery (etcd, consul) to dynamically update addresses of services
-		let url;
-		switch (this.name) {
-			case 'service_a':
-				url = `http://localhost:6101/graphql`;
-				break;
-			case 'service_b':
-				url = `http://localhost:6102/graphql`;
-				break;
-		}
+
+		const url = `${this.url}/graphql`;
 
 		const headers = (request.http && request.http.headers) || new Headers();
 		headers.set('Content-Type', 'application/json');
