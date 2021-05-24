@@ -27,6 +27,9 @@ export const VersionHeaderTitle = styled.h2`
 export const VersionHeaderTime = styled.div`
 	color: gray;
 `;
+export const VersionHeaderUrl = styled.div`
+	color: gray;
+`;
 
 export const SelectServiceGuide = styled.h1`
 	text-align: center;

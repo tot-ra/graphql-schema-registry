@@ -49,7 +49,7 @@ exports.push = async (req, res) => {
 			name: Joi.string().min(3).max(200).required(),
 			version: Joi.string().min(1).max(100).required(),
 			type_defs: Joi.string().required(),
-			url: Joi.string().min(1).max(200),
+			url: Joi.string().uri().min(1).max(255).allow(''),
 		})
 	);
 
@@ -66,7 +66,7 @@ exports.validate = async (req, res) => {
 			name: Joi.string().min(3).max(200).required(),
 			version: Joi.string().min(1).max(100).required(),
 			type_defs: Joi.string().required(),
-			url: Joi.string().min(1).max(200),
+			url: Joi.string().uri().min(1).max(255).allow(''),
 		})
 	);
 
