@@ -20,10 +20,11 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
 
 ## Roadmap
-
+(Pull requests are encouraged on these topics)
 - client tracking (for breaking changes)
 - schema usage tracking (for breaking changes)
-- separate APQs (use cache only) from backend-registered persisted queries (use DB only)
+- separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
+- async schema registration of new schema with events to avoid polling. `schema-registry -> kafka -> gateway`
 
 ## Installation
 
