@@ -47,11 +47,13 @@ const schemaModel = {
 						t4.is_active
 				 FROM \`container_schema\` as t1
 						  INNER JOIN (
-					 SELECT MAX(added_time) as max_added_time,
-							MAX(id)         as max_id,
-							service_id
-					 FROM \`container_schema\`
-					 GROUP BY service_id
+					 SELECT MAX(cs1.added_time) as max_added_time,
+							MAX(cs1.id)         as max_id,
+							cs1.service_id
+					 FROM \`container_schema\` cs1
+					 	INNER JOIN \`schema\` s1 on cs1.schema_id = s1.id
+					 WHERE s1.is_active <> 0
+					 GROUP BY cs1.service_id
 				 ) as t2 ON t2.service_id = t1.service_id
 						  INNER JOIN \`services\` t3 ON t3.id = t1.service_id
 						  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
