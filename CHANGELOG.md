@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [1.2.4] - 2021-05-25
+### Changed
+- Fixed handling deactivated schemas when building the federated graph
+
 ## [1.2.3] - 2021-02-22
 ### Added
 
@@ -113,8 +118,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.3...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.4...HEAD
 
+[1.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.0...v1.2.1
