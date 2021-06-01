@@ -36,14 +36,6 @@ const servicesModel = {
 		return service;
 	},
 
-	toggleService: async function ({ trx = knex, name }, isActive) {
-		return await trx('services')
-			.update({
-				is_active: isActive,
-			})
-			.where('name', name);
-	},
-
 	deleteService: async function ({ trx = knex, name }) {
 		return trx('services').delete().where('name', name);
 	},
