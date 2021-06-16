@@ -94,6 +94,8 @@ graphql-schema-registry service is one of the components for graphql federation,
 integration with gateway. Check out [examples folder](examples/README.md) on how to implement it. Note however, that
 gateway is very simplified and does not have proper error handling, cost limits or fail-safe mechanisms.
 
+In gateway, you may also find useful our [graphql-query-cost](https://github.com/pipedrive/graphql-query-cost) library too. Check it out
+
 ![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png?v=2)
 
 ### DB structure
@@ -127,6 +129,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ### Contribution
 
 - Before making PR, make sure to run `npm run version` & fill [CHANGELOG](CHANGELOG.md)
+- Ping [@tot-ra](https://github.com/tot-ra) if PR is stuck
 
 #### Honorable mentions
 
