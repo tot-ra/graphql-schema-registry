@@ -10,7 +10,6 @@ class RemoteGraphQLDataSource {
 	}
 
 	async process({ request, context = {} }) {
-
 		const url = `${this.url}/graphql`;
 
 		const headers = (request.http && request.http.headers) || new Headers();

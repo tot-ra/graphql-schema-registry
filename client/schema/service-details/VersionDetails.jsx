@@ -9,7 +9,7 @@ import {
 	VersionHeader,
 	VersionHeaderTitle,
 	VersionHeaderTime,
-	VersionHeaderUrl
+	VersionHeaderUrl,
 } from '../styled';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 
@@ -46,11 +46,7 @@ const VersionDetails = () => {
 
 	let urlInfo;
 	if (url) {
-		urlInfo = (
-			<VersionHeaderUrl>
-				Url{' '}{ url }
-			</VersionHeaderUrl>
-		);
+		urlInfo = <VersionHeaderUrl>Url {url}</VersionHeaderUrl>;
 	}
 
 	const oldCode = previousSchema ? previousSchema.typeDefs : '';

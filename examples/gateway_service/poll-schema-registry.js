@@ -2,7 +2,6 @@ const { get } = require('lodash');
 const request = require('request-promise-native');
 
 exports.getServiceListWithTypeDefs = async () => {
-
 	const serviceTypeDefinitions = await request({
 		baseUrl: 'http://localhost:6001',
 		method: 'POST',
@@ -11,7 +10,6 @@ exports.getServiceListWithTypeDefs = async () => {
 	});
 
 	return get(serviceTypeDefinitions, 'data', []).map((schema) => {
-
 		if (!schema.url) {
 			console.warn(
 				`Service url not found for type definition "${schema.name}"`

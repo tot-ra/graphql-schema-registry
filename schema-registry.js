@@ -19,19 +19,22 @@ logger.info(`Starting schema-registry...`);
 
 async function warmup() {
 	logger.info('Warming up');
-	logger.info(`Looking for environment variable DB_EXECUTE_MIGRATIONS  = ${process.env.DB_EXECUTE_MIGRATIONS}`);
+	logger.info(
+		`Looking for environment variable DB_EXECUTE_MIGRATIONS  = ${process.env.DB_EXECUTE_MIGRATIONS}`
+	);
 
-	const executeMigrations = (process.env.DB_EXECUTE_MIGRATIONS || 'true').trim();
+	const executeMigrations = (
+		process.env.DB_EXECUTE_MIGRATIONS || 'true'
+	).trim();
 
 	logger.info(`Will execute DB migrations? ${executeMigrations}`);
 
 	try {
-
 		if (executeMigrations === 'true') {
 			await require('./app/database').knex.migrate.latest({
-					migrationSource: new CustomSqlMigrationSource('./migrations'),
-					disableMigrationsListValidation: true,
-				});
+				migrationSource: new CustomSqlMigrationSource('./migrations'),
+				disableMigrationsListValidation: true,
+			});
 		}
 
 		await require('./app').init();

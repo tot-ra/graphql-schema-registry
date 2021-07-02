@@ -21,7 +21,9 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
 
 ## Roadmap
+
 (Pull requests are encouraged on these topics)
+
 - client tracking (for breaking changes)
 - schema usage tracking (for breaking changes)
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
@@ -47,23 +49,22 @@ Check `app/config.js` to see credentials that node service uses to connect to my
 
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
-|Variable Name          | Description                                                               | Default
-|-----------------------|---------------------------------------------------------------------------|------|
-| DB_HOST               | Host name of the MySQL server                                             | gql-schema-registry-db |
-| DB_USERNAME           | Username to connect to MySQL                                              | root |
-| DB_SECRET             | Password used to connect to MySQL                                         | root |
-| DB_PORT               | Port used when connecting to MySQL                                        | 3306 |
-| DB_NAME               | Name of the MySQL database to connect to                                  | schema-registry |
-| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not  | true |
-| REDIS_HOST            | Host name of the Redis server                                             | gql-schema-registry-redis |
-| REDIS_PORT            | Port used when connecting to Redis                                        | 6379 |
-| REDIS_SECRET          | Password used to connect to Redis                                         | Empty |
-| ASSETS_URL            | Controls the url that web assets are served from                          | localhost:6001 |
-| NODE_ENV              | Specifies the environment. Use *production* for production like deployment| Empty |
+| Variable Name         | Description                                                                | Default                   |
+| --------------------- | -------------------------------------------------------------------------- | ------------------------- |
+| DB_HOST               | Host name of the MySQL server                                              | gql-schema-registry-db    |
+| DB_USERNAME           | Username to connect to MySQL                                               | root                      |
+| DB_SECRET             | Password used to connect to MySQL                                          | root                      |
+| DB_PORT               | Port used when connecting to MySQL                                         | 3306                      |
+| DB_NAME               | Name of the MySQL database to connect to                                   | schema-registry           |
+| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not   | true                      |
+| REDIS_HOST            | Host name of the Redis server                                              | gql-schema-registry-redis |
+| REDIS_PORT            | Port used when connecting to Redis                                         | 6379                      |
+| REDIS_SECRET          | Password used to connect to Redis                                          | Empty                     |
+| ASSETS_URL            | Controls the url that web assets are served from                           | localhost:6001            |
+| NODE_ENV              | Specifies the environment. Use _production_ for production like deployment | Empty                     |
 
-**Note** about `NODE_ENV`: setting the `NODE_ENV` environment variable to *production* will tell the registry
+**Note** about `NODE_ENV`: setting the `NODE_ENV` environment variable to _production_ will tell the registry
 to serve web assets (js, css) from their compiled versions in the `dist/assets` directory.
-
 
 ## Use cases
 
@@ -80,14 +81,14 @@ Make sure to handle failure.
 
 ### Tech stack
 
-|Frontend (`/client` folder)| Backend (`/app` folder)
-|------|------|
-|react|nodejs 14|
-|apollo client|express, hapi/joi|
-|styled-components|apollo-server-express, dataloader|
-||redis 6|
-||knex|
-||mysql 8|
+| Frontend (`/client` folder) | Backend (`/app` folder)           |
+| --------------------------- | --------------------------------- |
+| react                       | nodejs 14                         |
+| apollo client               | express, hapi/joi                 |
+| styled-components           | apollo-server-express, dataloader |
+|                             | redis 6                           |
+|                             | knex                              |
+|                             | mysql 8                           |
 
 ### Components
 
@@ -153,44 +154,48 @@ Lists schema based on passed services & their versions.
 Used by graphql gateway to fetch schema based on current containers
 
 #### Request params (optional, raw body)
+
 ```json
 {
   "services": [
-    {"name": "service_a", "version": "ke9j34fuuei"},
-    {"name": "service_b", "version": "e302fj38fj3"},
+    { "name": "service_a", "version": "ke9j34fuuei" },
+    { "name": "service_b", "version": "e302fj38fj3" }
   ]
 }
 ```
 
 #### Response example
+
 - ✅ 200
+
 ```json
 {
-    "success": true,
-    "data": [
-        {
-            "id": 2,
-            "service_id": 3,
-            "version": "ke9j34fuuei",
-            "name": "service_a",
-            "url": "http://localhost:6111",
-            "added_time": "2020-12-11T11:59:40.000Z",
-            "type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n",
-            "is_active": 1
-        },
-        {
-            "id": 3,
-            "service_id": 4,
-            "version": "v1",
-            "name": "service_b",
-            "url": "http://localhost:6112",
-            "added_time": "2020-12-14T18:51:04.000Z",
-            "type_defs": "type Query {\n  world: String\n}\n",
-            "is_active": 1
-        }
-    ]
+  "success": true,
+  "data": [
+    {
+      "id": 2,
+      "service_id": 3,
+      "version": "ke9j34fuuei",
+      "name": "service_a",
+      "url": "http://localhost:6111",
+      "added_time": "2020-12-11T11:59:40.000Z",
+      "type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n",
+      "is_active": 1
+    },
+    {
+      "id": 3,
+      "service_id": 4,
+      "version": "v1",
+      "name": "service_b",
+      "url": "http://localhost:6112",
+      "added_time": "2020-12-14T18:51:04.000Z",
+      "type_defs": "type Query {\n  world: String\n}\n",
+      "is_active": 1
+    }
+  ]
 }
 ```
+
 - ❌ 400 "services[0].version" must be a string
 - ❌ 500 Internal error (DB is down)
 
@@ -222,6 +227,7 @@ Validates and registers new schema for a service.
   "url": "http://service-b.develop.svc.cluster.local"
 }
 ```
+
 #### POST /schema/validate
 
 Validates schema, without adding to DB
@@ -246,10 +252,9 @@ Deletes specified schema
 
 ##### Request params
 
-| Property                  | Type    | Comments                            |
-| ------------------------- | ------- | ----------------------------------- |
-| `schemaId`                | number  | ID of sechema                       |
-
+| Property   | Type   | Comments      |
+| ---------- | ------ | ------------- |
+| `schemaId` | number | ID of sechema |
 
 #### GET /persisted_query
 
@@ -257,10 +262,9 @@ Looks up persisted query from DB & caches it in redis if its found
 
 ##### Request params (query)
 
-
-| Property                  | Type    | Comments                            |
-| ------------------------- | ------- | ----------------------------------- |
-| `key`                | string  | hash of APQ (with `apq:` prefix)                       |
+| Property | Type   | Comments                         |
+| -------- | ------ | -------------------------------- |
+| `key`    | string | hash of APQ (with `apq:` prefix) |
 
 #### POST /persisted_query
 
@@ -268,8 +272,7 @@ Adds persisted query to DB & redis cache
 
 ##### Request params (raw body)
 
-
-| Property                  | Type    | Comments                            |
-| ------------------------- | ------- | ----------------------------------- |
-| `key`                | string  | hash of APQ (with `apq:` prefix)                       |
-| `value`                | string  | Graphql query                       |
+| Property | Type   | Comments                         |
+| -------- | ------ | -------------------------------- |
+| `key`    | string | hash of APQ (with `apq:` prefix) |
+| `value`  | string | Graphql query                    |

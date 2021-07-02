@@ -7,16 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.5] - 2021-05-22
+## [1.2.5] - 2021-06-02
+
 ### Added
 
 - Service url storage to emulate managed federation
 
 ## [1.2.4] - 2021-05-25
+
 ### Changed
+
 - Fixed handling deactivated schemas when building the federated graph
 
 ## [1.2.3] - 2021-02-22
+
 ### Added
 
 - Dockerfile now builds a self-contained deployment artefact.
@@ -26,34 +30,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed debug logging in production environments.
 
 ## [1.2.2] - 2021-02-01
+
 ### Changed
+
 - Assets can now be served from compiled version, depending on NODE_ENV env var
 
 ## [1.2.1] - 2021-01-22
+
 ### Changed
+
 - ASSETS_URL supports serving service over https now
 
-
 ## [1.2.0] - 2021-01-12
+
 ### Changed
+
 - SQL migrations are now using sql files instead of js files, in case you need to ALTER DB with separate process and user
 
-
 ## [1.1.4] - 2020-12-22
+
 ### Added
+
 - New environment variable controlling the execution of DB migrations on application startup.
 - New `npm` command to execute DB migrations explicitly.
 
 ## [1.1.3] - 2020-12-20
-### Fixed
-- fixed db credentials in docker-compose.yaml causing container startup issues, relying on root:root only now
 
+### Fixed
+
+- fixed db credentials in docker-compose.yaml causing container startup issues, relying on root:root only now
 
 ## [1.1.2] - 2020-12-17
 
 ### Added
-- Database name is now configureable with env variable DB_NAME
 
+- Database name is now configureable with env variable DB_NAME
 
 ## [1.1.1] - 2020-12-16
 
@@ -123,13 +134,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Examples of gateway + 2 federated services
 
 [unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.4...HEAD
-
 [1.2.4]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.3...v1.2.4
 [1.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.2...v1.2.3
 [1.2.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.1.4...v1.2.0
-
 [1.1.4]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.1.3...v1.1.4
 [1.1.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.1.1...v1.1.2

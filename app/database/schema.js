@@ -193,8 +193,12 @@ const schemaModel = {
 		let existingService = await getService({ trx, name: service.name });
 
 		if (!existingService) {
-			existingService = await insertService({ trx, name: service.name, url: service.url });
-		} else if (service.url && existingService.url != service.url ) {
+			existingService = await insertService({
+				trx,
+				name: service.name,
+				url: service.url,
+			});
+		} else if (service.url && existingService.url != service.url) {
 			await trx('services')
 				.where('id', '=', existingService.id)
 				.update({ url: service.url });
