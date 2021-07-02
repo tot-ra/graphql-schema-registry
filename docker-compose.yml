@@ -24,7 +24,7 @@ services:
   gql-schema-registry:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: dev.Dockerfile
     command:
       node_modules/nodemon/bin/nodemon.js --watch schema-registry.js --watch app
       --inspect=0.0.0.0:5850 schema-registry.js

@@ -1,7 +1,9 @@
 ## Examples
 
 ## Schema registry, federated gateway, two services (hard-coded URLs)
+
 Directories in use
+
 - gateway_service_hard_coded_urls
 - federated_service_a
 - federated_service_b
@@ -38,9 +40,11 @@ cd federated_service_b && npm install && node index.js
   <img width="681" alt="Screenshot 2020-09-01 at 23 46 09" src="https://user-images.githubusercontent.com/445122/91904286-5a7f2200-ecad-11ea-9d63-43a96f96e886.png">
 
 ## Schema registry, federated gateway, two services (dynamic URLs)
+
 Same as above, except that gateway takes URLs from schema-registry
 
 Directories:
+
 - **gateway_service_managed_federation**
 - federated_service_a
 - federated_service_b
