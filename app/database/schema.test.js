@@ -44,7 +44,7 @@ describe('app/database/schema.js', () => {
 						added_time: '2020-01-01T09:00:00.000Z',
 						is_active: 1,
 						name: 'xxx',
-						url: 'xxx,
+						url: 'xxx',
 					},
 					correctVersion,
 				],
@@ -67,7 +67,7 @@ describe('app/database/schema.js', () => {
 				added_time: time,
 				is_active: 1,
 				name: 'xxx',
-				url: 'xxx,
+				url: 'xxx',
 			};
 
 			knexMock.raw = async () => [
