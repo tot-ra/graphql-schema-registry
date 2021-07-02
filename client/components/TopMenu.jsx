@@ -1,15 +1,19 @@
-import {AppBar, Tab, Tabs} from '@material-ui/core';
+import { AppBar, Tab, Tabs } from '@material-ui/core';
 import React from 'react';
 import ReactLogo from './logo';
-import {useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
-export default ({UITabs, selectedTab, handleChange}) => {
+export default ({ UITabs, selectedTab, handleChange }) => {
 	let history = useHistory();
 
 	return (
-		<div style={{display: "flex"}}>
-			<ReactLogo/>
-			<AppBar position="static" color="primary" style={{backgroundColor:"#2b8223"}}>
+		<div style={{ display: 'flex' }}>
+			<ReactLogo />
+			<AppBar
+				position="static"
+				color="primary"
+				style={{ backgroundColor: '#2b8223' }}
+			>
 				<Tabs
 					value={selectedTab}
 					onChange={handleChange}
@@ -27,6 +31,5 @@ export default ({UITabs, selectedTab, handleChange}) => {
 				</Tabs>
 			</AppBar>
 		</div>
-
 	);
 };

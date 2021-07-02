@@ -59,7 +59,7 @@ const VersionDetails = () => {
 
 	if (commitLink) {
 		commitButton = (
-			<Button size={"small"} href={data.schema.containers[0].commitLink}>
+			<Button size={'small'} href={data.schema.containers[0].commitLink}>
 				<CallMergeIcon /> Check commit
 			</Button>
 		);
@@ -82,10 +82,10 @@ const VersionDetails = () => {
 						{urlInfo}
 					</div>
 					<div>
-					<ButtonGroup>
-						<DeactivateButton schema={data.schema} />
-						{commitButton}
-					</ButtonGroup>
+						<ButtonGroup>
+							<DeactivateButton schema={data.schema} />
+							{commitButton}
+						</ButtonGroup>
 					</div>
 				</VersionHeader>
 

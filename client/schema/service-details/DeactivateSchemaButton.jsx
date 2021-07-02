@@ -1,6 +1,6 @@
 import React from 'react';
-import {useMutation} from '@apollo/client';
-import {Button} from '@material-ui/core';
+import { useMutation } from '@apollo/client';
+import { Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
@@ -8,18 +8,18 @@ import {
 	DEACTIVATE_SCHEMA_ENTRY,
 	ACTIVATE_SCHEMA_ENTRY,
 } from '../../utils/mutations';
-import {useParams} from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const DeactivateSchemaButton = ({schema}) => {
-	const {serviceName} = useParams();
+const DeactivateSchemaButton = ({ schema }) => {
+	const { serviceName } = useParams();
 	const [
 		deactivateSchema,
-		{loading: deleting, error: deleteError},
+		{ loading: deleting, error: deleteError },
 	] = useMutation(DEACTIVATE_SCHEMA_ENTRY);
 
 	const [
 		activateSchema,
-		{loading: activating, error: activateError},
+		{ loading: activating, error: activateError },
 	] = useMutation(ACTIVATE_SCHEMA_ENTRY);
 
 	const deleteErrorMessage = deleteError ? deleteError.message : null;
@@ -32,7 +32,7 @@ const DeactivateSchemaButton = ({schema}) => {
 
 			{schema.isActive && (
 				<Button
-					size={"small"}
+					size={'small'}
 					variant="contained"
 					color="secondary"
 					disabled={deleting}
@@ -44,13 +44,13 @@ const DeactivateSchemaButton = ({schema}) => {
 						});
 					}}
 				>
-					<DeleteIcon/>
+					<DeleteIcon />
 					Deactivate
 				</Button>
 			)}
 			{!schema.isActive && (
 				<Button
-					size={"small"}
+					size={'small'}
 					variant="contained"
 					color="primary"
 					disabled={activating}
@@ -62,7 +62,7 @@ const DeactivateSchemaButton = ({schema}) => {
 						});
 					}}
 				>
-					<DeleteOutlinedIcon color="white"/>
+					<DeleteOutlinedIcon color="white" />
 					Activate
 				</Button>
 			)}
