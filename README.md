@@ -219,6 +219,7 @@ Validates and registers new schema for a service.
 }
 ```
 
+URL is optional if you use urls from schema-registry as service discovery
 ```json
 {
   "name": "service_b",
