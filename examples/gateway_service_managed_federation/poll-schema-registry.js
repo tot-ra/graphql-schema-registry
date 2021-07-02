@@ -5,6 +5,8 @@ exports.getServiceListWithTypeDefs = async () => {
 	const serviceTypeDefinitions = await request({
 		baseUrl: 'http://localhost:6001',
 		method: 'POST',
+
+		// Simplest approach to get last registered schema versions
 		url: '/schema/latest',
 		json: true,
 	});
