@@ -60,6 +60,10 @@ const schemaModel = {
 						  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
 				 WHERE t3.name IN (?)
 				   AND t3.id = t2.service_id
+				   AND (
+						 t4.added_time = t2.max_added_time OR
+						 t1.id = t2.max_id
+					 )
 				   AND t4.is_active = TRUE
 				 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
 			[names]
