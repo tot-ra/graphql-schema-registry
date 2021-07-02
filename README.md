@@ -106,7 +106,9 @@ Migrations are done using knex
 ![](https://app.lucidchart.com/publicSegments/view/74fc86d4-671e-4644-a198-41d7ff681cae/image.png)
 
 ## Development
+
 ### Dockerized mode
+
 ```
 nvm use
 npm install
@@ -115,6 +117,7 @@ docker-compose up
 ```
 
 ### Running in light mode
+
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```

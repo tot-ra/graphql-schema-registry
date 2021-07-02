@@ -9,9 +9,12 @@ const Filter = ({ filterValue, setFilterValue }) => {
 			title="Add ! character in the beginning to exclude text in definitions"
 		>
 			<TextField
+				size={"small"}
+				fullWidth={true}
 				value={filterValue}
 				onChange={(e) => setFilterValue(e.target.value)}
 				variant="outlined"
+				style={{marginTop:"5px"}}
 				label="Search.."
 			/>
 		</Tooltip>

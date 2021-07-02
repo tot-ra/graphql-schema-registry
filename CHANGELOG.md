@@ -10,8 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.5] - 2021-06-02
 
 ### Added
-
 - Service url storage to emulate managed federation
+- logo to navigation
+- dockerized light mode for faster UI development (see README)
+
+### Changed
+- reduced paddings in UI
 
 ## [1.2.4] - 2021-05-25
 
