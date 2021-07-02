@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('./logger');
 const { get } = require('lodash');
 const initGraphql = require('./graphql');
+const config = require('./config');
 
 const app = express();
 
@@ -104,8 +105,8 @@ exports.init = async () => {
 		return server;
 	}
 
-	server = app.listen(3000, () => {
-		logger.info('Server listening on port: 3000');
+	server = app.listen(config.port, () => {
+		logger.info(`Server listening on port: ${config.port}`);
 	});
 
 	return server;

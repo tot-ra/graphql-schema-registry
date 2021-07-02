@@ -106,6 +106,21 @@ Migrations are done using knex
 ![](https://app.lucidchart.com/publicSegments/view/74fc86d4-671e-4644-a198-41d7ff681cae/image.png)
 
 ## Development
+### Dockerized mode
+```
+nvm use
+npm install
+npm run build
+docker-compose up
+```
+
+### Running in light mode
+To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
+
+```
+docker-compose up -f docker-compose.light.yml
+DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 node schema-registry.js
+```
 
 ### DB migrations
 
@@ -220,6 +235,7 @@ Validates and registers new schema for a service.
 ```
 
 URL is optional if you use urls from schema-registry as service discovery
+
 ```json
 {
   "name": "service_b",

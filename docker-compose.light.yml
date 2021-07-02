@@ -1,0 +1,38 @@
+version: '3'
+services:
+  gql-schema-registry-db:
+    image: mysql:8
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    environment:
+      SERVICE_3306_NAME: gql-schema-registry-db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: schema_registry
+    ports:
+      - 6000:3306
+    volumes:
+      - gql-schema-registry-db-volume:/var/lib/mysql
+    healthcheck:
+      test:
+        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'healthcheck']
+      timeout: 5s
+      retries: 10
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-db'
+
+  gql-schema-registry-redis:
+    image: redis:6-alpine
+    ports:
+      - 6004:6379
+    environment:
+      SERVICE_NAME: 'gql-schema-registry-redis'
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-redis'
+networks:
+  gql-schema:
+
+volumes:
+  gql-schema-registry-db-volume:

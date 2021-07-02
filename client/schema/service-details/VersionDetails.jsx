@@ -46,7 +46,7 @@ const VersionDetails = () => {
 
 	let urlInfo;
 	if (url) {
-		urlInfo = <VersionHeaderUrl>Url {url}</VersionHeaderUrl>;
+		urlInfo = <VersionHeaderUrl>URL: {url}</VersionHeaderUrl>;
 	}
 
 	const oldCode = previousSchema ? previousSchema.typeDefs : '';
