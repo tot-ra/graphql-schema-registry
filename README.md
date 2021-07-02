@@ -16,6 +16,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Validates new schema to be compatible with other _running_ services
 - Provides UI for developers to see stored schema & its history diff
 - Stores & shows in UI persisted queries passed by the gateway for debugging
+- Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
 
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
 
@@ -172,6 +173,7 @@ Used by graphql gateway to fetch schema based on current containers
             "service_id": 3,
             "version": "ke9j34fuuei",
             "name": "service_a",
+            "url": "http://localhost:6111",
             "added_time": "2020-12-11T11:59:40.000Z",
             "type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n",
             "is_active": 1
@@ -181,6 +183,7 @@ Used by graphql gateway to fetch schema based on current containers
             "service_id": 4,
             "version": "v1",
             "name": "service_b",
+            "url": "http://localhost:6112",
             "added_time": "2020-12-14T18:51:04.000Z",
             "type_defs": "type Query {\n  world: String\n}\n",
             "is_active": 1
@@ -211,6 +214,14 @@ Validates and registers new schema for a service.
 }
 ```
 
+```json
+{
+  "name": "service_b",
+  "version": "jiaj51fu91k",
+  "type_defs": "\n\ttype Query {\n\t\tworld: String\n\t}\n",
+  "url": "http://service-b.develop.svc.cluster.local"
+}
+```
 #### POST /schema/validate
 
 Validates schema, without adding to DB

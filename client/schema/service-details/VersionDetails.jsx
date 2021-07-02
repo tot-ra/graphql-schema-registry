@@ -9,6 +9,7 @@ import {
 	VersionHeader,
 	VersionHeaderTitle,
 	VersionHeaderTime,
+	VersionHeaderUrl
 } from '../styled';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 
@@ -41,6 +42,16 @@ const VersionDetails = () => {
 
 	const { id, addedTime, typeDefs, previousSchema, containers } = data.schema;
 	const addedTimestamp = new Date(addedTime);
+	const url = data.schema.service.url;
+
+	let urlInfo;
+	if (url) {
+		urlInfo = (
+			<VersionHeaderUrl>
+				Url{' '}{ url }
+			</VersionHeaderUrl>
+		);
+	}
 
 	const oldCode = previousSchema ? previousSchema.typeDefs : '';
 
@@ -72,6 +83,7 @@ const VersionDetails = () => {
 								timeZone: 'UTC',
 							})}
 						</VersionHeaderTime>
+						{urlInfo}
 					</div>
 					<ButtonGroup>
 						<DeactivateButton schema={data.schema} />

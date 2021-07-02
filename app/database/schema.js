@@ -42,6 +42,7 @@ const schemaModel = {
 						t1.service_id,
 						t1.version,
 						t3.name,
+						t3.url,
 						t4.added_time,
 						t4.type_defs,
 						t4.is_active
@@ -59,10 +60,7 @@ const schemaModel = {
 						  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
 				 WHERE t3.name IN (?)
 				   AND t3.id = t2.service_id
-				   AND (
-						 t4.added_time = t2.max_added_time OR
-						 t1.id = t2.max_id
-					 )
+				   AND t4.is_active = TRUE
 				 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
 			[names]
 		);
@@ -115,6 +113,7 @@ const schemaModel = {
 			.select([
 				'container_schema.*',
 				'services.name',
+				'services.url',
 				'schema.is_active',
 				'schema.type_defs',
 			])
@@ -194,7 +193,11 @@ const schemaModel = {
 		let existingService = await getService({ trx, name: service.name });
 
 		if (!existingService) {
-			existingService = await insertService({ trx, name: service.name });
+			existingService = await insertService({ trx, name: service.name, url: service.url });
+		} else if (service.url && existingService.url != service.url ) {
+			await trx('services')
+				.where('id', '=', existingService.id)
+				.update({ url: service.url });
 		}
 
 		const serviceId = existingService.id;

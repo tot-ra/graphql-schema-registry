@@ -49,6 +49,7 @@ module.exports = gql`
 	type Service {
 		id: Int!
 		name: String!
+		url: String
 
 		schemas(limit: Int, offset: Int, filter: String): [SchemaDefinition!]!
 	}

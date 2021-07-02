@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.5] - 2021-05-22
+### Added
+
+- Service url storage to emulate managed federation
 
 ## [1.2.4] - 2021-05-25
 ### Changed
