@@ -22,7 +22,9 @@ services:
           - 'gql-schema-registry-db'
 
   gql-schema-registry:
-    image: pipedrive/graphql-schema-registry:latest
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
     command:
       node_modules/nodemon/bin/nodemon.js --watch schema-registry.js --watch app
       --inspect=0.0.0.0:5850 schema-registry.js

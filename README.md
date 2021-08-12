@@ -31,16 +31,12 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 ## Installation
 
-Assuming you have [nvm](https://github.com/nvm-sh/nvm) & [docker](https://www.docker.com/) installed:
-
+We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry) for main node service.
 ```
-nvm use
-npm install
-npm run build
-docker-compose up --build
+docker-compose up
 ```
 
-Open http://localhost:6001
+UI should be now at [http://localhost:6001](http://localhost:6001)
 
 ## Configuration
 
@@ -113,7 +109,7 @@ Migrations are done using knex
 nvm use
 npm install
 npm run build
-docker-compose up
+docker-compose up -f docker-compose.dev.yml
 ```
 
 ### Running in light mode
