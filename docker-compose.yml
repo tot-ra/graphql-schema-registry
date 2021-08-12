@@ -23,21 +23,12 @@ services:
 
   gql-schema-registry:
     image: pipedrive/graphql-schema-registry:latest
-    command:
-      node_modules/nodemon/bin/nodemon.js --watch schema-registry.js --watch app
-      --inspect=0.0.0.0:5850 schema-registry.js
     ports:
       - 6001:3000
       - 6002:5850
     environment:
-      - ENV_ID=dev
-      - SERVICE_5850_IGNORE=true
       - WITH_WEBPACK=${WITH_WEBPACK-1}
-      - SERVICE_NAME=schema-registry
-      - SERVICE_3000_NAME=schema-registry
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
-    volumes:
-      - .:/app/
     restart: always
     depends_on:
       - gql-schema-registry-redis
