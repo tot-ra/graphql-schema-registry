@@ -6,6 +6,14 @@ const {
 	deactivateSchema,
 	diffSchemas,
 } = require('../controller/schema');
+const { producer } = require('../kafka/producer');
+
+let kafkaProducer;
+ producer()
+ .then((p) => {
+	 kafkaProducer = p;
+ })
+ .catch(console.error);
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -52,6 +60,13 @@ exports.push = async (req, res) => {
 			url: Joi.string().uri().min(1).max(255).allow(''),
 		})
 	);
+
+	await kafkaProducer.send({
+		topic: 'test-topic',
+		messages: [
+			{ value: 'Hello KafkaJS user!' },
+		],
+	});
 
 	return res.json({
 		success: true,

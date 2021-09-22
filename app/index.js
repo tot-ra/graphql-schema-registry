@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('./logger');
 const { get } = require('lodash');
 const initGraphql = require('./graphql');
+
 const config = require('./config');
 
 const app = express();

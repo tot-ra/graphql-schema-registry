@@ -37,7 +37,7 @@ const gateway = new CustomGateway({
 	serviceList: [],
 	debug: true,
 	buildService: (service) => new RemoteGraphQLDataSource(this, service),
-	experimental_pollInterval: 10000, // 10 sec
+	// experimental_pollInterval: 10000, // 10 sec
 });
 
 const apolloServerBase = new ApolloServerBase({
