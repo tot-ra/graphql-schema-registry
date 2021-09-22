@@ -60,7 +60,7 @@ services:
       gql-schema:
         aliases:
           - 'gql-schema-registry-redis'
-  
+
   gql-schema-registry-zookeeper:
     image: confluentinc/cp-zookeeper:latest
     ports:
@@ -73,7 +73,7 @@ services:
       gql-schema:
         aliases:
           - 'gql-schema-registry-zookeeper'
-  
+
   gql-schema-registry-kafka:
     image: confluentinc/cp-kafka:latest
     depends_on:

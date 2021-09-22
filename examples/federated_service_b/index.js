@@ -17,8 +17,8 @@ var root = {
 	world: () => {
 		return 'World!';
 	},
-	xyz: () => "Hola!",
-	abc: () => 1
+	xyz: () => 'Hola!',
+	abc: () => 1,
 };
 
 var app = express();

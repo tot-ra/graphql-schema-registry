@@ -9,11 +9,11 @@ const {
 const { producer } = require('../kafka/producer');
 
 let kafkaProducer;
- producer()
- .then((p) => {
-	 kafkaProducer = p;
- })
- .catch(console.error);
+producer()
+	.then((p) => {
+		kafkaProducer = p;
+	})
+	.catch(console.error);
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -63,9 +63,7 @@ exports.push = async (req, res) => {
 
 	await kafkaProducer.send({
 		topic: 'test-topic',
-		messages: [
-			{ value: 'Hello KafkaJS user!' },
-		],
+		messages: [{ value: 'Hello KafkaJS user!' }],
 	});
 
 	return res.json({

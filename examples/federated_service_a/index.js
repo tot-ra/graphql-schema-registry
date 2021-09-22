@@ -17,7 +17,7 @@ typeDefs.toString = function () {
 
 const resolvers = {
 	Query: {
-		hello: () => 20
+		hello: () => 20,
 	},
 };
 

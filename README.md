@@ -32,6 +32,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ## Installation
 
 We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry) for main node service.
+
 ```
 docker-compose up
 ```
