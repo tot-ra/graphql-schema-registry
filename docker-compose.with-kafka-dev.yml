@@ -38,6 +38,7 @@ services:
       - SERVICE_NAME=schema-registry
       - SERVICE_3000_NAME=schema-registry
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - ASYNC_SCHEMA_UPDATES=true
     volumes:
       - .:/app/
     restart: always

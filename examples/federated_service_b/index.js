@@ -7,8 +7,7 @@ var request = require('request-promise-native');
 var schema = buildSchema(`
   type Query {
     world: String
-	xyz: String
-	abc: Int
+	hola: String
   }
 `);
 
@@ -17,8 +16,7 @@ var root = {
 	world: () => {
 		return 'World!';
 	},
-	xyz: () => 'Hola!',
-	abc: () => 1,
+	hola: () => 'Hola!',
 };
 
 var app = express();
@@ -43,7 +41,7 @@ console.log('Running a GraphQL API server at http://localhost:6102/graphql');
 			json: true,
 			body: {
 				name: 'service_b', // service name
-				version: 'v5', //service version, like docker container hash. Use 'latest' for dev env
+				version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
 				type_defs: printSchema(schema),
 				url: 'http://localhost:6102',
 			},

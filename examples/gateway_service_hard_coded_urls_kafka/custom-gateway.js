@@ -2,8 +2,16 @@ const _ = require('lodash');
 const { parse } = require('graphql');
 const { ApolloGateway } = require('@apollo/gateway');
 const { composeAndValidate } = require('@apollo/federation');
+const { Kafka } = require('kafkajs');
 
 const { getServiceListWithTypeDefs } = require('./poll-schema-registry');
+
+const kafka = new Kafka({
+	clientId: 'graphql-schema-registry-client',
+	brokers: ['localhost:29092'],
+});
+
+const consumer = kafka.consumer({ groupId: 'test-group' });
 
 class CustomGateway extends ApolloGateway {
 	constructor(...args) {
@@ -21,6 +29,25 @@ class CustomGateway extends ApolloGateway {
 			},
 		];
 
+		this.consumer = null;
+		const that = this;
+		consumer.connect().then(async () => {
+			await consumer.subscribe({
+				topic: 'test-topic',
+				fromBeginning: true,
+			});
+			await consumer.run({
+				eachMessage: async ({ topic, partition, message }) => {
+					console.log({
+						partition,
+						offset: message.offset,
+						value: message.value.toString(),
+					});
+					await that.loadServiceDefinitions();
+					await that.updateComposition();
+				},
+			});
+		});
 	}
 
 	// Hack, because for some reason by default the lib doesn't want to add listeners in "unmanaged" mode

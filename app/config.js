@@ -20,4 +20,5 @@ module.exports = {
 			secret: process.env.REDIS_SECRET || '',
 		},
 	},
+	asyncSchemaUpdates: Boolean(process.env.ASYNC_SCHEMA_UPDATES || 'false')
 };

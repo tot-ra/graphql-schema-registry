@@ -7,13 +7,17 @@ const {
 	diffSchemas,
 } = require('../controller/schema');
 const { producer } = require('../kafka/producer');
+const config = require('../config');
 
 let kafkaProducer;
-producer()
+
+if(config.asyncSchemaUpdates) {
+	producer()
 	.then((p) => {
 		kafkaProducer = p;
 	})
 	.catch(console.error);
+}
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -61,10 +65,12 @@ exports.push = async (req, res) => {
 		})
 	);
 
-	await kafkaProducer.send({
-		topic: 'test-topic',
-		messages: [{ value: 'Hello KafkaJS user!' }],
-	});
+	if(config.asyncSchemaUpdates) {
+		await kafkaProducer.send({
+			topic: 'test-topic',
+			messages: [{ value: 'Schema Updated!' }],
+		});
+	}
 
 	return res.json({
 		success: true,

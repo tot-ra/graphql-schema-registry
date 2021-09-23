@@ -7,7 +7,7 @@ const { json } = require('body-parser');
 
 const typeDefs = gql`
 	type Query {
-		hello: Int
+		hello: String
 	}
 `;
 
@@ -17,7 +17,7 @@ typeDefs.toString = function () {
 
 const resolvers = {
 	Query: {
-		hello: () => 20,
+		hello: () => 'Hello',
 	},
 };
 
@@ -47,7 +47,7 @@ app.listen({ port: 6101 }, () => {
 			json: true,
 			body: {
 				name: 'service_a', // service name
-				version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
+				version: 'v1', //service version, like docker container hash. Use 'latest' for dev env
 				type_defs: typeDefs.toString(),
 				url: 'http://localhost:6101',
 			},
