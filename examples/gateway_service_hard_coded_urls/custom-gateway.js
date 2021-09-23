@@ -20,7 +20,6 @@ class CustomGateway extends ApolloGateway {
 				),
 			},
 		];
-
 	}
 
 	// Hack, because for some reason by default the lib doesn't want to add listeners in "unmanaged" mode

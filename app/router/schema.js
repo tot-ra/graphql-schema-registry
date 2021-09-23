@@ -11,12 +11,12 @@ const config = require('../config');
 
 let kafkaProducer;
 
-if(config.asyncSchemaUpdates) {
+if (config.asyncSchemaUpdates) {
 	producer()
-	.then((p) => {
-		kafkaProducer = p;
-	})
-	.catch(console.error);
+		.then((p) => {
+			kafkaProducer = p;
+		})
+		.catch(console.error);
 }
 
 exports.composeLatest = async (req, res) => {
@@ -65,7 +65,7 @@ exports.push = async (req, res) => {
 		})
 	);
 
-	if(config.asyncSchemaUpdates) {
+	if (config.asyncSchemaUpdates) {
 		await kafkaProducer.send({
 			topic: 'test-topic',
 			messages: [{ value: 'Schema Updated!' }],
