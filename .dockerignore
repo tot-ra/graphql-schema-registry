@@ -1,4 +1,4 @@
-/node_modules
-/.git
-/examples
-/test
+*/node_modules
+*/.git
+*/examples
+*/test
