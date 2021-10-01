@@ -26,9 +26,9 @@ router.post('/schema/compose', asyncWrap(schema.compose));
 router.post('/schema/push', asyncWrap(schema.push));
 router.post('/schema/diff', asyncWrap(schema.diff));
 
-router.delete('/schema/delete/:schemaId', asyncWrap(schema.delete));
+router.delete('/schema/:schemaId', asyncWrap(schema.delete));
 router.post('/schema/validate', asyncWrap(schema.validate));
 
-router.delete('/service/delete/:name', asyncWrap(service.delete));
+router.delete('/service/:name', asyncWrap(service.delete));
 
 module.exports = router;

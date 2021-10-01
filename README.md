@@ -109,7 +109,7 @@ Migrations are done using knex
 nvm use
 npm install
 npm run build
-docker-compose up -f docker-compose.dev.yml
+docker-compose -f docker-compose.dev.yml up
 ```
 
 ### Running in light mode
@@ -117,7 +117,7 @@ docker-compose up -f docker-compose.dev.yml
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```
-docker-compose up -f docker-compose.light.yml
+docker-compose -f docker-compose.light.yml up
 DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 node schema-registry.js
 ```
 
@@ -143,18 +143,22 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ### Contribution
+- Commit often (instead of making huge commits)
+- Add verb at the beginning of commit message
+- Add why you're doing something in commit message
+- Reference issues
+- When making a pull request, be sure to follow the format of what is the problem you're fixing, what was changed & how to test it. Screenshots/videos are a welcome
+- Fill [CHANGELOG](CHANGELOG.md)
 
-- Before making PR, make sure to run `npm run version` & fill [CHANGELOG](CHANGELOG.md)
-- Ping [@tot-ra](https://github.com/tot-ra) if PR is stuck
+#### Authors and acknowledgment
+Current maintainer - [@tot-ra](https://github.com/tot-ra). Mention in PR, if it is stuck
 
-#### Honorable mentions
-
-Original internal mission that resulted in this project consisted of (in alphabetical order):
-
+Original internal mission that resulted in this project going live:
 - [aleksandergasna](https://github.com/aleksandergasna)
 - [ErikSchults](https://github.com/ErikSchults)
 - [LexSwed](https://github.com/LexSwed)
-- [tot-ra](https://github.com/tot-ra)
+
+See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federated-graphql-2a6f2eecc6a4)
 
 ## Rest API documentation
 
@@ -262,7 +266,7 @@ Compares schemas and finds breaking or dangerous changes between provided and la
 - version
 - type_defs
 
-#### DELETE /schema/delete/:schemaId
+#### DELETE /schema/:schemaId
 
 Deletes specified schema
 
@@ -272,7 +276,7 @@ Deletes specified schema
 | ------------------------- | ------- | ----------------------------------- |
 | `schemaId`                | number  | ID of sechema                       |
 
-#### DELETE /service/delete/:name
+#### DELETE /service/:name
 
 Deletes specified service including all schemas registered for that service
 
