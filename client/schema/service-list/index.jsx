@@ -1,30 +1,26 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
 
-import { ColumnPanel } from '../styled';
+import { ServiceListColumn } from '../styled';
 
 import { SERVICES_LIST } from '../../utils/queries';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 const ServiceList = () => {
 	const { data } = useQuery(SERVICES_LIST);
 
-	if (!data) {
-		return null;
-	}
-
-	if (!data || !data.services) {
-		return <div>No registered services found</div>;
+	if (!data || !data.services || data.services.length === 0) {
+		return <div>No registered services</div>;
 	}
 
 	const match = useRouteMatch('/:serviceName');
 	let history = useHistory();
 
 	return (
-		<ColumnPanel>
+		<ServiceListColumn>
 			<List component="nav">
 				{data.services.map((service) => (
 					<ListItem
@@ -35,12 +31,12 @@ const ServiceList = () => {
 					>
 						<ListItemText primary={service.name} />
 						<ListItemIcon>
-							<ArrowForwardIosIcon />
+							<ChevronRightIcon />
 						</ListItemIcon>
 					</ListItem>
 				))}
 			</List>
-		</ColumnPanel>
+		</ServiceListColumn>
 	);
 };
 

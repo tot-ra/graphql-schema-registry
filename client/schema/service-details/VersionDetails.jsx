@@ -9,6 +9,7 @@ import {
 	VersionHeader,
 	VersionHeaderTitle,
 	VersionHeaderTime,
+	VersionHeaderUrl,
 } from '../styled';
 import CallMergeIcon from '@material-ui/icons/CallMerge';
 
@@ -41,6 +42,12 @@ const VersionDetails = () => {
 
 	const { id, addedTime, typeDefs, previousSchema, containers } = data.schema;
 	const addedTimestamp = new Date(addedTime);
+	const url = data.schema.service.url;
+
+	let urlInfo;
+	if (url) {
+		urlInfo = <VersionHeaderUrl>URL: {url}</VersionHeaderUrl>;
+	}
 
 	const oldCode = previousSchema ? previousSchema.typeDefs : '';
 
@@ -52,7 +59,7 @@ const VersionDetails = () => {
 
 	if (commitLink) {
 		commitButton = (
-			<Button href={data.schema.containers[0].commitLink}>
+			<Button size={'small'} href={data.schema.containers[0].commitLink}>
 				<CallMergeIcon /> Check commit
 			</Button>
 		);
@@ -72,11 +79,14 @@ const VersionDetails = () => {
 								timeZone: 'UTC',
 							})}
 						</VersionHeaderTime>
+						{urlInfo}
 					</div>
-					<ButtonGroup>
-						<DeactivateButton schema={data.schema} />
-						{commitButton}
-					</ButtonGroup>
+					<div>
+						<ButtonGroup>
+							<DeactivateButton schema={data.schema} />
+							{commitButton}
+						</ButtonGroup>
+					</div>
 				</VersionHeader>
 
 				<Tabs

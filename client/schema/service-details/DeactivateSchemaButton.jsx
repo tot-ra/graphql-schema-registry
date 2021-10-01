@@ -32,6 +32,7 @@ const DeactivateSchemaButton = ({ schema }) => {
 
 			{schema.isActive && (
 				<Button
+					size={'small'}
 					variant="contained"
 					color="secondary"
 					disabled={deleting}
@@ -49,6 +50,7 @@ const DeactivateSchemaButton = ({ schema }) => {
 			)}
 			{!schema.isActive && (
 				<Button
+					size={'small'}
 					variant="contained"
 					color="primary"
 					disabled={activating}

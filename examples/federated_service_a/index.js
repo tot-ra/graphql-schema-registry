@@ -49,6 +49,7 @@ app.listen({ port: 6101 }, () => {
 				name: 'service_a', // service name
 				version: 'v1', //service version, like docker container hash. Use 'latest' for dev env
 				type_defs: typeDefs.toString(),
+				url: 'http://localhost:6101',
 			},
 		});
 		console.info('Schema registered successfully!');

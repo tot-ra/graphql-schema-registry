@@ -10,8 +10,13 @@ export const FlexRow = styled.div`
 	justify-content: space-between;
 `;
 
-export const ColumnPanel = styled.div`
-	min-width: 200px;
+export const ServiceListColumn = styled.div`
+	min-width: 150px;
+	flex-shrink: 0;
+	border-right: 1px solid ${colors.black.hex256};
+`;
+export const SchemaListColumn = styled.div`
+	min-width: 250px;
 	flex-shrink: 0;
 	border-right: 1px solid ${colors.black.hex256};
 `;
@@ -25,6 +30,9 @@ export const VersionHeaderTitle = styled.h2`
 	margin: ${({ noMargin }) => (noMargin ? 0 : '0 16px')};
 `;
 export const VersionHeaderTime = styled.div`
+	color: gray;
+`;
+export const VersionHeaderUrl = styled.div`
 	color: gray;
 `;
 

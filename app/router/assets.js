@@ -1,8 +1,7 @@
 exports.router = (router) => {
 	if (process.env.NODE_ENV === 'production') {
 		router.use(require('express').static('dist'));
-	}
-	else {
+	} else {
 		const webpack = require('webpack');
 		const devWebpackConfig = require('../../webpack.config')({
 			production: false,
@@ -11,7 +10,9 @@ exports.router = (router) => {
 		const compiler = webpack(devWebpackConfig);
 
 		router.use(
-			require('webpack-dev-middleware')(compiler, { publicPath: '/assets/' })
+			require('webpack-dev-middleware')(compiler, {
+				publicPath: '/assets/',
+			})
 		);
 	}
 };

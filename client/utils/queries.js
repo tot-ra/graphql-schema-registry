@@ -53,6 +53,10 @@ export const SCHEMA_DETAILS = gql`
 			isActive
 			addedTime
 
+			service {
+				url
+			}
+
 			containerCount
 
 			containers {
