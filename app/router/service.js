@@ -1,7 +1,5 @@
 const Joi = require('joi');
-const {
-	deleteService
-} = require('../controller/service');
+const { deleteService } = require('../controller/service');
 
 exports.delete = async (req, res) => {
 	const params = Joi.attempt(

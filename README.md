@@ -32,6 +32,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ## Installation
 
 We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry) for main node service.
+
 ```
 docker-compose up
 ```
@@ -143,6 +144,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ### Contribution
+
 - Commit often (instead of making huge commits)
 - Add verb at the beginning of commit message
 - Add why you're doing something in commit message
@@ -151,9 +153,11 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 - Fill [CHANGELOG](CHANGELOG.md)
 
 #### Authors and acknowledgment
+
 Current maintainer - [@tot-ra](https://github.com/tot-ra). Mention in PR, if it is stuck
 
 Original internal mission that resulted in this project going live:
+
 - [aleksandergasna](https://github.com/aleksandergasna)
 - [ErikSchults](https://github.com/ErikSchults)
 - [LexSwed](https://github.com/LexSwed)
@@ -272,9 +276,9 @@ Deletes specified schema
 
 ##### Request params
 
-| Property                  | Type    | Comments                            |
-| ------------------------- | ------- | ----------------------------------- |
-| `schemaId`                | number  | ID of sechema                       |
+| Property   | Type   | Comments      |
+| ---------- | ------ | ------------- |
+| `schemaId` | number | ID of sechema |
 
 #### DELETE /service/:name
 
@@ -282,9 +286,9 @@ Deletes specified service including all schemas registered for that service
 
 ##### Request params
 
-| Property                  | Type    | Comments                            |
-| ------------------------- | ------- | ----------------------------------- |
-| `name`                    | string  | name of service                     |
+| Property | Type   | Comments        |
+| -------- | ------ | --------------- |
+| `name`   | string | name of service |
 
 #### GET /persisted_query
 

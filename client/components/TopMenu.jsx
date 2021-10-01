@@ -12,7 +12,7 @@ export default ({ UITabs, selectedTab, handleChange }) => {
 			<AppBar
 				position="static"
 				color="primary"
-				style={{ backgroundColor: '#2b8223' }}
+				style={{ backgroundColor: 'green', boxShadow: 'none' }}
 			>
 				<Tabs
 					value={selectedTab}

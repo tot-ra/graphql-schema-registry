@@ -158,7 +158,7 @@ export default function Logo() {
 							<use
 								href="#aACFKWqId"
 								opacity="1"
-								fill="#ffffff"
+								fill="green"
 								fillOpacity="1"
 							></use>
 						</g>
@@ -168,7 +168,7 @@ export default function Logo() {
 									href="#abQRk6fPB"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="25"
 									strokeOpacity="1"
 								></use>
@@ -180,7 +180,7 @@ export default function Logo() {
 									href="#c43cxpRdDt"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="25"
 									strokeOpacity="1"
 								></use>
@@ -192,7 +192,7 @@ export default function Logo() {
 									href="#e1RwQ287qq"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="25"
 									strokeOpacity="1"
 								></use>
@@ -204,7 +204,7 @@ export default function Logo() {
 									href="#aOTTscD3s"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="25"
 									strokeOpacity="1"
 								></use>
@@ -216,7 +216,7 @@ export default function Logo() {
 									href="#a5hX0shUV9"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="30"
 									strokeOpacity="1"
 								></use>
@@ -228,7 +228,7 @@ export default function Logo() {
 									href="#f4aRsobM8F"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="25"
 									strokeOpacity="1"
 								></use>
@@ -240,7 +240,7 @@ export default function Logo() {
 									href="#d4df3gG5KI"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="25"
 									strokeOpacity="1"
 								></use>
@@ -252,7 +252,7 @@ export default function Logo() {
 									href="#a3f1xiOUe"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="30"
 									strokeOpacity="1"
 								></use>
@@ -264,7 +264,7 @@ export default function Logo() {
 									href="#j2kppAtKaC"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="30"
 									strokeOpacity="1"
 								></use>
@@ -276,7 +276,7 @@ export default function Logo() {
 									href="#fmMlTgAod"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="30"
 									strokeOpacity="1"
 								></use>
@@ -288,7 +288,7 @@ export default function Logo() {
 									href="#a4gSTNVKSn"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="30"
 									strokeOpacity="1"
 								></use>
@@ -300,7 +300,7 @@ export default function Logo() {
 									href="#b3WdzhfVx"
 									opacity="1"
 									fillOpacity="0"
-									stroke="#1e2616"
+									stroke="white"
 									strokeWidth="30"
 									strokeOpacity="1"
 								></use>
