@@ -74,6 +74,14 @@ On pre-commit / deploy make a POST /schema/validate to see if its compatible wit
 On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
 Make sure to handle failure.
 
+### Schema migration
+If service A contains schema that needs to be migrated to service B, we need to orchestrate schema & traffic change.
+Instead of juggling with schema status flags, we suggest the following scenario:
+- service B gets deployed with new schema which includes cycle of attempts to register new schema (for example every 5 sec). 
+- schema-registry responds with validation errors
+- service A without conflicting schema gets deployed & updates schema-registry
+- service B manages to register new schema & stops the cycle
+
 ## Architecture
 
 ### Tech stack
