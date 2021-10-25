@@ -4,7 +4,7 @@ const request = require('request-promise-native');
 exports.getServiceListWithTypeDefs = async () => {
 	const serviceTypeDefinitions = await request({
 		baseUrl: 'http://localhost:6001',
-		method: 'POST',
+		method: 'GET',
 
 		// Simplest approach to get last registered schema versions
 		url: '/schema/latest',
