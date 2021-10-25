@@ -28,6 +28,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - schema usage tracking (for breaking changes)
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
 - async schema registration of new schema with events to avoid polling. `schema-registry -> kafka -> gateway`
+- integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 
 ## Configuration
 
@@ -94,6 +95,8 @@ On pre-commit / deploy make a POST /schema/validate to see if its compatible wit
 
 On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
 Make sure to handle failure.
+
+See [example](examples/schema_registration_client/index.js) for nodejs/ESM.
 
 ### Schema migration
 
