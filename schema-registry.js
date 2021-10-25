@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const logger = require('./app/logger');
 const CustomSqlMigrationSource = require('./app/database/sql-migration-source');
 
