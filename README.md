@@ -29,20 +29,13 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
 - async schema registration of new schema with events to avoid polling. `schema-registry -> kafka -> gateway`
 
-## Installation
-
-We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry) for main node service.
-
-```
-docker-compose up
-```
-
-UI should be now at [http://localhost:6001](http://localhost:6001)
-
 ## Configuration
 
-We rely on docker network and uses hostnames from `docker-compose.yml`.
-Check `app/config.js` to see credentials that node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
+We use environment variables for configuration.
+You can:
+- pass them directly
+- add .env file and dotenv will pick them up
+- add them to `docker-compose.yml` or `Dockerfile`
 
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
@@ -58,10 +51,35 @@ The following are the different environment variables that are looked up that al
 | REDIS_PORT            | Port used when connecting to Redis                                         | 6379                      |
 | REDIS_SECRET          | Password used to connect to Redis                                          | Empty                     |
 | ASSETS_URL            | Controls the url that web assets are served from                           | localhost:6001            |
-| NODE_ENV              | Specifies the environment. Use _production_ for production like deployment | Empty                     |
+| NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
 
-**Note** about `NODE_ENV`: setting the `NODE_ENV` environment variable to _production_ will tell the registry
-to serve web assets (js, css) from their compiled versions in the `dist/assets` directory.
+
+For development we rely on docker network and uses hostnames from `docker-compose.yml`.
+For dynamic service discovery, see `app/config.js`. Node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
+
+
+## Installation
+With default settings, UI should be accessible at [http://localhost:6001](http://localhost:6001)
+
+### On bare host
+```
+git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
+cp example.env .env && nano .env
+node schema-registry.js
+```
+
+### Docker image
+We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry) for main node service.
+
+```
+docker run -e DB_HOST=localhost -e DB_USERNAME=root pipedrive/graphql-schema-registry
+```
+
+### Docker-compose
+```
+git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
+docker-compose up
+```
 
 ## Use cases
 
@@ -77,7 +95,7 @@ Make sure to handle failure.
 ### Schema migration
 If service A contains schema that needs to be migrated to service B, we need to orchestrate schema & traffic change.
 Instead of juggling with schema status flags, we suggest the following scenario:
-- service B gets deployed with new schema which includes cycle of attempts to register new schema (for example every 5 sec). 
+- service B gets deployed with new schema which includes cycle of attempts to register new schema (for example every 5 sec).
 - schema-registry responds with validation errors
 - service A without conflicting schema gets deployed & updates schema-registry
 - service B manages to register new schema & stops the cycle
