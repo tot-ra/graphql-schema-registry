@@ -1,20 +1,26 @@
 const { Kafka } = require('kafkajs');
+const diplomat = require('../diplomat');
+
+const KAFKA_SCHEMA_REGISTRY =
+	process.env.KAFKA_SCHEMA_REGISTRY || 'gql-schema-registry-kafka';
+
+const {
+	clientId,
+	brokers,
+} = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 const kafka = new Kafka({
-	clientId: 'graphql-schema-registry-server',
-	brokers: ['gql-schema-registry-kafka:9092'],
+	clientId,
+	brokers,
 });
 
 const producer = kafka.producer();
 const run = async () => {
 	// Producing
 	await producer.connect();
-	await producer.send({
-		topic: 'test-topic',
-		messages: [{ value: 'Hello KafkaJS user!' }],
-	});
 	return producer;
 };
 
 // run().catch(console.error)
 exports.producer = run;
+exports.KAFKA_SCHEMA_REGISTRY = KAFKA_SCHEMA_REGISTRY;

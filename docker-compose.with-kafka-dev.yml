@@ -39,6 +39,9 @@ services:
       - SERVICE_3000_NAME=schema-registry
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
       - ASYNC_SCHEMA_UPDATES=true
+      - KAFKA_CLIENT=graphql-schema-registry-server
+      - KAFKA_BROKERS=gql-schema-registry-kafka:9092
+      - KAFKA_TOPIC=test-topic
     volumes:
       - .:/app/
     restart: always

@@ -6,18 +6,14 @@ const {
 	deactivateSchema,
 	diffSchemas,
 } = require('../controller/schema');
-const { producer } = require('../kafka/producer');
+const diplomat = require('../diplomat');
 const config = require('../config');
+const { KAFKA_SCHEMA_REGISTRY } = require('../kafka/producer');
 
-let kafkaProducer;
+const {
+	topic
+} = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
-if (config.asyncSchemaUpdates) {
-	producer()
-		.then((p) => {
-			kafkaProducer = p;
-		})
-		.catch(console.error);
-}
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -66,8 +62,8 @@ exports.push = async (req, res) => {
 	);
 
 	if (config.asyncSchemaUpdates) {
-		await kafkaProducer.send({
-			topic: 'test-topic',
+		await globalThis.kafkaProducer.send({
+			topic,
 			messages: [{ value: 'Schema Updated!' }],
 		});
 	}
