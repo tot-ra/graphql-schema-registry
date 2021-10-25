@@ -54,7 +54,7 @@ The following are the different environment variables that are looked up that al
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
 
-For development we rely on docker network and uses hostnames from `docker-compose.yml`.
+For development we rely on docker network and use hostnames from `docker-compose.yml`.
 For dynamic service discovery, see `app/config.js`. Node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
 
 ## Installation
