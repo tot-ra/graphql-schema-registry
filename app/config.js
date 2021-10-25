@@ -20,10 +20,13 @@ module.exports = {
 			secret: process.env.REDIS_SECRET || '',
 		},
 		'gql-schema-registry-kafka': {
-			clientId: process.env.KAFKA_CLIENT || 'graphql-schema-registry-server',
-			brokers: process.env.KAFKA_BROKERS ? process.env.KAFKA_BROKERS.split(',') : ['gql-schema-registry-kafka:9092'],
-			topic: process.env.KAFKA_TOPIC || 'test-topic'
-		}
+			clientId:
+				process.env.KAFKA_CLIENT || 'graphql-schema-registry-server',
+			brokers: process.env.KAFKA_BROKERS
+				? process.env.KAFKA_BROKERS.split(',')
+				: ['gql-schema-registry-kafka:9092'],
+			topic: process.env.KAFKA_TOPIC || 'test-topic',
+		},
 	},
 	asyncSchemaUpdates: Boolean(process.env.ASYNC_SCHEMA_UPDATES || 'false'),
 };

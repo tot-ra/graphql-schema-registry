@@ -59,7 +59,7 @@ The following are the different environment variables that are looked up that al
 | REDIS_SECRET          | Password used to connect to Redis                                          | Empty                     |
 | ASSETS_URL            | Controls the url that web assets are served from                           | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ for production like deployment | Empty                     |
-| ASYNC_SCHEMA_UPDATES  | Specifies if experimental Async Schema Updates is Enabled | false                     |
+| ASYNC_SCHEMA_UPDATES  | Specifies if experimental Async Schema Updates is Enabled                  | false                     |
 
 **Note** about `NODE_ENV`: setting the `NODE_ENV` environment variable to _production_ will tell the registry
 to serve web assets (js, css) from their compiled versions in the `dist/assets` directory.

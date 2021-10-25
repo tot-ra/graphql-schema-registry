@@ -4,10 +4,9 @@ const diplomat = require('../diplomat');
 const KAFKA_SCHEMA_REGISTRY =
 	process.env.KAFKA_SCHEMA_REGISTRY || 'gql-schema-registry-kafka';
 
-const {
-	clientId,
-	brokers,
-} = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
+const { clientId, brokers } = diplomat.getServiceInstance(
+	KAFKA_SCHEMA_REGISTRY
+);
 
 const kafka = new Kafka({
 	clientId,

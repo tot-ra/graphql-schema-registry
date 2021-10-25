@@ -10,10 +10,7 @@ const diplomat = require('../diplomat');
 const config = require('../config');
 const { KAFKA_SCHEMA_REGISTRY } = require('../kafka/producer');
 
-const {
-	topic
-} = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
-
+const { topic } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
