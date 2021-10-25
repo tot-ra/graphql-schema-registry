@@ -7,8 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.0.1] - 2021-10-25
+## [2.1.0] - 2021-10-25
+
 ### Updated
+
+- Added dotenv and ability to set configuration vars in .env file
+
+## [2.0.1] - 2021-10-25
+
+### Updated
+
 - Security update elliptic from 6.5.3 to 6.5.4
 
 ## [2.0.0] - 2021-10-01
@@ -159,7 +167,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.0.1...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.5...v2.0.0
 [1.2.5]: https://github.com/pipedrive/graphql-schema-registry/compare/v1.2.4...v1.2.5
