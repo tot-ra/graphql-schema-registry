@@ -10,11 +10,23 @@ export const FlexRow = styled.div`
 	justify-content: space-between;
 `;
 
+export const ServiceListColumnEmpty = styled.div`
+	padding: 20px;
+	min-width: 300px;
+	flex-shrink: 0;
+	border-right: 1px solid ${colors.black.hex256};
+
+	p {
+		margin: 5px;
+	}
+`;
+
 export const ServiceListColumn = styled.div`
 	min-width: 150px;
 	flex-shrink: 0;
 	border-right: 1px solid ${colors.black.hex256};
 `;
+
 export const SchemaListColumn = styled.div`
 	min-width: 250px;
 	flex-shrink: 0;

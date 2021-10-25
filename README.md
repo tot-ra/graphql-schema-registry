@@ -75,6 +75,14 @@ On pre-commit / deploy make a POST /schema/validate to see if its compatible wit
 On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
 Make sure to handle failure.
 
+### Schema migration
+If service A contains schema that needs to be migrated to service B, we need to orchestrate schema & traffic change.
+Instead of juggling with schema status flags, we suggest the following scenario:
+- service B gets deployed with new schema which includes cycle of attempts to register new schema (for example every 5 sec). 
+- schema-registry responds with validation errors
+- service A without conflicting schema gets deployed & updates schema-registry
+- service B manages to register new schema & stops the cycle
+
 ## Architecture
 
 ### Tech stack
@@ -111,7 +119,7 @@ Migrations are done using knex
 nvm use
 npm install
 npm run build
-docker-compose up -f docker-compose.dev.yml
+docker-compose -f docker-compose.dev.yml up
 ```
 
 ### Running in light mode
@@ -119,7 +127,7 @@ docker-compose up -f docker-compose.dev.yml
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```
-docker-compose up -f docker-compose.light.yml
+docker-compose -f docker-compose.light.yml up
 DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 node schema-registry.js
 ```
 
@@ -146,17 +154,24 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 
 ### Contribution
 
-- Before making PR, make sure to run `npm run version` & fill [CHANGELOG](CHANGELOG.md)
-- Ping [@tot-ra](https://github.com/tot-ra) if PR is stuck
+- Commit often (instead of making huge commits)
+- Add verb at the beginning of commit message
+- Add why you're doing something in commit message
+- Reference issues
+- When making a pull request, be sure to follow the format of what is the problem you're fixing, what was changed & how to test it. Screenshots/videos are a welcome
+- Fill [CHANGELOG](CHANGELOG.md)
 
-#### Honorable mentions
+#### Authors and acknowledgment
 
-Original internal mission that resulted in this project consisted of (in alphabetical order):
+Current maintainer - [@tot-ra](https://github.com/tot-ra). Mention in PR, if it is stuck
+
+Original internal mission that resulted in this project going live:
 
 - [aleksandergasna](https://github.com/aleksandergasna)
 - [ErikSchults](https://github.com/ErikSchults)
 - [LexSwed](https://github.com/LexSwed)
-- [tot-ra](https://github.com/tot-ra)
+
+See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federated-graphql-2a6f2eecc6a4)
 
 ## Rest API documentation
 
@@ -264,7 +279,7 @@ Compares schemas and finds breaking or dangerous changes between provided and la
 - version
 - type_defs
 
-#### DELETE /schema/delete/:schemaId
+#### DELETE /schema/:schemaId
 
 Deletes specified schema
 
@@ -273,6 +288,16 @@ Deletes specified schema
 | Property   | Type   | Comments      |
 | ---------- | ------ | ------------- |
 | `schemaId` | number | ID of sechema |
+
+#### DELETE /service/:name
+
+Deletes specified service including all schemas registered for that service
+
+##### Request params
+
+| Property | Type   | Comments        |
+| -------- | ------ | --------------- |
+| `name`   | string | name of service |
 
 #### GET /persisted_query
 
