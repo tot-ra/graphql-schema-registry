@@ -54,6 +54,7 @@ The following are the different environment variables that are looked up that al
 | REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
+| ASYNC_SCHEMA_UPDATES  | Specifies if experimental Async Schema Updates is Enabled                  | false                     |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 For dynamic service discovery, see `app/config.js`. Node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
@@ -79,6 +80,7 @@ docker run -e DB_HOST=localhost -e DB_USERNAME=root pipedrive/graphql-schema-reg
 ```
 
 ### Docker-compose
+
 
 ```
 git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry

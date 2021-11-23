@@ -6,6 +6,11 @@ const {
 	deactivateSchema,
 	diffSchemas,
 } = require('../controller/schema');
+const diplomat = require('../diplomat');
+const config = require('../config');
+const { KAFKA_SCHEMA_REGISTRY } = require('../kafka/producer');
+
+const { topic } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -52,6 +57,13 @@ exports.push = async (req, res) => {
 			url: Joi.string().uri().min(1).max(255).allow(''),
 		})
 	);
+
+	if (config.asyncSchemaUpdates) {
+		await globalThis.kafkaProducer.send({
+			topic,
+			messages: [{ value: 'Schema Updated!' }],
+		});
+	}
 
 	return res.json({
 		success: true,

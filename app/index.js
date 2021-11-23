@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('./logger');
 const { get } = require('lodash');
 const initGraphql = require('./graphql');
+const { producer } = require('./kafka/producer');
 const config = require('./config');
 
 const app = express();
@@ -103,6 +104,13 @@ process.on('SIGTERM', () => {
 exports.init = async () => {
 	if (server) {
 		return server;
+	}
+	if (config.asyncSchemaUpdates) {
+		producer()
+			.then((p) => {
+				globalThis.kafkaProducer = p;
+			})
+			.catch(console.error);
 	}
 
 	server = app.listen(config.port, () => {

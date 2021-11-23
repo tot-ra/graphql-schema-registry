@@ -1,0 +1,104 @@
+version: '3'
+services:
+  gql-schema-registry-db:
+    image: mysql:8
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    environment:
+      SERVICE_3306_NAME: gql-schema-registry-db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: schema_registry
+    ports:
+      - 6000:3306
+    volumes:
+      - gql-schema-registry-db-volume:/var/lib/mysql
+    healthcheck:
+      test:
+        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'healthcheck']
+      timeout: 5s
+      retries: 10
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-db'
+
+  gql-schema-registry:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command:
+      node_modules/nodemon/bin/nodemon.js --watch schema-registry.js --watch app
+      --inspect=0.0.0.0:5850 schema-registry.js
+    ports:
+      - 6001:3000
+      - 6002:5850
+    environment:
+      - ENV_ID=dev
+      - SERVICE_5850_IGNORE=true
+      - WITH_WEBPACK=${WITH_WEBPACK-1}
+      - SERVICE_NAME=schema-registry
+      - SERVICE_3000_NAME=schema-registry
+      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - ASYNC_SCHEMA_UPDATES=true
+      - KAFKA_CLIENT=graphql-schema-registry-server
+      - KAFKA_BROKERS=gql-schema-registry-kafka:9092
+      - KAFKA_TOPIC=test-topic
+    volumes:
+      - .:/app/
+    restart: always
+    depends_on:
+      - gql-schema-registry-redis
+      - gql-schema-registry-db
+      - gql-schema-registry-kafka
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry'
+
+  gql-schema-registry-redis:
+    image: redis:6-alpine
+    ports:
+      - 6004:6379
+    environment:
+      SERVICE_NAME: 'gql-schema-registry-redis'
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-redis'
+
+  gql-schema-registry-zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - 2181:2181
+    environment:
+      SERVICE_NAME: 'gql-schema-registry-zookeeper'
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-zookeeper'
+
+  gql-schema-registry-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - gql-schema-registry-zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: gql-schema-registry-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://gql-schema-registry-kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      SERVICE_NAME: 'gql-schema-registry-kafka'
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-kafka'
+
+networks:
+  gql-schema:
+
+volumes:
+  gql-schema-registry-db-volume:
