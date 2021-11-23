@@ -7,9 +7,7 @@ const KAFKA_SCHEMA_REGISTRY =
 let producer = null;
 
 exports.init = async () => {
-	const { host, port } = diplomat.getServiceInstance(
-		KAFKA_SCHEMA_REGISTRY
-	);
+	const { host, port } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 	const kafka = new Kafka({
 		clientId: process.env.KAFKA_CLIENT || 'graphql-schema-registry-server',
@@ -21,16 +19,14 @@ exports.init = async () => {
 };
 
 exports.send = (data) => {
-	if(!producer) {
-        throw new Error('Kafka producer not initialized');
-    }
+	if (!producer) {
+		throw new Error('Kafka producer not initialized');
+	}
 
 	producer.send({
-        topic: process.env.KAFKA_TOPIC || 'test-topic',
-        messages: [
-            { value: JSON.stringify(data) },
-        ],
-    });
-}
+		topic: process.env.KAFKA_TOPIC || 'test-topic',
+		messages: [{ value: JSON.stringify(data) }],
+	});
+};
 
 exports.KAFKA_SCHEMA_REGISTRY = KAFKA_SCHEMA_REGISTRY;
