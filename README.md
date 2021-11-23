@@ -17,6 +17,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Provides UI for developers to see stored schema & its history diff
 - Stores & shows in UI persisted queries passed by the gateway for debugging
 - Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
+- Async schema registration of new schema with events to avoid polling (`schema-registry -> kafka -> gateway`)
 
 <img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
 
@@ -27,7 +28,6 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - client tracking (for breaking changes)
 - schema usage tracking (for breaking changes)
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
-- async schema registration of new schema with events to avoid polling. `schema-registry -> kafka -> gateway`
 - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 
 ## Configuration
@@ -54,10 +54,13 @@ The following are the different environment variables that are looked up that al
 | REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
-| ASYNC_SCHEMA_UPDATES  | Specifies if experimental Async Schema Updates is Enabled                  | false                     |
+| ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
+| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
+| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
-For dynamic service discovery, see `app/config.js`. Node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
+Node service uses to connect to mysql & redis and change it if you install it with own setup.
+For dynamic service discovery (if you need multiple hosts for scaling), override `app/config.js` and `diplomat.js`
 
 ## Installation
 
@@ -80,7 +83,6 @@ docker run -e DB_HOST=localhost -e DB_USERNAME=root pipedrive/graphql-schema-reg
 ```
 
 ### Docker-compose
-
 
 ```
 git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry

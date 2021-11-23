@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [2.2.0] - 2021-11-23
+
+### Added
+- New feature - asynchroneous notification of gateway via kafka to avoid polling & reduce schema inconsistency time. See [examples/gateway_service_kafka_notification] for gateway. Use env vars to configure schema-registry
+
 ## [2.1.1] - 2021-11-08
 
 ### Updated

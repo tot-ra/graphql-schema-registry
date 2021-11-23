@@ -40,7 +40,8 @@ services:
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
       - ASYNC_SCHEMA_UPDATES=true
       - KAFKA_CLIENT=graphql-schema-registry-server
-      - KAFKA_BROKERS=gql-schema-registry-kafka:9092
+      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
+      - KAFKA_BROKER_PORT=9092
       - KAFKA_TOPIC=test-topic
     volumes:
       - .:/app/
