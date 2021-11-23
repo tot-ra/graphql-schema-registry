@@ -54,10 +54,13 @@ The following are the different environment variables that are looked up that al
 | REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
-| ASYNC_SCHEMA_UPDATES  | Specifies if experimental Async Schema Updates is Enabled                  | false                     |
+| ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
+| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka  |
+| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
-For dynamic service discovery, see `app/config.js`. Node service uses to connect to mysql & redis and change it if you install it with own setup. If you use dynamic service discovery (consul/etcd), edit `diplomat.js`
+Node service uses to connect to mysql & redis and change it if you install it with own setup.
+For dynamic service discovery (if you need multiple hosts for scaling), override `app/config.js` and `diplomat.js`
 
 ## Installation
 

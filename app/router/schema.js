@@ -6,11 +6,8 @@ const {
 	deactivateSchema,
 	diffSchemas,
 } = require('../controller/schema');
-const diplomat = require('../diplomat');
 const config = require('../config');
-const { KAFKA_SCHEMA_REGISTRY } = require('../kafka/producer');
-
-const { topic } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
+const kafka = require('../kafka');
 
 exports.composeLatest = async (req, res) => {
 	const schema = await getAndValidateSchema();
@@ -58,16 +55,15 @@ exports.push = async (req, res) => {
 		})
 	);
 
+	const data = await pushAndValidateSchema({ service });
+
 	if (config.asyncSchemaUpdates) {
-		await globalThis.kafkaProducer.send({
-			topic,
-			messages: [{ value: 'Schema Updated!' }],
-		});
+		await kafka.send(data);
 	}
 
 	return res.json({
 		success: true,
-		data: await pushAndValidateSchema({ service }),
+		data,
 	});
 };
 
