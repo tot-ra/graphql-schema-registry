@@ -24,5 +24,9 @@ module.exports = {
 			port: process.env.KAFKA_BROKER_PORT || '9092',
 		},
 	},
-	asyncSchemaUpdates: Boolean(process.env.ASYNC_SCHEMA_UPDATES || 'false'),
+	asyncSchemaUpdates: booleanFor(process.env.ASYNC_SCHEMA_UPDATES),
 };
+
+function booleanFor(variable) {
+	return (variable || 'false').toLowerCase() === 'true';
+}
