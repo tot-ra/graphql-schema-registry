@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] - 2021-12-08
+### Updated
+- Fixed ASYNC_SCHEMA_UPDATES, when the variable is not set, Kafka objects get initialized, and when you don't have Kafka running, it results in a startup error
+
 ## [2.2.0] - 2021-11-23
 
 ### Added
@@ -179,7 +183,9 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.1.1...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.2.0...v2.2.1
+[2.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.0.0...v2.0.1
