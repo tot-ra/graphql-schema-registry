@@ -39,7 +39,7 @@
     "@graphql-inspector/core": "^2.3.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
-    "apollo-server-express": "^2.19.0",
+    "apollo-server-express": "^2.25.3",
     "async-redis": "^1.1.7",
     "body-parser": "^1.19.0",
     "dataloader": "^2.0.0",
