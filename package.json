@@ -50,7 +50,7 @@
     "graphql-voyager": "^1.0.0-rc.31",
     "joi": "^17.2.1",
     "kafkajs": "^1.15.0",
-    "knex": "^0.20.2",
+    "knex": "^0.95.14",
     "lodash": "^4.17.20",
     "mysql2": "^2.0.1",
     "object-hash": "^2.0.1",
