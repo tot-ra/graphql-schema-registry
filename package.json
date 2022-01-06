@@ -35,7 +35,7 @@
   "private": false,
   "dependencies": {
     "@apollo/client": "^3.3.4",
-    "@apollo/federation": "^0.20.7",
+    "@apollo/federation": "^0.33.8",
     "@graphql-inspector/core": "^2.3.0",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
