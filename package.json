@@ -34,7 +34,7 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
-    "@apollo/client": "^3.3.4",
+    "@apollo/client": "^3.5.5",
     "@apollo/federation": "^0.20.7",
     "@graphql-inspector/core": "^2.3.0",
     "@material-ui/core": "^4.11.0",
