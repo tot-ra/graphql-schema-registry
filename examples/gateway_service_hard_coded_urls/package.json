@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@apollo/gateway": "^0.20.0",
+    "@apollo/gateway": "^0.44.1",
     "apollo-server-core": "^2.17.0",
     "apollo-server-env": "^2.4.5",
     "body-parser": "^1.19.0",
