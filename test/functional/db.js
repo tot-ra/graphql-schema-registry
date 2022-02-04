@@ -1,8 +1,10 @@
 const knex = require('knex');
+let db;
 
 module.exports = {
-	resetDb: async () => {
-		const db = knex({
+	db,
+	connect: async()=>{
+		db = knex({
 			client: 'mysql2',
 			log: {
 				warn: console.info,
@@ -23,14 +25,18 @@ module.exports = {
 				};
 			},
 		});
+	},
 
+	reset: async () => {
 		await Promise.all([
 			db('persisted_queries').truncate(),
 			db('container_schema').truncate(),
 		]);
 
 		await Promise.all([db('services').delete(), db('schema').delete()]);
-
-		await db.destroy();
 	},
+
+	disconnect: async () => {
+		await db.destroy();
+	}
 };
