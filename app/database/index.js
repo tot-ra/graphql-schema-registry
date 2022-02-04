@@ -22,7 +22,6 @@ function logQueryError(error, { sql }) {
 }
 
 const {
-	client,
 	host,
 	port,
 	username,
@@ -31,7 +30,7 @@ const {
 } = diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
 
 const connection = knex({
-	client: client,
+	client: 'mysql2',
 	log: {
 		warn: logger.info,
 		error: logger.error,
