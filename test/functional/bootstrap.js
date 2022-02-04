@@ -4,7 +4,7 @@ const request = require('request-promise');
 let db;
 
 async function waitUntilDbIsReadyOr20Sec() {
-	for (const i = 0; i < 20; i++) {
+	for (let i = 0; i < 20; i++) {
 		if (await db.schema.hasTable('persisted_queries')) {
 			return true;
 		}
@@ -14,7 +14,7 @@ async function waitUntilDbIsReadyOr20Sec() {
 }
 
 async function waitUntilServiceIsReadyOr20Sec() {
-	for (const i = 0; i < 10; i++) {
+	for (let i = 0; i < 10; i++) {
 		let result = await request({
 			method: 'GET',
 			uri: 'http://localhost:6001/health',
