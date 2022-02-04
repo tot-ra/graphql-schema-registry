@@ -7,7 +7,6 @@ module.exports = {
 
 	serviceDiscovery: {
 		'gql-schema-registry-db': {
-			client: 'mysql2',
 			host: process.env.DB_HOST || 'gql-schema-registry-db',
 			port: process.env.DB_PORT || '3306',
 			username: process.env.DB_USERNAME || 'root',

@@ -1,0 +1,41 @@
+name: Functional Tests
+
+on:
+  push:
+    branches:
+      - main
+      - features/**
+      - dependabot/**
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Start containers
+        run: docker-compose -f "docker-compose.dev.yml" up -d --build
+
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install dependencies
+        run: npm build
+
+      - name: Run tests
+        run: npm run test-functional
+
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down
