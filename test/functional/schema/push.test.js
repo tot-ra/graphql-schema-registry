@@ -1,24 +1,15 @@
 const request = require('request-promise');
-const {
-	waitUntilServiceIsReadyOr20Sec,
-	connect,
-	reset,
-	disconnect,
-} = require('../bootstrap');
-
-beforeAll(async () => {
-	await connect();
-	await waitUntilServiceIsReadyOr20Sec();
-});
-
-afterAll(async () => {
-	await disconnect();
-});
+const { reset, connect, disconnect } = require('../db');
 
 beforeEach(async () => {
 	await reset();
 });
-
+beforeAll(async () => {
+	await connect();
+});
+afterAll(async () => {
+	await disconnect();
+});
 describe('POST /schema/push', function () {
 	it('returns 400 if same Query.property is attempted to be redefined by other service', async () => {
 		let result = await request({

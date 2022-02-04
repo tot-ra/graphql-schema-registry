@@ -6,4 +6,5 @@ module.exports = {
 	testMatch: ['<rootDir>/test/functional/**/*.test.js'],
 	modulePaths: ['<rootDir>'],
 	maxWorkers: 1,
+	globalSetup: '<rootDir>/test/functional/globalSetup.js',
 };
