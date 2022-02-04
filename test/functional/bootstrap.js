@@ -9,7 +9,7 @@ async function waitUntilDbIsReadyOr20Sec() {
 			return true;
 		}
 		console.log('Waiting for DB to be ready ...');
-		await new Promise(resolve => setTimeout(resolve, 1000));
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 	}
 }
 
@@ -26,7 +26,7 @@ async function waitUntilServiceIsReadyOr20Sec() {
 			return true;
 		}
 		console.log('Waiting for service to be ready ...');
-		await new Promise(resolve => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 2000));
 	}
 }
 

@@ -1,5 +1,10 @@
 const request = require('request-promise');
-const { waitUntilServiceIsReadyOr20Sec, connect, reset, disconnect } = require('../bootstrap');
+const {
+	waitUntilServiceIsReadyOr20Sec,
+	connect,
+	reset,
+	disconnect,
+} = require('../bootstrap');
 
 beforeAll(async () => {
 	await connect();
