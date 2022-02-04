@@ -36,10 +36,10 @@ describe('GET /schema/latest', function () {
 			resolveWithFullResponse: true,
 			json: true,
 			body: {
-				"name": "service_a",
-				"version": "ke9j34fuuei",
-				"type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n"
-			}
+				name: 'service_a',
+				version: 'ke9j34fuuei',
+				type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
+			},
 		});
 		expect(result.statusCode).toBe(200);
 
@@ -57,10 +57,10 @@ describe('GET /schema/latest', function () {
 			expect.objectContaining({
 				id: 1,
 				is_active: 1,
-				name: "service_a",
-				type_defs: "\n\ttype Query {\n\t\thello: String\n\t}\n",
+				name: 'service_a',
+				type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
 				url: null,
-				version: "ke9j34fuuei"
+				version: 'ke9j34fuuei',
 			})
 		);
 	});

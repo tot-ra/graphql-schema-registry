@@ -3,7 +3,7 @@ let db;
 
 module.exports = {
 	db,
-	connect: async()=>{
+	connect: async () => {
 		db = knex({
 			client: 'mysql2',
 			log: {
@@ -38,5 +38,5 @@ module.exports = {
 
 	disconnect: async () => {
 		await db.destroy();
-	}
+	},
 };
