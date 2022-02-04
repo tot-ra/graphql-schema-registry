@@ -1,8 +1,9 @@
 const request = require('request-promise');
-const { db, connect, reset, disconnect } = require('../db');
+const { waitUntilServiceIsReadyOr20Sec, connect, reset, disconnect } = require('../bootstrap');
 
 beforeAll(async () => {
 	await connect();
+	await waitUntilServiceIsReadyOr20Sec();
 });
 
 afterAll(async () => {
