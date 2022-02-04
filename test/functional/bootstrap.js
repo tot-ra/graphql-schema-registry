@@ -15,17 +15,21 @@ async function waitUntilDbIsReadyOr20Sec() {
 
 async function waitUntilServiceIsReadyOr20Sec() {
 	for (let i = 0; i < 10; i++) {
-		let result = await request({
-			method: 'GET',
-			uri: 'http://localhost:6001/health',
-			resolveWithFullResponse: true,
-			json: true,
-		});
+		try {
+			let result = await request({
+				method: 'GET',
+				uri: 'http://localhost:6001/health',
+				resolveWithFullResponse: true,
+				json: true,
+			});
 
-		if (result.statusCode === 200) {
-			return true;
+			if (result.statusCode === 200) {
+				return true;
+			}
+		} catch (e) {
+			console.log('Waiting for service to be ready ...');
 		}
-		console.log('Waiting for service to be ready ...');
+
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 	}
 }
