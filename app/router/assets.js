@@ -1,5 +1,5 @@
 exports.router = (router) => {
-		router.use(require('express').static('dist'));
+	router.use(require('express').static('dist'));
 };
 
 exports.indexHtml = () => {
