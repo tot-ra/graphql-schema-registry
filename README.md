@@ -189,6 +189,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 - Reference issues
 - When making a pull request, be sure to follow the format of what is the problem you're fixing, what was changed & how to test it. Screenshots/videos are a welcome
 - Fill [CHANGELOG](CHANGELOG.md)
+- To avoid vulnerabilities, please use fixed versions in package.json
 
 #### Authors and acknowledgment
 

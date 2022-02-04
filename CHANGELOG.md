@@ -7,13 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.2.1] - 2021-12-08
+## [2.2.2] - 2022-02-04
+
 ### Updated
+
+- fixed package.lock registry URL to registry.npmjs.org
+- switching to fixed node versions
+- updated npm dependencies
+
+## [2.2.1] - 2021-12-08
+
+### Updated
+
 - Fixed ASYNC_SCHEMA_UPDATES, when the variable is not set, Kafka objects get initialized, and when you don't have Kafka running, it results in a startup error
 
 ## [2.2.0] - 2021-11-23
 
 ### Added
+
 - New feature - asynchroneous notification of gateway via kafka to avoid polling & reduce schema inconsistency time. See [examples/gateway_service_kafka_notification] for gateway. Use env vars to configure schema-registry
 
 ## [2.1.1] - 2021-11-08
