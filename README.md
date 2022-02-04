@@ -190,7 +190,7 @@ npm run test-unit
 ```
 
 Functional tests require docker, mostly blackbox type - real http requests are done against containers.
-DB tables are truncated after every test from within `test/functional/db.js`
+DB tables are truncated after every test from within `test/functional/bootstrap.js`
 Jest runs in single worker mode to avoid tests from affecting each other due to same state.
 
 ```
