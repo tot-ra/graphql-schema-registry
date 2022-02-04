@@ -20,11 +20,9 @@ describe('POST /schema/compose', function () {
 			uri: 'http://localhost:6001/schema/compose',
 			resolveWithFullResponse: true,
 			json: true,
-			body:{
-				services:[
-					{ "name": "service_a", "version": "ke9j34fuuei" },
-				]
-			}
+			body: {
+				services: [{ name: 'service_a', version: 'ke9j34fuuei' }],
+			},
 		});
 
 		expect(result.statusCode).toBe(200);
@@ -93,39 +91,35 @@ describe('POST /schema/compose', function () {
 				uri: 'http://localhost:6001/schema/compose',
 				resolveWithFullResponse: true,
 				json: true,
-				body:{
-					services:[
-						{ "name": "service_a", "version": "v2" },
-						{ "name": "service_b", "version": "v1" },
-					]
-				}
+				body: {
+					services: [
+						{ name: 'service_a', version: 'v2' },
+						{ name: 'service_b', version: 'v1' },
+					],
+				},
 			});
 
 			expect(result.statusCode).toBe(200);
 			expect(result.body.success).toEqual(true);
 			expect(result.body.data.length).toEqual(2); // notice only one item
 			expect(result.body.data[0]).toEqual(
-				expect.objectContaining(
-					{
-						id: 2,
-						is_active: 1,
-						name: 'service_a',
-						type_defs: '\n\ttype Query {\n\t\tprivet: Int\n\t}\n',
-						version: 'v2',
-					}
-				)
+				expect.objectContaining({
+					id: 2,
+					is_active: 1,
+					name: 'service_a',
+					type_defs: '\n\ttype Query {\n\t\tprivet: Int\n\t}\n',
+					version: 'v2',
+				})
 			);
 
 			expect(result.body.data[1]).toEqual(
-				expect.objectContaining(
-					{
-						id: 3,
-						is_active: 1,
-						name: 'service_b',
-						type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
-						version: 'v1',
-					},
-				)
+				expect.objectContaining({
+					id: 3,
+					is_active: 1,
+					name: 'service_b',
+					type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
+					version: 'v1',
+				})
 			);
 		});
 	});
