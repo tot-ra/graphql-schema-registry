@@ -1,7 +1,7 @@
-const knex = require('knex')
+const knex = require('knex');
 
 module.exports = {
-	resetDb: async() => {
+	resetDb: async () => {
 		const db = knex({
 			client: 'mysql2',
 			log: {
@@ -29,11 +29,8 @@ module.exports = {
 			db('container_schema').truncate(),
 		]);
 
-		await Promise.all([
-			db('services').delete(),
-			db('schema').delete(),
-		]);
+		await Promise.all([db('services').delete(), db('schema').delete()]);
 
 		await db.destroy();
-	}
+	},
 };

@@ -3,8 +3,6 @@ module.exports = {
 	resetModules: true,
 	resetMocks: true,
 	collectCoverage: false,
-	testMatch: [
-		'<rootDir>/test/functional/**/*.test.js',
-	],
+	testMatch: ['<rootDir>/test/functional/**/*.test.js'],
 	modulePaths: ['<rootDir>'],
 };
