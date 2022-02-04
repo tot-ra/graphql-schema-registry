@@ -28,12 +28,10 @@ module.exports = {
 	},
 
 	reset: async () => {
-		await Promise.all([
-			db('persisted_queries').truncate(),
-			db('container_schema').truncate(),
-		]);
-
-		await Promise.all([db('services').delete(), db('schema').delete()]);
+		await db('persisted_queries').truncate();
+		await db('container_schema').truncate();
+		await db('services').delete();
+		await db('schema').delete();
 	},
 
 	disconnect: async () => {

@@ -181,7 +181,23 @@ The command can be prefixed with any environment variable necessary to configure
 DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
-### Contribution
+## Testing
+
+Unit tests use jest, coverage is quite low as most logic is in db or libraries.
+
+```
+npm run test-unit
+```
+
+Functional tests require docker, mostly blackbox type - real http requests are done against containers.
+DB tables are truncated after every test from within `test/functional/db.js`
+Jest runs in single worker mode to avoid tests from affecting each other due to same state.
+
+```
+npm run test-functional
+```
+
+## Contribution
 
 - Commit often (instead of making huge commits)
 - Add verb at the beginning of commit message
@@ -191,7 +207,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 - Fill [CHANGELOG](CHANGELOG.md)
 - To avoid vulnerabilities, please use fixed versions in package.json
 
-#### Authors and acknowledgment
+### Authors and acknowledgment
 
 Current maintainer - [@tot-ra](https://github.com/tot-ra). Mention in PR, if it is stuck
 
