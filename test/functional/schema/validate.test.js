@@ -1,24 +1,16 @@
 const request = require('request-promise');
-const {
-	waitUntilServiceIsReadyOr20Sec,
-	connect,
-	reset,
-	disconnect,
-} = require('../bootstrap');
+const { reset, connect, disconnect } = require('../db');
 
+beforeEach(async () => {
+	await reset();
+});
 beforeAll(async () => {
 	await connect();
-	await waitUntilServiceIsReadyOr20Sec();
 });
 
 afterAll(async () => {
 	await disconnect();
 });
-
-beforeEach(async () => {
-	await reset();
-});
-
 describe('POST /schema/validate', function () {
 	it('returns 200 if db was clean', async () => {
 		let result = await request({

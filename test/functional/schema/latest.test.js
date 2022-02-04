@@ -1,24 +1,15 @@
 const request = require('request-promise');
-const {
-	waitUntilServiceIsReadyOr20Sec,
-	connect,
-	reset,
-	disconnect,
-} = require('../bootstrap');
-
-beforeAll(async () => {
-	await connect();
-	await waitUntilServiceIsReadyOr20Sec();
-});
-
-afterAll(async () => {
-	await disconnect();
-});
+const { reset, connect, disconnect } = require('../db');
 
 beforeEach(async () => {
 	await reset();
 });
-
+beforeAll(async () => {
+	await connect();
+});
+afterAll(async () => {
+	await disconnect();
+});
 describe('GET /schema/latest', function () {
 	it('returns 200 with empty body', async () => {
 		const result = await request({
