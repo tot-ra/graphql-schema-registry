@@ -3,12 +3,12 @@ name: Functional Tests
 on:
   push:
     branches:
-      - main
+      - master
       - features/**
       - dependabot/**
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   docker:
