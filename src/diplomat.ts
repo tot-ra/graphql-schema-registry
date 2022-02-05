@@ -1,6 +1,6 @@
-const config = require('./config');
+import config from './config';
 
-module.exports = {
+export default {
 	getServiceInstance: (name) => {
 		if (!config.serviceDiscovery[name]) {
 			throw new Error(`undefined service ${name} networkaddress`);

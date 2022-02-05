@@ -1,9 +1,9 @@
-const Joi = require('joi');
-const { get, set, getSince } = require('../database/persisted_queries');
+import Joi from 'joi';
+import PersistedQueriesModel from '../database/persisted_queries';
 
-exports.get = async (req, res) => {
+export async function get (req, res) {
 	const key = Joi.attempt(req.query.key, Joi.string().required());
-	const persistedQuery = await get({ key });
+	const persistedQuery = await PersistedQueriesModel.get({ key });
 
 	return res.json({
 		success: true,
@@ -11,7 +11,7 @@ exports.get = async (req, res) => {
 	});
 };
 
-exports.create = async (req, res) => {
+export async function create (req, res) {
 	const { key, value } = Joi.attempt(
 		req.body,
 		Joi.object().keys({
@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
 		})
 	);
 
-	await set({
+	await PersistedQueriesModel.set({
 		persistedQuery: {
 			key,
 			query: value,

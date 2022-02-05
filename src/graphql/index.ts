@@ -1,7 +1,7 @@
-const { ApolloServer } = require('apollo-server-express');
+import { ApolloServer } from 'apollo-server-express';
 
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
+import typeDefs from './schema';
+import resolvers from './resolvers';
 
 const server = new ApolloServer({
 	typeDefs,
@@ -11,6 +11,6 @@ const server = new ApolloServer({
 	}),
 });
 
-module.exports = (app) => {
+export default (app) => {
 	server.applyMiddleware({ app });
 };

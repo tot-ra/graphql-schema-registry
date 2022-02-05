@@ -1,4 +1,6 @@
-exports.PublicError = class PublicError extends Error {
+export class PublicError extends Error {
+	isDisplayedToUser: boolean;
+
 	constructor(message, props) {
 		if (typeof message === 'object') {
 			super(message.message);
@@ -11,12 +13,14 @@ exports.PublicError = class PublicError extends Error {
 		if (props) {
 			Object.assign(this, props);
 		}
+
+		this.isDisplayedToUser = true;
 	}
 };
 
-exports.PublicError.prototype.isDisplayedToUser = true;
+export class InternalError extends Error {
+	isDisplayedToUser: boolean;
 
-exports.InternalError = class InternalError extends Error {
 	constructor(message, props) {
 		if (typeof message === 'object') {
 			super(message.message);
@@ -29,7 +33,7 @@ exports.InternalError = class InternalError extends Error {
 		if (props) {
 			Object.assign(this, props);
 		}
+
+		this.isDisplayedToUser = true;
 	}
 };
-
-exports.InternalError.prototype.isDisplayedToUser = false;

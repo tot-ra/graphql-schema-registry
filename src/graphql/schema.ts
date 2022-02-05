@@ -1,6 +1,6 @@
-const { gql } = require('apollo-server-express');
+import { gql } from 'apollo-server-express';
 
-module.exports = gql`
+export default gql`
 	scalar Time
 	scalar Date
 	scalar DateTime

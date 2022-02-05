@@ -1,9 +1,8 @@
-const logger = require('../logger');
+import logger from '../logger';
+import servicesModel from '../database/services';
 
-const { deleteService } = require('../database/services');
-
-exports.deleteService = async ({ name }) => {
-	const services = await deleteService({ name });
+export async function deleteService ({ name }) {
+	const services = await servicesModel.deleteService({ name });
 	if (services > 0) {
 		logger.info('Deleted service from DB', { name });
 	} else {

@@ -1,6 +1,6 @@
-const diplomat = require('../diplomat');
-const log = require('../logger');
-const redis = require('async-redis');
+import diplomat from '../diplomat';
+import log from '../logger';
+import redis from 'async-redis';
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
@@ -10,8 +10,8 @@ const redisWrapper = {
 	redisInstance: null,
 
 	getInstance: async () => {
-		if (this.redisInstance) {
-			return this.redisInstance;
+		if (redisWrapper.redisInstance) {
+			return redisWrapper.redisInstance;
 		}
 
 		const { host, port, password } = await diplomat.getServiceInstance(
@@ -35,15 +35,15 @@ const redisWrapper = {
 			},
 		};
 
-		this.redisInstance = redis.createClient(redisOptions);
+		redisWrapper.redisInstance = redis.createClient(redisOptions);
 
-		this.redisInstance.on('ready', redisWrapper.onReady);
-		this.redisInstance.on('connect', redisWrapper.onConnect);
-		this.redisInstance.on('reconnecting', redisWrapper.onReconnecting);
-		this.redisInstance.on('error', redisWrapper.onError);
-		this.redisInstance.on('end', redisWrapper.onEnd);
+		redisWrapper.redisInstance.on('ready', redisWrapper.onReady);
+		redisWrapper.redisInstance.on('connect', redisWrapper.onConnect);
+		redisWrapper.redisInstance.on('reconnecting', redisWrapper.onReconnecting);
+		redisWrapper.redisInstance.on('error', redisWrapper.onError);
+		redisWrapper.redisInstance.on('end', redisWrapper.onEnd);
 
-		return this.redisInstance;
+		return redisWrapper.redisInstance;
 	},
 
 	get: async (key) => {
@@ -84,4 +84,4 @@ const redisWrapper = {
 	},
 };
 
-module.exports = redisWrapper;
+export default redisWrapper;

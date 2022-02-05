@@ -1,10 +1,10 @@
-const logger = require('../logger');
-const { parse } = require('graphql');
-const { composeAndValidate } = require('@apollo/federation');
+import logger from '../logger';
+import { parse } from 'graphql';
+import { composeAndValidate } from '@apollo/federation';
 
-const { PublicError } = require('./error');
+import { PublicError } from './error';
 
-exports.composeAndValidateSchema = (servicesSchemaMap) => {
+export function composeAndValidateSchema (servicesSchemaMap) {
 	let schema;
 	let errors = [];
 

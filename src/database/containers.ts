@@ -1,11 +1,11 @@
-const { knex } = require('./index');
+import { connection } from './index';
 
 const containersModel = {
 	getSchemaContainers: async function ({
 		schemaId,
 		limit = 100,
 		offset = 0,
-		trx = knex,
+		trx = connection,
 	}) {
 		return trx('container_schema')
 			.select(
@@ -22,7 +22,7 @@ const containersModel = {
 			.limit(limit);
 	},
 
-	getSchemaContainerCount: async function ({ schemaId, trx = knex }) {
+	getSchemaContainerCount: async function ({ schemaId, trx = connection }) {
 		const result = await trx('container_schema')
 			.count('id', { as: 'cnt' })
 			.where('schema_id', '=', schemaId)
@@ -31,7 +31,7 @@ const containersModel = {
 		return result[0].cnt;
 	},
 
-	isDev: async function ({ schemaId, trx = knex }) {
+	isDev: async function ({ schemaId, trx = connection }) {
 		const result = await trx('container_schema')
 			.count('id', { as: 'cnt' })
 			.where('schema_id', '=', schemaId)
@@ -41,4 +41,4 @@ const containersModel = {
 	},
 };
 
-module.exports = containersModel;
+export default containersModel;

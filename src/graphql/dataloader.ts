@@ -1,13 +1,13 @@
-const Dataloader = require('dataloader');
-const _ = require('lodash');
-const { getServicesByIds } = require('../database/services');
-const { getSchemasForServices } = require('../database/schema');
+import Dataloader from 'dataloader';
+import _ from 'lodash';
+import servicesModel from '../database/services';
+import schemaModel from '../database/schema';
 
-module.exports = () => ({
+export default () => ({
 	schemas: new Dataloader(
 		async (keys) => {
-			const serviceIds = keys.map((key) => key.serviceId);
-			const schemas = await getSchemasForServices({
+			const serviceIds = keys.map((key: any) => key.serviceId);
+			const schemas = await schemaModel.getSchemasForServices({
 				serviceIds,
 				limit: _.get(keys, '[0].limit'),
 				offset: _.get(keys, '[0].offset'),
@@ -28,8 +28,8 @@ module.exports = () => ({
 		}
 	),
 
-	services: new Dataloader(async (ids) => {
-		const services = await getServicesByIds({ ids });
+	services: new Dataloader(async (ids: string[]) => {
+		const services = await servicesModel.getServicesByIds({ ids });
 		const byIds = new Map(services.map((service) => [service.id, service]));
 
 		return ids.map((id) => byIds.get(id));

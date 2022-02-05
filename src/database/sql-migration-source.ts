@@ -1,8 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 class CustomSqlMigrationSource {
-	constructor(migrationDirectory) {
+	migrationDirectory: string;
+
+	constructor(migrationDirectory: string) {
 		this.migrationDirectory = migrationDirectory;
 	}
 
@@ -26,11 +28,11 @@ class CustomSqlMigrationSource {
 		return Promise.resolve(transformed);
 	}
 
-	getMigrationName(migration) {
+	getMigrationName(migration: any) {
 		return migration.file;
 	}
 
-	getMigration(migration) {
+	getMigration(migration: any) {
 		const migrationPath = path.resolve(
 			process.cwd(),
 			this.migrationDirectory,
@@ -38,16 +40,16 @@ class CustomSqlMigrationSource {
 		);
 
 		return {
-			up: async function up(knex) {
+			up: async function up(knex:any) {
 				const sql = fs.readFileSync(migrationPath, 'utf8');
 
 				return knex.raw(sql);
 			},
-			down: async function down(knex) {
+			down: async function down() {
 				//noop
 			},
 		};
 	}
 }
 
-module.exports = CustomSqlMigrationSource;
+export default CustomSqlMigrationSource;

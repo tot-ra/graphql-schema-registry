@@ -1,6 +1,6 @@
-const { assert } = require('chai');
-const { gql } = require('apollo-server-express');
-const { composeAndValidateSchema } = require('./federation');
+import { assert } from 'chai';
+import { gql } from 'apollo-server-express';
+import { composeAndValidateSchema } from './federation';
 
 describe('app/helpers/federation.js', () => {
 	it('schema validation supports directives', () => {

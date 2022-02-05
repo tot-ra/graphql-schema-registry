@@ -1,4 +1,4 @@
-module.exports = async (req, res, next) => {
+export default async (req, res, next) => {
 	const protocol = req.protocol;
 
 	Object.defineProperty(req, 'protocol', {

@@ -3,6 +3,7 @@
   "version": "2.2.4",
   "description": "Graphql schema registry",
   "main": "schema-registry.js",
+  "type": "module",
   "scripts": {
     "test": "./node_modules/.bin/jest --config test/unit/jest.config.js",
     "coverage": "./node_modules/.bin/jest --config test/unit/jest.coverage.js && coveralls < coverage/lcov.info",
@@ -82,6 +83,7 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
     "file-loader": "^5.0.2",
+    "globby": "^13.1.1",
     "husky": "^4.2.5",
     "jest": "^27.4.7",
     "mini-css-extract-plugin": "^0.9.0",

@@ -1,14 +1,14 @@
-const isUndefined = require('lodash/isUndefined');
+import { isUndefined } from 'lodash';
 
-const { deactivateSchema, activateSchema } = require('../controller/schema');
-const { getSchemaById, getSchemaBefore } = require('../database/schema');
+import { deactivateSchema, activateSchema } from '../controller/schema';
+import schemaModel from '../database/schema';
 const {
 	getSchemaContainers,
 	getSchemaContainerCount,
 	isDev,
 } = require('../database/containers');
-const { getServices } = require('../database/services');
-const config = require('../config');
+import servicesModel from '../database/services';
+import config from '../config';
 const {
 	count: countPersistedQueries,
 	list: listPersistedQueries,
@@ -22,13 +22,13 @@ const dateTime = new Intl.DateTimeFormat('en-GB', {
 	day: 'numeric',
 });
 
-module.exports = {
+export default {
 	Query: {
 		services: async (parent, { limit, offset }) =>
-			getServices({ limit, offset }),
+			servicesModel.getServices({ limit, offset }),
 		service: async (parent, { id }, { dataloaders }) =>
 			dataloaders.services.load(id),
-		schema: async (parent, { id }) => await getSchemaById({ id }),
+		schema: async (parent, { id }) => await schemaModel.getSchemaById({ id }),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
 			return await listPersistedQueries({
@@ -45,7 +45,7 @@ module.exports = {
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
 			await deactivateSchema({ id });
-			const result = await getSchemaById({ id });
+			const result = await schemaModel.getSchemaById({ id });
 
 			return {
 				...result,
@@ -54,7 +54,7 @@ module.exports = {
 		},
 		activateSchema: async (parent, { id }) => {
 			await activateSchema({ id });
-			const result = await getSchemaById({ id });
+			const result = await schemaModel.getSchemaById({ id });
 
 			return {
 				...result,
@@ -82,7 +82,7 @@ module.exports = {
 				schemaId: parent.id,
 			}),
 		previousSchema: async (parent) => {
-			const previousSchema = await getSchemaBefore({
+			const previousSchema = await schemaModel.getSchemaBefore({
 				addedTime: parent.added_time,
 				serviceId: parent.service_id,
 				id: parent.id,

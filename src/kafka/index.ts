@@ -1,12 +1,12 @@
-const { Kafka } = require('kafkajs');
-const diplomat = require('../diplomat');
+import { Kafka } from 'kafkajs';
+import diplomat from '../diplomat';
 
 const KAFKA_SCHEMA_REGISTRY =
 	process.env.KAFKA_SCHEMA_REGISTRY || 'gql-schema-registry-kafka';
 
 let producer = null;
 
-exports.init = async () => {
+export async function init () {
 	const { host, port } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 	const kafka = new Kafka({
@@ -18,7 +18,7 @@ exports.init = async () => {
 	await producer.connect();
 };
 
-exports.send = (data) => {
+export function send (data) {
 	if (!producer) {
 		throw new Error('Kafka producer not initialized');
 	}

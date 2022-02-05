@@ -1,9 +1,10 @@
-const diplomat = require('../diplomat');
-const logger = require('../logger');
+import diplomat from '../diplomat';
+import logger from '../logger';
 
 const DB_SCHEMA_REGISTRY =
 	process.env.DB_SCHEMA_REGISTRY || 'gql-schema-registry-db';
-const knex = require('knex');
+
+import knex from 'knex';
 
 function cleanupSQL(sql) {
 	return sql.replace(
@@ -25,7 +26,7 @@ const { host, port, username, secret, name } = diplomat.getServiceInstance(
 	DB_SCHEMA_REGISTRY
 );
 
-const connection = knex({
+export const connection = knex({
 	client: 'mysql2',
 	log: {
 		warn: logger.info,
@@ -54,9 +55,7 @@ if (process.env.NODE_ENV != 'production') {
 }
 connection.on('query-error', logQueryError);
 
-exports.knex = connection;
-
-exports.transact = async (fn) => {
+export async function transact(fn) {
 	const trx = await exports.knex.transaction();
 
 	try {

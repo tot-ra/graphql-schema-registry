@@ -1,8 +1,8 @@
-exports.router = (router) => {
+export function router(router) {
 	router.use(require('express').static('dist'));
 };
 
-exports.indexHtml = () => {
+export function indexHtml () {
 	const assetsRootUrl = process.env.ASSETS_URL || 'http://localhost:6001';
 	const assetsVersion = 'latest';
 

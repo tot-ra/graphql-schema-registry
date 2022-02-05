@@ -1,19 +1,19 @@
-const { unionBy } = require('lodash');
-const logger = require('../logger');
-const { knex } = require('./index');
-const { getActiveServices, getService, insertService } = require('./services');
+import { unionBy } from 'lodash';
+import logger from '../logger';
+import { connection } from './index';
+import servicesModel from './services';
 
-function isDevVersion(version) {
+function isDevVersion(version: string) {
 	return version === 'latest' || !version;
 }
 
 const schemaModel = {
-	getSchemasAddedAfter: async function ({ trx = knex, since }) {
+	getSchemasAddedAfter: async function ({ trx = connection, since }) {
 		return trx('container_schema')
 			.select([
 				'container_schema.*',
 				'services.name',
-				knex.raw('CHAR_LENGTH(schema.type_defs) as characters'),
+				connection.raw('CHAR_LENGTH(schema.type_defs) as characters'),
 			])
 			.leftJoin('services', 'container_schema.service_id', 'services.id')
 			.andWhere((knex) => {
@@ -23,14 +23,14 @@ const schemaModel = {
 	},
 
 	getLatestAddedDate: async function () {
-		const latest = await knex('schema')
+		const latest = await connection('schema')
 			.max('added_time as added_time')
 			.first();
 
 		return latest.added_time;
 	},
 
-	getSchemaLastUpdated: async function ({ trx = knex, services }) {
+	getSchemaLastUpdated: async function ({ trx = connection, services }) {
 		const names = services.map((service) => service.name);
 
 		if (!names || !names.length) {
@@ -103,15 +103,15 @@ const schemaModel = {
 		return Object.values(result);
 	},
 
-	getLastUpdatedForActiveServices: async function ({ trx = knex }) {
+	getLastUpdatedForActiveServices: async function ({ trx = connection }) {
 		return schemaModel.getSchemaLastUpdated({
 			trx,
-			services: await getActiveServices({ trx }),
+			services: await servicesModel.getActiveServices({ trx }),
 		});
 	},
 
-	getSchemaByServiceVersions: async function ({ trx = knex, services }) {
-		services = unionBy(services, await getActiveServices({ trx }), 'name');
+	getSchemaByServiceVersions: async function ({ trx = connection, services }) {
+		services = unionBy(services, await servicesModel.getActiveServices({ trx }), 'name');
 
 		const schema = await trx('container_schema')
 			.select([
@@ -188,16 +188,16 @@ const schemaModel = {
 		return schema;
 	},
 
-	registerSchema: async function ({ trx = knex, service }) {
+	registerSchema: async function ({ trx = connection, service }) {
 		const addedTime = service.added_time
 			? new Date(service.added_time)
 			: new Date();
 
 		// SERVICE
-		let existingService = await getService({ trx, name: service.name });
+		let existingService = await servicesModel.getService({ trx, name: service.name });
 
 		if (!existingService) {
-			existingService = await insertService({
+			existingService = await servicesModel.insertService({
 				trx,
 				name: service.name,
 				url: service.url,
@@ -306,12 +306,12 @@ const schemaModel = {
 		limit = 100,
 		offset = 0,
 		filter = '',
-		trx = knex,
+		trx = connection,
 	}) {
 		const schemas = await trx('schema')
 			.select(
 				'schema.*',
-				knex.raw('CHAR_LENGTH(schema.type_defs) as characters')
+				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
 			.leftJoin(
 				'container_schema',
@@ -346,11 +346,11 @@ const schemaModel = {
 		return schemas;
 	},
 
-	getSchemaBefore: async function ({ trx = knex, addedTime, id, serviceId }) {
+	getSchemaBefore: async function ({ trx = connection, addedTime, id, serviceId }) {
 		return trx('schema')
 			.select(
 				'schema.*',
-				knex.raw('CHAR_LENGTH(schema.type_defs) as characters')
+				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
 			.where('added_time', '<=', addedTime)
 			.andWhere('id', '!=', id)
@@ -359,17 +359,17 @@ const schemaModel = {
 			.first();
 	},
 
-	getSchemaById: async function ({ trx = knex, id }) {
+	getSchemaById: async function ({ trx = connection, id }) {
 		return trx('schema')
 			.select(
 				'schema.*',
-				knex.raw('CHAR_LENGTH(schema.type_defs) as characters')
+				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
 			.where('schema.id', id)
 			.first();
 	},
 
-	deleteSchema: async function ({ trx, name, version }) {
+	deleteSchema: async function ({ trx, name, version }: { trx: any; name: string; version: string }) {
 		return trx('container_schema')
 			.delete()
 			.leftJoin('services', 'container_schema.service_id', 'services.id')
@@ -380,4 +380,4 @@ const schemaModel = {
 	},
 };
 
-module.exports = schemaModel;
+export default schemaModel;

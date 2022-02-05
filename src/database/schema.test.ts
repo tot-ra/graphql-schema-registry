@@ -1,11 +1,11 @@
-const { assert } = require('chai');
-const sinon = require('sinon');
+import { assert } from 'chai';
+import sinon from 'sinon';
 
 const mockLogger = {
 	debug: sinon.stub(),
 };
 
-const objectUnderTest = require('./schema');
+import objectUnderTest from './schema';
 
 describe('app/database/schema.js', () => {
 	let knexMock;

@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 const {
 	getAndValidateSchema,
 	validateSchema,
@@ -6,10 +6,10 @@ const {
 	deactivateSchema,
 	diffSchemas,
 } = require('../controller/schema');
-const config = require('../config');
-const kafka = require('../kafka');
+import config from '../config';
+import * as kafka from '../kafka';
 
-exports.composeLatest = async (req, res) => {
+export async function composeLatest (req, res) {
 	const schema = await getAndValidateSchema();
 
 	return res.json({
@@ -18,7 +18,7 @@ exports.composeLatest = async (req, res) => {
 	});
 };
 
-exports.compose = async (req, res) => {
+export async function compose (req, res) {
 	const { services } = Joi.attempt(
 		req.body,
 		Joi.object()
@@ -44,7 +44,7 @@ exports.compose = async (req, res) => {
 	});
 };
 
-exports.push = async (req, res) => {
+export async function push(req, res) {
 	const service = Joi.attempt(
 		req.body,
 		Joi.object().keys({
@@ -67,7 +67,7 @@ exports.push = async (req, res) => {
 	});
 };
 
-exports.validate = async (req, res) => {
+export async function validate(req, res) {
 	const service = Joi.attempt(
 		req.body,
 		Joi.object().keys({
@@ -84,7 +84,7 @@ exports.validate = async (req, res) => {
 	});
 };
 
-exports.delete = async (req, res) => {
+export async function remove(req, res) {
 	const params = Joi.attempt(
 		req.params,
 		Joi.object().keys({
@@ -100,7 +100,7 @@ exports.delete = async (req, res) => {
 	});
 };
 
-exports.diff = async (req, res) => {
+export async function diff(req, res) {
 	const service = Joi.attempt(
 		req.body,
 		Joi.object().keys({

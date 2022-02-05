@@ -1,5 +1,5 @@
-const CustomSqlMigrationSource = require('./sql-migration-source');
-const { assert } = require('chai');
+import CustomSqlMigrationSource from './sql-migration-source';
+import { assert } from 'chai';
 
 describe('app/database/sql-migration-source.js', () => {
 	it('should return available sql migrations as ordered list of objects', async () => {

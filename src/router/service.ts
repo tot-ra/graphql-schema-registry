@@ -1,7 +1,7 @@
-const Joi = require('joi');
-const { deleteService } = require('../controller/service');
+import Joi from 'joi';
+import { deleteService } from '../controller/service';
 
-exports.delete = async (req, res) => {
+export async function remove(req, res) {
 	const params = Joi.attempt(
 		req.params,
 		Joi.object().keys({

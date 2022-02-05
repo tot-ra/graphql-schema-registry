@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { json } = require('body-parser');
-const { asyncWrap } = require('../helpers/middleware');
+import { json } from 'body-parser';
+import { asyncWrap } from '../helpers/middleware';
 
-const assets = require('./assets');
-const schema = require('./schema');
-const service = require('./service');
-const persistedQuery = require('./persisted-queries');
+import * as assets from './assets';
+import * as schema from './schema';
+import * as service from './service';
+import * as persistedQuery from './persisted-queries';
 
 router.use(
 	json({
@@ -26,9 +26,9 @@ router.post('/schema/compose', asyncWrap(schema.compose));
 router.post('/schema/push', asyncWrap(schema.push));
 router.post('/schema/diff', asyncWrap(schema.diff));
 
-router.delete('/schema/:schemaId', asyncWrap(schema.delete));
+router.delete('/schema/:schemaId', asyncWrap(schema.remove));
 router.post('/schema/validate', asyncWrap(schema.validate));
 
-router.delete('/service/:name', asyncWrap(service.delete));
+router.delete('/service/:name', asyncWrap(service.remove));
 
-module.exports = router;
+export default router;

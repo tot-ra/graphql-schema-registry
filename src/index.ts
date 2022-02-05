@@ -1,9 +1,9 @@
-const express = require('express');
-const logger = require('./logger');
-const { get } = require('lodash');
-const initGraphql = require('./graphql');
-const kafka = require('./kafka');
-const config = require('./config');
+import express from 'express';
+import logger from './logger';
+import { get } from 'lodash';
+import initGraphql from './graphql';
+import * as kafka from './kafka';
+import config from './config';
 
 const app = express();
 
@@ -23,7 +23,7 @@ function monitorConnections() {
 		logger.info(`Process shutting down with ${count} open connections\n`);
 
 		if (count > 0) {
-			setTimeout(() => monitorConnections(server), 2000);
+			setTimeout(() => monitorConnections(), 2000);
 		}
 	});
 }
@@ -98,7 +98,7 @@ process.on('SIGTERM', () => {
 		});
 	}, 19 * 1000);
 
-	monitorConnections(server);
+	monitorConnections();
 });
 
 exports.init = async () => {

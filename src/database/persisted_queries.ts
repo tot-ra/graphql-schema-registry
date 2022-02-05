@@ -1,23 +1,23 @@
-const { knex } = require('./index');
-const redis = require('../redis');
+import { connection } from './index';
+import redis from '../redis';
 const DEFAULT_TTL = 12 * 3600;
 
 const PersistedQueriesModel = {
 	count: async function () {
 		return (
-			await knex('persisted_queries').count('key', { as: 'amount' })
+			await connection('persisted_queries').count('key', { as: 'amount' })
 		)[0].amount;
 	},
 
 	list: async function ({ searchFragment = '', limit = 100, offset = 0 }) {
-		return knex('persisted_queries')
+		return connection('persisted_queries')
 			.select(['query', 'key', 'added_time'])
 			.where('query', 'like', `%${searchFragment}%`)
 			.offset(offset)
 			.limit(limit);
 	},
 
-	get: async function ({ key, trx = knex }) {
+	get: async function ({ key, trx = connection }) {
 		const cachedPersistedQuery = await redis.get(key);
 
 		if (cachedPersistedQuery) {
@@ -41,8 +41,8 @@ const PersistedQueriesModel = {
 	},
 
 	set: async function ({ persistedQuery, ttl = DEFAULT_TTL }) {
-		await knex.raw(
-			knex('persisted_queries')
+		await connection.raw(
+			connection('persisted_queries')
 				.insert(persistedQuery)
 				.toString()
 				.replace(/^insert/i, 'insert ignore')
@@ -57,10 +57,10 @@ const PersistedQueriesModel = {
 	},
 
 	getSince: async function ({ since = 0 }) {
-		await knex('persisted_queries')
+		await connection('persisted_queries')
 			.select(['query', 'key', 'added_time', 'updated_time'])
-			.where((knex) => {
-				return knex
+			.where((connection) => {
+				return connection
 					.where('added_time', '>', since)
 					.orWhere('updated_time', '>', since);
 			})
@@ -68,7 +68,7 @@ const PersistedQueriesModel = {
 	},
 
 	getLatestAddTime: async function () {
-		const latest = await knex('persisted_queries')
+		const latest = await connection('persisted_queries')
 			.max('added_time as added_time')
 			.first();
 
@@ -76,4 +76,4 @@ const PersistedQueriesModel = {
 	},
 };
 
-module.exports = PersistedQueriesModel;
+export default PersistedQueriesModel;

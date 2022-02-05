@@ -1,21 +1,21 @@
-const { knex } = require('./index');
+import { connection } from './index';
 
 const servicesModel = {
-	getActiveServices: async function ({ trx = knex } = {}) {
+	getActiveServices: async function ({ trx = connection } = {}) {
 		return trx('services')
 			.select('services.id', 'services.name', 'services.url')
 			.where('is_active', true);
 	},
 
-	getServicesByIds: async function ({ trx = knex, ids } = {}) {
+	getServicesByIds: async function ({ trx = connection, ids = []} = {}) {
 		return trx('services').select('*').whereIn('id', ids);
 	},
 
-	getServices: async ({ limit = 100, offset = 0, trx = knex } = {}) => {
+	getServices: async ({ limit = 100, offset = 0, trx = connection } = {}) => {
 		return trx('services').select('*').limit(limit).offset(offset);
 	},
 
-	getService: async function ({ trx = knex, name }) {
+	getService: async function ({ trx = connection, name }) {
 		const service = await trx('services')
 			.select('services.id', 'services.name')
 			.where('services.name', name)
@@ -24,7 +24,7 @@ const servicesModel = {
 		return service[0];
 	},
 
-	insertService: async function ({ trx = knex, name, url }) {
+	insertService: async function ({ trx = connection, name, url }) {
 		await trx('services').insert({ name, url });
 
 		const service = await servicesModel.getService({ trx, name });
@@ -36,9 +36,9 @@ const servicesModel = {
 		return service;
 	},
 
-	deleteService: async function ({ trx = knex, name }) {
+	deleteService: async function ({ trx = connection, name }) {
 		return trx('services').delete().where('name', name);
 	},
 };
 
-module.exports = servicesModel;
+export default servicesModel;
