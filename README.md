@@ -133,7 +133,7 @@ gateway is very simplified and does not have proper error handling, cost limits 
 
 In gateway, you may also find useful our [graphql-query-cost](https://github.com/pipedrive/graphql-query-cost) library too. Check it out
 
-![](https://app.lucidchart.com/publicSegments/view/7cd430fc-05b7-4c9e-8dc4-15080da125c6/image.png?v=2)
+![](https://lucid.app/publicSegments/view/594e3e1d-ef93-41ba-b4a0-c1f2fb8e0495/image.png)
 
 ### DB structure
 
