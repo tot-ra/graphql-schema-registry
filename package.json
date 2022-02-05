@@ -8,7 +8,7 @@
     "test": "./node_modules/.bin/jest --config test/unit/jest.config.cjs",
     "coverage": "./node_modules/.bin/jest --config test/unit/jest.coverage.cjs && coveralls < coverage/lcov.info",
     "test-travis": "npm run test",
-    "test-functional": "./node_modules/.bin/jest --config test/functional/jest.config.js",
+    "test-functional": "./node_modules/.bin/jest --config test/functional/jest.config.cjs",
     "format": "prettier --write '**/*.{js,jsx,json,md,yml,yaml,graphql}'",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md",
     "build": "npm run build-backend && npm run build-frontend",

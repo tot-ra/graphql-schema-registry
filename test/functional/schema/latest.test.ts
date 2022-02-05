@@ -1,5 +1,5 @@
-const request = require('request-promise');
-const { reset, connect, disconnect } = require('../db');
+import request from 'request-promise';
+import { reset, connect, disconnect } from '../db';
 
 beforeEach(async () => {
 	await reset();
@@ -100,6 +100,7 @@ describe('GET /schema/latest', function () {
 			expect(result.statusCode).toBe(200);
 			expect(result.body.success).toEqual(true);
 			expect(result.body.data.length).toEqual(2);
+
 			expect(result.body.data[0]).toEqual(
 				expect.objectContaining(
 					{
@@ -109,7 +110,11 @@ describe('GET /schema/latest', function () {
 						type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
 						url: null,
 						version: 'ke9j34fuuei',
-					},
+					}
+				)
+			);
+			expect(result.body.data[1]).toEqual(
+				expect.objectContaining(
 					{
 						id: 2,
 						is_active: 1,
@@ -120,6 +125,8 @@ describe('GET /schema/latest', function () {
 					}
 				)
 			);
+
+
 		});
 	});
 });

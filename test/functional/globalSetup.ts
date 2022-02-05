@@ -1,9 +1,9 @@
-const { db, connect } = require('./db');
-const request = require('request-promise');
+import { connection } from './db';
+import request from 'request-promise';
 
 async function waitUntilDbIsReadyOr20Sec() {
 	for (let i = 0; i < 20; i++) {
-		if (await db.schema.hasTable('persisted_queries')) {
+		if (await connection.schema.hasTable('persisted_queries')) {
 			return true;
 		}
 		console.log('Waiting for DB to be ready ...');

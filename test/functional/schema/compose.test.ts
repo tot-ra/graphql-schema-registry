@@ -1,5 +1,5 @@
-const request = require('request-promise');
-const { reset, connect, disconnect } = require('../db');
+import request from 'request-promise';
+import { reset, connect, disconnect } from '../db';
 
 beforeAll(async () => {
 	await connect();
