@@ -1,15 +1,19 @@
-require('dotenv').config();
-const logger = require('./app/logger');
-const CustomSqlMigrationSource = require('./app/database/sql-migration-source');
+import dotenv from 'dotenv';
+import * as logger from './logger';
+import CustomSqlMigrationSource from './database/sql-migration-source';
+import { connection } from './database';
+import init from './index';
 
-process.on('unhandledRejection', (error) => {
+dotenv.config();
+
+process.on('unhandledRejection', (error: Error) => {
 	logger.error(`unhandledRejection: ${error.message}`, {
 		original_error: error,
 	});
 	setTimeout(() => process.exit(), 3000);
 });
 
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', (error: Error) => {
 	logger.error(`uncaughtException: ${error.message}`, {
 		original_error: error,
 	});
@@ -32,13 +36,13 @@ async function warmup() {
 
 	try {
 		if (executeMigrations === 'true') {
-			await require('./app/database').knex.migrate.latest({
+			await connection.migrate.latest({
 				migrationSource: new CustomSqlMigrationSource('./migrations'),
 				disableMigrationsListValidation: true,
 			});
 		}
 
-		await require('./app').init();
+		await init();
 
 		logger.info('Warm up complete');
 	} catch (error) {

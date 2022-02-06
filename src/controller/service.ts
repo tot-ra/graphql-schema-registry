@@ -1,4 +1,4 @@
-import logger from '../logger';
+import * as logger from '../logger';
 import servicesModel from '../database/services';
 
 export async function deleteService ({ name }) {

@@ -1,5 +1,5 @@
 import diplomat from '../diplomat';
-import logger from '../logger';
+import * as logger from '../logger';
 
 const DB_SCHEMA_REGISTRY =
 	process.env.DB_SCHEMA_REGISTRY || 'gql-schema-registry-db';
@@ -56,7 +56,7 @@ if (process.env.NODE_ENV != 'production') {
 connection.on('query-error', logQueryError);
 
 export async function transact(fn) {
-	const trx = await exports.knex.transaction();
+	const trx = await connection.transaction();
 
 	try {
 		const result = await fn(trx);

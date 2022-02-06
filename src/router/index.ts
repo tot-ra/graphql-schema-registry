@@ -3,7 +3,8 @@ const router = express.Router();
 import { json } from 'body-parser';
 import { asyncWrap } from '../helpers/middleware';
 
-import * as assets from './assets';
+import parseMiddleware from '../middleware/parse-request';
+import {indexHtml, assetRouter}  from './assets';
 import * as schema from './schema';
 import * as service from './service';
 import * as persistedQuery from './persisted-queries';
@@ -13,10 +14,10 @@ router.use(
 		limit: '16mb',
 	})
 );
-router.use(asyncWrap(require('../middleware/parse-request')));
+router.use(asyncWrap(parseMiddleware));
 
-router.get('/', assets.indexHtml());
-assets.router(router);
+router.get('/', indexHtml());
+assetRouter(router);
 
 router.get('/persisted_query', asyncWrap(persistedQuery.get));
 router.post('/persisted_query', asyncWrap(persistedQuery.create));

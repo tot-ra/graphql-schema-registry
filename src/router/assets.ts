@@ -1,12 +1,14 @@
-export function router(router) {
-	router.use(require('express').static('dist'));
+import express from 'express';
+
+export function assetRouter(router) {
+	router.use(express.static('dist'));
 };
 
 export function indexHtml () {
 	const assetsRootUrl = process.env.ASSETS_URL || 'http://localhost:6001';
 	const assetsVersion = 'latest';
 
-	return function indexHtml(req, res) {
+	return function (req, res) {
 		res.send(`
   <!DOCTYPE html>
   <html>

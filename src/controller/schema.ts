@@ -1,5 +1,5 @@
 import { diff } from '@graphql-inspector/core';
-import logger from '../logger';
+import * as logger from '../logger';
 
 import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';

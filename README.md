@@ -71,7 +71,7 @@ With default settings, UI should be accessible at [http://localhost:6001](http:/
 ```
 git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
 cp example.env .env && nano .env
-node schema-registry.js
+node app/schema-registry.js
 ```
 
 ### Docker image
@@ -157,7 +157,7 @@ To have fast iteration of working on UI changes, you can avoid running node serv
 
 ```
 docker-compose -f docker-compose.light.yml up
-DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 node schema-registry.js
+npm run develop
 ```
 
 ### DB migrations

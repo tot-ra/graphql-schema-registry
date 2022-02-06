@@ -1,5 +1,5 @@
 import { unionBy } from 'lodash';
-import logger from '../logger';
+import * as logger from '../logger';
 import { connection } from './index';
 import servicesModel from './services';
 

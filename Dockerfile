@@ -37,4 +37,4 @@ COPY --from=builder-app /app/node_modules /app/node_modules
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]
 EXPOSE 3000
 
-CMD ["node", "schema-registry.js"]
+CMD ["node", "app/schema-registry.js"]

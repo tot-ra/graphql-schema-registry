@@ -1,4 +1,4 @@
-import logger from '../logger';
+import * as logger from '../logger';
 import { parse } from 'graphql';
 import { composeAndValidate } from '@apollo/federation';
 

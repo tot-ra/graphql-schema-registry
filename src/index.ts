@@ -1,9 +1,10 @@
 import express from 'express';
-import logger from './logger';
+import * as logger from './logger';
 import { get } from 'lodash';
 import initGraphql from './graphql';
 import * as kafka from './kafka';
 import config from './config';
+import router from './router';
 
 const app = express();
 
@@ -38,12 +39,7 @@ app.get(`/health`, (req, res) => {
 	return res.status(200).send('ok');
 });
 
-// log every request to the console in dev
-if (process.env.NODE_ENV !== 'production') {
-	app.use(require('morgan')('dev'));
-}
-
-app.use(require('./router'));
+app.use(router);
 initGraphql(app);
 
 // eslint-disable-next-line
@@ -101,7 +97,7 @@ process.on('SIGTERM', () => {
 	monitorConnections();
 });
 
-exports.init = async () => {
+export default async function init() {
 	if (server) {
 		return server;
 	}

@@ -1,5 +1,5 @@
 import diplomat from '../diplomat';
-import log from '../logger';
+import * as log from '../logger';
 import redis from 'async-redis';
 
 const DEFAULT_TTL = 24 * 3600;
