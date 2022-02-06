@@ -2,18 +2,10 @@ import { isUndefined } from 'lodash';
 
 import { deactivateSchema, activateSchema } from '../controller/schema';
 import schemaModel from '../database/schema';
-const {
-	getSchemaContainers,
-	getSchemaContainerCount,
-	isDev,
-} = require('../database/containers');
+import containersModel from '../database/containers';
 import servicesModel from '../database/services';
 import config from '../config';
-const {
-	count: countPersistedQueries,
-	list: listPersistedQueries,
-	get: getPeristedQuery,
-} = require('../database/persisted_queries');
+import PersistedQueriesModel from '../database/persisted_queries';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -31,16 +23,16 @@ export default {
 		schema: async (parent, { id }) => await schemaModel.getSchemaById({ id }),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
-			return await listPersistedQueries({
+			return await PersistedQueriesModel.list({
 				searchFragment,
 				limit,
 				offset,
 			});
 		},
 		persistedQuery: async (parent, { key }) => {
-			return await getPeristedQuery({ key });
+			return await PersistedQueriesModel.get({ key });
 		},
-		persistedQueriesCount: async () => await countPersistedQueries(),
+		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
@@ -78,7 +70,7 @@ export default {
 		service: (parent, args, { dataloaders }) =>
 			dataloaders.services.load(parent.service_id),
 		containers: (parent) =>
-			getSchemaContainers({
+		containersModel.getSchemaContainers({
 				schemaId: parent.id,
 			}),
 		previousSchema: async (parent) => {
@@ -98,8 +90,8 @@ export default {
 		isActive: (parent) => parent.is_active,
 		typeDefs: (parent) => parent.type_defs,
 		containerCount: (parent) =>
-			getSchemaContainerCount({ schemaId: parent.id }),
-		isDev: (parent) => isDev({ schemaId: parent.id }),
+		containersModel.getSchemaContainerCount({ schemaId: parent.id }),
+		isDev: (parent) => containersModel.isDev({ schemaId: parent.id }),
 	},
 	Container: {
 		commitLink: (parent) => {
