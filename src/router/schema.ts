@@ -1,11 +1,11 @@
 import Joi from 'joi';
-const {
+import {
 	getAndValidateSchema,
 	validateSchema,
 	pushAndValidateSchema,
 	deactivateSchema,
 	diffSchemas,
-} = require('../controller/schema');
+} from '../controller/schema';
 import { connection } from '../database';
 import config from '../config';
 import * as kafka from '../kafka';
