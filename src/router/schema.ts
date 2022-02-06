@@ -6,11 +6,12 @@ const {
 	deactivateSchema,
 	diffSchemas,
 } = require('../controller/schema');
+import { connection } from '../database';
 import config from '../config';
 import * as kafka from '../kafka';
 
-export async function composeLatest (req, res) {
-	const schema = await getAndValidateSchema();
+export async function composeLatest(req, res) {
+	const schema = await getAndValidateSchema(connection);
 
 	return res.json({
 		success: true,
@@ -18,7 +19,7 @@ export async function composeLatest (req, res) {
 	});
 };
 
-export async function compose (req, res) {
+export async function compose(req, res) {
 	const { services } = Joi.attempt(
 		req.body,
 		Joi.object()
@@ -36,7 +37,7 @@ export async function compose (req, res) {
 			.options({ stripUnknown: true })
 	);
 
-	const schema = await getAndValidateSchema({ services });
+	const schema = await getAndValidateSchema(connection, services);
 
 	return res.json({
 		success: true,

@@ -5,9 +5,8 @@ const containersModel = {
 		schemaId,
 		limit = 100,
 		offset = 0,
-		trx = connection,
 	}) {
-		return trx('container_schema')
+		return connection('container_schema')
 			.select(
 				'container_schema.id',
 				'container_schema.version',
@@ -22,8 +21,8 @@ const containersModel = {
 			.limit(limit);
 	},
 
-	getSchemaContainerCount: async function ({ schemaId, trx = connection }) {
-		const result = await trx('container_schema')
+	getSchemaContainerCount: async function (schemaId) {
+		const result = await connection('container_schema')
 			.count('id', { as: 'cnt' })
 			.where('schema_id', '=', schemaId)
 			.andWhere('version', '<>', 'latest');
@@ -31,8 +30,8 @@ const containersModel = {
 		return result[0].cnt;
 	},
 
-	isDev: async function ({ schemaId, trx = connection }) {
-		const result = await trx('container_schema')
+	isDev: async function (schemaId) {
+		const result = await connection('container_schema')
 			.count('id', { as: 'cnt' })
 			.where('schema_id', '=', schemaId)
 			.andWhere('version', '=', 'latest');

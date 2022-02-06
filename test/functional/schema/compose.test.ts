@@ -19,7 +19,10 @@ describe('POST /schema/compose', function () {
 			resolveWithFullResponse: true,
 			json: true,
 			body: {
-				services: [{ name: 'service_a', version: 'ke9j34fuuei' }],
+				"services": [{
+					"name": "service_a",
+					"version": "ke9j34fuuei"
+				}]
 			},
 		});
 
@@ -38,9 +41,9 @@ describe('POST /schema/compose', function () {
 				resolveWithFullResponse: true,
 				json: true,
 				body: {
-					name: 'service_a',
-					version: 'v1',
-					type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
+					"name": "service_a",
+					"version": "v1",
+					"type_defs": "\n\ttype Query {\n\t\thello: String\n\t}\n"
 				},
 			});
 			expect(result.statusCode).toBe(200);
@@ -51,10 +54,10 @@ describe('POST /schema/compose', function () {
 				resolveWithFullResponse: true,
 				json: true,
 				body: {
-					name: 'service_a',
-					version: 'v2',
-					type_defs: '\n\ttype Query {\n\t\tprivet: Int\n\t}\n',
-				},
+					"name": "service_a",
+					"version": "v2",
+					"type_defs": "\n\ttype Query {\n\t\tprivet: Int\n\t}\n"
+				}
 			});
 			expect(result.statusCode).toBe(200);
 

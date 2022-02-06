@@ -17,14 +17,14 @@ const PersistedQueriesModel = {
 			.limit(limit);
 	},
 
-	get: async function ({ key, trx = connection }) {
+	get: async function (key: string) {
 		const cachedPersistedQuery = await redis.get(key);
 
 		if (cachedPersistedQuery) {
 			return JSON.parse(cachedPersistedQuery);
 		}
 
-		const rows = await trx('persisted_queries')
+		const rows = await connection('persisted_queries')
 			.select(['query', 'key', 'added_time'])
 			.where({
 				key,

@@ -1,10 +1,11 @@
 import { isUndefined } from 'lodash';
 
 import { deactivateSchema, activateSchema } from '../controller/schema';
+import config from '../config';
+import { connection } from '../database';
 import schemaModel from '../database/schema';
 import containersModel from '../database/containers';
 import servicesModel from '../database/services';
-import config from '../config';
 import PersistedQueriesModel from '../database/persisted_queries';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
@@ -17,10 +18,10 @@ const dateTime = new Intl.DateTimeFormat('en-GB', {
 export default {
 	Query: {
 		services: async (parent, { limit, offset }) =>
-			servicesModel.getServices({ limit, offset }),
+			servicesModel.getServices(connection, limit, offset),
 		service: async (parent, { id }, { dataloaders }) =>
 			dataloaders.services.load(id),
-		schema: async (parent, { id }) => await schemaModel.getSchemaById({ id }),
+		schema: async (parent, { id }) => await schemaModel.getSchemaById(connection, id),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
 			return await PersistedQueriesModel.list({
@@ -30,14 +31,14 @@ export default {
 			});
 		},
 		persistedQuery: async (parent, { key }) => {
-			return await PersistedQueriesModel.get({ key });
+			return await PersistedQueriesModel.get(key);
 		},
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
 			await deactivateSchema({ id });
-			const result = await schemaModel.getSchemaById({ id });
+			const result = await schemaModel.getSchemaById(connection, id);
 
 			return {
 				...result,
@@ -46,7 +47,7 @@ export default {
 		},
 		activateSchema: async (parent, { id }) => {
 			await activateSchema({ id });
-			const result = await schemaModel.getSchemaById({ id });
+			const result = await schemaModel.getSchemaById(connection, id);
 
 			return {
 				...result,
@@ -70,7 +71,7 @@ export default {
 		service: (parent, args, { dataloaders }) =>
 			dataloaders.services.load(parent.service_id),
 		containers: (parent) =>
-		containersModel.getSchemaContainers({
+			containersModel.getSchemaContainers({
 				schemaId: parent.id,
 			}),
 		previousSchema: async (parent) => {
@@ -90,8 +91,8 @@ export default {
 		isActive: (parent) => parent.is_active,
 		typeDefs: (parent) => parent.type_defs,
 		containerCount: (parent) =>
-		containersModel.getSchemaContainerCount({ schemaId: parent.id }),
-		isDev: (parent) => containersModel.isDev({ schemaId: parent.id }),
+			containersModel.getSchemaContainerCount(parent.id),
+		isDev: (parent) => containersModel.isDev(parent.id),
 	},
 	Container: {
 		commitLink: (parent) => {

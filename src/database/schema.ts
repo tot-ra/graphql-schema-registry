@@ -1,3 +1,4 @@
+import Knex from 'knex';
 import { unionBy } from 'lodash';
 import * as logger from '../logger';
 import { connection } from './index';
@@ -8,7 +9,7 @@ function isDevVersion(version: string) {
 }
 
 const schemaModel = {
-	getSchemasAddedAfter: async function ({ trx = connection, since }) {
+	getSchemasAddedAfter: async function ({ trx, since }) {
 		return trx('container_schema')
 			.select([
 				'container_schema.*',
@@ -30,7 +31,7 @@ const schemaModel = {
 		return latest.added_time;
 	},
 
-	getSchemaLastUpdated: async function ({ trx = connection, services }) {
+	getSchemaLastUpdated: async function ({ trx, services }) {
 		const names = services.map((service) => service.name);
 
 		if (!names || !names.length) {
@@ -103,15 +104,15 @@ const schemaModel = {
 		return Object.values(result);
 	},
 
-	getLastUpdatedForActiveServices: async function ({ trx = connection }) {
+	getLastUpdatedForActiveServices: async function ({ trx }) {
 		return schemaModel.getSchemaLastUpdated({
 			trx,
-			services: await servicesModel.getActiveServices({ trx }),
+			services: await servicesModel.getActiveServices(trx),
 		});
 	},
 
-	getSchemaByServiceVersions: async function ({ trx = connection, services }) {
-		services = unionBy(services, await servicesModel.getActiveServices({ trx }), 'name');
+	getSchemaByServiceVersions: async function ({ trx, services }) {
+		services = unionBy(services, await servicesModel.getActiveServices(trx), 'name');
 
 		const schema = await trx('container_schema')
 			.select([
@@ -188,20 +189,16 @@ const schemaModel = {
 		return schema;
 	},
 
-	registerSchema: async function ({ trx = connection, service }) {
+	registerSchema: async function ({ trx, service }) {
 		const addedTime = service.added_time
 			? new Date(service.added_time)
 			: new Date();
 
 		// SERVICE
-		let existingService = await servicesModel.getService({ trx, name: service.name });
+		let existingService = await servicesModel.getService(trx, service.name);
 
 		if (!existingService) {
-			existingService = await servicesModel.insertService({
-				trx,
-				name: service.name,
-				url: service.url,
-			});
+			existingService = await servicesModel.insertService(trx, service.name, service.url);
 		} else if (service.url && existingService.url != service.url) {
 			await trx('services')
 				.where('id', '=', existingService.id)
@@ -346,8 +343,8 @@ const schemaModel = {
 		return schemas;
 	},
 
-	getSchemaBefore: async function ({ trx = connection, addedTime, id, serviceId }) {
-		return trx('schema')
+	getSchemaBefore: async function ({ addedTime, id, serviceId }) {
+		return connection('schema')
 			.select(
 				'schema.*',
 				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
@@ -359,7 +356,7 @@ const schemaModel = {
 			.first();
 	},
 
-	getSchemaById: async function ({ trx = connection, id }) {
+	getSchemaById: async function (trx: Knex, id) {
 		return trx('schema')
 			.select(
 				'schema.*',

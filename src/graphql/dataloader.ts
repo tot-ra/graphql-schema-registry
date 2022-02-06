@@ -2,6 +2,7 @@ import Dataloader from 'dataloader';
 import _ from 'lodash';
 import servicesModel from '../database/services';
 import schemaModel from '../database/schema';
+import { connection } from '../database';
 
 export default () => ({
 	schemas: new Dataloader(
@@ -29,7 +30,7 @@ export default () => ({
 	),
 
 	services: new Dataloader(async (ids: string[]) => {
-		const services = await servicesModel.getServicesByIds({ ids });
+		const services = await servicesModel.getServicesByIds(connection, ids);
 		const byIds = new Map(services.map((service) => [service.id, service]));
 
 		return ids.map((id) => byIds.get(id));

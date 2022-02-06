@@ -3,7 +3,7 @@ import PersistedQueriesModel from '../database/persisted_queries';
 
 export async function get (req, res) {
 	const key = Joi.attempt(req.query.key, Joi.string().required());
-	const persistedQuery = await PersistedQueriesModel.get({ key });
+	const persistedQuery = await PersistedQueriesModel.get( key );
 
 	return res.json({
 		success: true,
