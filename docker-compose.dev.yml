@@ -25,9 +25,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command:
-      node_modules/nodemon/bin/nodemon.js --watch schema-registry.js --watch app
-      --inspect=0.0.0.0:5850 schema-registry.js
+    command: ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect
     ports:
       - 6001:3000
       - 6002:5850

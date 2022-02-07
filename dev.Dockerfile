@@ -7,4 +7,4 @@ WORKDIR /app
 
 EXPOSE 3000
 
-CMD ["node", "schema-registry.js"]
+CMD ["node", "app/schema-registry.js"]
