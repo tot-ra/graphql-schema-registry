@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.1] - 2022-02-08
+
+### Updated
+- Fixed UI issues with logo causing page slider
+- Fixed UI issue with diff view font size and width of comparison blocks
+
+
 ## [3.0.0] - 2022-02-07
 
 ### Updated
@@ -212,7 +219,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.0...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.1...HEAD
+[3.0.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.2.4...v3.0.0
 [2.2.4]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.2.3...v2.2.4
 [2.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.2.2...v2.2.3
