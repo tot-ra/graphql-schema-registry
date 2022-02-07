@@ -27,6 +27,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 - client tracking (for breaking changes)
 - schema usage tracking (for breaking changes)
+- access control (lightweight authentication)
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
 - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 
