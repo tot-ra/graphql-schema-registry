@@ -19,7 +19,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
 - Async schema registration of new schema with events to avoid polling (`schema-registry -> kafka -> gateway`)
 
-<img width="1309" alt="Screenshot 2020-08-31 at 15 40 43" src="https://user-images.githubusercontent.com/445122/91720806-65985c00-eba0-11ea-8763-986b9f3f166b.png">
+<img width="1312" alt="Screenshot 2022-02-08 at 00 16 49" src="https://user-images.githubusercontent.com/445122/152881795-535a6990-a318-4e89-afc9-c508ddc840fa.png">
 
 ## Roadmap
 
