@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.0.0] - 2022-02-07
+
 ### Updated
+
 - full rewrite / migration to typescript. Using major version, because of potential incompatibilities that may arise if native installation is used, for example `schema-registry.js` file that was moved from project root into `app` folder
 
 ## [2.2.4] - 2022-02-05
