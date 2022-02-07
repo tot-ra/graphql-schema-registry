@@ -4,7 +4,7 @@ import ReactDiffViewer, { DiffMethod } from 'react-diff-viewer';
 const newStyles = {
 	variables: {
 		dark: {
-			diffViewerBackground: '#2e303c',
+			diffViewerBackground: '#1e1e1e',
 			diffViewerColor: '#FFF',
 			addedColor: 'white',
 			removedColor: 'white',
@@ -27,16 +27,42 @@ const newStyles = {
 			codeFoldContentColor: '#aeb4d6',
 			diffViewerTitleBackground: '#2f323e',
 			diffViewerTitleColor: '#555a7b',
-			diffViewerTitleBorderColor: '#353846',
-		},
+			diffViewerTitleBorderColor: '#353846'
+		}
+	},
+	emptyGutter: {
+		'min-width': '1px',
+		'padding': '0'
+	},
+	gutter: {
+		'min-width': '1px'
 	},
 	line: {
-		padding: '10px 2px',
+		'line-height': '1',
+		'font-size': '13px',
+		'font-family': 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
 		'&:hover': {
-			background: '#000e95',
-		},
+			background: '#000e95'
+		}
 	},
+	content: {
+		height: '18px',
+		width: 'auto',
+		pre: {
+			'line-height': '18px'
+		}
+	},
+	diffContainer: {
+		pre: {
+			'line-height': '18px'
+		}
+	},
+	marker: {
+		'width': '10px',
+		'padding': '0'
+	}
 };
+
 const CodeDiff = (props) => {
 	return (
 		<ReactDiffViewer

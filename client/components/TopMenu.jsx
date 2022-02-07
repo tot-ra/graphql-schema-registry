@@ -14,8 +14,8 @@ export default ({ UITabs, selectedTab, handleChange }) => {
 				backgroundColor: 'green',
 				boxShadow: 'none',
 				display: 'flex',
-				flexDirection: 'row'
-		}}
+				flexDirection: 'row',
+			}}
 		>
 			<ReactLogo />
 
