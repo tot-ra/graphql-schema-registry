@@ -10,7 +10,7 @@ ADD git_src/package.json git_src/package-lock.json ./
 RUN npm install
 ADD git_src/webpack.config.cjs git_src/babel.config.cjs ./
 ADD git_src/client ./client
-RUN npx webpack-cli --env=${env} --mode=${env}
+RUN npm run build-frontend
 
 
 FROM node:14-alpine as builder-app
@@ -22,6 +22,7 @@ COPY --from=builder-client /tmp/.npm /tmp/.npm
 WORKDIR /app
 ADD git_src/package.json git_src/package-lock.json ./
 RUN npm install
+RUN npm run build-backend
 
 FROM node:14-alpine
 ARG env=production
