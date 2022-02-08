@@ -8,7 +8,7 @@ USER nobody
 
 ADD git_src/package.json git_src/package-lock.json ./
 RUN npm install
-ADD git_src/webpack.config.js git_src/babel.config.js ./
+ADD git_src/webpack.config.cjs git_src/babel.config.cjs ./
 ADD git_src/client ./client
 RUN npx webpack-cli --env=${env} --mode=${env}
 
