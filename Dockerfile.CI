@@ -1,25 +1,24 @@
 FROM node:14-alpine as builder-client
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
-RUN mkdir -p /tmp/.npm /app \
-    && chown nobody:nobody /tmp/.npm /app
+RUN mkdir -p /tmp/.npm /app && chown nobody:nobody /tmp/.npm /app
 WORKDIR /app
 USER nobody
-
 ADD git_src/package.json git_src/package-lock.json ./
 RUN npm install
 ADD git_src/webpack.config.cjs git_src/babel.config.cjs ./
 ADD git_src/client ./client
 RUN npm run build-frontend
 
-
 FROM node:14-alpine as builder-app
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 RUN mkdir -p /app && chown nobody:nobody /app
-COPY --from=builder-client /tmp/.npm /tmp/.npm
+RUN mkdir -p /.npm && chown nobody:nobody /.npm
 WORKDIR /app
-ADD git_src/package.json git_src/package-lock.json ./
+USER nobody
+ADD src ./src
+ADD git_src/package.json git_src/package-lock.json git_src/tsconfig.json ./
 RUN npm install
 RUN npm run build-backend
 
@@ -27,17 +26,14 @@ FROM node:14-alpine
 ARG env=production
 ENV NODE_ENV=${env}
 RUN mkdir -p /app && chown nobody:nobody /app
+RUN mkdir -p /.npm && chown nobody:nobody /.npm
 USER nobody
 WORKDIR /app
 COPY git_src/ /app
-
-# install  production dependencies only
-RUN npm install
-
 COPY --from=builder-client /app/dist /app/dist
 COPY --from=builder-app /app/app /app/app
+RUN npm install
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]
 EXPOSE 3000
-
 CMD ["node", "app/schema-registry.js"]
