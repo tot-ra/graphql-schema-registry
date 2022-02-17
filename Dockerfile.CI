@@ -1,4 +1,5 @@
-FROM node:14-alpine as builder-client
+# 1. BUILD FRONTEND source with webpack
+FROM node:14-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 RUN mkdir -p /tmp/.npm /app && chown nobody:nobody /tmp/.npm /app
@@ -10,11 +11,11 @@ ADD git_src/webpack.config.cjs git_src/babel.config.cjs ./
 ADD git_src/client ./client
 RUN npm run build-frontend
 
-FROM node:14-alpine as builder-app
+# 2. BUILD BACKEND source from .ts, uses dev-dependencies
+FROM node:14-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 RUN mkdir -p /app && chown nobody:nobody /app
-RUN mkdir -p /.npm && chown nobody:nobody /.npm
 WORKDIR /app
 USER nobody
 ADD src ./src
@@ -22,18 +23,28 @@ ADD git_src/package.json git_src/package-lock.json git_src/tsconfig.json ./
 RUN npm install
 RUN npm run build-backend
 
+# 3. BUILD FINAL IMAGE
 FROM node:14-alpine
 ARG env=production
 ENV NODE_ENV=${env}
 RUN mkdir -p /app && chown nobody:nobody /app
-RUN mkdir -p /.npm && chown nobody:nobody /.npm
-USER nobody
 WORKDIR /app
-COPY git_src/ /app
-COPY --from=builder-client /app/dist /app/dist
-COPY --from=builder-app /app/app /app/app
-RUN npm install
+COPY --from=builder-frontend /app/dist /app/dist
+COPY --from=builder-backend /app/app /app/app
 
+# 3.1 copy only required files
+COPY git_src/migrations /app/migrations
+COPY git_src/container-health.js /app/container-health.js
+COPY git_src/knexfile.js /app/knexfile.js
+COPY git_src/package.json /app/package.json
+COPY git_src/package-lock.json /app/package-lock.json
+
+# 3.2 install production dependencies only. Cleanup cache after that
+RUN mkdir -p /.npm && chown nobody:nobody /.npm
+RUN npm ci
+RUN rm -rf /.npm
+
+USER nobody
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]
 EXPOSE 3000
 CMD ["node", "app/schema-registry.js"]
