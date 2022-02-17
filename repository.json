@@ -1,0 +1,7 @@
+{
+  "name": "graphql-schema-registry",
+  "description": "Open-source graphql schema registry",
+  "owner": "CORE",
+  "type": "service",
+  "status": "released"
+}
