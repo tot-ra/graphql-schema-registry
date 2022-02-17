@@ -19,7 +19,7 @@ RUN mkdir -p /app && \
 chown nobody:nobody /app
 WORKDIR /app
 USER nobody
-ADD src ./src
+ADD git_src/src ./src
 ADD git_src/package.json git_src/package-lock.json git_src/tsconfig.json ./
 RUN npm install && \
 npm run build-backend
