@@ -77,10 +77,14 @@ node app/schema-registry.js
 
 ### Docker image
 
-We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry) for main node service.
+We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry/tags) for main node service.
+It assumes you have mysql/redis running separately. 
+Use exact IP instead of `localhost`.
+Use exact docker image tag to avoid breaking changes.
 
 ```
-docker run -e DB_HOST=localhost -e DB_USERNAME=root pipedrive/graphql-schema-registry
+docker pull pipedrive/graphql-schema-registry:3.0.1
+docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 pipedrive/graphql-schema-registry
 ```
 
 ### Docker-compose
