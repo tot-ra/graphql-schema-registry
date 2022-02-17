@@ -2,7 +2,8 @@
 FROM node:14-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
-RUN mkdir -p /app && chown nobody:nobody /app
+RUN mkdir -p /app && \
+chown nobody:nobody /app
 WORKDIR /app
 USER nobody
 ADD package.json package-lock.json ./
@@ -15,19 +16,20 @@ RUN npm run build-frontend
 FROM node:14-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
-RUN mkdir -p /app && chown nobody:nobody /app
+RUN mkdir -p /app && \
+chown nobody:nobody /app
 WORKDIR /app
 USER nobody
 ADD src ./src
 ADD package.json package-lock.json tsconfig.json ./
-RUN npm install
-RUN npm run build-backend
+RUN npm install && \
+npm run build-backend
 
 # 3. BUILD FINAL IMAGE
 FROM node:14-alpine
 ARG env=production
 ENV NODE_ENV=${env}
-RUN mkdir -p /app && chown nobody:nobody /app
+RUN mkdir -p /app
 WORKDIR /app
 COPY --from=builder-frontend /app/dist /app/dist
 COPY --from=builder-backend /app/app /app/app
@@ -40,9 +42,9 @@ COPY ./package.json /app/package.json
 COPY ./package-lock.json /app/package-lock.json
 
 # 3.2 install production dependencies only. Cleanup cache after that
-RUN mkdir -p /.npm && chown nobody:nobody /.npm
-RUN npm ci
-RUN rm -rf /.npm
+RUN mkdir -p /.npm \
+&& npm ci \
+&& rm -rf /.npm
 
 USER nobody
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]
