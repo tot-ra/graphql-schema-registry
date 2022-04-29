@@ -4,6 +4,18 @@ on:
     branches:
       - master
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
+  statuses: write
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  security-events: none
+
 jobs:
   test:
     timeout-minutes: 10
