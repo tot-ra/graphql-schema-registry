@@ -1,17 +1,10 @@
-// export const logger = console;
+import { Logger, TLogLevelName, ISettingsParam } from "tslog";
 
-export function info(...args){
-	console.info(...args);
-}
-export function warn(...args){
-	console.warn(...args);
-}
-export function debug(...args){
-	console.debug(...args);
-}
-export function log(...args){
-	console.log(...args);
-}
-export function error(...args){
-	console.error(...args);
+const logger = new Logger({
+	minLevel: (process.env.LOG_LEVEL || "info") as TLogLevelName,
+	type: (process.env.LOG_TYPE || "pretty" ) as ISettingsParam["type"]
+  });
+
+export function getLogger() {
+	return logger
 }

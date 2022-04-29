@@ -1,8 +1,10 @@
-import * as logger from '../logger';
 import { parse } from 'graphql';
 import { composeAndValidate } from '@apollo/federation';
 
 import { PublicError } from './error';
+import { getLogger } from "../logger";
+
+const logger = getLogger();
 
 export function composeAndValidateSchema (servicesSchemaMap) {
 	let schema;

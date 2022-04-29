@@ -1,6 +1,8 @@
 import diplomat from '../diplomat';
-import * as log from '../logger';
 import redis from 'async-redis';
+import { getLogger } from "../logger";
+
+const logger = getLogger();
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
@@ -25,7 +27,7 @@ const redisWrapper = {
 			db: 2,
 			retry_strategy: (options) => {
 				if (options.error && options.error.code === 'ECONNREFUSED') {
-					log.error('Redis server refused the connection', {
+					logger.error('Redis server refused the connection', {
 						original_error: options.error,
 					});
 				}
@@ -59,11 +61,11 @@ const redisWrapper = {
 	},
 
 	onEnd: function () {
-		log.info('Redis server connection has closed!');
+		logger.info('Redis server connection has closed!');
 	},
 
 	onError: function (error) {
-		log.error(
+		logger.error(
 			`An error occurred while fetching data from Redis : ${error.message}`,
 			{
 				original_error: error,
@@ -72,15 +74,15 @@ const redisWrapper = {
 	},
 
 	onReconnecting: function () {
-		log.info('Redis client is reconnecting to the server!');
+		logger.info('Redis client is reconnecting to the server!');
 	},
 
 	onConnect: function () {
-		log.info(`Redis client is connected`);
+		logger.info(`Redis client is connected`);
 	},
 
 	onReady: function () {
-		log.info('Redis client is ready!');
+		logger.info('Redis client is ready!');
 	},
 };
 

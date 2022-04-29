@@ -1,8 +1,10 @@
 import Knex from 'knex';
 import { unionBy } from 'lodash';
-import * as logger from '../logger';
 import { connection } from './index';
 import servicesModel from './services';
+import { getLogger } from "../logger";
+
+const logger = getLogger();
 
 function isDevVersion(version: string) {
 	return version === 'latest' || !version;

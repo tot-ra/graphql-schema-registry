@@ -78,7 +78,7 @@ node app/schema-registry.js
 ### Docker image
 
 We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry/tags) for main node service.
-It assumes you have mysql/redis running separately. 
+It assumes you have mysql/redis running separately.
 Use exact IP instead of `localhost`.
 Use exact docker image tag to avoid breaking changes.
 
