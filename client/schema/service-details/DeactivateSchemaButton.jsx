@@ -12,15 +12,11 @@ import { useParams } from 'react-router-dom';
 
 const DeactivateSchemaButton = ({ schema }) => {
 	const { serviceName } = useParams();
-	const [
-		deactivateSchema,
-		{ loading: deleting, error: deleteError },
-	] = useMutation(DEACTIVATE_SCHEMA_ENTRY);
+	const [deactivateSchema, { loading: deleting, error: deleteError }] =
+		useMutation(DEACTIVATE_SCHEMA_ENTRY);
 
-	const [
-		activateSchema,
-		{ loading: activating, error: activateError },
-	] = useMutation(ACTIVATE_SCHEMA_ENTRY);
+	const [activateSchema, { loading: activating, error: activateError }] =
+		useMutation(ACTIVATE_SCHEMA_ENTRY);
 
 	const deleteErrorMessage = deleteError ? deleteError.message : null;
 	const activateErrorMessage = activateError ? activateError.message : null;
