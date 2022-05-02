@@ -29,10 +29,11 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
   - registered clients (based on headers, including apollo-* ones)
   - schema usage breakdown by multiple facets - property, day, query name, client name
   - fixed data retention
+- schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
+  - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 - Performance tracking (to know what resolvers to optimize)
 - access control - lightweight authentication in case this internal tool is publicly accessible
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
-- integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 
 ## Configuration
 
