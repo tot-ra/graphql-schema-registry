@@ -25,9 +25,12 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 (Pull requests are encouraged on these topics)
 
-- client tracking (for breaking changes)
-- schema usage tracking (for breaking changes)
-- access control (lightweight authentication)
+- Usage tracking (to avoid breaking changes) - needs a separate docker sub-process in golang
+  - registered clients (based on headers, including apollo-* ones)
+  - schema usage breakdown by multiple facets - property, day, query name, client name
+  - fixed data retention
+- Performance tracking (to know what resolvers to optimize)
+- access control - lightweight authentication in case this internal tool is publicly accessible
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
 - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 
