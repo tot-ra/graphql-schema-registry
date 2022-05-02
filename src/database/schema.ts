@@ -3,6 +3,7 @@ import { unionBy } from 'lodash';
 import * as logger from '../logger';
 import { connection } from './index';
 import servicesModel from './services';
+import { PublicError } from '../helpers/error';
 
 function isDevVersion(version: string) {
 	return version === 'latest' || !version;
@@ -217,6 +218,12 @@ const schemaModel = {
 			})
 		)[0]?.id;
 
+		if (existingService && !schemaId && await versionExists(trx, existingService.id, service.version)) {
+			const message = `Schema [foobar] and version [1.0] already exist in registry. `
+				+ `You should not register different type_defs with same version.`;
+			throw new PublicError(message, null);
+		}
+
 		if (schemaId) {
 			await trx('schema')
 				.where('id', '=', schemaId)
@@ -376,5 +383,14 @@ const schemaModel = {
 			});
 	},
 };
+
+async function versionExists(trx, serviceId, version) {
+	return (
+		await trx('container_schema').select('id').where({
+			service_id: serviceId,
+			version: version,
+		})
+	)[0]?.id;
+}
 
 export default schemaModel;
