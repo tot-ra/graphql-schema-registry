@@ -18,10 +18,10 @@ class CustomSqlMigrationSource {
 			.filter((f) => f.endsWith('.sql'))
 			.sort();
 
-		//The Knex migrationsLister.js code assumes that migrations are returned as an array of objects each having a 'file'
-		//property. Failing to do so prevents migrationsLister.js from properly printing out executed/failed migrations.
+		// The Knex migrationsLister.js code assumes that migrations are returned as an array of objects each having a 'file'
+		// property. Failing to do so prevents migrationsLister.js from properly printing out executed/failed migrations.
 		const transformed = files.reduce((acc, file) => {
-			acc.push({ file: file });
+			acc.push({ file });
 			return acc;
 		}, []);
 
@@ -40,13 +40,13 @@ class CustomSqlMigrationSource {
 		);
 
 		return {
-			up: async function up(knex:any) {
+			up: async function up(knex: any) {
 				const sql = fs.readFileSync(migrationPath, 'utf8');
 
 				return knex.raw(sql);
 			},
 			down: async function down() {
-				//noop
+				// noop
 			},
 		};
 	}

@@ -1,5 +1,5 @@
 import diplomat from '../diplomat';
-import { logger } from "../logger";
+import { logger } from '../logger';
 
 const DB_SCHEMA_REGISTRY =
 	process.env.DB_SCHEMA_REGISTRY || 'gql-schema-registry-db';
@@ -22,9 +22,8 @@ function logQueryError(error, { sql }) {
 	logger.debug(`DB error ${error} on query : ${sql}`);
 }
 
-const { host, port, username, secret, name } = diplomat.getServiceInstance(
-	DB_SCHEMA_REGISTRY
-);
+const { host, port, username, secret, name } =
+	diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
 
 export const connection = knex({
 	client: 'mysql2',
@@ -50,7 +49,7 @@ export const connection = knex({
 	},
 });
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV !== 'production') {
 	connection.on('query', logQuery);
 }
 connection.on('query-error', logQueryError);
@@ -69,4 +68,4 @@ export async function transact(fn) {
 
 		throw error;
 	}
-};
+}

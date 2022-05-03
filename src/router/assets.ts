@@ -2,9 +2,9 @@ import express from 'express';
 
 export function assetRouter(router) {
 	router.use(express.static('dist'));
-};
+}
 
-export function indexHtml () {
+export function indexHtml() {
 	const assetsRootUrl = process.env.ASSETS_URL || 'http://localhost:6001';
 	const assetsVersion = 'latest';
 
@@ -27,4 +27,4 @@ export function indexHtml () {
   </body>
   </html>`);
 	};
-};
+}

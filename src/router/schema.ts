@@ -17,7 +17,7 @@ export async function composeLatest(req, res) {
 		success: true,
 		data: schema,
 	});
-};
+}
 
 export async function compose(req, res) {
 	const { services } = Joi.attempt(
@@ -43,7 +43,7 @@ export async function compose(req, res) {
 		success: true,
 		data: schema,
 	});
-};
+}
 
 export async function push(req, res) {
 	const service = Joi.attempt(
@@ -66,7 +66,7 @@ export async function push(req, res) {
 		success: true,
 		data,
 	});
-};
+}
 
 export async function validate(req, res) {
 	const service = Joi.attempt(
@@ -83,7 +83,7 @@ export async function validate(req, res) {
 		success: true,
 		data: await validateSchema({ service }),
 	});
-};
+}
 
 export async function remove(req, res) {
 	const params = Joi.attempt(
@@ -99,7 +99,7 @@ export async function remove(req, res) {
 		success: true,
 		data: null,
 	});
-};
+}
 
 export async function diff(req, res) {
 	const service = Joi.attempt(
@@ -115,4 +115,4 @@ export async function diff(req, res) {
 		success: true,
 		data: await diffSchemas({ service }),
 	});
-};
+}

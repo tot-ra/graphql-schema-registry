@@ -1,10 +1,9 @@
-import { AppBar, IconButton, Tab, Tabs, Toolbar } from '@material-ui/core';
-import React from 'react';
+import { AppBar, Tab, Tabs } from '@material-ui/core';
 import ReactLogo from './logo';
 import { useHistory } from 'react-router-dom';
 
-export default ({ UITabs, selectedTab, handleChange }) => {
-	let history = useHistory();
+export default function TopMenu({ UITabs, selectedTab, handleChange }) {
+	const history = useHistory();
 
 	return (
 		<AppBar
@@ -24,7 +23,7 @@ export default ({ UITabs, selectedTab, handleChange }) => {
 				onChange={handleChange}
 				aria-label="simple tabs example"
 			>
-				{/*<React.Fragment>*/}
+				{/* <React.Fragment>*/}
 				{UITabs.map((tab, i) => (
 					<Tab
 						key={i}
@@ -32,8 +31,8 @@ export default ({ UITabs, selectedTab, handleChange }) => {
 						label={tab.Title}
 					/>
 				))}
-				{/*</React.Fragment>*/}
+				{/* </React.Fragment>*/}
 			</Tabs>
 		</AppBar>
 	);
-};
+}

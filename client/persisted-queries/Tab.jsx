@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 import { PERSISTED_QUERIES_COUNT } from '../utils/queries';
 
