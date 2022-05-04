@@ -1,10 +1,23 @@
-import { Logger, TLogLevelName, ISettingsParam } from "tslog";
+import { createLogger, transports, format } from "winston";
 
-const logger = new Logger({
-	minLevel: (process.env.LOG_LEVEL || "info") as TLogLevelName,
-	type: (process.env.LOG_TYPE || "pretty" ) as ISettingsParam["type"]
-  });
+export const logger = createLogger({
+	level: process.env.LOG_LEVEL || 'info',
+	transports: [new transports.Console()],
+	format: process.env.LOG_TYPE == "json" ? buildJsonFormat() : buildPrettyFormat(),
+});
 
-export function getLogger() {
-	return logger
+function buildPrettyFormat() {
+	return format.combine(
+		format.colorize(),
+		format.timestamp(),
+		format.printf(({ timestamp, level, message }) => {
+			return `[${timestamp}] ${level}: ${message}`;
+		})
+	)
 }
+
+function buildJsonFormat() {
+	return format.json()
+}
+
+logger.exitOnError = false;

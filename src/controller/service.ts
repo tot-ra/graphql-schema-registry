@@ -1,9 +1,7 @@
 import servicesModel from '../database/services';
 import { connection } from '../database';
 
-import { getLogger } from "../logger";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 export async function deleteService({ name }) {
 	const services = await servicesModel.deleteService(connection, name);

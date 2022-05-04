@@ -2,9 +2,7 @@ import dotenv from 'dotenv';
 import CustomSqlMigrationSource from './database/sql-migration-source';
 import { connection } from './database';
 import init from './index';
-import { getLogger } from "./logger";
-
-const logger = getLogger();
+import { logger } from "./logger";
 
 dotenv.config();
 

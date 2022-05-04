@@ -5,9 +5,7 @@ import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
 import Knex from 'knex';
 
-import { getLogger } from "../logger";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 export async function getAndValidateSchema(trx: Knex, services = false) {
 	const schemas = services

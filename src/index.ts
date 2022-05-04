@@ -4,9 +4,7 @@ import initGraphql from './graphql';
 import * as kafka from './kafka';
 import config from './config';
 import router from './router';
-import { getLogger } from "./logger";
-
-const logger = getLogger();
+import { logger } from "./logger";
 
 const app = express();
 

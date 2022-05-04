@@ -1,8 +1,6 @@
 import diplomat from '../diplomat';
 import redis from 'async-redis';
-import { getLogger } from "../logger";
-
-const logger = getLogger();
+import { logger } from "../logger";
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
