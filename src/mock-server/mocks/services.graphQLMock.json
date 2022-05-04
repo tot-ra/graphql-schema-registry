@@ -1,0 +1,29 @@
+{
+  "services": [
+    {
+      "id": "4",
+      "name": "customer-segment",
+      "__typename": "Service"
+    },
+    {
+      "id": "5",
+      "name": "customer-segment-1",
+      "__typename": "Service"
+    },
+    {
+      "id": "7",
+      "name": "tipsheets",
+      "__typename": "Service"
+    },
+    {
+      "id": "9",
+      "name": "brands",
+      "__typename": "Service"
+    },
+    {
+      "id": "10",
+      "name": "homepage-b2c",
+      "__typename": "Service"
+    }
+  ]
+}

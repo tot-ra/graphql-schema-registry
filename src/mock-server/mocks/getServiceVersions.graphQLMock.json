@@ -1,0 +1,18 @@
+{
+  "service": {
+    "id": 4,
+    "schemas": [
+      {
+        "id": 3,
+        "isActive": true,
+        "addedTime": "2022-05-02T12:49:28.000Z",
+        "typeDefs": "    type Query {getMessage(id: ID!): String }  ",
+        "isDev": true,
+        "characters": 47,
+        "previousSchema": null,
+        "__typename": "SchemaDefinition"
+      }
+    ],
+    "__typename": "Service"
+  }
+}
