@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const webpack = require('webpack');
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const isEnvDevelopment = process.env.NODE_ENV !== 'production';
 const isEnvProduction = process.env.NODE_ENV === 'production';
@@ -18,6 +19,7 @@ module.exports = {
 		chunkFilename: '[name].[contenthash].js',
 		crossOriginLoading: 'anonymous',
 		pathinfo: true,
+		publicPath: '/assets/',
 	},
 	module: {
 		rules: [
@@ -31,7 +33,7 @@ module.exports = {
 			{
 				oneOf: [
 					{
-						test: /\.jsx?$/,
+						test: /\.(t|j)sx?$/,
 						loader: 'babel-loader',
 						exclude: /node_modules/,
 					},
@@ -51,9 +53,28 @@ module.exports = {
 		].filter(Boolean),
 	},
 	resolve: {
-		extensions: ['.js', '.jsx', '.json'],
+		extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
 	},
 	plugins: [
+		new ForkTsCheckerWebpackPlugin({
+			typescript: {
+				configOverwrite: {
+					compilerOptions: {
+						lib: ['ES2020', 'DOM', 'DOM.Iterable'],
+						sourceMap: isEnvProduction
+							? shouldUseSourceMap
+							: isEnvDevelopment,
+						skipLibCheck: true,
+						inlineSourceMap: false,
+						declarationMap: false,
+						noEmit: true,
+						incremental: true,
+						jsx: 'preserve',
+					},
+					include: ['client/**/*'],
+				},
+			},
+		}),
 		new MiniCssExtractPlugin({
 			filename: '[name].css?v=[contenthash]',
 		}),
@@ -69,7 +90,7 @@ module.exports = {
 	entry: {
 		'management-ui-standalone': [
 			isEnvDevelopment && '@gatsbyjs/webpack-hot-middleware/client',
-			'./client/entry-standalone.jsx',
+			'./client/entry-standalone.tsx',
 		].filter(Boolean),
 	},
 	devtool: shouldUseSourceMap ? 'cheap-module-source-map' : false,

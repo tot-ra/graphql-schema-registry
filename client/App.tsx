@@ -11,7 +11,11 @@ import Main from './components/Main';
 import './style.css';
 import './prism-material-light.css';
 
-const App = ({ api }) => {
+type AppProps = {
+	api?: unknown;
+};
+
+const App = ({ api }: AppProps) => {
 	const config = createConfig(api);
 
 	const client = new ApolloClient({
