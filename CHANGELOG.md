@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2022-05-05
+
+### Added
+
+- Logger was changed from bare console to use winston
+
+### Fixed
+- npm lock version 2
+- graphql & @apollo/federation version compatibility
+- mysql2 & knex version compatibility
+- npm audit issues
+
 ## [3.0.1] - 2022-02-08
 
 ### Updated
