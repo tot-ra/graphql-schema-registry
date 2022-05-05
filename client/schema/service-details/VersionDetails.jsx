@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, ButtonGroup, Tabs, Tab } from '@material-ui/core';
 import TabPanel from '../../components/TabPanel';
 
@@ -22,7 +22,7 @@ import CodeDiff from './CodeDiff';
 
 const VersionDetails = () => {
 	const [revealed, setRevealed] = useState(null);
-	const [value, setValue] = React.useState(0);
+	const [value, setValue] = useState(0);
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);

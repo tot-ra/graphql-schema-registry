@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import { ServiceListColumn, ServiceListColumnEmpty } from '../styled';
@@ -32,7 +31,7 @@ const ServiceList = () => {
 	}
 
 	const match = useRouteMatch('/:serviceName');
-	let history = useHistory();
+	const history = useHistory();
 
 	return (
 		<ServiceListColumn>

@@ -7,7 +7,7 @@ import dataloader from './dataloader';
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	context: (req) => ({
+	context: () => ({
 		dataloaders: dataloader(),
 	}),
 });

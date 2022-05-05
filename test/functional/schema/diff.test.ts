@@ -45,26 +45,27 @@ describe('POST /schema/diff', function () {
 
 		expect(result.statusCode).toBe(200);
 
-		expect(result.body).toEqual(
-			{
-				"data": [
-					{
-						"criticality": { "level": "NON_BREAKING" },
-						"message": "Field 'privet' was added to object type 'Query'",
-						"path": "Query.privet",
-						"type": "FIELD_ADDED"
+		expect(result.body).toEqual({
+			data: [
+				{
+					criticality: { level: 'NON_BREAKING' },
+					message: "Field 'privet' was added to object type 'Query'",
+					path: 'Query.privet',
+					type: 'FIELD_ADDED',
+				},
+				{
+					criticality: {
+						level: 'DANGEROUS',
+						reason: 'Adding an enum value may break existing clients that were not programming defensively against an added case when querying an enum.',
 					},
-					{
-						"criticality": {
-							"level": "DANGEROUS", "reason": "Adding an enum value may break existing clients that were not programming defensively against an added case when querying an enum."
-						},
-						"message": "Enum value 'SERVICE_B' was added to enum 'join__Graph'",
-						"path": "join__Graph.SERVICE_B", "type": "ENUM_VALUE_ADDED"
-					},
-				],
-				"success": true
-			}
-		);
+					message:
+						"Enum value 'SERVICE_B' was added to enum 'join__Graph'",
+					path: 'join__Graph.SERVICE_B',
+					type: 'ENUM_VALUE_ADDED',
+				},
+			],
+			success: true,
+		});
 	});
 	it('field was removed', async () => {
 		let result = await request({
@@ -100,21 +101,20 @@ describe('POST /schema/diff', function () {
 
 		expect(result.statusCode).toBe(200);
 
-		expect(result.body).toEqual(
-			{
-				"data": [
-					{
-						"criticality": {
-							"level": "BREAKING",
-							"reason": "Removing a field is a breaking change. It is preferable to deprecate the field before removing it.",
-						},
-						"message": "Field 'world' was removed from object type 'Query'",
-						"path": "Query.world",
-						"type": "FIELD_REMOVED",
+		expect(result.body).toEqual({
+			data: [
+				{
+					criticality: {
+						level: 'BREAKING',
+						reason: 'Removing a field is a breaking change. It is preferable to deprecate the field before removing it.',
 					},
-				],
-				"success": true
-			}
-		);
+					message:
+						"Field 'world' was removed from object type 'Query'",
+					path: 'Query.world',
+					type: 'FIELD_REMOVED',
+				},
+			],
+			success: true,
+		});
 	});
 });

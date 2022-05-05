@@ -1,7 +1,5 @@
 import React from 'react';
-import { Tabs, Box, Tab, Container, AppBar } from '@material-ui/core';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
-import { hot } from 'react-hot-loader';
 
 import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
@@ -54,4 +52,4 @@ const Main = () => {
 	);
 };
 
-export default hot(module)(Main);
+export default Main;

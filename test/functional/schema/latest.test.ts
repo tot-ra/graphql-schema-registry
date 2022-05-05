@@ -102,31 +102,25 @@ describe('GET /schema/latest', function () {
 			expect(result.body.data.length).toEqual(2);
 
 			expect(result.body.data[0]).toEqual(
-				expect.objectContaining(
-					{
-						id: 1,
-						is_active: 1,
-						name: 'service_a',
-						type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
-						url: null,
-						version: 'ke9j34fuuei',
-					}
-				)
+				expect.objectContaining({
+					id: 1,
+					is_active: 1,
+					name: 'service_a',
+					type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
+					url: null,
+					version: 'ke9j34fuuei',
+				})
 			);
 			expect(result.body.data[1]).toEqual(
-				expect.objectContaining(
-					{
-						id: 2,
-						is_active: 1,
-						name: 'service_b',
-						type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
-						url: null,
-						version: 'jiaj51fu91k',
-					}
-				)
+				expect.objectContaining({
+					id: 2,
+					is_active: 1,
+					name: 'service_b',
+					type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
+					url: null,
+					version: 'jiaj51fu91k',
+				})
 			);
-
-
 		});
 	});
 });

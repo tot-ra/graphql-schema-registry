@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Container, SelectServiceGuide } from '../styled';
 
 const Empty = () => {

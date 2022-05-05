@@ -4,7 +4,7 @@ import initGraphql from './graphql';
 import * as kafka from './kafka';
 import config from './config';
 import router from './router';
-import { logger } from "./logger";
+import { logger } from './logger';
 
 const app = express();
 
@@ -111,4 +111,4 @@ export default async function init() {
 	});
 
 	return server;
-};
+}

@@ -1,4 +1,3 @@
-import React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import { Link, useRouteMatch } from 'react-router-dom';
 

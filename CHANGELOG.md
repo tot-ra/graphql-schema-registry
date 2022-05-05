@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.1.0] - 2022-05-05
 
 ### Added
+
 - Added dependency to winston
 - Added an instance of logger in logger.ts and removed the logging functions
 - Replace every use of the previous logger functions with calls to the logger exposed from logger.ts
 
 ### Fixed
+
 - npm lock version 2
 - graphql & @apollo/federation version compatibility
 - mysql2 & knex version compatibility
