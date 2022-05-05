@@ -1,10 +1,10 @@
 import express from 'express';
-import * as logger from './logger';
 import { get } from 'lodash';
 import initGraphql from './graphql';
 import * as kafka from './kafka';
 import config from './config';
 import router from './router';
+import { logger } from "./logger";
 
 const app = express();
 

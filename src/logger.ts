@@ -1,17 +1,23 @@
-// export const logger = console;
+import { createLogger, transports, format } from "winston";
 
-export function info(...args){
-	console.info(...args);
+export const logger = createLogger({
+	level: process.env.LOG_LEVEL || 'info',
+	transports: [new transports.Console()],
+	format: process.env.LOG_TYPE == "json" ? buildJsonFormat() : buildPrettyFormat(),
+});
+
+function buildPrettyFormat() {
+	return format.combine(
+		format.colorize(),
+		format.timestamp(),
+		format.printf(({ timestamp, level, message }) => {
+			return `[${timestamp}] ${level}: ${message}`;
+		})
+	)
 }
-export function warn(...args){
-	console.warn(...args);
+
+function buildJsonFormat() {
+	return format.json()
 }
-export function debug(...args){
-	console.debug(...args);
-}
-export function log(...args){
-	console.log(...args);
-}
-export function error(...args){
-	console.error(...args);
-}
+
+logger.exitOnError = false;

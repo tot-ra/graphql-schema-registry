@@ -1,5 +1,5 @@
 import diplomat from '../diplomat';
-import * as logger from '../logger';
+import { logger } from "../logger";
 
 const DB_SCHEMA_REGISTRY =
 	process.env.DB_SCHEMA_REGISTRY || 'gql-schema-registry-db';

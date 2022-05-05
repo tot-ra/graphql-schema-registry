@@ -1,8 +1,8 @@
 import Knex from 'knex';
 import { unionBy } from 'lodash';
-import * as logger from '../logger';
 import { connection } from './index';
 import servicesModel from './services';
+import { logger } from "../logger";
 
 function isDevVersion(version: string) {
 	return version === 'latest' || !version;
@@ -148,14 +148,7 @@ const schemaModel = {
 				result.push(service);
 
 				if (!isDevVersion(service.version)) {
-					logger.warn(
-						new Error(
-							`Unable to find "${service.name}:${service.version}" schema, fallback to the latest`
-						),
-						{
-							service,
-						}
-					);
+					logger.warn(`Unable to find "${service.name}:${service.version}" schema, fallback to the latest`);
 				}
 			}
 
@@ -178,12 +171,7 @@ const schemaModel = {
 		});
 
 		if (missingServices.length) {
-			logger.warn(
-				new Error('Unable to find schema for requested services'),
-				{
-					missingServices,
-				}
-			);
+			logger.warn(`Unable to find schema for requested services: "${missingServices}"`);
 		}
 
 		return schema;

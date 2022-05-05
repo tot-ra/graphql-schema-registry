@@ -10,9 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.1] - 2022-02-08
 
 ### Updated
+
 - Fixed UI issues with logo causing page slider
 - Fixed UI issue with diff view font size and width of comparison blocks
-
 
 ## [3.0.0] - 2022-02-07
 
