@@ -26,7 +26,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 (Pull requests are encouraged on these topics)
 
 - Usage tracking (to avoid breaking changes) - needs a separate docker sub-process in golang
-  - registered clients (based on headers, including apollo-* ones)
+  - registered clients (based on headers, including apollo-\* ones)
   - schema usage breakdown by multiple facets - property, day, query name, client name
   - fixed data retention
 - schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)

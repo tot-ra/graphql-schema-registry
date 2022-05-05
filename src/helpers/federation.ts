@@ -2,17 +2,15 @@ import { parse } from 'graphql';
 import { composeAndValidate } from '@apollo/federation';
 
 import { PublicError } from './error';
-import { logger } from "../logger";
+import { logger } from '../logger';
 
-export function composeAndValidateSchema (servicesSchemaMap) {
+export function composeAndValidateSchema(servicesSchemaMap) {
 	let schema;
 	let errors = [];
 
 	try {
 		const serviceList = servicesSchemaMap.map((schema) => {
-			let typeDefs;
-
-			typeDefs = parse(schema.type_defs);
+			const typeDefs = parse(schema.type_defs);
 
 			return {
 				name: schema.name,
@@ -35,4 +33,4 @@ export function composeAndValidateSchema (servicesSchemaMap) {
 	}
 
 	return schema;
-};
+}

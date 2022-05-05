@@ -1,6 +1,6 @@
 import diplomat from '../diplomat';
 import redis from 'async-redis';
-import { logger } from "../logger";
+import { logger } from '../logger';
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
@@ -19,9 +19,9 @@ const redisWrapper = {
 		);
 
 		const redisOptions = {
-			host: host,
-			port: port,
-			password: password,
+			host,
+			port,
+			password,
 			db: 2,
 			retry_strategy: (options) => {
 				if (options.error && options.error.code === 'ECONNREFUSED') {
@@ -39,7 +39,10 @@ const redisWrapper = {
 
 		redisWrapper.redisInstance.on('ready', redisWrapper.onReady);
 		redisWrapper.redisInstance.on('connect', redisWrapper.onConnect);
-		redisWrapper.redisInstance.on('reconnecting', redisWrapper.onReconnecting);
+		redisWrapper.redisInstance.on(
+			'reconnecting',
+			redisWrapper.onReconnecting
+		);
 		redisWrapper.redisInstance.on('error', redisWrapper.onError);
 		redisWrapper.redisInstance.on('end', redisWrapper.onEnd);
 

@@ -1,9 +1,12 @@
-import { createLogger, transports, format } from "winston";
+import { createLogger, transports, format } from 'winston';
 
 export const logger = createLogger({
 	level: process.env.LOG_LEVEL || 'info',
 	transports: [new transports.Console()],
-	format: process.env.LOG_TYPE == "json" ? buildJsonFormat() : buildPrettyFormat(),
+	format:
+		process.env.LOG_TYPE === 'json'
+			? buildJsonFormat()
+			: buildPrettyFormat(),
 });
 
 function buildPrettyFormat() {
@@ -13,11 +16,11 @@ function buildPrettyFormat() {
 		format.printf(({ timestamp, level, message }) => {
 			return `[${timestamp}] ${level}: ${message}`;
 		})
-	)
+	);
 }
 
 function buildJsonFormat() {
-	return format.json()
+	return format.json();
 }
 
 logger.exitOnError = false;

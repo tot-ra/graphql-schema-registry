@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { unionBy } from 'lodash';
 import { connection } from './index';
 import servicesModel from './services';
-import { logger } from "../logger";
+import { logger } from '../logger';
 
 function isDevVersion(version: string) {
 	return version === 'latest' || !version;
@@ -112,7 +112,11 @@ const schemaModel = {
 	},
 
 	getSchemaByServiceVersions: async function ({ trx, services }) {
-		services = unionBy(services, await servicesModel.getActiveServices(trx), 'name');
+		services = unionBy(
+			services,
+			await servicesModel.getActiveServices(trx),
+			'name'
+		);
 
 		const schema = await trx('container_schema')
 			.select([
@@ -148,7 +152,9 @@ const schemaModel = {
 				result.push(service);
 
 				if (!isDevVersion(service.version)) {
-					logger.warn(`Unable to find "${service.name}:${service.version}" schema, fallback to the latest`);
+					logger.warn(
+						`Unable to find "${service.name}:${service.version}" schema, fallback to the latest`
+					);
 				}
 			}
 
@@ -171,7 +177,9 @@ const schemaModel = {
 		});
 
 		if (missingServices.length) {
-			logger.warn(`Unable to find schema for requested services: "${missingServices}"`);
+			logger.warn(
+				`Unable to find schema for requested services: "${missingServices}"`
+			);
 		}
 
 		return schema;
@@ -186,8 +194,12 @@ const schemaModel = {
 		let existingService = await servicesModel.getService(trx, service.name);
 
 		if (!existingService) {
-			existingService = await servicesModel.insertService(trx, service.name, service.url);
-		} else if (service.url && existingService.url != service.url) {
+			existingService = await servicesModel.insertService(
+				trx,
+				service.name,
+				service.url
+			);
+		} else if (service.url && existingService.url !== service.url) {
 			await trx('services')
 				.where('id', '=', existingService.id)
 				.update({ url: service.url });
@@ -354,7 +366,15 @@ const schemaModel = {
 			.first();
 	},
 
-	deleteSchema: async function ({ trx, name, version }: { trx: any; name: string; version: string }) {
+	deleteSchema: async function ({
+		trx,
+		name,
+		version,
+	}: {
+		trx: any;
+		name: string;
+		version: string;
+	}) {
 		return trx('container_schema')
 			.delete()
 			.leftJoin('services', 'container_schema.service_id', 'services.id')

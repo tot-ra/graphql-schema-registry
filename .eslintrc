@@ -1,0 +1,52 @@
+{
+	"parser": "@babel/eslint-parser",
+	"extends": [
+		"eslint:recommended",
+		"pipedrive",
+		"plugin:prettier/recommended"
+	],
+	"env": {
+		"browser": true,
+		"jest": true
+	},
+	"overrides": [
+		{
+			"files": "**/*.{ts,tsx}",
+			"parser": "@typescript-eslint/parser",
+			"extends": [
+				"plugin:@typescript-eslint/recommended",
+				"plugin:react/recommended",
+				"plugin:react/jsx-runtime",
+				"pipedrive",
+				"plugin:prettier/recommended"
+			],
+			"env": {
+				"browser": true
+			},
+			"settings": {
+				"react": {
+					"version": "detect"
+				}
+			}
+		},
+		{
+			"files": "**/*.jsx",
+			"parser": "@babel/eslint-parser",
+			"extends": [
+				"eslint:recommended",
+				"plugin:react/recommended",
+				"plugin:react/jsx-runtime",
+				"pipedrive",
+				"plugin:prettier/recommended"
+			],
+			"settings": {
+				"react": {
+					"version": "detect"
+				}
+			},
+			"rules": {
+				"react/prop-types": "off"
+			}
+		}
+	]
+}
