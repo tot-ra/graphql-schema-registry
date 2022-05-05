@@ -6,9 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ## [3.2.0] - 2022-05-05
 
 ### Updated
+
 - `eslint` libraries were being listed as dependencies but not config was set. So an eslint config was added.
 - Same thing with `prettier`, it was listed as a dependency and executed on commit (not configured for ts files though) but some files were not formatted with it.
 - Some unused dependencies were removed from both `dependencies` and `devDependencies`.
