@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [3.2.0] - 2022-05-05
+
+### Updated
+- `eslint` libraries were being listed as dependencies but not config was set. So an eslint config was added.
+- Same thing with `prettier`, it was listed as a dependency and executed on commit (not configured for ts files though) but some files were not formatted with it.
+- Some unused dependencies were removed from both `dependencies` and `devDependencies`.
+- Removed react-hot-loader because it was not proper configured. I have already a working version with [react-refresh-webpack-plugin](https://github.com/pmmmwh/react-refresh-webpack-plugin) planned for a future PR.
+- Some libraries (mostly for the frontend part compilation) were upgrades in order to `improve` the generation of the bundle.
+- Some `general cleanup`: removed unused imports, unused declarations, etc.
 
 ## [3.1.0] - 2022-05-05
 
@@ -234,7 +243,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.1...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v2.2.4...v3.0.0
