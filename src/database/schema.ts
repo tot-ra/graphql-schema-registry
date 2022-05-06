@@ -219,7 +219,7 @@ const schemaModel = {
 		)[0]?.id;
 
 		if (existingService && !schemaId && await versionExists(trx, existingService.id, service.version)) {
-			const message = `Schema [foobar] and version [1.0] already exist in registry. `
+			const message = `Schema [${existingService.name}] and version [${service.version}] already exist in registry. `
 				+ `You should not register different type_defs with same version.`;
 			throw new PublicError(message, null);
 		}
