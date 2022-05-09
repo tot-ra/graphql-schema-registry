@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Tabs, Tab } from '@material-ui/core';
 import TabPanel from '../../components/TabPanel';
 
 import { useQuery } from '@apollo/client';
-import { useRouteMatch } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
 	Container,
 	VersionHeader,
@@ -19,6 +19,12 @@ import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighl
 
 import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
+
+export function useSchemaParam() {
+	const { schemaId } = useParams();
+
+	return schemaId ? parseInt(schemaId, 10) : null;
+}
 
 const VersionDetails = () => {
 	const [revealed, setRevealed] = useState(null);
@@ -143,10 +149,3 @@ const VersionDetails = () => {
 };
 
 export default VersionDetails;
-
-export function useSchemaParam() {
-	const match = useRouteMatch('/schema/:serviceName/:schemaId');
-	const schemaId = match?.params?.schemaId;
-
-	return schemaId ? parseInt(schemaId, 10) : null;
-}

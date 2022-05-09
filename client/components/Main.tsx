@@ -8,7 +8,6 @@ import {
 import { useState } from 'react';
 
 import TopMenu from './TopMenu';
-import TabPanel from './TabPanel';
 import Schema from '../schema';
 import PersistedQueries, {
 	Tab as PersistedQueriesTab,
@@ -59,11 +58,9 @@ const Main = () => {
 				handleChange={handleChange}
 			/>
 			<Switch>
-				{UITabs.map(({ component: Component, ...tab }, index) => (
+				{UITabs.map(({ component: Component, ...tab }) => (
 					<Route key={tab.href} path={tab.href} exact={false}>
-						<TabPanel key={tab.href} value={index} index={index}>
-							<Component />
-						</TabPanel>
+						<Component />
 					</Route>
 				))}
 				<Redirect to="/schema" />

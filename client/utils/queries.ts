@@ -85,7 +85,7 @@ export type ListTypesOutput = {
 };
 
 export const LIST_TYPES = gql`
-	query listTypes {
+	query GetListTypes {
 		listTypes {
 			operations {
 				type
@@ -94,6 +94,54 @@ export const LIST_TYPES = gql`
 			entities {
 				type
 				count
+			}
+		}
+	}
+`;
+
+export type TypeInstancesVars = {
+	type: string;
+	limit?: number;
+	offset?: number;
+};
+
+export type TypeInstancesOutput = {
+	items: [
+		{
+			id: number;
+			name: string;
+			description?: string;
+			type: string;
+			providedBy: [
+				{
+					name: string;
+				}
+			];
+		}
+	];
+	pagination: {
+		page: number;
+		totalPages: number;
+		limit: number;
+	};
+};
+
+export const TYPE_INSTANCES = gql`
+	query GetListTypeInstances($type: String!, $limit: Int, $offset: Int) {
+		listTypeInstances(type: $type, limit: $limit, offset: $offset) {
+			items {
+				id
+				name
+				description
+				type
+				providedBy {
+					name
+				}
+			}
+			pagination {
+				page
+				totalPages
+				limit
 			}
 		}
 	}

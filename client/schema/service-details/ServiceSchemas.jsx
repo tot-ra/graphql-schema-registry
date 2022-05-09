@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 
 import SpinnerCenter from '../../components/SpinnerCenter';
-import { SchemaListColumn, FlexRow } from '../styled';
+import { SchemaListColumn } from '../styled';
 import VersionsList from './VersionsList';
-import VersionDetails from './VersionDetails';
 
 import { SERVICE_SCHEMAS } from '../../utils/queries';
 import Filter from '../service-list/Filter';
@@ -24,16 +23,10 @@ const ServiceSchemas = ({ service }) => {
 	}
 
 	return (
-		<FlexRow>
-			<SchemaListColumn all="m">
-				<Filter
-					filterValue={filterValue}
-					setFilterValue={setFilterValue}
-				/>
-				{content}
-			</SchemaListColumn>
-			<VersionDetails />
-		</FlexRow>
+		<SchemaListColumn all="m">
+			<Filter filterValue={filterValue} setFilterValue={setFilterValue} />
+			{content}
+		</SchemaListColumn>
 	);
 };
 

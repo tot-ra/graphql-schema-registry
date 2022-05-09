@@ -1,33 +1,16 @@
 import { Route } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
 
-import SpinnerCenter from '../components/SpinnerCenter';
 import TypesCountingList from './types-counting-list';
+import TypeListingInstances from './type-listing-instances';
+import MainSectionContainer from '../components/MainSectionContainer';
 
-import { LIST_TYPES, ListTypesOutput } from '../utils/queries';
-import { FlexRow } from '../shared/styled';
-
-const Types = () => {
-	const { loading, data, error } = useQuery<ListTypesOutput>(LIST_TYPES);
-
-	if (loading || error) {
-		return <SpinnerCenter />;
-	}
-
-	const {
-		listTypes: { entities, operations },
-	} = data;
-
-	return (
-		<FlexRow>
-			<TypesCountingList entities={entities} operations={operations} />
-			<Route
-				path="/types/:typeName"
-				// component={ServiceDetails}
-				exact={false}
-			/>
-		</FlexRow>
-	);
-};
+const Types = () => (
+	<MainSectionContainer gridColumns="0.2fr 0.8fr">
+		<TypesCountingList />
+		<Route path="/types/:typeName">
+			<TypeListingInstances />
+		</Route>
+	</MainSectionContainer>
+);
 
 export default Types;

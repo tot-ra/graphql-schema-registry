@@ -1,15 +1,18 @@
 import { useQuery } from '@apollo/client';
 
-import { ServiceListColumn, ServiceListColumnEmpty } from '../styled';
+import { ServiceListColumnEmpty } from '../styled';
 
 import { SERVICES_LIST } from '../../utils/queries';
 import { useRouteMatch, useHistory } from 'react-router-dom';
 
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { ListContainer } from '../../components/List';
 
 const ServiceList = () => {
 	const { data } = useQuery(SERVICES_LIST);
+	const match = useRouteMatch('/:serviceName');
+	const history = useHistory();
 
 	if (!data || !data.services || data.services.length === 0) {
 		return (
@@ -30,11 +33,8 @@ const ServiceList = () => {
 		);
 	}
 
-	const match = useRouteMatch('/:serviceName');
-	const history = useHistory();
-
 	return (
-		<ServiceListColumn>
+		<ListContainer>
 			<List component="nav">
 				{data.services.map((service) => (
 					<ListItem
@@ -50,7 +50,7 @@ const ServiceList = () => {
 					</ListItem>
 				))}
 			</List>
-		</ServiceListColumn>
+		</ListContainer>
 	);
 };
 
