@@ -58,3 +58,10 @@ CREATE TABLE IF NOT EXISTS `type_def_implementations` (
     FOREIGN KEY (`interface_id`) REFERENCES `type_def_types`(`id`),
     FOREIGN KEY (`implementation_id`) REFERENCES `type_def_types`(`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `type_def_field_arguments` (
+    `field_id` INT UNSIGNED,
+    `argument_id` INT UNSIGNED,
+    FOREIGN KEY (`field_id`) REFERENCES `type_def_fields`(`id`),
+    FOREIGN KEY (`argument_id`) REFERENCES `type_def_fields`(`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
