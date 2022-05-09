@@ -17,6 +17,8 @@ export default gql`
 		): [PersistedQuery]
 		persistedQuery(key: String!): PersistedQuery
 		persistedQueriesCount: Int!
+
+		listTypes: ListedTypes!
 	}
 
 	type Mutation {
@@ -58,5 +60,36 @@ export default gql`
 		key: String
 		query: String
 		addedTime: String
+	}
+
+	enum Type {
+		SCALAR
+		ENUM
+		OBJECT
+		INTERFACE
+		UNION
+		INPUT
+		DIRECTIVE
+	}
+
+	enum Operation {
+		QUERY
+		MUTATION
+		SUBSCRIPTION
+	}
+
+	type TypeTotal {
+		type: Type!
+		count: Int!
+	}
+
+	type OperationTotal {
+		type: Operation!
+		count: Int!
+	}
+
+	type ListedTypes {
+		operations: [OperationTotal!]!
+		entities: [TypeTotal!]!
 	}
 `;
