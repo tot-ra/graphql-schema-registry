@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `type_def_types` (
     `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `description` TEXT,
-    `type` ENUM('object', 'scalar', 'interface', 'enum', 'input', 'union') NOT NULL,
+    `type` ENUM('object', 'scalar', 'interface', 'enum', 'input', 'union', 'directive') NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
