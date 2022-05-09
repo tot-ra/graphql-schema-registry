@@ -1,19 +1,23 @@
 import Knex from 'knex';
-import { connection } from '../index';
+import {Operation, OperationPayload} from '../../model/operation';
 
 const table = 'operations';
 
-interface OperationsContent {
-    name?: string;
-    description?: string;
-    type?: string; // TODO: enum
-    serviceId?: number;
+interface OperationService {
+	insertOperation(trx: Knex, data: OperationPayload): Promise<Operation>
 }
 
-const operationsModel = {
-    insertOperation: async function (trx: Knex, content: OperationsContent) {
-		await trx(table).insert(content);
-	},
-}
+export class OperationRepository implements OperationService {
+	async insertOperation(trx: Knex, data: OperationPayload) {
+		const id = await trx()
+			.insert(data)
+			.into(table)
+			.returning('id');
 
-export default operationsModel;
+		return {
+			...data,
+			id: 12
+		} as Operation
+	}
+
+}

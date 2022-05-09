@@ -32,4 +32,6 @@ router.post('/schema/validate', asyncWrap(schema.validate));
 
 router.delete('/service/:name', asyncWrap(service.remove));
 
+router.post('/test', asyncWrap(service.test))
+
 export default router;
