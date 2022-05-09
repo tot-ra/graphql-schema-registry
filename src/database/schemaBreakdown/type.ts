@@ -26,7 +26,7 @@ export class TypeTransactionalRepository implements TypeService {
 	}
 
 	async insertIgnoreTypes(data: TypePayload[]): Promise<void> {
-		const q = `INSERT INTO ${this.tableName} (name, description, type) VALUES ${this.insertBulkPayload(data)}`;
+		const q = `INSERT IGNORE INTO ${this.tableName} (name, description, type) VALUES ${this.insertBulkPayload(data)}`;
 		return this.trx
 			.raw(q)
 	}

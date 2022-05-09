@@ -20,7 +20,8 @@ export enum DocumentNodeType {
 	DIRECTIVE = "DirectiveDefinition",
 	UNION = "UnionTypeDefinition",
 	FIELD = "FieldDefinition",
-	INTERFACE = "InterfaceTypeDefinition"
+	INTERFACE = "InterfaceTypeDefinition",
+	INPUT = "InputValueDefinition"
 }
 
 export enum FieldProperty {

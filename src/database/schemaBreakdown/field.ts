@@ -1,8 +1,9 @@
-import {FieldPayload} from "../../model/field";
+import {Field, FieldPayload} from "../../model/field";
 import {Transaction} from "knex";
 
 interface FieldService {
 	insertIgnoreFields(data: FieldPayload[]): Promise<void>
+	getFieldsByNames(typeNames: string[]): Promise<Field[]>
 }
 
 export class FieldTransactionRepository implements FieldService {
@@ -13,7 +14,13 @@ export class FieldTransactionRepository implements FieldService {
 
 	async insertIgnoreFields(data: FieldPayload[]) {
 		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (name, is_nullable, is_array, is_array_nullable, is_deprecated, parent_type_id, children_type_id) VALUES ${FieldTransactionRepository.insertBulkPayload(data)}`)
+			.raw(`INSERT IGNORE INTO ${this.tableName} (name, is_nullable, is_array, is_array_nullable, is_deprecated, parent_type_id, children_type_id) VALUES ${FieldTransactionRepository.insertBulkPayload(data)}`)
+	}
+
+	async getFieldsByNames(typeNames: string[]) {
+		return this.trx(this.tableName)
+			.select()
+			.whereIn('name', typeNames);
 	}
 
 	private static insertBulkPayload(data: FieldPayload[]): string {

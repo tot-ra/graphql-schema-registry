@@ -3,10 +3,12 @@ import {DocumentNodeType, EntityType, FieldProperty} from "../../model/enums";
 import {Type, TypePayload} from "../../model/type";
 import {TypeTransactionalRepository} from "../../database/schemaBreakdown/type";
 import Knex from "knex";
-import {Field, FieldPayload} from "../../model/field";
+import {FieldPayload} from "../../model/field";
 import {FieldTransactionRepository} from "../../database/schemaBreakdown/field";
 import {Implementation} from "../../model/implementation";
 import {ImplementationTransactionRepository} from "../../database/schemaBreakdown/implementation";
+import {Argument} from "../../model/argument";
+import {ArgumentTransactionRepository} from "../../database/schemaBreakdown/argument";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -17,11 +19,17 @@ type InterfacePayload = {
 	interface: TypePayload,
 	implementations: TypePayload[];
 }
+type ObjectPayload = {
+	object: TypePayload;
+	fields: any[];
+}
+const BASE_SCALARS = ["Int", "string", "Boolean", "Float", "ID"]
 
 export class BreakDownSchemaCaseUse {
 	private typeRepository;
 	private fieldRepository;
 	private implementationRepository;
+	private argumentRepository;
 	private dbMap: Map<string, number>; // Map -> name: id
 
 	constructor(
@@ -32,6 +40,7 @@ export class BreakDownSchemaCaseUse {
 		this.typeRepository = new TypeTransactionalRepository(trx);
 		this.fieldRepository = new FieldTransactionRepository(trx);
 		this.implementationRepository = new ImplementationTransactionRepository(trx);
+		this.argumentRepository = new ArgumentTransactionRepository(trx);
 		this.dbMap = new Map<string, number>();
 	}
 
@@ -43,7 +52,7 @@ export class BreakDownSchemaCaseUse {
 			await this.computeEnums(mappedTypes);
 			await this.computeDirectives(mappedTypes);
 			await this.computeInterfaces(mappedTypes);
-			// const interfaces = getInterfaces(mappedTypes);
+			await this.computeObjects(mappedTypes);
 			// const queries = getQueries(mappedTypes);
 			return;
 		} catch(err) {
@@ -86,8 +95,17 @@ export class BreakDownSchemaCaseUse {
 			const fieldTypes = cur.fields
 				.map(field =>  BreakDownSchemaCaseUse.getScalarsFromFields(field))
 				.filter(Boolean);
-			//TODO: What we have to handle ID type
-			return [...acc, ...fieldTypes];
+
+			const fieldTypesFromArguments = cur.fields
+				.filter(field => field.arguments !== undefined && field.arguments.length > 0)
+				.map(field => {
+					return field.arguments.map(arg => BreakDownSchemaCaseUse.getScalarsFromFields(arg))
+						.flat(1)
+						.filter(Boolean)
+				})
+				.flat(1)
+
+			return [...acc, ...fieldTypes, ...fieldTypesFromArguments];
 		}, [] as string[]) ?? [];
 
 		if (mappedTypes.get(DocumentNodeType.ENUM)?.length > 0) {
@@ -107,7 +125,7 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private async computeTypes(types: Map<string, TypePayload>) {
-		if (types.size > 0) {
+		if (types && types.size > 0) {
 			await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
 		}
 		const names = Array.from(types.keys());
@@ -162,7 +180,7 @@ export class BreakDownSchemaCaseUse {
 
 	private async computeDirectives(mappedTypes: DocumentMap) {
 		const directives = this.getDirectives(mappedTypes);
-		if (directives.size > 0) {
+		if (directives && directives.size > 0) {
 			await this.typeRepository.insertIgnoreTypes(Array.from(directives.values()));
 		}
 	}
@@ -182,12 +200,11 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private static getScalarsFromFields(field: any): TypePayload | null {
-		//TODO: Watch out infinite loop
 		while(field.type) {
 			field = field.type;
 		}
 		const name = field.name.value;
-		if (!["Int", "string", "Boolean", "ID"].includes(name)) {
+		if (!BASE_SCALARS.includes(name)) {
 			return null;
 		}
 		return {
@@ -195,6 +212,19 @@ export class BreakDownSchemaCaseUse {
 			description: field.description,
 			type: EntityType.SCALAR
 		}
+
+	}
+
+	private static getExistingObjectsFromObjects(field: any): string {
+		//TODO: Watch out infinite loop
+		while(field.type) {
+			field = field.type;
+		}
+		const name = field.name.value;
+		if (BASE_SCALARS.includes(name)) {
+			return null;
+		}
+		return name;
 
 	}
 
@@ -245,25 +275,108 @@ export class BreakDownSchemaCaseUse {
 		}, [] as InterfacePayload[]) ?? [];
 	}
 
+	private async computeObjects(mappedTypes: DocumentMap) {
+		const objects = this.getObjectsToInsert(mappedTypes);
+		if (objects.length > 0) {
+			await this.typeRepository.insertIgnoreTypes(objects.map(obj => obj.object));
+		}
+		const existingObjects = this.getExistingObjects(mappedTypes);
+		const names = objects.map(obj => obj.object.name);
+		const dbObjects = await this.typeRepository.getTypesByNames([...names, ...existingObjects]);
+		dbObjects.forEach(obj => this.dbMap.set(obj.name, obj.id));
+		await this.computeObjectProperties(objects);
+	}
+
+	private async computeObjectProperties(objects: ObjectPayload[]) {
+		const fields = objects.map(obj => {
+			return obj.fields.map(field => this.extractFieldFromObject(field, obj.object.name))
+		}).flat(1)
+		if (fields.length > 0) {
+			await this.fieldRepository.insertIgnoreFields(fields);
+		}
+
+		const argumentsMap = new Map<string, string>()
+		const fieldsWithArguments = objects.map(obj => {
+			const fields = obj.fields.filter(field => field.arguments !== undefined && field.arguments.length > 0);
+			fields.forEach(f => argumentsMap.set(f.name.value, obj.object.name));
+			return fields;
+		}).flat(1)
+		if (fieldsWithArguments.length > 0) {
+			const names = fieldsWithArguments.map(fwa => fwa.name.value);
+			const dbFields = await this.fieldRepository.getFieldsByNames(names);
+			dbFields.forEach(field => this.dbMap.set(field.name, field.id));
+			const fieldArguments = fieldsWithArguments.map(fwa => {
+				return fwa.arguments.map(arg => this.extractFieldFromObject(arg, argumentsMap.get(fwa.name.value)))
+			}).flat(1)
+			await this.fieldRepository.insertIgnoreFields(fieldArguments)
+			const dbFieldArguments = await this.fieldRepository.getFieldsByNames(fieldArguments.map(f => f.name));
+			dbFieldArguments.forEach(f => this.dbMap.set(f.name, f.id));
+			const argumentsToInsert = fieldsWithArguments.map(f => {
+				return f.arguments.map(arg => {
+					return {
+						argument_id: this.dbMap.get(arg.name.value),
+						field_id: this.dbMap.get(f.name.value)
+					} as Argument
+				})
+			}).flat(1);
+			if (argumentsToInsert.length > 0) {
+				await this.argumentRepository.insertIgnoreArguments(argumentsToInsert);
+			}
+		}
+	}
+
+	private getObjectsToInsert(mappedTypes: DocumentMap): ObjectPayload[] {
+		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => obj.name.value !== 'Query')
+			.reduce((acc, cur) => {
+				const obj = {
+					object: {
+						name: cur.name.value,
+						description: cur.description,
+						type: EntityType.OBJECT
+					},
+					fields: cur.fields
+				} as ObjectPayload;
+				acc.push(obj)
+				return acc;
+			}, [] as ObjectPayload[])
+	}
+
+	private getExistingObjects(mappedTypes: DocumentMap): string[] {
+		const objects = mappedTypes.get(DocumentNodeType.OBJECT)?.reduce((acc, cur) => {
+			const objectTypes = cur.fields
+				.map(field =>  BreakDownSchemaCaseUse.getExistingObjectsFromObjects(field))
+				.filter(Boolean);
+			return [...acc, ...objectTypes]
+		}, [] as string[])
+
+		return objects.filter((obj, index, self) => {
+			return index === self.indexOf(obj)
+		})
+	}
+
 	private getQueries(mappedTypes: DocumentMap): any[] {
 		return []
 	}
 
-	private async extractFieldFromObject(field: any, parentName: string): Promise<FieldPayload> {
+	private extractFieldFromObject(field: any, parentName: string): FieldPayload {
 		let name = field.name.value;
 		let is_array = false;
-		let is_nullable, is_array_nullable = true;
+		let is_nullable = true
+		let is_array_nullable = true;
 		while (field.type) {
 			const nextType = field.type;
-			if (field.kind === DocumentNodeType.FIELD && nextType?.kind === FieldProperty.NOT_NULL) {
+			const fieldType = field.kind;
+			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT)
+				&& nextType?.kind === FieldProperty.NOT_NULL) {
 				is_nullable = false;
 			}
-			if (field.kind === FieldProperty.IS_ARRAY) {
+			if (fieldType === FieldProperty.IS_ARRAY) {
 				is_array = true;
 				if (nextType?.kind === FieldProperty.NOT_NULL) {
-					is_array_nullable = true;
+					is_array_nullable = false;
 				}
 			}
+			field = nextType;
 		}
 
 		return {
@@ -277,6 +390,3 @@ export class BreakDownSchemaCaseUse {
 		}
 	}
 }
-
-// TODO: After splitting
-// export async privateinsertBreakDown(): any

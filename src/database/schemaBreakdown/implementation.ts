@@ -13,7 +13,7 @@ export class ImplementationTransactionRepository implements ImplementationServic
 
 	async insertIgnoreImplementations(data: Implementation[]) {
 		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (interface_id, implementation_id) VALUES ${ImplementationTransactionRepository.insertBulkPayload(data)}`)
+			.raw(`INSERT IGNORE INTO ${this.tableName} (interface_id, implementation_id) VALUES ${ImplementationTransactionRepository.insertBulkPayload(data)}`)
 	}
 
 	private static insertBulkPayload(data: Implementation[]): string {
