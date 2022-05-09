@@ -27,40 +27,40 @@ const newStyles = {
 			codeFoldContentColor: '#aeb4d6',
 			diffViewerTitleBackground: '#2f323e',
 			diffViewerTitleColor: '#555a7b',
-			diffViewerTitleBorderColor: '#353846'
-		}
+			diffViewerTitleBorderColor: '#353846',
+		},
 	},
 	emptyGutter: {
 		'min-width': '1px',
-		'padding': '0'
+		padding: '0',
 	},
 	gutter: {
-		'min-width': '1px'
+		'min-width': '1px',
 	},
 	line: {
 		'line-height': '1',
 		'font-size': '13px',
 		'font-family': 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
 		'&:hover': {
-			background: '#000e95'
-		}
+			background: '#000e95',
+		},
 	},
 	content: {
 		height: '18px',
 		width: 'auto',
 		pre: {
-			'line-height': '18px'
-		}
+			'line-height': '18px',
+		},
 	},
 	diffContainer: {
 		pre: {
-			'line-height': '18px'
-		}
+			'line-height': '18px',
+		},
 	},
 	marker: {
-		'width': '10px',
-		'padding': '0'
-	}
+		width: '10px',
+		padding: '0',
+	},
 };
 
 const CodeDiff = (props) => {
