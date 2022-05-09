@@ -2,7 +2,8 @@ import {Type, TypePayload} from "../../model/type";
 import {Transaction} from "knex";
 
 interface TypeService {
-	getTypesByNames(typeNames: String[]): Promise<Type[]>
+	getTypeByName(typeName: string)
+	getTypesByNames(typeNames: string[]): Promise<Type[]>
 	insertIgnoreTypes(data: TypePayload[]): Promise<void>
 }
 
@@ -12,7 +13,13 @@ export class TypeTransactionalRepository implements TypeService {
 	constructor(private trx: Transaction) {
 	}
 
-	async getTypesByNames(typeNames: String[]) {
+	async getTypeByName(typeName: string) {
+		return this.trx(this.tableName)
+			.select()
+			.where('name', typeName);
+	}
+
+	async getTypesByNames(typeNames: string[]) {
 		return this.trx(this.tableName)
 			.select()
 			.whereIn('name', typeNames);

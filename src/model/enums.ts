@@ -22,3 +22,8 @@ export enum DocumentNodeType {
 	FIELD = "FieldDefinition",
 	INTERFACE = "InterfaceTypeDefinition"
 }
+
+export enum FieldProperty {
+	NOT_NULL = "NonNullType",
+	IS_ARRAY = "ListType",
+}

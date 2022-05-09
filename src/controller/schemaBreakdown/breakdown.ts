@@ -1,10 +1,12 @@
 import {DocumentNode, parse} from "graphql";
-import {DocumentNodeType, EntityType} from "../../model/enums";
+import {DocumentNodeType, EntityType, FieldProperty} from "../../model/enums";
 import {Type, TypePayload} from "../../model/type";
 import {TypeTransactionalRepository} from "../../database/schemaBreakdown/type";
 import Knex from "knex";
 import {Field, FieldPayload} from "../../model/field";
 import {FieldTransactionRepository} from "../../database/schemaBreakdown/field";
+import {Implementation} from "../../model/implementation";
+import {ImplementationTransactionRepository} from "../../database/schemaBreakdown/implementation";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -19,6 +21,7 @@ type InterfacePayload = {
 export class BreakDownSchemaCaseUse {
 	private typeRepository;
 	private fieldRepository;
+	private implementationRepository;
 	private dbMap: Map<string, number>; // Map -> name: id
 
 	constructor(
@@ -28,6 +31,7 @@ export class BreakDownSchemaCaseUse {
 	) {
 		this.typeRepository = new TypeTransactionalRepository(trx);
 		this.fieldRepository = new FieldTransactionRepository(trx);
+		this.implementationRepository = new ImplementationTransactionRepository(trx);
 		this.dbMap = new Map<string, number>();
 	}
 
@@ -38,6 +42,7 @@ export class BreakDownSchemaCaseUse {
 			await this.computeScalars(mappedTypes);
 			await this.computeEnums(mappedTypes);
 			await this.computeDirectives(mappedTypes);
+			await this.computeInterfaces(mappedTypes);
 			// const interfaces = getInterfaces(mappedTypes);
 			// const queries = getQueries(mappedTypes);
 			return;
@@ -102,7 +107,9 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private async computeTypes(types: Map<string, TypePayload>) {
-		await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
+		if (types.size > 0) {
+			await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
+		}
 		const names = Array.from(types.keys());
 		const dbTypes: Type[] = await this.typeRepository.getTypesByNames(names)
 		dbTypes.forEach(t => this.dbMap.set(t.name, t.id))
@@ -125,7 +132,7 @@ export class BreakDownSchemaCaseUse {
 			return e.values.map(f => {
 				return {
 					name: f,
-					is_nullable: false,
+					is_nullable: true,
 					is_array:false,
 					is_array_nullable: false,
 					is_deprecated: false,
@@ -155,7 +162,9 @@ export class BreakDownSchemaCaseUse {
 
 	private async computeDirectives(mappedTypes: DocumentMap) {
 		const directives = this.getDirectives(mappedTypes);
-		await this.typeRepository.insertIgnoreTypes(Array.from(directives.values()));
+		if (directives.size > 0) {
+			await this.typeRepository.insertIgnoreTypes(Array.from(directives.values()));
+		}
 	}
 
 	private getDirectives(mappedTypes: DocumentMap): Map<string, TypePayload> {
@@ -189,25 +198,83 @@ export class BreakDownSchemaCaseUse {
 
 	}
 
+	private async computeInterfaces(mappedTypes: DocumentMap) {
+		const interfaces = this.getInterfaces(mappedTypes);
+		const allTypes = interfaces.map(i => {
+			return [...[i.interface], ...i.implementations]
+		});
+		const interfacesToInsert = [].concat(...allTypes) as TypePayload[];
+		if (interfacesToInsert.length > 0) {
+			await this.typeRepository.insertIgnoreTypes(interfacesToInsert);
+		}
+		const names = interfacesToInsert.map(i => i.name);
+		const dbInterfaces = await this.typeRepository.getTypesByNames(names);
+		dbInterfaces.forEach(t => this.dbMap.set(t.name, t.id));
+		const implementations = interfaces.map(i => {
+			return i.implementations.map(imp => {
+				return {
+					interface_id: this.dbMap.get(i.interface.name),
+					implementation_id: this.dbMap.get(imp.name)
+				} as Implementation
+			});
+		});
+		const dbImplementations = [].concat(...implementations)
+		if (dbImplementations.length > 0) {
+			await this.implementationRepository.insertIgnoreImplementations(dbImplementations);
+		}
+	}
+
 	private getInterfaces(mappedTypes: DocumentMap): InterfacePayload[] {
 		return mappedTypes.get(DocumentNodeType.INTERFACE)?.reduce((acc, cur) =>
 		{
-			acc.push({
-				interfaceName: acc.name.value,
-				implementations: cur.values.map(i => {
+			const int = {
+				interface: {
+					name: cur.name.value,
+					description: cur.description,
+					type: EntityType.INTERFACE
+				},
+				implementations: cur.values?.map(i => {
 					return {
 						name: i.name.value,
 						description: i.name.description,
 						type: EntityType.OBJECT
 					}
-				})
-			});
-			return acc;
+				}) ?? []
+			} as InterfacePayload;
+			return [...acc, ...[int]]
 		}, [] as InterfacePayload[]) ?? [];
 	}
 
 	private getQueries(mappedTypes: DocumentMap): any[] {
 		return []
+	}
+
+	private async extractFieldFromObject(field: any, parentName: string): Promise<FieldPayload> {
+		let name = field.name.value;
+		let is_array = false;
+		let is_nullable, is_array_nullable = true;
+		while (field.type) {
+			const nextType = field.type;
+			if (field.kind === DocumentNodeType.FIELD && nextType?.kind === FieldProperty.NOT_NULL) {
+				is_nullable = false;
+			}
+			if (field.kind === FieldProperty.IS_ARRAY) {
+				is_array = true;
+				if (nextType?.kind === FieldProperty.NOT_NULL) {
+					is_array_nullable = true;
+				}
+			}
+		}
+
+		return {
+			name,
+			is_array,
+			is_array_nullable,
+			is_nullable,
+			is_deprecated: false, // TODO: Check
+			parent_type_id: this.dbMap.get(parentName),
+			children_type_id: this.dbMap.get(field.name.value)
+		}
 	}
 }
 
