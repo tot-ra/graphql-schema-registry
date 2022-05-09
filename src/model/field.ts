@@ -1,13 +1,13 @@
 export type FieldPayload = {
-	name: String;
+	name: string;
 	is_nullable: Boolean;
 	is_array: Boolean;
 	is_array_nullable: Boolean;
 	is_deprecated: Boolean;
+	children_type_id: number;
+	parent_type_id: number;
 }
 
 export type Field = FieldPayload & {
 	id: number;
-	children_id: number;
-	parent_id: number;
 }

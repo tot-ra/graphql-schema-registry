@@ -1,8 +1,8 @@
 import {EntityType} from "./enums";
 
 export type TypePayload = {
-	name: String,
-	description?: String,
+	name: string,
+	description?: string,
 	type: EntityType
 }
 

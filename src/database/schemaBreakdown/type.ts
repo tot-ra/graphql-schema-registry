@@ -3,24 +3,32 @@ import {Transaction} from "knex";
 
 interface TypeService {
 	getTypesByNames(typeNames: String[]): Promise<Type[]>
-	insertTypes(data: TypePayload[]): Promise<void>
+	insertIgnoreTypes(data: TypePayload[]): Promise<void>
 }
 
 export class TypeTransactionalRepository implements TypeService {
-	private tableName = 'type';
+	private tableName = 'type_def_types';
 
 	constructor(private trx: Transaction) {
 	}
 
 	async getTypesByNames(typeNames: String[]) {
-		return this.trx
+		return this.trx(this.tableName)
 			.select()
 			.whereIn('name', typeNames);
 	}
 
-	async insertTypes(data: TypePayload[]): Promise<void> {
+	async insertIgnoreTypes(data: TypePayload[]): Promise<void> {
+		const q = `INSERT INTO ${this.tableName} (name, description, type) VALUES ${this.insertBulkPayload(data)}`;
 		return this.trx
-			.insert(data)
-			.into(this.tableName);
+			.raw(q)
+	}
+
+	private insertBulkPayload(data: TypePayload[]): string {
+		const insertData = data.map(i => {
+			return `('${i.name}', ${i.description !== undefined ?`'${i.description}'` : null}, '${i.type}')`;
+		})
+
+		return insertData.join(',');
 	}
 }

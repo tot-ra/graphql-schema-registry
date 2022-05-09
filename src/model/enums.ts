@@ -1,15 +1,15 @@
 export enum OperationType {
-	QUERY = "Query",
-	MUTATION = "Mutation"
+	QUERY = "query",
+	MUTATION = "mutation"
 }
 
 export enum EntityType {
-	OBJECT = "Object",
-	SCALAR = "Scalar",
-	INTERFACE = "Interface",
-	ENUM = "Enum",
-	INPUT = "Input",
-	DIRECTIVE = "Directive"
+	OBJECT = "object",
+	SCALAR = "scalar",
+	INTERFACE = "interface",
+	ENUM = "enum",
+	INPUT = "input",
+	DIRECTIVE = "directive"
 }
 
 export enum DocumentNodeType {
