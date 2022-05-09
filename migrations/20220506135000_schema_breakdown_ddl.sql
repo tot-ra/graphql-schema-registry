@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `type_def_types` (
     `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `description` TEXT,
-    `type` ENUM('object', 'scalar', 'interface', 'enum', 'input', 'union', 'directive') NOT NULL,
+    `type` ENUM('OBJECT', 'SCALAR', 'INTERFACE', 'ENUM', 'INPUT', 'UNION', 'DIRECTIVE') NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `type_def_operations` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `description` TEXT,
-    `type` ENUM('query', 'mutation', 'subscription') NOT NULL,
+    `type` ENUM('QUERY', 'MUTATION', 'SUBSCRIPTION') NOT NULL,
     `service_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`service_id`) REFERENCES `services`(`id`),
