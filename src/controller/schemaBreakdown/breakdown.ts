@@ -37,8 +37,7 @@ export class BreakDownSchemaCaseUse {
 			const mappedTypes = BreakDownSchemaCaseUse.mapTypes(schema);
 			await this.computeScalars(mappedTypes);
 			await this.computeEnums(mappedTypes);
-			// const enums = getEnums(mappedTypes);
-			// const directives = getDirectives(mappedTypes);
+			await this.computeDirectives(mappedTypes);
 			// const interfaces = getInterfaces(mappedTypes);
 			// const queries = getQueries(mappedTypes);
 			return;
@@ -154,8 +153,23 @@ export class BreakDownSchemaCaseUse {
 		}, [] as EnumPayload) ?? [];
 	}
 
-	private getDirectives(mappedTypes: DocumentMap): string[] {
-		return mappedTypes.get(DocumentNodeType.DIRECTIVE)?.map(directive => directive.name.value) ?? [];
+	private async computeDirectives(mappedTypes: DocumentMap) {
+		const directives = this.getDirectives(mappedTypes);
+		await this.typeRepository.insertIgnoreTypes(Array.from(directives.values()));
+	}
+
+	private getDirectives(mappedTypes: DocumentMap): Map<string, TypePayload> {
+		return mappedTypes.get(DocumentNodeType.DIRECTIVE)?.reduce((acc, curr) => {
+			const name = curr.name.value;
+			if (!acc.has(name)) {
+				acc.set(name, {
+					name,
+					description: curr.description,
+					type: EntityType.DIRECTIVE
+				});
+			}
+			return acc;
+		}, new Map<string, TypePayload>());
 	}
 
 	private static getScalarsFromFields(field: any): TypePayload | null {
