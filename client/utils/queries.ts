@@ -71,3 +71,30 @@ export const SCHEMA_DETAILS = gql`
 		}
 	}
 `;
+
+export type ListCount = {
+	type: string;
+	count: number;
+};
+
+export type ListTypesOutput = {
+	listTypes: {
+		operations: ListCount[];
+		entities: ListCount[];
+	};
+};
+
+export const LIST_TYPES = gql`
+	query listTypes {
+		listTypes {
+			operations {
+				type
+				count
+			}
+			entities {
+				type
+				count
+			}
+		}
+	}
+`;

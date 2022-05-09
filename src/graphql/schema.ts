@@ -17,6 +17,7 @@ export default gql`
 		): [PersistedQuery]
 		persistedQuery(key: String!): PersistedQuery
 		persistedQueriesCount: Int!
+		listTypes: ListTypesOutput!
 	}
 
 	type Mutation {
@@ -58,5 +59,15 @@ export default gql`
 		key: String
 		query: String
 		addedTime: String
+	}
+
+	type TypeCount {
+		type: String!
+		count: Int!
+	}
+
+	type ListTypesOutput {
+		operations: [TypeCount!]!
+		entities: [TypeCount!]!
 	}
 `;

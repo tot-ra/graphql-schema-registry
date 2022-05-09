@@ -1,4 +1,4 @@
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import { FlexRow } from './styled';
@@ -16,15 +16,13 @@ const History = () => {
 	}
 
 	return (
-		<Router basename="/schema">
-			<FlexRow>
-				<ServiceList />
-				<Route
-					path="/:serviceName?/:schemaId?"
-					component={ServiceDetails}
-				/>
-			</FlexRow>
-		</Router>
+		<FlexRow>
+			<ServiceList />
+			<Route
+				path="/schema/:serviceName?/:schemaId?"
+				component={ServiceDetails}
+			/>
+		</FlexRow>
 	);
 };
 

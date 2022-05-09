@@ -1,0 +1,40 @@
+{
+  "listTypes": {
+    "operations": [
+      {
+        "type": "query",
+        "count": 2
+      },
+      {
+        "type": "mutation",
+        "count": 6
+      }
+    ],
+    "entities": [
+      {
+        "type": "object",
+        "count": 40
+      },
+      {
+        "type": "scalar",
+        "count": 11
+      },
+      {
+        "type": "interface",
+        "count": 54
+      },
+      {
+        "type": "enum",
+        "count": 1
+      },
+      {
+        "type": "input",
+        "count": 0
+      },
+      {
+        "type": "directive",
+        "count": 56
+      }
+    ]
+  }
+}

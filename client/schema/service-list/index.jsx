@@ -40,7 +40,7 @@ const ServiceList = () => {
 					<ListItem
 						key={service.name}
 						button
-						onClick={() => history.push(`/${service.name}`)}
+						onClick={() => history.push(`/schema/${service.name}`)}
 						selected={service.name === match?.params?.serviceName}
 					>
 						<ListItemText primary={service.name} />

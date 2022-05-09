@@ -145,7 +145,7 @@ const VersionDetails = () => {
 export default VersionDetails;
 
 export function useSchemaParam() {
-	const match = useRouteMatch('/:serviceName/:schemaId');
+	const match = useRouteMatch('/schema/:serviceName/:schemaId');
 	const schemaId = match?.params?.schemaId;
 
 	return schemaId ? parseInt(schemaId, 10) : null;
