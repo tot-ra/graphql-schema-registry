@@ -1,20 +1,20 @@
 import {DocumentNode, parse} from "graphql";
-import {DocumentNodeType, EntityType, FieldProperty, OperationType} from "../../model/enums";
-import {Type, TypePayload} from "../../model/type";
-import {TypeTransactionalRepository} from "../../database/schemaBreakdown/type";
+import {DocumentNodeType, EntityType, FieldProperty, OperationType} from "../model/enums";
+import {Type, TypePayload} from "../model/type";
+import {TypeTransactionalRepository} from "../database/schemaBreakdown/type";
 import Knex from "knex";
-import {FieldPayload} from "../../model/field";
-import {FieldTransactionRepository} from "../../database/schemaBreakdown/field";
-import {Implementation} from "../../model/implementation";
-import {ImplementationTransactionRepository} from "../../database/schemaBreakdown/implementation";
-import {Argument} from "../../model/argument";
-import {ArgumentTransactionRepository} from "../../database/schemaBreakdown/argument";
-import {OperationPayload} from "../../model/operation";
-import {OperationParam} from "../../model/operation_param";
-import {OperationTransactionalRepository} from "../../database/schemaBreakdown/operations";
-import {OperationParamsTransactionalRepository} from "../../database/schemaBreakdown/operation_params";
-import {SubgraphTransactionalRepository} from "../../database/schemaBreakdown/subgraph";
-import {Subgraph} from "../../model/subgraph";
+import {FieldPayload} from "../model/field";
+import {FieldTransactionRepository} from "../database/schemaBreakdown/field";
+import {Implementation} from "../model/implementation";
+import {ImplementationTransactionRepository} from "../database/schemaBreakdown/implementation";
+import {Argument} from "../model/argument";
+import {ArgumentTransactionRepository} from "../database/schemaBreakdown/argument";
+import {OperationPayload} from "../model/operation";
+import {OperationParam} from "../model/operation_param";
+import {OperationTransactionalRepository} from "../database/schemaBreakdown/operations";
+import {OperationParamsTransactionalRepository} from "../database/schemaBreakdown/operation_params";
+import {SubgraphTransactionalRepository} from "../database/schemaBreakdown/subgraph";
+import {Subgraph} from "../model/subgraph";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
