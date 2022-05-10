@@ -8,6 +8,7 @@ const CountLabelContainer = styled.div`
 	align-items: center;
 
 	& > span {
+		text-transform: capitalize;
 		color: ${colors.black.hex5};
 	}
 `;

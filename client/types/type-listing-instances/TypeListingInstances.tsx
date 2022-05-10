@@ -1,18 +1,18 @@
 import { useQuery } from '@apollo/client';
-import { Box } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import SpinnerCenter from '../../components/SpinnerCenter';
 import { usePaginationValues } from '../../shared/pagination';
+import useMinimumTime from '../../shared/useMinimumTime';
 import {
 	TypeInstancesOutput,
 	TypeInstancesVars,
 	TYPE_INSTANCES,
 } from '../../utils/queries';
+import { InstancesListing } from './InstancesListing';
+import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
 
-const TypeDescriptionContainer = styled.section`
-	width: 100%;
-	height: 100%;
+const TypeDescriptionContainer = styled.main`
 	overflow: auto;
 	padding: 2rem;
 `;
@@ -32,19 +32,33 @@ export const TypeListingInstances = () => {
 		},
 	});
 
-	if (loading) {
-		return <SpinnerCenter />;
+	const efectiveLoading = useMinimumTime(loading);
+
+	if (efectiveLoading) {
+		return (
+			<TypeDescriptionContainer>
+				<TypeListingInstancesSkeleton />
+			</TypeDescriptionContainer>
+		);
 	}
 
 	if (error) {
-		<TypeDescriptionContainer>
-			<Box component="span">Something wrong happened :(</Box>
-		</TypeDescriptionContainer>;
+		return (
+			<TypeDescriptionContainer>
+				<Typography component="span">
+					Something wrong happened :(
+				</Typography>
+			</TypeDescriptionContainer>
+		);
 	}
+
+	const {
+		listTypeInstances: { items },
+	} = data;
 
 	return (
 		<TypeDescriptionContainer>
-			<Box component="span">{typeName}</Box>
+			<InstancesListing typeName={typeName} items={items} />
 		</TypeDescriptionContainer>
 	);
 };

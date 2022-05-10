@@ -18,6 +18,11 @@ export default gql`
 		persistedQuery(key: String!): PersistedQuery
 		persistedQueriesCount: Int!
 		listTypes: ListTypesOutput!
+		listTypeInstances(
+			type: String!
+			limit: Int
+			offset: Int
+		): ListTypeInstancesOutput!
 	}
 
 	type Mutation {
@@ -61,6 +66,12 @@ export default gql`
 		addedTime: String
 	}
 
+	type Pagination {
+		page: Int!
+		totalPages: Int!
+		limit: Int!
+	}
+
 	type TypeCount {
 		type: String!
 		count: Int!
@@ -69,5 +80,22 @@ export default gql`
 	type ListTypesOutput {
 		operations: [TypeCount!]!
 		entities: [TypeCount!]!
+	}
+
+	type ListTypeInstancesProviders {
+		name: String!
+	}
+
+	type ListTypeInstancesItem {
+		id: Int!
+		name: String!
+		description: String
+		type: String!
+		providedBy: [ListTypeInstancesProviders!]!
+	}
+
+	type ListTypeInstancesOutput {
+		items: [ListTypeInstancesItem!]!
+		pagination: Pagination
 	}
 `;

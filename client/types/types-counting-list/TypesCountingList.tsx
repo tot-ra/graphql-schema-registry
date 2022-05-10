@@ -8,11 +8,14 @@ import {
 import CountLabel from './CountLabel';
 import { useQuery } from '@apollo/client';
 import { TypesCountingListSkeleton } from './TypesCountingList.Skeleton';
+import useMinimumTime from '../../shared/useMinimumTime';
 
 export const TypesCountingList = () => {
 	const { loading, data, error } = useQuery<ListTypesOutput>(LIST_TYPES);
 
-	if (loading) {
+	const efectiveLoading = useMinimumTime(loading);
+
+	if (efectiveLoading) {
 		return <TypesCountingListSkeleton />;
 	}
 
@@ -25,7 +28,7 @@ export const TypesCountingList = () => {
 	} = data;
 
 	return (
-		<ListContainer>
+		<ListContainer as="aside">
 			{!operations.length && !entities.length && (
 				<EmptyList>No types found!</EmptyList>
 			)}

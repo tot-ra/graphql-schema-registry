@@ -6,10 +6,14 @@ import MainSectionContainer from '../components/MainSectionContainer';
 
 const Types = () => (
 	<MainSectionContainer gridColumns="0.2fr 0.8fr">
-		<TypesCountingList />
-		<Route path="/types/:typeName">
+		<Route path="/types" exact>
+			<TypesCountingList />
+		</Route>
+		<Route path="/types/:typeName" exact>
+			<TypesCountingList />
 			<TypeListingInstances />
 		</Route>
+		<Route path="/types/:typeName/:instanceId">Hola</Route>
 	</MainSectionContainer>
 );
 

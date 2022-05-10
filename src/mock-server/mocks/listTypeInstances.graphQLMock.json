@@ -1,0 +1,71 @@
+{
+  "listTypeInstances": {
+    "items": [
+      {
+        "id": 1,
+        "name": "Item 1",
+        "description": "Ullamco veniam nisi nulla duis deserunt aliqua cillum dolore anim. Incididunt ullamco aliqua sunt duis deserunt veniam irure voluptate laborum consequat sunt eu irure voluptate. Nisi aliqua incididunt non nulla. Anim anim est tempor nulla consectetur amet veniam adipisicing exercitation. Velit adipisicing enim qui eu anim exercitation consequat dolore occaecat minim sunt culpa sit. Ut officia velit cillum commodo laborum consequat labore adipisicing minim tempor ipsum eiusmod ea.",
+        "type": "Type 1",
+        "providedBy": []
+      },
+      {
+        "id": 2,
+        "name": "Item 2",
+        "type": "Type 2",
+        "providedBy": [
+          {
+            "name": "Provider 1"
+          },
+          {
+            "name": "Provider 2"
+          },
+          {
+            "name": "Provider 3"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "name": "Item 3",
+        "type": "Type 3",
+        "providedBy": [
+          {
+            "name": "Provider 1"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Item 4",
+        "type": "Type 4",
+        "description": "Commodo nulla reprehenderit dolor laborum amet. Nostrud est voluptate aliqua labore nulla elit ad. Nostrud labore ad reprehenderit incididunt. Consequat dolor magna ullamco laboris duis incididunt eiusmod minim proident anim consequat sit dolore. Irure laborum eu consequat amet magna commodo.\nConsequat mollit do adipisicing sit sint dolore deserunt proident nulla aliqua pariatur eu. Occaecat minim ullamco ea fugiat occaecat anim nisi pariatur laborum. Deserunt veniam consectetur sint velit est incididunt reprehenderit esse labore nisi sunt. Fugiat reprehenderit cillum quis cupidatat ullamco irure est ad cillum reprehenderit incididunt id. Nostrud enim dolor deserunt anim commodo minim. Esse proident labore enim reprehenderit mollit laborum ullamco dolor consequat adipisicing veniam anim esse duis. Culpa irure minim pariatur consectetur consequat est nostrud.\nEsse mollit consequat anim sint laborum proident. Consequat sit ipsum aute ea Lorem id velit voluptate magna commodo voluptate sint cupidatat irure. Dolor ea duis veniam qui eu commodo reprehenderit. Magna incididunt nulla elit culpa veniam cupidatat. Tempor nisi deserunt aliqua consequat sunt in nostrud laboris.",
+        "providedBy": [
+          {
+            "name": "Provider 1"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "name": "Item 5",
+        "type": "Type 5",
+        "providedBy": [
+          {
+            "name": "Provider 1"
+          },
+          {
+            "name": "Provider 2"
+          },
+          {
+            "name": "Provider 3"
+          }
+        ]
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "totalPages": 100,
+      "limit": 50
+    }
+  }
+}

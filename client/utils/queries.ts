@@ -106,23 +106,25 @@ export type TypeInstancesVars = {
 };
 
 export type TypeInstancesOutput = {
-	items: [
-		{
-			id: number;
-			name: string;
-			description?: string;
-			type: string;
-			providedBy: [
-				{
-					name: string;
-				}
-			];
-		}
-	];
-	pagination: {
-		page: number;
-		totalPages: number;
-		limit: number;
+	listTypeInstances: {
+		items: [
+			{
+				id: number;
+				name: string;
+				description?: string;
+				type: string;
+				providedBy: [
+					{
+						name: string;
+					}
+				];
+			}
+		];
+		pagination: {
+			page: number;
+			totalPages: number;
+			limit: number;
+		};
 	};
 };
 
