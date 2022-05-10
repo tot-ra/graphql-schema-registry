@@ -61,6 +61,7 @@ export class BreakDownSchemaCaseUse {
 			await this.computeDirectives(mappedTypes);
 			await this.computeInterfaces(mappedTypes);
 			await this.computeObjects(mappedTypes);
+			await this.computeUnions(mappedTypes);
 			await this.computeQueries(mappedTypes);
 			// const mutations = getMutations(mappedTypes);
 			return;
@@ -294,6 +295,29 @@ export class BreakDownSchemaCaseUse {
 		const dbObjects = await this.typeRepository.getTypesByNames([...names, ...existingObjects]);
 		dbObjects.forEach(obj => this.dbMap.set(obj.name, obj.id));
 		await this.computeObjectProperties(objects);
+	}
+
+	private async computeUnions(mappedTypes: DocumentMap) {
+		const unions = this.getUnions(mappedTypes);
+		if (unions && unions.size > 0) {
+			await this.typeRepository.insertIgnoreTypes(Array.from(unions.values()));
+			const dbUnions = await this.typeRepository.getTypesByNames(Array.from(unions.keys()));
+			dbUnions.forEach(u => this.dbMap.set(u.name, u.id));
+		}
+	}
+
+	private getUnions(mappedTypes: DocumentMap): Map<string, TypePayload> {
+		return mappedTypes.get(DocumentNodeType.UNION)?.reduce((acc, cur) => {
+			const name = cur.name.value;
+			if (!acc.has(name)) {
+				acc.set(name, {
+					name,
+					description: cur.description,
+					type: EntityType.OBJECT
+				});
+			}
+			return acc;
+		}, new Map<string, TypePayload>());
 	}
 
 	private async computeObjectProperties(objects: ObjectPayload[]) {
