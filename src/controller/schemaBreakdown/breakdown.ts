@@ -1,5 +1,5 @@
 import {DocumentNode, parse} from "graphql";
-import {DocumentNodeType, EntityType, FieldProperty} from "../../model/enums";
+import {DocumentNodeType, EntityType, FieldProperty, OperationType} from "../../model/enums";
 import {Type, TypePayload} from "../../model/type";
 import {TypeTransactionalRepository} from "../../database/schemaBreakdown/type";
 import Knex from "knex";
@@ -9,6 +9,10 @@ import {Implementation} from "../../model/implementation";
 import {ImplementationTransactionRepository} from "../../database/schemaBreakdown/implementation";
 import {Argument} from "../../model/argument";
 import {ArgumentTransactionRepository} from "../../database/schemaBreakdown/argument";
+import {OperationPayload} from "../../model/operation";
+import {OperationParam} from "../../model/operation_param";
+import {OperationTransactionalRepository} from "../../database/schemaBreakdown/operations";
+import {OperationParamsTransactionalRepository} from "../../database/schemaBreakdown/operation_params";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -30,6 +34,8 @@ export class BreakDownSchemaCaseUse {
 	private fieldRepository;
 	private implementationRepository;
 	private argumentRepository;
+	private operationRepository;
+	private operationParamRepository;
 	private dbMap: Map<string, number>; // Map -> name: id
 
 	constructor(
@@ -41,6 +47,8 @@ export class BreakDownSchemaCaseUse {
 		this.fieldRepository = new FieldTransactionRepository(trx);
 		this.implementationRepository = new ImplementationTransactionRepository(trx);
 		this.argumentRepository = new ArgumentTransactionRepository(trx);
+		this.operationRepository = new OperationTransactionalRepository(trx);
+		this.operationParamRepository = new OperationParamsTransactionalRepository(trx)
 		this.dbMap = new Map<string, number>();
 	}
 
@@ -53,7 +61,8 @@ export class BreakDownSchemaCaseUse {
 			await this.computeDirectives(mappedTypes);
 			await this.computeInterfaces(mappedTypes);
 			await this.computeObjects(mappedTypes);
-			// const queries = getQueries(mappedTypes);
+			await this.computeQueries(mappedTypes);
+			// const mutations = getMutations(mappedTypes);
 			return;
 		} catch(err) {
 			console.log('Error breaking down the schema', err)
@@ -354,8 +363,94 @@ export class BreakDownSchemaCaseUse {
 		})
 	}
 
+	private async computeQueries(mappedTypes: DocumentMap) {
+		const queries = this.getQueries(mappedTypes);
+		const operations = queries.map(query => {
+			return query.fields.map(q => {
+				return {
+					name: q.name.value,
+					description: q.description,
+					type: OperationType.QUERY,
+					service_id: this.service_id
+				} as OperationPayload;
+			})
+		}).flat(1)
+		await this.operationRepository.insertIgnoreOperations(operations);
+		const dbOperations = await this.operationRepository.getOperationsByNames(operations.map(o => o.name));
+		dbOperations.forEach(o => this.dbMap.set(o.name, o.id));
+		const result = queries.reduce((acc, cur) => {
+			cur.fields.forEach(query => {
+				const args = query.arguments.map(arg => this.extractOperation(arg, query.name.value, false));
+				acc.input = acc.input.concat(args);
+				const output = this.extractOperation(query, query.name.value, true)
+				acc.output = acc.output.concat(output);
+			});
+			return acc;
+		}, {
+			input: [],
+			output: []
+		} as {
+			input: any[],
+			output: any[],
+			query: any[]
+		})
+		// TODO: Check with union inserted
+		await this.operationParamRepository.insertIgnoreOperationParams([...result.input, ...result.output]);
+	}
+
+
 	private getQueries(mappedTypes: DocumentMap): any[] {
-		return []
+		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => obj.name.value === 'Query')
+			.reduce((acc, cur) => {
+				const obj = {
+					object: {
+						name: cur.name.value,
+						description: cur.description,
+						type: EntityType.OBJECT
+					},
+					fields: cur.fields
+				} as ObjectPayload;
+				acc.push(obj)
+				return acc;
+			}, [] as ObjectPayload[])
+	}
+
+	private extractOperation(field: any, parentName: string, is_output: boolean): OperationParam {
+		let name = '';
+		let is_array = false;
+		let is_nullable = true
+		let is_array_nullable = true;
+		while (field.type) {
+			if (field.kind === DocumentNodeType.NAMED) {
+				name = field.name.value;
+			}
+			const nextType = field.type;
+			const fieldType = field.kind;
+			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT)
+				&& nextType?.kind === FieldProperty.NOT_NULL) {
+				is_nullable = false;
+			}
+			if (fieldType === FieldProperty.IS_ARRAY) {
+				is_array = true;
+				if (nextType?.kind === FieldProperty.NOT_NULL) {
+					is_array_nullable = false;
+				}
+			}
+			field = nextType;
+		}
+		if (field.kind === DocumentNodeType.NAMED) {
+			name = field.name.value;
+		}
+
+		return {
+			name,
+			is_array,
+			is_array_nullable,
+			is_nullable,
+			is_output,
+			operation_id: this.dbMap.get(parentName),
+			type_id: this.dbMap.get(field.name.value)
+		} as OperationParam
 	}
 
 	private extractFieldFromObject(field: any, parentName: string): FieldPayload {

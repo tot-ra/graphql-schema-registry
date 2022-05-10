@@ -21,7 +21,8 @@ export enum DocumentNodeType {
 	UNION = "UnionTypeDefinition",
 	FIELD = "FieldDefinition",
 	INTERFACE = "InterfaceTypeDefinition",
-	INPUT = "InputValueDefinition"
+	INPUT = "InputValueDefinition",
+	NAMED = "NamedType"
 }
 
 export enum FieldProperty {

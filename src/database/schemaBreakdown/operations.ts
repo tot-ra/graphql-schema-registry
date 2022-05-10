@@ -1,23 +1,35 @@
-import Knex from 'knex';
+import Knex, {Transaction} from 'knex';
 import {Operation, OperationPayload} from '../../model/operation';
 
-const table = 'operations';
 
 interface OperationService {
-	insertOperation(trx: Knex, data: OperationPayload): Promise<Operation>
+	insertIgnoreOperations(data: OperationPayload[]): Promise<void>
+	getOperationsByNames(names: string[]): Promise<Operation[]>
 }
 
-export class OperationRepository implements OperationService {
-	async insertOperation(trx: Knex, data: OperationPayload) {
-		const id = await trx()
-			.insert(data)
-			.into(table)
-			.returning('id');
+export class OperationTransactionalRepository implements OperationService {
+	private tableName = 'type_def_operations';
 
-		return {
-			...data,
-			id: 12
-		} as Operation
+	constructor(private trx: Transaction) {
+	}
+
+	async getOperationsByNames(names: string[]) {
+		return this.trx(this.tableName)
+			.select()
+			.whereIn('name', names);
+	}
+
+	async insertIgnoreOperations(data: OperationPayload[]) {
+		return this.trx
+			.raw(`INSERT IGNORE INTO ${this.tableName} (name, description, type, service_id) VALUES ${OperationTransactionalRepository.insertBulkPayload(data)}`)
+	}
+
+	private static insertBulkPayload(data: OperationPayload[]): string {
+		const insertData = data.map(i => {
+			return `('${i.name}', '${i.description}', '${i.type}', ${i.service_id})`;
+		})
+
+		return insertData.join(',');
 	}
 
 }

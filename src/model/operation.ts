@@ -4,7 +4,7 @@ export type OperationPayload = {
 	name?: string;
 	description?: string;
 	type?: OperationType;
-	serviceId?: number;
+	service_id?: number;
 }
 
 export type Operation = OperationPayload & {
