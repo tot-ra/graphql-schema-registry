@@ -27,7 +27,7 @@ type ObjectPayload = {
 	object: TypePayload;
 	fields: any[];
 }
-const BASE_SCALARS = ["Int", "string", "Boolean", "Float", "ID"]
+const BASE_SCALARS = ["Int", "String", "Boolean", "Float", "ID"]
 
 export class BreakDownSchemaCaseUse {
 	private typeRepository;
@@ -58,12 +58,13 @@ export class BreakDownSchemaCaseUse {
 			const mappedTypes = BreakDownSchemaCaseUse.mapTypes(schema);
 			await this.computeScalars(mappedTypes);
 			await this.computeEnums(mappedTypes);
+			await this.computeInputs(mappedTypes);
 			await this.computeDirectives(mappedTypes);
 			await this.computeInterfaces(mappedTypes);
 			await this.computeObjects(mappedTypes);
 			await this.computeUnions(mappedTypes);
-			await this.computeQueries(mappedTypes);
-			// const mutations = getMutations(mappedTypes);
+			await this.computeQueries(mappedTypes, OperationType.QUERY);
+			await this.computeQueries(mappedTypes, OperationType.MUTATION);
 			return;
 		} catch(err) {
 			console.log('Error breaking down the schema', err)
@@ -100,7 +101,9 @@ export class BreakDownSchemaCaseUse {
 				}
 			}) ?? [];
 
-		const objectScalars = mappedTypes.get(DocumentNodeType.OBJECT)?.reduce((acc, cur) =>
+		const objects = mappedTypes.get(DocumentNodeType.OBJECT) ?? [];
+		const inputs = mappedTypes.get(DocumentNodeType.INPUT) ?? [];
+		const objectScalars = [...objects, ...inputs].reduce((acc, cur) =>
 		{
 			const fieldTypes = cur.fields
 				.map(field =>  BreakDownSchemaCaseUse.getScalarsFromFields(field))
@@ -186,6 +189,31 @@ export class BreakDownSchemaCaseUse {
 			})
 			return acc;
 		}, [] as EnumPayload) ?? [];
+	}
+
+	private async computeInputs(mappedTypes: DocumentMap) {
+		const inputs = this.getInputs(mappedTypes);
+		if (inputs.length > 0) {
+			await this.typeRepository.insertIgnoreTypes(inputs.map(i => i.object));
+			const dbInputs = await this.typeRepository.getTypesByNames(inputs.map(i => i.object.name));
+			dbInputs.forEach(i => this.dbMap.set(i.name, i.id));
+		}
+		await this.computeObjectProperties(inputs)
+	}
+
+	private getInputs(mappedTypes: DocumentMap): ObjectPayload[] {
+		return mappedTypes.get(DocumentNodeType.INPUT)?.reduce((acc, cur) => {
+			const obj = {
+				object: {
+					name: cur.name.value,
+					description: cur.description,
+					type: EntityType.INPUT
+				},
+				fields: cur.fields
+			} as ObjectPayload;
+			acc.push(obj)
+			return acc;
+		}, [] as ObjectPayload[])
 	}
 
 	private async computeDirectives(mappedTypes: DocumentMap) {
@@ -359,7 +387,7 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private getObjectsToInsert(mappedTypes: DocumentMap): ObjectPayload[] {
-		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => obj.name.value !== 'Query')
+		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => !['Query', 'Mutation'].includes(obj.name.value))
 			.reduce((acc, cur) => {
 				const obj = {
 					object: {
@@ -387,21 +415,23 @@ export class BreakDownSchemaCaseUse {
 		})
 	}
 
-	private async computeQueries(mappedTypes: DocumentMap) {
-		const queries = this.getQueries(mappedTypes);
+	private async computeQueries(mappedTypes: DocumentMap, type: OperationType) {
+		const queries = this.getOperations(mappedTypes, type);
 		const operations = queries.map(query => {
 			return query.fields.map(q => {
 				return {
 					name: q.name.value,
 					description: q.description,
-					type: OperationType.QUERY,
+					type,
 					service_id: this.service_id
 				} as OperationPayload;
 			})
 		}).flat(1)
-		await this.operationRepository.insertIgnoreOperations(operations);
-		const dbOperations = await this.operationRepository.getOperationsByNames(operations.map(o => o.name));
-		dbOperations.forEach(o => this.dbMap.set(o.name, o.id));
+		if (operations.length > 0) {
+			await this.operationRepository.insertIgnoreOperations(operations);
+			const dbOperations = await this.operationRepository.getOperationsByNames(operations.map(o => o.name));
+			dbOperations.forEach(o => this.dbMap.set(o.name, o.id));
+		}
 		const result = queries.reduce((acc, cur) => {
 			cur.fields.forEach(query => {
 				const args = query.arguments.map(arg => this.extractOperation(arg, query.name.value, false));
@@ -418,13 +448,15 @@ export class BreakDownSchemaCaseUse {
 			output: any[],
 			query: any[]
 		})
-		// TODO: Check with union inserted
-		await this.operationParamRepository.insertIgnoreOperationParams([...result.input, ...result.output]);
+		const operationParams = [...result.input, ...result.output];
+		if (operationParams.length > 0) {
+			await this.operationParamRepository.insertIgnoreOperationParams(operationParams);
+		}
 	}
 
 
-	private getQueries(mappedTypes: DocumentMap): any[] {
-		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => obj.name.value === 'Query')
+	private getOperations(mappedTypes: DocumentMap, type: OperationType): any[] {
+		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => obj.name.value.toLowerCase() === type.toLowerCase())
 			.reduce((acc, cur) => {
 				const obj = {
 					object: {
@@ -450,7 +482,7 @@ export class BreakDownSchemaCaseUse {
 			}
 			const nextType = field.type;
 			const fieldType = field.kind;
-			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT)
+			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT_VALUE)
 				&& nextType?.kind === FieldProperty.NOT_NULL) {
 				is_nullable = false;
 			}
@@ -485,7 +517,7 @@ export class BreakDownSchemaCaseUse {
 		while (field.type) {
 			const nextType = field.type;
 			const fieldType = field.kind;
-			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT)
+			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT_VALUE)
 				&& nextType?.kind === FieldProperty.NOT_NULL) {
 				is_nullable = false;
 			}
