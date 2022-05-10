@@ -1,5 +1,6 @@
 export type FieldPayload = {
 	name: string;
+	description: string;
 	is_nullable: Boolean;
 	is_array: Boolean;
 	is_array_nullable: Boolean;
