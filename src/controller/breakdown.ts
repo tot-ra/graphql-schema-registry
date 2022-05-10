@@ -15,6 +15,7 @@ import {OperationTransactionalRepository} from "../database/schemaBreakdown/oper
 import {OperationParamsTransactionalRepository} from "../database/schemaBreakdown/operation_params";
 import {SubgraphTransactionalRepository} from "../database/schemaBreakdown/subgraph";
 import {Subgraph} from "../model/subgraph";
+import * as logger from '../logger';
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -74,9 +75,7 @@ export class BreakDownSchemaCaseUse {
 			await this.registerSubgraph();
 			return;
 		} catch(err) {
-			console.log('Error breaking down the schema', err)
-			// TODO: Check error management
-			throw Error()
+			logger.error('Error breaking down the schema', err.message ?? err)
 		}
 	}
 
@@ -174,6 +173,7 @@ export class BreakDownSchemaCaseUse {
 			return e.values.map(f => {
 				return {
 					name: f,
+					description: undefined,
 					is_nullable: true,
 					is_array:false,
 					is_array_nullable: false,
@@ -268,7 +268,6 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private static getExistingObjectsFromObjects(field: any): string {
-		//TODO: Watch out infinite loop
 		while(field.type) {
 			field = field.type;
 		}
@@ -418,7 +417,6 @@ export class BreakDownSchemaCaseUse {
 	private getObjectsToInsert(mappedTypes: DocumentMap): ObjectPayload[] {
 		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => !['Query', 'Mutation'].includes(obj.name.value))
 			.reduce((acc, cur) => {
-				// TODO: Check obj.implementations
 				const obj = {
 					object: {
 						name: cur.name.value,
@@ -506,6 +504,7 @@ export class BreakDownSchemaCaseUse {
 		let is_array = false;
 		let is_nullable = true
 		let is_array_nullable = true;
+		const description = field.description?.value ?? field.description;
 		while (field.type) {
 			if (field.kind === DocumentNodeType.NAMED) {
 				name = field.name.value;
@@ -530,6 +529,7 @@ export class BreakDownSchemaCaseUse {
 
 		return {
 			name,
+			description,
 			is_array,
 			is_array_nullable,
 			is_nullable,
@@ -545,6 +545,7 @@ export class BreakDownSchemaCaseUse {
 		let is_nullable = true
 		let is_array_nullable = true;
 		const is_deprecated = field.directives?.filter(d => d.name.value.toLowerCase() === "deprecated").length > 0;
+		const description = field.description?.value ?? field.description;
 		while (field.type) {
 			const nextType = field.type;
 			const fieldType = field.kind;
@@ -563,6 +564,7 @@ export class BreakDownSchemaCaseUse {
 
 		return {
 			name,
+			description,
 			is_array,
 			is_array_nullable,
 			is_nullable,
