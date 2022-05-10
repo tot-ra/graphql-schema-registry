@@ -102,7 +102,7 @@ export class BreakDownSchemaCaseUse {
 			.get(DocumentNodeType.SCALAR)?.map((def: any) => {
 				return {
 					name: def.name.value,
-					description: def.description,
+					description: def.description?.value ?? def.description,
 					type: EntityType.SCALAR
 				}
 			}) ?? [];
@@ -192,7 +192,7 @@ export class BreakDownSchemaCaseUse {
 			acc.push({
 				enum: {
 					name: cur.name.value,
-					description: cur.name.description,
+					description: cur.name.description?.value ?? cur.name.description,
 					type: EntityType.ENUM
 				},
 				values: cur.values.map(e => e.name.value)
@@ -219,7 +219,7 @@ export class BreakDownSchemaCaseUse {
 			const obj = {
 				object: {
 					name: cur.name.value,
-					description: cur.description,
+					description: cur.description?.value ?? cur.description,
 					type: EntityType.INPUT
 				},
 				fields: cur.fields
@@ -242,7 +242,7 @@ export class BreakDownSchemaCaseUse {
 			if (!acc.has(name)) {
 				acc.set(name, {
 					name,
-					description: curr.description,
+					description: curr.description?.value ?? curr.description,
 					type: EntityType.DIRECTIVE
 				});
 			}
@@ -260,7 +260,7 @@ export class BreakDownSchemaCaseUse {
 		}
 		return {
 			name,
-			description: field.description,
+			description: field.description?.value ?? field.description,
 			type: EntityType.SCALAR
 		}
 
@@ -314,13 +314,13 @@ export class BreakDownSchemaCaseUse {
 			const int = {
 				interface: {
 					name: cur.name.value,
-					description: cur.description,
+					description: cur.description?.value ?? cur.description,
 					type: EntityType.INTERFACE
 				},
 				implementations: cur.values?.map(i => {
 					return {
 						name: i.name.value,
-						description: i.name.description,
+						description: i.name.description?.value ?? i.name.description,
 						type: EntityType.OBJECT
 					}
 				}) ?? []
@@ -362,7 +362,7 @@ export class BreakDownSchemaCaseUse {
 			if (!acc.has(name)) {
 				acc.set(name, {
 					name,
-					description: cur.description,
+					description: cur.description?.value ?? cur.description,
 					type: EntityType.OBJECT
 				});
 			}
@@ -414,7 +414,7 @@ export class BreakDownSchemaCaseUse {
 				const obj = {
 					object: {
 						name: cur.name.value,
-						description: cur.description,
+						description: cur.description?.value ?? cur.description,
 						type: EntityType.OBJECT
 					},
 					fields: cur.fields
@@ -443,7 +443,7 @@ export class BreakDownSchemaCaseUse {
 			return query.fields.map(q => {
 				return {
 					name: q.name.value,
-					description: q.description,
+					description: q.description?.value ?? q.description,
 					type,
 					service_id: this.service_id
 				} as OperationPayload;
@@ -483,7 +483,7 @@ export class BreakDownSchemaCaseUse {
 				const obj = {
 					object: {
 						name: cur.name.value,
-						description: cur.description,
+						description: cur.description?.value ?? cur.description,
 						type: EntityType.OBJECT
 					},
 					fields: cur.fields
@@ -536,6 +536,7 @@ export class BreakDownSchemaCaseUse {
 		let is_array = false;
 		let is_nullable = true
 		let is_array_nullable = true;
+		const is_deprecated = field.directives?.filter(d => d.name.value.toLowerCase() === "deprecated").length > 0;
 		while (field.type) {
 			const nextType = field.type;
 			const fieldType = field.kind;
@@ -557,7 +558,7 @@ export class BreakDownSchemaCaseUse {
 			is_array,
 			is_array_nullable,
 			is_nullable,
-			is_deprecated: false, // TODO: Check
+			is_deprecated,
 			parent_type_id: this.dbMap.get(parentName),
 			children_type_id: this.dbMap.get(field.name.value)
 		}

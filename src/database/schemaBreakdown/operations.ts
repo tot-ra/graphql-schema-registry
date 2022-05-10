@@ -26,7 +26,7 @@ export class OperationTransactionalRepository implements OperationService {
 
 	private static insertBulkPayload(data: OperationPayload[]): string {
 		const insertData = data.map(i => {
-			return `('${i.name}', '${i.description}', '${i.type}', ${i.service_id})`;
+			return `('${i.name}', ${i.description !== undefined ?`'${i.description}'` : null}, '${i.type}', ${i.service_id})`;
 		})
 
 		return insertData.join(',');
