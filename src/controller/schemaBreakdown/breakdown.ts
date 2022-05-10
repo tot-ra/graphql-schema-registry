@@ -68,6 +68,7 @@ export class BreakDownSchemaCaseUse {
 			await this.computeInterfaces(mappedTypes);
 			await this.computeObjects(mappedTypes);
 			await this.computeUnions(mappedTypes);
+			await this.computeImplementations(mappedTypes);
 			await this.computeQueries(mappedTypes, OperationType.QUERY);
 			await this.computeQueries(mappedTypes, OperationType.MUTATION);
 			await this.registerSubgraph();
@@ -294,18 +295,6 @@ export class BreakDownSchemaCaseUse {
 				this.subgraphTypes.push(t.id);
 			});
 		}
-		const implementations = interfaces.map(i => {
-			return i.implementations.map(imp => {
-				return {
-					interface_id: this.dbMap.get(i.interface.name),
-					implementation_id: this.dbMap.get(imp.name)
-				} as Implementation
-			});
-		});
-		const dbImplementations = [].concat(...implementations)
-		if (dbImplementations.length > 0) {
-			await this.implementationRepository.insertIgnoreImplementations(dbImplementations);
-		}
 	}
 
 	private getInterfaces(mappedTypes: DocumentMap): InterfacePayload[] {
@@ -370,6 +359,24 @@ export class BreakDownSchemaCaseUse {
 		}, new Map<string, TypePayload>());
 	}
 
+	private async computeImplementations(mappedTypes: DocumentMap) {
+		const dbImplementations = mappedTypes.get(DocumentNodeType.OBJECT)?.filter(o => {
+			return o.interfaces?.length > 0;
+		}).map(imp => {
+			const implementationId = this.dbMap.get(imp.name.value);
+			const implementations = imp.interfaces.map(int => this.dbMap.get(int.name.value))
+			return implementations.map(i => {
+				return {
+					interface_id: i,
+					implementation_id: implementationId
+				} as Implementation
+			})
+		}).flat(1)
+		if (dbImplementations.length > 0) {
+			await this.implementationRepository.insertIgnoreImplementations(dbImplementations);
+		}
+	}
+
 	private async computeObjectProperties(objects: ObjectPayload[]) {
 		const fields = objects.map(obj => {
 			return obj.fields.map(field => this.extractFieldFromObject(field, obj.object.name))
@@ -411,6 +418,7 @@ export class BreakDownSchemaCaseUse {
 	private getObjectsToInsert(mappedTypes: DocumentMap): ObjectPayload[] {
 		return mappedTypes.get(DocumentNodeType.OBJECT)?.filter(obj => !['Query', 'Mutation'].includes(obj.name.value))
 			.reduce((acc, cur) => {
+				// TODO: Check obj.implementations
 				const obj = {
 					object: {
 						name: cur.name.value,

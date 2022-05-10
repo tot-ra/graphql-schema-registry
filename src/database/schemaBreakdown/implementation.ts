@@ -18,7 +18,7 @@ export class ImplementationTransactionRepository implements ImplementationServic
 
 	private static insertBulkPayload(data: Implementation[]): string {
 		const insertData = data.map(i => {
-			return `('${i.interface_id}', ${i.implementation_id}`;
+			return `('${i.interface_id}', ${i.implementation_id})`;
 		})
 
 		return insertData.join(',');
