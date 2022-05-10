@@ -1,7 +1,7 @@
 import {DocumentNode, parse} from "graphql";
 import {DocumentNodeType, EntityType} from "../../model/enums";
 import {Type, TypePayload} from "../../model/type";
-import {TypeTransactionalRepository} from "../../database/schemaBreakdown/type";
+import TypeRepository from "../../database/schemaBreakdown/type";
 import Knex from "knex";
 import {Field, FieldPayload} from "../../model/field";
 import {FieldTransactionRepository} from "../../database/schemaBreakdown/field";
@@ -17,7 +17,6 @@ type InterfacePayload = {
 }
 
 export class BreakDownSchemaCaseUse {
-	private typeRepository;
 	private fieldRepository;
 	private dbMap: Map<string, number>; // Map -> name: id
 
@@ -26,7 +25,6 @@ export class BreakDownSchemaCaseUse {
 		private type_defs: string,
 		private service_id: number
 	) {
-		this.typeRepository = new TypeTransactionalRepository(trx);
 		this.fieldRepository = new FieldTransactionRepository(trx);
 		this.dbMap = new Map<string, number>();
 	}
@@ -102,9 +100,9 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private async computeTypes(types: Map<string, TypePayload>) {
-		await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
+		await TypeRepository.insertIgnoreTypes(this.trx, Array.from(types.values()));
 		const names = Array.from(types.keys());
-		const dbTypes: Type[] = await this.typeRepository.getTypesByNames(names)
+		const dbTypes: Type[] = await TypeRepository.getTypesByNames(this.trx, names)
 		dbTypes.forEach(t => this.dbMap.set(t.name, t.id))
 	}
 
@@ -155,7 +153,7 @@ export class BreakDownSchemaCaseUse {
 
 	private async computeDirectives(mappedTypes: DocumentMap) {
 		const directives = this.getDirectives(mappedTypes);
-		await this.typeRepository.insertIgnoreTypes(Array.from(directives.values()));
+		await TypeRepository.insertIgnoreTypes(this.trx, Array.from(directives.values()));
 	}
 
 	private getDirectives(mappedTypes: DocumentMap): Map<string, TypePayload> {

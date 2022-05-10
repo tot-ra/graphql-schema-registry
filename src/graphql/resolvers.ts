@@ -7,7 +7,8 @@ import schemaModel from '../database/schema';
 import containersModel from '../database/containers';
 import servicesModel from '../database/services';
 import PersistedQueriesModel from '../database/persisted_queries';
-import OperationRepository from '../database/schemaBreakdown/operations';
+import OperationsRepository from '../database/schemaBreakdown/operations';
+import TypeTransactionalRepository from '../database/schemaBreakdown/type';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -36,8 +37,8 @@ export default {
 		},
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 		listTypes: async () => ({
-			operations: await OperationRepository.listOperations(),
-			types: [],
+			operations: await OperationsRepository.listOperations(),
+			entities: await TypeTransactionalRepository.listOperations(),
 		})
 	},
 	Mutation: {
