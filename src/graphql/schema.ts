@@ -19,6 +19,7 @@ export default gql`
 		persistedQueriesCount: Int!
 
 		listTypes: ListedTypes!
+		listTypeInstances(type: String!, limit: Int!, offset: Int!): ListedTypeInstances!
 	}
 
 	type Mutation {
@@ -91,5 +92,24 @@ export default gql`
 	type ListedTypes {
 		operations: [OperationTotal!]!
 		entities: [TypeTotal!]!
+	}
+
+	type Pagination {
+		page: Int!
+    	totalPages: Int!
+    	limit: Int!
+	}
+
+	type TypeInstance {
+		id: Int!
+        name: String!
+        description: String
+        type: String!
+        providedBy: Service!
+	}
+
+	type ListedTypeInstances {
+		items: [TypeInstance!]!
+		pagination: Pagination!
 	}
 `;
