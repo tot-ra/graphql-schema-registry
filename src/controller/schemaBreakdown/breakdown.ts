@@ -13,6 +13,8 @@ import {OperationPayload} from "../../model/operation";
 import {OperationParam} from "../../model/operation_param";
 import {OperationTransactionalRepository} from "../../database/schemaBreakdown/operations";
 import {OperationParamsTransactionalRepository} from "../../database/schemaBreakdown/operation_params";
+import {SubgraphTransactionalRepository} from "../../database/schemaBreakdown/subgraph";
+import {Subgraph} from "../../model/subgraph";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -36,7 +38,9 @@ export class BreakDownSchemaCaseUse {
 	private argumentRepository;
 	private operationRepository;
 	private operationParamRepository;
+	private subgraphRepository;
 	private dbMap: Map<string, number>; // Map -> name: id
+	private subgraphTypes: number[] = [];
 
 	constructor(
 		private trx: Knex.Transaction,
@@ -48,7 +52,8 @@ export class BreakDownSchemaCaseUse {
 		this.implementationRepository = new ImplementationTransactionRepository(trx);
 		this.argumentRepository = new ArgumentTransactionRepository(trx);
 		this.operationRepository = new OperationTransactionalRepository(trx);
-		this.operationParamRepository = new OperationParamsTransactionalRepository(trx)
+		this.operationParamRepository = new OperationParamsTransactionalRepository(trx);
+		this.subgraphRepository = new SubgraphTransactionalRepository(trx);
 		this.dbMap = new Map<string, number>();
 	}
 
@@ -65,6 +70,7 @@ export class BreakDownSchemaCaseUse {
 			await this.computeUnions(mappedTypes);
 			await this.computeQueries(mappedTypes, OperationType.QUERY);
 			await this.computeQueries(mappedTypes, OperationType.MUTATION);
+			await this.registerSubgraph();
 			return;
 		} catch(err) {
 			console.log('Error breaking down the schema', err)
@@ -138,12 +144,16 @@ export class BreakDownSchemaCaseUse {
 	}
 
 	private async computeTypes(types: Map<string, TypePayload>) {
-		if (types && types.size > 0) {
-			await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
+		if (types === undefined || types.size === 0) {
+			return
 		}
+		await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
 		const names = Array.from(types.keys());
 		const dbTypes: Type[] = await this.typeRepository.getTypesByNames(names)
-		dbTypes.forEach(t => this.dbMap.set(t.name, t.id))
+		dbTypes.forEach(t => {
+			this.dbMap.set(t.name, t.id);
+			this.subgraphTypes.push(t.id);
+		})
 	}
 
 	private async computeEnums(mappedTypes: DocumentMap) {
@@ -196,7 +206,10 @@ export class BreakDownSchemaCaseUse {
 		if (inputs.length > 0) {
 			await this.typeRepository.insertIgnoreTypes(inputs.map(i => i.object));
 			const dbInputs = await this.typeRepository.getTypesByNames(inputs.map(i => i.object.name));
-			dbInputs.forEach(i => this.dbMap.set(i.name, i.id));
+			dbInputs.forEach(i => {
+				this.dbMap.set(i.name, i.id);
+				this.subgraphTypes.push(i.id);
+			});
 		}
 		await this.computeObjectProperties(inputs)
 	}
@@ -213,7 +226,7 @@ export class BreakDownSchemaCaseUse {
 			} as ObjectPayload;
 			acc.push(obj)
 			return acc;
-		}, [] as ObjectPayload[])
+		}, [] as ObjectPayload[]) ?? []
 	}
 
 	private async computeDirectives(mappedTypes: DocumentMap) {
@@ -274,10 +287,13 @@ export class BreakDownSchemaCaseUse {
 		const interfacesToInsert = [].concat(...allTypes) as TypePayload[];
 		if (interfacesToInsert.length > 0) {
 			await this.typeRepository.insertIgnoreTypes(interfacesToInsert);
+			const names = interfacesToInsert.map(i => i.name);
+			const dbInterfaces = await this.typeRepository.getTypesByNames(names);
+			dbInterfaces.forEach(t => {
+				this.dbMap.set(t.name, t.id);
+				this.subgraphTypes.push(t.id);
+			});
 		}
-		const names = interfacesToInsert.map(i => i.name);
-		const dbInterfaces = await this.typeRepository.getTypesByNames(names);
-		dbInterfaces.forEach(t => this.dbMap.set(t.name, t.id));
 		const implementations = interfaces.map(i => {
 			return i.implementations.map(imp => {
 				return {
@@ -317,11 +333,14 @@ export class BreakDownSchemaCaseUse {
 		const objects = this.getObjectsToInsert(mappedTypes);
 		if (objects.length > 0) {
 			await this.typeRepository.insertIgnoreTypes(objects.map(obj => obj.object));
+			const existingObjects = this.getExistingObjects(mappedTypes);
+			const names = objects.map(obj => obj.object.name);
+			const dbObjects = await this.typeRepository.getTypesByNames([...names, ...existingObjects]);
+			dbObjects.forEach(obj => {
+				this.dbMap.set(obj.name, obj.id);
+				this.subgraphTypes.push(obj.id)
+			});
 		}
-		const existingObjects = this.getExistingObjects(mappedTypes);
-		const names = objects.map(obj => obj.object.name);
-		const dbObjects = await this.typeRepository.getTypesByNames([...names, ...existingObjects]);
-		dbObjects.forEach(obj => this.dbMap.set(obj.name, obj.id));
 		await this.computeObjectProperties(objects);
 	}
 
@@ -330,7 +349,10 @@ export class BreakDownSchemaCaseUse {
 		if (unions && unions.size > 0) {
 			await this.typeRepository.insertIgnoreTypes(Array.from(unions.values()));
 			const dbUnions = await this.typeRepository.getTypesByNames(Array.from(unions.keys()));
-			dbUnions.forEach(u => this.dbMap.set(u.name, u.id));
+			dbUnions.forEach(u => {
+				this.dbMap.set(u.name, u.id);
+				this.subgraphTypes.push(u.id);
+			});
 		}
 	}
 
@@ -539,5 +561,17 @@ export class BreakDownSchemaCaseUse {
 			parent_type_id: this.dbMap.get(parentName),
 			children_type_id: this.dbMap.get(field.name.value)
 		}
+	}
+
+	private async registerSubgraph() {
+		if (this.subgraphTypes.length === 0) {
+			return
+		}
+		await this.subgraphRepository.insertIgnoreSubGraphs(this.subgraphTypes.map(s => {
+			return {
+				service_id: this.service_id,
+				type_id: s
+			} as Subgraph
+		}))
 	}
 }

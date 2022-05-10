@@ -5,6 +5,7 @@ import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
 import Knex from 'knex';
+import {BreakDownSchemaCaseUse} from "./schemaBreakdown/breakdown";
 
 export async function getAndValidateSchema(trx: Knex, services = false) {
 	const schemas = services
@@ -34,6 +35,9 @@ export async function pushAndValidateSchema({ service }) {
 		});
 
 		await getAndValidateSchema(trx);
+
+		const breakDownService = new BreakDownSchemaCaseUse(trx, service.type_defs, schema.service_id);
+		await breakDownService.breakDown();
 
 		return schema;
 	});
