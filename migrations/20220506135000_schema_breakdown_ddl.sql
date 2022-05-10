@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `type_def_types` (
 CREATE TABLE IF NOT EXISTS `type_def_fields` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   	`name` VARCHAR(255) NOT NULL,
+    `description` TEXT,
     `is_nullable` tinyint(1) NOT NULL DEFAULT 1,
     `is_array` tinyint(1) NOT NULL DEFAULT 0,
     `is_array_nullable` tinyint(1) NOT NULL DEFAULT 1,
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `type_def_operation_parameters` (
     `operation_id` INT UNSIGNED,
     `type_id` INT UNSIGNED,
     `name` VARCHAR(255) NOT NULL,
+    `description` TEXT,
     `is_nullable` tinyint(1) NOT NULL DEFAULT 1,
     `is_array` tinyint(1) NOT NULL DEFAULT 0,
     `is_array_nullable` tinyint(1) NOT NULL DEFAULT 1,
