@@ -2,12 +2,10 @@ import TypeTransactionalRepository from '../../database/schemaBreakdown/type';
 import OperationsRepository from '../../database/schemaBreakdown/operations';
 import { EntityType, OperationType } from '../../model/enums';
 import { getPagination, isOffsetOutbounds as isPageOutbounds, Pagination } from '../resolvers';
-import { Operation } from '../../model/operation';
-import { Type } from '../../model/type';
-import { TypeInstanceRepository } from '../../model/repository';
+import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
 
 interface ListedTypeInstances {
-	items: Type[] | Operation[];
+	items: TypeInstance[];
 	pagination: Pagination;
 }
 

@@ -2,13 +2,12 @@ import { connection } from '../index';
 import {Type, TypePayload} from "../../model/type";
 import {Transaction} from "knex";
 import { EntityType } from '../../model/enums';
-import { TypeInstanceRepository } from '../../model/repository';
+import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
 
 interface TypeService extends TypeInstanceRepository {
 	getTypesByNames(trx: Transaction, typeNames: String[]): Promise<Type[]>
 	insertIgnoreTypes(trx: Transaction, data: TypePayload[]): Promise<void>
 	countTypesByType(): Promise<TypeCount[]>
-	listByType(type: string, limit: number, offset: number): Promise<Type[]>
 }
 
 export type TypeCount = {
@@ -57,7 +56,7 @@ export class TypeTransactionalRepository implements TypeService {
 			.where('type', type)
 			.limit(limit)
 			.offset(offset)
-		) as Type[];
+		) as TypeInstance[];
 	}
 
 	async countByType(type: string) {

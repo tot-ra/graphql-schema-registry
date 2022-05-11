@@ -53,6 +53,7 @@
     "express": "4.17.2",
     "graphql": "15.4.0",
     "graphql-voyager": "1.0.0-rc.31",
+    "humps": "^2.0.1",
     "joi": "17.6.0",
     "kafkajs": "1.15.0",
     "knex": "0.20.2",

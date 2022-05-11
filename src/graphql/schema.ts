@@ -53,6 +53,9 @@ export default gql`
 		id: Int!
 		name: String!
 		url: String
+		updatedTime: Date
+		addedTime: Date
+		isActive: Boolean
 
 		schemas(limit: Int, offset: Int, filter: String): [SchemaDefinition!]!
 	}
@@ -105,7 +108,7 @@ export default gql`
         name: String!
         description: String
         type: String!
-        providedBy: Service!
+        providedBy: [Service!]!
 	}
 
 	type ListedTypeInstances {
