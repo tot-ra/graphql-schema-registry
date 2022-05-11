@@ -44,14 +44,16 @@ CREATE TABLE IF NOT EXISTS `type_def_operation_parameters` (
     `is_array_nullable` tinyint(1) NOT NULL DEFAULT 1,
     `is_output` tinyint(1) NOT NULL,
     FOREIGN KEY (`operation_id`) REFERENCES `type_def_operations`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`type_id`) REFERENCES `type_def_types`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`type_id`) REFERENCES `type_def_types`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `operation_id` (`operation_id`, `type_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `type_def_subgraphs` (
     `service_id` INT UNSIGNED,
     `type_id` INT UNSIGNED,
     FOREIGN KEY (`service_id`) REFERENCES `services`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`type_id`) REFERENCES `type_def_types`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`type_id`) REFERENCES `type_def_types`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `service_id` (`service_id`, `type_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `type_def_implementations` (
@@ -65,5 +67,6 @@ CREATE TABLE IF NOT EXISTS `type_def_field_arguments` (
     `field_id` INT UNSIGNED,
     `argument_id` INT UNSIGNED,
     FOREIGN KEY (`field_id`) REFERENCES `type_def_fields`(`id`) ON DELETE CASCADE,
-    FOREIGN KEY (`argument_id`) REFERENCES `type_def_fields`(`id`) ON DELETE CASCADE
+    FOREIGN KEY (`argument_id`) REFERENCES `type_def_fields`(`id`) ON DELETE CASCADE,
+    UNIQUE KEY `field_id` (`field_id`, `argument_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
