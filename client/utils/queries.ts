@@ -105,27 +105,28 @@ export type TypeInstancesVars = {
 	offset?: number;
 };
 
-export type TypeInstancesOutput = {
-	listTypeInstances: {
-		items: [
-			{
-				id: number;
-				name: string;
-				description?: string;
-				type: string;
-				providedBy: [
-					{
-						name: string;
-					}
-				];
-			}
-		];
-		pagination: {
-			page: number;
-			totalPages: number;
-			limit: number;
-		};
+export type ListTypeInstances = {
+	items: [
+		{
+			id: number;
+			name: string;
+			description?: string;
+			type: string;
+			providedBy: [
+				{
+					name: string;
+				}
+			];
+		}
+	];
+	pagination: {
+		page: number;
+		totalPages: number;
+		limit: number;
 	};
+};
+export type TypeInstancesOutput = {
+	listTypeInstances: ListTypeInstances;
 };
 
 export const TYPE_INSTANCES = gql`

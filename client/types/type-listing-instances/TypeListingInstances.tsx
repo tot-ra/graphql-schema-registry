@@ -1,8 +1,9 @@
+import { useCallback } from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { usePaginationValues } from '../../shared/pagination';
+import { DEFAULT_OFFSET, usePaginationValues } from '../../shared/pagination';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
 	TypeInstancesOutput,
@@ -18,7 +19,7 @@ const TypeDescriptionContainer = styled.main`
 `;
 
 export const TypeListingInstances = () => {
-	const { limit, offset } = usePaginationValues();
+	const [pagination, setPagination] = usePaginationValues();
 	const { typeName } = useParams<{ typeName: string }>();
 
 	const { loading, data, error } = useQuery<
@@ -27,10 +28,27 @@ export const TypeListingInstances = () => {
 	>(TYPE_INSTANCES, {
 		variables: {
 			type: typeName,
-			limit,
-			offset,
+			limit: pagination.limit,
+			offset: pagination.offset,
 		},
 	});
+
+	const handleChangePage = useCallback(
+		(newPage: number) => {
+			setPagination({
+				limit: pagination.limit,
+				offset: newPage * pagination.limit,
+			});
+		},
+		[pagination.limit]
+	);
+
+	const handleChangeRowsPerPage = (rowsPerPage: number) => {
+		setPagination({
+			limit: rowsPerPage,
+			offset: DEFAULT_OFFSET,
+		});
+	};
 
 	const efectiveLoading = useMinimumTime(loading);
 
@@ -58,7 +76,13 @@ export const TypeListingInstances = () => {
 
 	return (
 		<TypeDescriptionContainer>
-			<InstancesListing typeName={typeName} items={items} />
+			<InstancesListing
+				typeName={typeName}
+				items={items}
+				pagination={data?.listTypeInstances?.pagination}
+				onPageChange={handleChangePage}
+				onRowsPerPageChange={handleChangeRowsPerPage}
+			/>
 		</TypeDescriptionContainer>
 	);
 };

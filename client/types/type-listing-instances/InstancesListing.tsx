@@ -5,15 +5,17 @@ import {
 	TableBody,
 	TableCell,
 	TableContainer,
+	TableFooter,
 	TableHead,
+	TablePagination,
 	TableRow,
 } from '@material-ui/core';
 import styled from 'styled-components';
 import { CommonLink } from '../../components/Link';
 import { colors } from '../../utils';
-import { TypeInstancesOutput } from '../../utils/queries';
 import { InstancesListingTitle } from './InstancesListingTitle';
 import { SchemasListing } from './SchemasListing';
+import { ListTypeInstances } from '../../utils/queries';
 
 const useStyles = makeStyles({
 	container: {},
@@ -46,19 +48,37 @@ export const InnerTable = styled.table`
 	}
 `;
 
-type InstancesListingProps = {
+interface InstancesListingProps extends ListTypeInstances {
 	typeName: string;
-	items: TypeInstancesOutput['listTypeInstances']['items'];
-};
+	onPageChange: (newPage: number) => void;
+	onRowsPerPageChange: (rowsPerPage: number) => void;
+}
 
 export const InstancesListing = ({
 	typeName,
 	items,
+	pagination,
+	onPageChange,
+	onRowsPerPageChange,
 }: InstancesListingProps) => {
 	const styles = useStyles();
+
+	const handleChangePage = (
+		event: React.MouseEvent<HTMLButtonElement> | null,
+		newPage: number
+	) => {
+		onPageChange(newPage);
+	};
+
+	const handleChangeRowsPerPage = (
+		event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		onRowsPerPageChange(parseInt(event.target.value, 10));
+	};
+
 	return (
 		<Container>
-			<InstancesListingTitle>{typeName}</InstancesListingTitle>
+			<InstancesListingTitle>{typeName}</InstancesListingTitle>		
 			<TableContainer component={Paper}>
 				<Table component={InnerTable}>
 					<TableHead>
@@ -95,6 +115,24 @@ export const InstancesListing = ({
 							</TableRow>
 						))}
 					</TableBody>
+					<TableFooter>
+						<TableRow>
+							<TablePagination
+								rowsPerPageOptions={[10, 15, 25]}
+								count={pagination.totalPages}
+								rowsPerPage={pagination.limit}
+								page={pagination.page}
+								SelectProps={{
+									inputProps: {
+										'aria-label': 'rows per page',
+									},
+									native: true,
+								}}
+								onPageChange={handleChangePage}
+								onRowsPerPageChange={handleChangeRowsPerPage}
+							/>
+						</TableRow>
+					</TableFooter>
 				</Table>
 			</TableContainer>
 		</Container>
