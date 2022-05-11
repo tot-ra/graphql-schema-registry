@@ -7,8 +7,8 @@ import schemaModel from '../database/schema';
 import containersModel from '../database/containers';
 import servicesModel from '../database/services';
 import PersistedQueriesModel from '../database/persisted_queries';
-import OperationsRepository from '../database/schemaBreakdown/operations';
-import TypeTransactionalRepository from '../database/schemaBreakdown/type';
+import listTypeInstances from './resolvers/listTypeInstances';
+import listTypes from './resolvers/listTypes';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -36,10 +36,8 @@ export default {
 			return await PersistedQueriesModel.get(key);
 		},
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
-		listTypes: async () => ({
-			operations: await OperationsRepository.listOperations(),
-			entities: await TypeTransactionalRepository.listOperations(),
-		})
+		listTypes,
+		listTypeInstances,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
@@ -116,3 +114,22 @@ export default {
 		addedTime: (parent) => dateTime.format(parent.added_time),
 	},
 };
+
+export interface Pagination {
+	limit: number;
+	page: number;
+	totalPages: number;
+}
+
+export function getPagination(limit: number, offset: number, totalItems: number): Pagination {
+	const totalPages = Math.ceil(totalItems / limit);
+	let page = Math.floor(offset / limit) + 1;
+
+	return {
+		limit,
+		page,
+		totalPages,
+	} as Pagination;
+}
+
+export const isOffsetOutbounds = (pagination: Pagination) => pagination.page > pagination.totalPages;

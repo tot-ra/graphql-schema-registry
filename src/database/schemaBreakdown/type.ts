@@ -2,10 +2,13 @@ import { connection } from '../index';
 import {Type, TypePayload} from "../../model/type";
 import {Transaction} from "knex";
 import { EntityType } from '../../model/enums';
+import { TypeInstanceRepository } from '../../model/repository';
 
-interface TypeService {
+interface TypeService extends TypeInstanceRepository {
 	getTypesByNames(trx: Transaction, typeNames: String[]): Promise<Type[]>
 	insertIgnoreTypes(trx: Transaction, data: TypePayload[]): Promise<void>
+	countTypesByType(): Promise<TypeCount[]>
+	listByType(type: string, limit: number, offset: number): Promise<Type[]>
 }
 
 export type TypeCount = {
@@ -38,13 +41,33 @@ export class TypeTransactionalRepository implements TypeService {
 		return insertData.join(',');
 	}
 
-	async listOperations() {
+	async countTypesByType() {
 		return (
 			await connection(this.tableName)
 			.select('type')
 			.count('type', { as: 'count' })
 			.groupBy('type')
 		) as TypeCount[];
+	}
+
+	async listByType(type: string, limit: number, offset: number) {
+		return (
+			await connection(this.tableName)
+			.select()
+			.where('type', type)
+			.limit(limit)
+			.offset(offset)
+		) as Type[];
+	}
+
+	async countByType(type: string) {
+		const { totalItems } = await connection(this.tableName)
+			.count('type', { as: 'totalItems' })
+			.where('type', type)
+			.groupBy('type')
+			.first() as any;
+
+		return totalItems as number;
 	}
 }
 
