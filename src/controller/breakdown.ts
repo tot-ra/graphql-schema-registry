@@ -24,14 +24,20 @@ type EnumPayload = {
 	enum: TypePayload,
 	values: string[]
 }[];
+
 type InterfacePayload = {
 	interface: TypePayload,
-	implementations: TypePayload[];
+	fields: any[];
 }
 type ObjectPayload = {
 	object: TypePayload;
 	fields: any[];
 }
+type DirectivePayload = {
+	directive: TypePayload;
+	fields: any[];
+}
+
 const BASE_SCALARS = ["Int", "String", "Boolean", "Float", "ID"]
 
 interface BreakDownService {
@@ -176,13 +182,15 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 		const objects = mappedTypes.get(DocumentNodeType.OBJECT) ?? [];
 		const inputs = mappedTypes.get(DocumentNodeType.INPUT) ?? [];
-		const objectScalars = [...objects, ...inputs].reduce((acc, cur) =>
+		const directives = mappedTypes.get(DocumentNodeType.DIRECTIVE) ?? [];
+		const objectScalars = [...objects, ...inputs, ...directives].reduce((acc, cur) =>
 		{
-			const fieldTypes = cur.fields
+			const potentialScalars = [...cur?.fields ?? [], ...cur?.arguments ?? []];
+			const fieldTypes = potentialScalars
 				.map(field =>  BreakDownSchemaCaseUse.getScalarsFromFields(field))
 				.filter(Boolean);
 
-			const fieldTypesFromArguments = cur.fields
+			const fieldTypesFromArguments = potentialScalars
 				.filter(field => field.arguments !== undefined && field.arguments.length > 0)
 				.map(field => {
 					return field.arguments.map(arg => BreakDownSchemaCaseUse.getScalarsFromFields(arg))
@@ -299,23 +307,34 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 	private async computeDirectives(mappedTypes: DocumentMap) {
 		const directives = this.getDirectives(mappedTypes);
-		if (directives && directives.size > 0) {
-			await this.typeRepository.insertIgnoreTypes(Array.from(directives.values()));
+		if (directives.length > 0) {
+			const names = directives.map(d => d.directive.name);
+			await this.typeRepository.insertIgnoreTypes(directives.map(d => d.directive));
+			const dbDirectives = await this.typeRepository.getTypesByNames(names);
+			dbDirectives.forEach(d => {
+				this.dbMap.set(d.name, d.id);
+				this.subgraphTypes.push(d.id);
+			});
+			const fields = directives.map(d => {
+				return d.fields.map(field => this.extractFieldFromObject(field, d.directive.name))
+			}).flat(1);
+			this.fieldRepository.insertIgnoreFields(fields);
 		}
 	}
 
-	private getDirectives(mappedTypes: DocumentMap): Map<string, TypePayload> {
+	private getDirectives(mappedTypes: DocumentMap): DirectivePayload[] {
 		return mappedTypes.get(DocumentNodeType.DIRECTIVE)?.reduce((acc, curr) => {
-			const name = curr.name.value;
-			if (!acc.has(name)) {
-				acc.set(name, {
-					name,
+			const directive = {
+				directive: {
+					name: curr.name.value,
 					description: curr.description?.value ?? curr.description,
 					type: EntityType.DIRECTIVE
-				});
-			}
+				},
+				fields: curr.arguments
+			} as DirectivePayload
+			acc.push(directive);
 			return acc;
-		}, new Map<string, TypePayload>());
+		}, [] as DirectivePayload[]) ?? [];
 	}
 
 	private static getScalarsFromFields(field: any): TypePayload | null {
@@ -348,18 +367,20 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 	private async computeInterfaces(mappedTypes: DocumentMap) {
 		const interfaces = this.getInterfaces(mappedTypes);
-		const allTypes = interfaces.map(i => {
-			return [...[i.interface], ...i.implementations]
-		});
-		const interfacesToInsert = [].concat(...allTypes) as TypePayload[];
-		if (interfacesToInsert.length > 0) {
-			await this.typeRepository.insertIgnoreTypes(interfacesToInsert);
-			const names = interfacesToInsert.map(i => i.name);
+		if (interfaces.length > 0) {
+			await this.typeRepository.insertIgnoreTypes(interfaces.map(i => i.interface));
+			const names = interfaces.map(i => i.interface.name);
 			const dbInterfaces = await this.typeRepository.getTypesByNames(names);
 			dbInterfaces.forEach(t => {
 				this.dbMap.set(t.name, t.id);
 				this.subgraphTypes.push(t.id);
 			});
+			const fields = interfaces.map(i => {
+				return i.fields.map(field => this.extractFieldFromObject(field, i.interface.name));
+			}).flat(1);
+			if (fields.length > 0) {
+				this.fieldRepository.insertIgnoreFields(fields);
+			}
 		}
 	}
 
@@ -372,13 +393,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 					description: cur.description?.value ?? cur.description,
 					type: EntityType.INTERFACE
 				},
-				implementations: cur.values?.map(i => {
-					return {
-						name: i.name.value,
-						description: i.name.description?.value ?? i.name.description,
-						type: EntityType.OBJECT
-					}
-				}) ?? []
+				fields: cur.fields,
 			} as InterfacePayload;
 			return [...acc, ...[int]]
 		}, [] as InterfacePayload[]) ?? [];

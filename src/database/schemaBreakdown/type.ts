@@ -7,6 +7,7 @@ interface TypeService {
 	getTypesByNames(typeNames: string[]): Promise<Type[]>
 	insertIgnoreTypes(data: TypePayload[]): Promise<void>
 	removeTypes(names: string[]): Promise<number>
+	removeTypesByService(): Promise<number>
 }
 
 export class TypeTransactionalRepository implements TypeService {
@@ -39,10 +40,19 @@ export class TypeTransactionalRepository implements TypeService {
  						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
 	}
 
-
 	async removeTypes(names: string[]) {
 		return this.trx(this.tableName)
 			.whereIn('name', names)
 			.delete()
+	}
+
+	async removeTypesByService() {
+		return this.trx
+			.raw(`
+				DELETE t
+				FROM type_def_types t
+				LEFT JOIN type_def_subgraphs tds on t.id = tds.type_id
+				WHERE tds.service_id IS NULL;
+			`);
 	}
 }
