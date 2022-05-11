@@ -5,7 +5,7 @@ import {
 	matchPath,
 	useLocation,
 } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import TopMenu from './TopMenu';
 import Schema from '../schema';
@@ -37,17 +37,19 @@ const UITabs = [
 
 const Main = () => {
 	const { pathname } = useLocation();
-	const [selectedTab, setValue] = useState(() => {
+	const [selectedTab, setSelectedTab] = useState(0);
+
+	useEffect(() => {
 		const index = UITabs.findIndex((tab) =>
 			matchPath(pathname, {
 				path: tab.href,
 			})
 		);
-		return index >= 0 ? index : 0;
-	});
+		setSelectedTab(index >= 0 ? index : 0);
+	}, [pathname]);
 
 	const handleChange = (event, newValue) => {
-		setValue(newValue);
+		setSelectedTab(newValue);
 	};
 
 	return (
