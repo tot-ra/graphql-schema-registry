@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 import TypesCountingList from './types-counting-list';
 import TypeListingInstances from './type-listing-instances';
 import MainSectionContainer from '../components/MainSectionContainer';
+import InstancesSideListing from './instances-side-listing';
 
 const Types = () => (
 	<MainSectionContainer gridColumns="0.2fr 0.8fr">
@@ -13,7 +14,9 @@ const Types = () => (
 			<TypesCountingList />
 			<TypeListingInstances />
 		</Route>
-		<Route path="/types/:typeName/:instanceId">Hola</Route>
+		<Route path="/types/:typeName/:instanceId">
+			<InstancesSideListing />
+		</Route>
 	</MainSectionContainer>
 );
 

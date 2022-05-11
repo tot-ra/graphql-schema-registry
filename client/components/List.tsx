@@ -30,11 +30,13 @@ type NavigationListItemProps = {
 	showNavigationChevron?: boolean;
 };
 
-export const NavigationListItem = ({
-	href,
-	value,
-	showNavigationChevron = true,
-}: NavigationListItemProps) => {
+export const NavigationListItem = React.forwardRef<
+	HTMLAnchorElement,
+	NavigationListItemProps
+>(function NavigationListItem(
+	{ href, value, showNavigationChevron = true },
+	ref
+) {
 	const [active, setActive] = useState(false);
 	const isActive = useCallback((match) => {
 		setActive(!!match);
@@ -60,19 +62,24 @@ export const NavigationListItem = ({
 	);
 
 	return (
-		<ListItem button component={CustomLink} selected={active}>
+		<ListItem button component={CustomLink} selected={active} ref={ref}>
 			<ListItemText primary={value} />
 			{showNavigationChevron && <ChevronRightIcon />}
 		</ListItem>
 	);
-};
+});
 
 type NavigationListProps = {
 	children: ReactNode | ReactNode[];
 };
 
-export const NavigationList = ({ children }: NavigationListProps) => (
-	<List component="nav" disablePadding>
-		{children}
-	</List>
-);
+export const NavigationList = React.forwardRef<
+	HTMLElement,
+	NavigationListProps
+>(function NavigationList({ children }, ref) {
+	return (
+		<List component="nav" disablePadding ref={ref}>
+			{children}
+		</List>
+	);
+});

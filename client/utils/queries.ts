@@ -99,32 +99,44 @@ export const LIST_TYPES = gql`
 	}
 `;
 
-export type TypeInstancesVars = {
+type BaseTypeInstancesVars = {
 	type: string;
 	limit?: number;
+};
+
+export type TypeInstancesVars = BaseTypeInstancesVars & {
 	offset?: number;
 };
 
-export type ListTypeInstances = {
-	items: [
+export type Pagination = {
+	page: number;
+	totalPages: number;
+	limit: number;
+};
+
+type ListType<T> = {
+	items: T[];
+};
+
+type ListTypeItem = {
+	id: number;
+	name: string;
+};
+
+type ListTypeInstance = ListTypeItem & {
+	description?: string;
+	type: string;
+	providedBy: [
 		{
-			id: number;
 			name: string;
-			description?: string;
-			type: string;
-			providedBy: [
-				{
-					name: string;
-				}
-			];
 		}
 	];
-	pagination: {
-		page: number;
-		totalPages: number;
-		limit: number;
-	};
 };
+
+export type ListTypeInstances = ListType<ListTypeInstance> & {
+	pagination: Pagination;
+};
+
 export type TypeInstancesOutput = {
 	listTypeInstances: ListTypeInstances;
 };
@@ -145,6 +157,23 @@ export const TYPE_INSTANCES = gql`
 				page
 				totalPages
 				limit
+			}
+		}
+	}
+`;
+
+export type TypeSideInstancesVars = BaseTypeInstancesVars;
+
+export type TypeSideInstancesOutput = {
+	listTypeInstances: ListType<ListTypeItem>;
+};
+
+export const TYPE_SIDE_INSTANCES = gql`
+	query GetListTypeSideInstances($type: String!, $limit: Int!) {
+		listTypeInstances(type: $type, limit: $limit) {
+			items {
+				id
+				name
 			}
 		}
 	}

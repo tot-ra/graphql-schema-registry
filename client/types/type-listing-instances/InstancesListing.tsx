@@ -38,7 +38,8 @@ export const InnerTable = styled.table`
 		width: 15%;
 	}
 
-	th:nth-child(2) {
+	th:nth-child(2),
+	td:nth-child(2) {
 		width: 70%;
 		text-align: justify;
 	}
@@ -78,7 +79,7 @@ export const InstancesListing = ({
 
 	return (
 		<Container>
-			<InstancesListingTitle>{typeName}</InstancesListingTitle>		
+			<InstancesListingTitle>{typeName}</InstancesListingTitle>
 			<TableContainer component={Paper}>
 				<Table component={InnerTable}>
 					<TableHead>
@@ -93,7 +94,10 @@ export const InstancesListing = ({
 							<TableRow key={item.id}>
 								<TableCell component="th" scope="row">
 									<CommonLink
-										to={`/types/${item.type}/${item.id}`}
+										to={{
+											pathname: `/types/${item.type}/${item.id}`,
+											state: true,
+										}}
 									>
 										<strong>{item.name}</strong>
 									</CommonLink>
@@ -105,7 +109,7 @@ export const InstancesListing = ({
 										)}
 									</span>
 								</TableCell>
-								<TableCell>
+								<TableCell component="th" scope="row">
 									{item.providedBy.length > 0 && (
 										<SchemasListing
 											schemas={item.providedBy}
