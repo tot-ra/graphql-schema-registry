@@ -1,5 +1,6 @@
 import {Transaction} from "knex";
 import { Argument } from "../../model/argument";
+import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
 
 interface ArgumentService {
 	insertIgnoreArguments(data: Argument[]): Promise<void>
@@ -13,16 +14,11 @@ export class ArgumentTransactionRepository implements ArgumentService {
 	}
 
 	async insertIgnoreArguments(data: Argument[]) {
+		const columns = ['field_id', 'argument_id']
 		return this.trx
-			.raw(`INSERT IGNORE INTO ${this.tableName} (field_id, argument_id) VALUES ${ArgumentTransactionRepository.insertBulkPayload(data)}`)
-	}
-
-	private static insertBulkPayload(data: Argument[]): string {
-		const insertData = data.map(i => {
-			return `(${i.field_id}, ${i.argument_id})`;
-		})
-
-		return insertData.join(',');
+			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
+ 						VALUES ${insertBulkPayload(data, columns)}
+ 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
 	}
 
 	async removeArguments(fields: number[]) {

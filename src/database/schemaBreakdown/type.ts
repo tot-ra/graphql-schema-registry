@@ -1,5 +1,6 @@
 import {Type, TypePayload} from "../../model/type";
 import {Transaction} from "knex";
+import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
 
 interface TypeService {
 	getTypeByName(typeName: string)
@@ -27,18 +28,17 @@ export class TypeTransactionalRepository implements TypeService {
 	}
 
 	async insertIgnoreTypes(data: TypePayload[]): Promise<void> {
-		const q = `INSERT IGNORE INTO ${this.tableName} (name, description, type) VALUES ${this.insertBulkPayload(data)}`;
+		const columns = [
+			'name',
+			'description',
+			'type'
+		]
 		return this.trx
-			.raw(q)
+			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
+ 						VALUES ${insertBulkPayload(data, columns)}
+ 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
 	}
 
-	private insertBulkPayload(data: TypePayload[]): string {
-		const insertData = data.map(i => {
-			return `('${i.name}', ${i.description !== undefined ?`'${i.description}'` : null}, '${i.type}')`;
-		})
-
-		return insertData.join(',');
-	}
 
 	async removeTypes(names: string[]) {
 		return this.trx(this.tableName)

@@ -67,7 +67,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	}
 
 	validateBreakDown(changes: Change[], forcePush?: string) {
-		const breakingChange = changes.some(change => change.criticality.level === CriticalityLevel.Breaking);
+		const breakingChange = changes?.some(change => change.criticality.level === CriticalityLevel.Breaking);
 		if (breakingChange && forcePush?.toLowerCase() !== 'true') {
 			const message = "Cannot push this schema because contains breaking changes. To force push it, you must add a header as (Force-Push: true)";
 			logger.error(message);
@@ -76,9 +76,6 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	}
 
 	async applyChanges(changes: Change[]) {
-		if (changes.length === 0) {
-			return
-		}
 		// const removalChanges = changes.filter(change => )
 		const regexExpr = new RegExp("_REMOVED$");
 		const removalChanges = changes.filter(change => regexExpr.test(change.type));
@@ -94,11 +91,11 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			const changeTypes = [
 				ChangeType.TypeRemoved,
 				ChangeType.DirectiveRemoved,
-				ChangeType.ObjectTypeInterfaceRemoved,
 			];
 			return changeTypes.includes(change.type);
 		}));
 		await this.applyChangesToFieldArguments(removalChanges.filter(change => change.type === ChangeType.FieldArgumentRemoved));
+		await this.applyChangesToImplementations(removalChanges.filter(change => change.type === ChangeType.ObjectTypeInterfaceRemoved))
 	}
 
 	private async applyChangesToFields(changes: Change[]) {
@@ -115,8 +112,14 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		}
 	}
 
+	private async applyChangesToImplementations(changes: Change[]) {
+		const implementationNames = changes.map(change => change.path.split('.')[0]);
+		if (implementationNames.length > 0) {
+			await this.implementationRepository.removeImplementations(implementationNames)
+		}
+	}
+
 	private async applyChangesToFieldArguments(changes: Change[]) {
-		// TODO
 		const names = changes.map(change => change.path.split('.')[0]);
 		if (names.length > 0) {
 			await this.argumentRepository.removeArguments(names);
@@ -565,14 +568,14 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 	private extractOperation(field: any, parentName: string, is_output: boolean): OperationParam {
 		let name = '';
+		if (!is_output) {
+			name = field.name.value
+		}
 		let is_array = false;
 		let is_nullable = true
 		let is_array_nullable = true;
 		const description = field.description?.value ?? field.description;
 		while (field.type) {
-			if (field.kind === DocumentNodeType.NAMED) {
-				name = field.name.value;
-			}
 			const nextType = field.type;
 			const fieldType = field.kind;
 			if ((fieldType === DocumentNodeType.FIELD || fieldType === DocumentNodeType.INPUT_VALUE)
@@ -587,7 +590,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			}
 			field = nextType;
 		}
-		if (field.kind === DocumentNodeType.NAMED) {
+		if (is_output) {
 			name = field.name.value;
 		}
 

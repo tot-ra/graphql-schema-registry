@@ -39,8 +39,10 @@ export async function pushAndValidateSchema({ service, forcePush }) {
 		const diff: Change[] = await diffSchemas({service});
 
 		const breakDownService = new BreakDownSchemaCaseUse(trx, service.type_defs, schema.service_id);
-		breakDownService.validateBreakDown(diff, forcePush);
-		await breakDownService.applyChanges(diff);
+		if (diff !== undefined) {
+			breakDownService.validateBreakDown(diff, forcePush);
+			await breakDownService.applyChanges(diff);
+		}
 		await breakDownService.breakDown();
 
 		return schema;

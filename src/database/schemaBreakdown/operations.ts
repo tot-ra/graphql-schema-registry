@@ -1,5 +1,6 @@
 import Knex, {Transaction} from 'knex';
 import {Operation, OperationPayload} from '../../model/operation';
+import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
 
 
 interface OperationService {
@@ -20,16 +21,16 @@ export class OperationTransactionalRepository implements OperationService {
 	}
 
 	async insertIgnoreOperations(data: OperationPayload[]) {
+		const columns = [
+			'name',
+			'description',
+			'type',
+			'service_id'
+		]
 		return this.trx
-			.raw(`INSERT IGNORE INTO ${this.tableName} (name, description, type, service_id) VALUES ${OperationTransactionalRepository.insertBulkPayload(data)}`)
-	}
-
-	private static insertBulkPayload(data: OperationPayload[]): string {
-		const insertData = data.map(i => {
-			return `('${i.name}', ${i.description !== undefined ?`'${i.description}'` : null}, '${i.type}', ${i.service_id})`;
-		})
-
-		return insertData.join(',');
+			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
+ 						VALUES ${insertBulkPayload(data, columns)}
+ 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
 	}
 
 }

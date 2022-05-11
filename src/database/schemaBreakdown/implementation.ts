@@ -1,8 +1,10 @@
 import {Transaction} from "knex";
 import {Implementation} from "../../model/implementation";
+import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
 
 interface ImplementationService {
 	insertIgnoreImplementations(data: Implementation[]): Promise<void>
+	removeImplementations(data: string[]): Promise<number>
 }
 
 export class ImplementationTransactionRepository implements ImplementationService {
@@ -12,15 +14,18 @@ export class ImplementationTransactionRepository implements ImplementationServic
 	}
 
 	async insertIgnoreImplementations(data: Implementation[]) {
+		const columns = ['interface_id', 'implementation_id']
 		return this.trx
-			.raw(`INSERT IGNORE INTO ${this.tableName} (interface_id, implementation_id) VALUES ${ImplementationTransactionRepository.insertBulkPayload(data)}`)
+			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
+ 						VALUES ${insertBulkPayload(data, columns)}
+ 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
 	}
 
-	private static insertBulkPayload(data: Implementation[]): string {
-		const insertData = data.map(i => {
-			return `('${i.interface_id}', ${i.implementation_id})`;
-		})
-
-		return insertData.join(',');
+	async removeImplementations(data: string[]) {
+		return this.trx
+			.raw(`
+			DELETE i FROM ${this.tableName} i
+			INNER JOIN type_def_types t on i.implementation_id = t.id
+			WHERE t.name IN (${data.map(d => `'${d}'`).join(',')});`)
 	}
 }

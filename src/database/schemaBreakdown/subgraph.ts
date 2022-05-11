@@ -1,5 +1,6 @@
 import {Transaction} from 'knex';
 import {Subgraph} from "../../model/subgraph";
+import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
 
 interface OperationParamsService {
 	insertIgnoreSubGraphs(data: Subgraph[]): Promise<void>
@@ -12,16 +13,10 @@ export class SubgraphTransactionalRepository implements OperationParamsService {
 	}
 
 	async insertIgnoreSubGraphs(data: Subgraph[]) {
+		const columns = ['service_id', 'type_id']
 		return this.trx
-			.raw(`INSERT IGNORE INTO ${this.tableName} (service_id, type_id) VALUES ${SubgraphTransactionalRepository.insertBulkPayload(data)}`)
+			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
+ 						VALUES ${insertBulkPayload(data, columns)}
+ 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
 	}
-
-	private static insertBulkPayload(data: Subgraph[]): string {
-		const insertData = data.map(i => {
-			return `(${i.service_id}, ${i.type_id})`
-		})
-
-		return insertData.join(',');
-	}
-
 }
