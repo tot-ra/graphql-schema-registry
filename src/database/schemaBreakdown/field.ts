@@ -4,6 +4,7 @@ import {Transaction} from "knex";
 interface FieldService {
 	insertIgnoreFields(data: FieldPayload[]): Promise<void>
 	getFieldsByNames(typeNames: string[]): Promise<Field[]>
+	removeFields(fieldName: string[]): Promise<number>
 }
 
 export class FieldTransactionRepository implements FieldService {
@@ -29,5 +30,11 @@ export class FieldTransactionRepository implements FieldService {
 		})
 
 		return insertData.join(',');
+	}
+
+	async removeFields(fieldName: string[]) {
+		return this.trx(this.tableName)
+			.whereIn('name', fieldName)
+			.delete()
 	}
 }

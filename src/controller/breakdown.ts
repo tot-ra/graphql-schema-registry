@@ -16,6 +16,8 @@ import {OperationParamsTransactionalRepository} from "../database/schemaBreakdow
 import {SubgraphTransactionalRepository} from "../database/schemaBreakdown/subgraph";
 import {Subgraph} from "../model/subgraph";
 import * as logger from '../logger';
+import {Change, ChangeType, CriticalityLevel} from "@graphql-inspector/core";
+import {PublicError} from "../helpers/error";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -32,7 +34,13 @@ type ObjectPayload = {
 }
 const BASE_SCALARS = ["Int", "String", "Boolean", "Float", "ID"]
 
-export class BreakDownSchemaCaseUse {
+interface BreakDownService {
+	breakDown(): Promise<void>;
+	validateBreakDown(changes: Change[], forcePush: string): void;
+	applyChanges(changes: Change[]): void
+}
+
+export class BreakDownSchemaCaseUse implements BreakDownService {
 	private typeRepository;
 	private fieldRepository;
 	private implementationRepository;
@@ -58,6 +66,63 @@ export class BreakDownSchemaCaseUse {
 		this.dbMap = new Map<string, number>();
 	}
 
+	validateBreakDown(changes: Change[], forcePush?: string) {
+		const breakingChange = changes.some(change => change.criticality.level === CriticalityLevel.Breaking);
+		if (breakingChange && forcePush?.toLowerCase() !== 'true') {
+			const message = "Cannot push this schema because contains breaking changes. To force push it, you must add a header as (Force-Push: true)";
+			logger.error(message);
+			throw new PublicError(message, undefined);
+		}
+	}
+
+	async applyChanges(changes: Change[]) {
+		if (changes.length === 0) {
+			return
+		}
+		// const removalChanges = changes.filter(change => )
+		const regexExpr = new RegExp("_REMOVED$");
+		const removalChanges = changes.filter(change => regexExpr.test(change.type));
+
+		await this.applyChangesToFields(removalChanges.filter(change => {
+			const changeFields = [
+				ChangeType.FieldRemoved,
+				ChangeType.EnumValueRemoved
+			]
+			return changeFields.includes(change.type)
+		}));
+		await this.applyChangesToTypes(removalChanges.filter(change => {
+			const changeTypes = [
+				ChangeType.TypeRemoved,
+				ChangeType.DirectiveRemoved,
+				ChangeType.ObjectTypeInterfaceRemoved,
+			];
+			return changeTypes.includes(change.type);
+		}));
+		await this.applyChangesToFieldArguments(removalChanges.filter(change => change.type === ChangeType.FieldArgumentRemoved));
+	}
+
+	private async applyChangesToFields(changes: Change[]) {
+		const names = changes.map(change => change.path.split('.')[0]);
+		if (names.length > 0) {
+			await this.fieldRepository.removeFields(names);
+		}
+	}
+
+	private async applyChangesToTypes(changes: Change[]) {
+		const names = changes.map(change => change.path.split('.')[0]);
+		if (names.length > 0) {
+			await this.typeRepository.removeTypes(names);
+		}
+	}
+
+	private async applyChangesToFieldArguments(changes: Change[]) {
+		// TODO
+		const names = changes.map(change => change.path.split('.')[0]);
+		if (names.length > 0) {
+			await this.argumentRepository.removeArguments(names);
+		}
+	}
+
 	async breakDown(): Promise<void> {
 		try {
 			const schema = parse(this.type_defs);
@@ -78,7 +143,6 @@ export class BreakDownSchemaCaseUse {
 			logger.error('Error breaking down the schema', err.message ?? err)
 		}
 	}
-
 
 	private static mapTypes(document: DocumentNode): DocumentMap {
 		return document.definitions.reduce((acc, cur) => {

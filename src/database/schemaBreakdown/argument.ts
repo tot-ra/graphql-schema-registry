@@ -3,6 +3,7 @@ import { Argument } from "../../model/argument";
 
 interface ArgumentService {
 	insertIgnoreArguments(data: Argument[]): Promise<void>
+	removeArguments(fields: number[]): Promise<number>
 }
 
 export class ArgumentTransactionRepository implements ArgumentService {
@@ -22,5 +23,11 @@ export class ArgumentTransactionRepository implements ArgumentService {
 		})
 
 		return insertData.join(',');
+	}
+
+	async removeArguments(fields: number[]) {
+		return this.trx(this.tableName)
+			.whereIn('field_id', fields)
+			.delete()
 	}
 }

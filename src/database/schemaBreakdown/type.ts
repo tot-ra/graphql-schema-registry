@@ -5,6 +5,7 @@ interface TypeService {
 	getTypeByName(typeName: string)
 	getTypesByNames(typeNames: string[]): Promise<Type[]>
 	insertIgnoreTypes(data: TypePayload[]): Promise<void>
+	removeTypes(names: string[]): Promise<number>
 }
 
 export class TypeTransactionalRepository implements TypeService {
@@ -37,5 +38,11 @@ export class TypeTransactionalRepository implements TypeService {
 		})
 
 		return insertData.join(',');
+	}
+
+	async removeTypes(names: string[]) {
+		return this.trx(this.tableName)
+			.whereIn('name', names)
+			.delete()
 	}
 }
