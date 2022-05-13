@@ -11,7 +11,13 @@ import config from '../config';
 import * as kafka from '../kafka';
 
 export async function composeLatest(req, res) {
-	const schema = await getAndValidateSchema(connection);
+	const { validate } = Joi.attempt(
+		req.query,
+		Joi.object().keys({
+			validate: Joi.boolean().default(true).allow(''),
+		})
+	);
+	const schema = await getAndValidateSchema(connection, false, validate);
 
 	return res.json({
 		success: true,
@@ -36,8 +42,14 @@ export async function compose(req, res) {
 			})
 			.options({ stripUnknown: true })
 	);
+	const { validate } = Joi.attempt(
+		req.query,
+		Joi.object().keys({
+			validate: Joi.boolean().default(true).allow(''),
+		})
+	);
 
-	const schema = await getAndValidateSchema(connection, services);
+	const schema = await getAndValidateSchema(connection, services, validate);
 
 	return res.json({
 		success: true,
