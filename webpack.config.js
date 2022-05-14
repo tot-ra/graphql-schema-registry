@@ -1,8 +1,13 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
+const webpack = require('webpack');
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
+const isEnvDevelopment = process.env.NODE_ENV !== 'production';
 const isEnvProduction = process.env.NODE_ENV === 'production';
+
+const shouldUseSourceMap = isEnvDevelopment;
 
 module.exports = {
 	output: {
@@ -16,25 +21,34 @@ module.exports = {
 	},
 	module: {
 		rules: [
-			{
-				test: /.jsx?$/,
-				use: {
-					loader: 'babel-loader',
-				},
-				include: [path.resolve(__dirname, './client')],
+			// Handle node_modules packages that contain sourcemaps
+			shouldUseSourceMap && {
+				enforce: 'pre',
+				exclude: /@babel(?:\/|\\{1,2})runtime/,
+				test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+				loader: require.resolve('source-map-loader'),
 			},
 			{
-				test: /\.(png|jpg|svg)$/,
-				loader: 'file-loader',
-				options: {
-					name: '[name].[ext]',
-				},
+				oneOf: [
+					{
+						test: /\.jsx?$/,
+						loader: 'babel-loader',
+						exclude: /node_modules/,
+					},
+					{
+						test: /\.(png|jpg|svg)$/,
+						loader: 'file-loader',
+						options: {
+							name: '[name].[ext]',
+						},
+					},
+					{
+						test: /\.(p|post)?css$/,
+						use: [MiniCssExtractPlugin.loader, 'css-loader'],
+					},
+				],
 			},
-			{
-				test: /\.(p|post)?css$/,
-				use: [MiniCssExtractPlugin.loader, 'css-loader'],
-			},
-		],
+		].filter(Boolean),
 	},
 	resolve: {
 		extensions: ['.js', '.jsx', '.json'],
@@ -43,11 +57,23 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: '[name].css?v=[contenthash]',
 		}),
-	],
+		isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
+		isEnvDevelopment &&
+			new ReactRefreshPlugin({
+				overlay: {
+					sockIntegration: 'whm',
+				},
+			}),
+	].filter(Boolean),
 	mode: isEnvProduction ? 'production' : 'development',
 	entry: {
-		'management-ui-standalone': ['./client/entry-standalone.jsx'],
+		'management-ui-standalone': [
+			isEnvDevelopment && '@gatsbyjs/webpack-hot-middleware/client',
+			'./client/entry-standalone.jsx',
+		].filter(Boolean),
 	},
+	devtool: shouldUseSourceMap ? 'cheap-module-source-map' : false,
+	ignoreWarnings: [/Failed to parse source map/],
 	optimization: {
 		minimize: isEnvProduction,
 		minimizer: [
