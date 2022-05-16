@@ -2,7 +2,7 @@ import {DocumentNode, parse} from "graphql";
 import {DocumentNodeType, EntityType, FieldProperty, OperationType} from "../model/enums";
 import {Type, TypePayload} from "../model/type";
 import {TypeTransactionalRepository} from "../database/schemaBreakdown/type";
-import Knex from "knex";
+import Knex, { Transaction } from "knex";
 import {FieldPayload} from "../model/field";
 import {FieldTransactionRepository} from "../database/schemaBreakdown/field";
 import {Implementation} from "../model/implementation";
@@ -59,7 +59,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	private subgraphTypes: number[] = [];
 
 	constructor(
-		private trx: Knex.Transaction,
+		private trx: Transaction,
 		private type_defs: string,
 		private service_id: number
 	) {
@@ -135,21 +135,21 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 	async breakDown(): Promise<void> {
 		try {
-			// const breakDown = new BreakDownStrategy(this.type_defs, this.trx);
-			// await breakDown.execute();
-			const schema = parse(this.type_defs);
-			const mappedTypes = BreakDownSchemaCaseUse.mapTypes(schema);
-			await this.computeScalars(mappedTypes);
-			await this.computeEnums(mappedTypes);
-			await this.computeInputs(mappedTypes);
-			await this.computeDirectives(mappedTypes);
-			await this.computeInterfaces(mappedTypes);
-			await this.computeObjects(mappedTypes);
-			await this.computeUnions(mappedTypes);
-			await this.computeImplementations(mappedTypes);
-			await this.computeQueries(mappedTypes, OperationType.QUERY);
-			await this.computeQueries(mappedTypes, OperationType.MUTATION);
-			await this.registerSubgraph();
+			const breakDown = new BreakDownStrategy(this.type_defs, this.trx);
+			await breakDown.execute();
+			// const schema = parse(this.type_defs);
+			// const mappedTypes = BreakDownSchemaCaseUse.mapTypes(schema);
+			// await this.computeScalars(mappedTypes);
+			// await this.computeEnums(mappedTypes);
+			// await this.computeInputs(mappedTypes);
+			// await this.computeDirectives(mappedTypes);
+			// await this.computeInterfaces(mappedTypes);
+			// await this.computeObjects(mappedTypes);
+			// await this.computeUnions(mappedTypes);
+			// await this.computeImplementations(mappedTypes);
+			// await this.computeQueries(mappedTypes, OperationType.QUERY);
+			// await this.computeQueries(mappedTypes, OperationType.MUTATION);
+			// await this.registerSubgraph();
 			return;
 		} catch(err) {
 			logger.error('Error breaking down the schema', err.message ?? err)
