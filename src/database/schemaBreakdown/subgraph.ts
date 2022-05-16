@@ -1,22 +1,17 @@
 import {Transaction} from 'knex';
 import {Subgraph} from "../../model/subgraph";
-import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
+import {BreakDownRepository} from "./breakdown";
 
-interface OperationParamsService {
-	insertIgnoreSubGraphs(data: Subgraph[]): Promise<void>
-}
+const TABLE_NAME = 'type_def_subgraphs';
+const TABLE_COLUMNS = ['service_id', 'type_id'];
 
-export class SubgraphTransactionalRepository implements OperationParamsService {
-	private tableName = 'type_def_subgraphs';
+export class SubgraphTransactionalRepository extends BreakDownRepository<Subgraph, Subgraph> {
 
-	constructor(private trx: Transaction) {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS);
 	}
 
-	async insertIgnoreSubGraphs(data: Subgraph[]) {
-		const columns = ['service_id', 'type_id']
-		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
- 						VALUES ${insertBulkPayload(data, columns)}
- 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
+	async insertIgnoreSubGraphs(trx: Transaction, data: Subgraph[]) {
+		return super.insert(trx, data);
 	}
 }

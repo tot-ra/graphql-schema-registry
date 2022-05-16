@@ -1,29 +1,21 @@
 import {Transaction} from "knex";
 import { Argument } from "../../model/argument";
-import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
+import {BreakDownRepository} from "./breakdown";
 
-interface ArgumentService {
-	insertIgnoreArguments(data: Argument[]): Promise<void>
-	removeArguments(fields: number[]): Promise<number>
-}
+const TABLE_NAME = 'type_def_field_arguments';
+const TABLE_COLUMNS = ['field_id', 'argument_id'];
 
-export class ArgumentTransactionRepository implements ArgumentService {
-	private tableName = 'type_def_field_arguments';
+export class ArgumentTransactionRepository extends BreakDownRepository<Argument, Argument> {
 
-	constructor(private trx: Transaction) {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS)
 	}
 
-	async insertIgnoreArguments(data: Argument[]) {
-		const columns = ['field_id', 'argument_id']
-		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
- 						VALUES ${insertBulkPayload(data, columns)}
- 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
+	async insertIgnoreArguments(trx: Transaction, data: Argument[], ) {
+		return super.insert(trx, data)
 	}
 
-	async removeArguments(fields: number[]) {
-		return this.trx(this.tableName)
-			.whereIn('field_id', fields)
-			.delete()
+	async removeArguments(trx: Transaction, data: number[]) {
+		return super.remove(trx, data, 'field_id')
 	}
 }

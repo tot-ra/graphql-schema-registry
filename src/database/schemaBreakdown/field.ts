@@ -1,45 +1,34 @@
 import {Field, FieldPayload} from "../../model/field";
 import {Transaction} from "knex";
-import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
+import {BreakDownRepository} from "./breakdown";
 
-interface FieldService {
-	insertIgnoreFields(data: FieldPayload[]): Promise<void>
-	getFieldsByNames(typeNames: string[]): Promise<Field[]>
-	removeFields(fieldName: string[]): Promise<number>
-}
+const TABLE_NAME = 'type_def_fields';
+const TABLE_COLUMNS = [
+	'name',
+	'description',
+	'is_nullable',
+	'is_array',
+	'is_array_nullable',
+	'is_deprecated',
+	'parent_type_id',
+	'children_type_id'
+]
 
-export class FieldTransactionRepository implements FieldService {
-	private tableName = 'type_def_fields';
+export class FieldTransactionRepository extends BreakDownRepository<FieldPayload, Field> {
 
-	constructor(private trx: Transaction) {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS)
 	}
 
-	async insertIgnoreFields(data: FieldPayload[]) {
-		const columns = [
-			'name',
-			'description',
-			'is_nullable',
-			'is_array',
-			'is_array_nullable',
-			'is_deprecated',
-			'parent_type_id',
-			'children_type_id'
-		]
-		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
- 						VALUES ${insertBulkPayload(data, columns)}
- 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
+	async insertIgnoreFields(trx: Transaction, data: FieldPayload[]) {
+		return super.insert(trx, data)
 	}
 
-	async getFieldsByNames(typeNames: string[]) {
-		return this.trx(this.tableName)
-			.select()
-			.whereIn('name', typeNames);
+	async getFieldsByNames(trx: Transaction, data: string[]): Promise<Field[]> {
+		return super.get(trx, data, 'name');
 	}
 
-	async removeFields(fieldName: string[]) {
-		return this.trx(this.tableName)
-			.whereIn('name', fieldName)
-			.delete()
+	async removeFields(trx: Transaction, data: string[]) {
+		return super.remove(trx, data, 'name');
 	}
 }

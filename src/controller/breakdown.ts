@@ -62,13 +62,13 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		private type_defs: string,
 		private service_id: number
 	) {
-		this.typeRepository = new TypeTransactionalRepository(trx);
-		this.fieldRepository = new FieldTransactionRepository(trx);
-		this.implementationRepository = new ImplementationTransactionRepository(trx);
-		this.argumentRepository = new ArgumentTransactionRepository(trx);
-		this.operationRepository = new OperationTransactionalRepository(trx);
-		this.operationParamRepository = new OperationParamsTransactionalRepository(trx);
-		this.subgraphRepository = new SubgraphTransactionalRepository(trx);
+		this.typeRepository = new TypeTransactionalRepository();
+		this.fieldRepository = new FieldTransactionRepository();
+		this.implementationRepository = new ImplementationTransactionRepository();
+		this.argumentRepository = new ArgumentTransactionRepository();
+		this.operationRepository = new OperationTransactionalRepository();
+		this.operationParamRepository = new OperationParamsTransactionalRepository();
+		this.subgraphRepository = new SubgraphTransactionalRepository();
 		this.dbMap = new Map<string, number>();
 	}
 
@@ -107,28 +107,28 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	private async applyChangesToFields(changes: Change[]) {
 		const names = changes.map(change => change.path.split('.')[0]);
 		if (names.length > 0) {
-			await this.fieldRepository.removeFields(names);
+			await this.fieldRepository.removeFields(this.trx, names);
 		}
 	}
 
 	private async applyChangesToTypes(changes: Change[]) {
 		const names = changes.map(change => change.path.split('.')[0]);
 		if (names.length > 0) {
-			await this.typeRepository.removeTypes(names);
+			await this.typeRepository.removeTypes(this.trx, names);
 		}
 	}
 
 	private async applyChangesToImplementations(changes: Change[]) {
 		const implementationNames = changes.map(change => change.path.split('.')[0]);
 		if (implementationNames.length > 0) {
-			await this.implementationRepository.removeImplementations(implementationNames)
+			await this.implementationRepository.removeImplementations(this.trx, implementationNames)
 		}
 	}
 
 	private async applyChangesToFieldArguments(changes: Change[]) {
 		const names = changes.map(change => change.path.split('.')[0]);
 		if (names.length > 0) {
-			await this.argumentRepository.removeArguments(names);
+			await this.argumentRepository.removeArguments(this.trx, names);
 		}
 	}
 
@@ -222,9 +222,9 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		if (types === undefined || types.size === 0) {
 			return
 		}
-		await this.typeRepository.insertIgnoreTypes(Array.from(types.values()));
+		await this.typeRepository.insertIgnoreTypes(this.trx, Array.from(types.values()));
 		const names = Array.from(types.keys());
-		const dbTypes: Type[] = await this.typeRepository.getTypesByNames(names)
+		const dbTypes: Type[] = await this.typeRepository.getTypesByNames(this.trx, names)
 		dbTypes.forEach(t => {
 			this.dbMap.set(t.name, t.id);
 			this.subgraphTypes.push(t.id);
@@ -258,7 +258,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 				} as FieldPayload
 			})
 		});
-		const promises = fields.map(field => this.fieldRepository.insertIgnoreFields(field));
+		const promises = fields.map(field => this.fieldRepository.insertIgnoreFields(this.trx, field));
 		await Promise.all(promises);
 	}
 
@@ -280,8 +280,8 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	private async computeInputs(mappedTypes: DocumentMap) {
 		const inputs = this.getInputs(mappedTypes);
 		if (inputs.length > 0) {
-			await this.typeRepository.insertIgnoreTypes(inputs.map(i => i.object));
-			const dbInputs = await this.typeRepository.getTypesByNames(inputs.map(i => i.object.name));
+			await this.typeRepository.insertIgnoreTypes(this.trx, inputs.map(i => i.object));
+			const dbInputs = await this.typeRepository.getTypesByNames(this.trx, inputs.map(i => i.object.name));
 			dbInputs.forEach(i => {
 				this.dbMap.set(i.name, i.id);
 				this.subgraphTypes.push(i.id);
@@ -309,8 +309,8 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		const directives = this.getDirectives(mappedTypes);
 		if (directives.length > 0) {
 			const names = directives.map(d => d.directive.name);
-			await this.typeRepository.insertIgnoreTypes(directives.map(d => d.directive));
-			const dbDirectives = await this.typeRepository.getTypesByNames(names);
+			await this.typeRepository.insertIgnoreTypes(this.trx, directives.map(d => d.directive));
+			const dbDirectives = await this.typeRepository.getTypesByNames(this.trx, names);
 			dbDirectives.forEach(d => {
 				this.dbMap.set(d.name, d.id);
 				this.subgraphTypes.push(d.id);
@@ -318,7 +318,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			const fields = directives.map(d => {
 				return d.fields.map(field => this.extractFieldFromObject(field, d.directive.name))
 			}).flat(1);
-			this.fieldRepository.insertIgnoreFields(fields);
+			this.fieldRepository.insertIgnoreFields(this.trx, fields);
 		}
 	}
 
@@ -368,9 +368,9 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	private async computeInterfaces(mappedTypes: DocumentMap) {
 		const interfaces = this.getInterfaces(mappedTypes);
 		if (interfaces.length > 0) {
-			await this.typeRepository.insertIgnoreTypes(interfaces.map(i => i.interface));
+			await this.typeRepository.insertIgnoreTypes(this.trx, interfaces.map(i => i.interface));
 			const names = interfaces.map(i => i.interface.name);
-			const dbInterfaces = await this.typeRepository.getTypesByNames(names);
+			const dbInterfaces = await this.typeRepository.getTypesByNames(this.trx, names);
 			dbInterfaces.forEach(t => {
 				this.dbMap.set(t.name, t.id);
 				this.subgraphTypes.push(t.id);
@@ -379,7 +379,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 				return i.fields.map(field => this.extractFieldFromObject(field, i.interface.name));
 			}).flat(1);
 			if (fields.length > 0) {
-				this.fieldRepository.insertIgnoreFields(fields);
+				this.fieldRepository.insertIgnoreFields(this.trx, fields);
 			}
 		}
 	}
@@ -402,10 +402,10 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	private async computeObjects(mappedTypes: DocumentMap) {
 		const objects = this.getObjectsToInsert(mappedTypes);
 		if (objects.length > 0) {
-			await this.typeRepository.insertIgnoreTypes(objects.map(obj => obj.object));
+			await this.typeRepository.insertIgnoreTypes(this.trx, objects.map(obj => obj.object));
 			const existingObjects = this.getExistingObjects(mappedTypes);
 			const names = objects.map(obj => obj.object.name);
-			const dbObjects = await this.typeRepository.getTypesByNames([...names, ...existingObjects]);
+			const dbObjects = await this.typeRepository.getTypesByNames(this.trx, [...names, ...existingObjects]);
 			dbObjects.forEach(obj => {
 				this.dbMap.set(obj.name, obj.id);
 				this.subgraphTypes.push(obj.id)
@@ -417,8 +417,8 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	private async computeUnions(mappedTypes: DocumentMap) {
 		const unions = this.getUnions(mappedTypes);
 		if (unions && unions.size > 0) {
-			await this.typeRepository.insertIgnoreTypes(Array.from(unions.values()));
-			const dbUnions = await this.typeRepository.getTypesByNames(Array.from(unions.keys()));
+			await this.typeRepository.insertIgnoreTypes(this.trx, Array.from(unions.values()));
+			const dbUnions = await this.typeRepository.getTypesByNames(this.trx, Array.from(unions.keys()));
 			dbUnions.forEach(u => {
 				this.dbMap.set(u.name, u.id);
 				this.subgraphTypes.push(u.id);
@@ -454,7 +454,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			})
 		}).flat(1)
 		if (dbImplementations.length > 0) {
-			await this.implementationRepository.insertIgnoreImplementations(dbImplementations);
+			await this.implementationRepository.insertIgnoreImplementations(this.trx, dbImplementations);
 		}
 	}
 
@@ -463,7 +463,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			return obj.fields.map(field => this.extractFieldFromObject(field, obj.object.name))
 		}).flat(1)
 		if (fields.length > 0) {
-			await this.fieldRepository.insertIgnoreFields(fields);
+			await this.fieldRepository.insertIgnoreFields(this.trx, fields);
 		}
 
 		const argumentsMap = new Map<string, string>()
@@ -474,13 +474,13 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		}).flat(1)
 		if (fieldsWithArguments.length > 0) {
 			const names = fieldsWithArguments.map(fwa => fwa.name.value);
-			const dbFields = await this.fieldRepository.getFieldsByNames(names);
+			const dbFields = await this.fieldRepository.getFieldsByNames(this.trx, names);
 			dbFields.forEach(field => this.dbMap.set(field.name, field.id));
 			const fieldArguments = fieldsWithArguments.map(fwa => {
 				return fwa.arguments.map(arg => this.extractFieldFromObject(arg, argumentsMap.get(fwa.name.value)))
 			}).flat(1)
-			await this.fieldRepository.insertIgnoreFields(fieldArguments)
-			const dbFieldArguments = await this.fieldRepository.getFieldsByNames(fieldArguments.map(f => f.name));
+			await this.fieldRepository.insertIgnoreFields(this.trx, fieldArguments)
+			const dbFieldArguments = await this.fieldRepository.getFieldsByNames(this.trx, fieldArguments.map(f => f.name));
 			dbFieldArguments.forEach(f => this.dbMap.set(f.name, f.id));
 			const argumentsToInsert = fieldsWithArguments.map(f => {
 				return f.arguments.map(arg => {
@@ -491,7 +491,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 				})
 			}).flat(1);
 			if (argumentsToInsert.length > 0) {
-				await this.argumentRepository.insertIgnoreArguments(argumentsToInsert);
+				await this.argumentRepository.insertIgnoreArguments(this.trx, argumentsToInsert);
 			}
 		}
 	}
@@ -538,8 +538,8 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			})
 		}).flat(1)
 		if (operations.length > 0) {
-			await this.operationRepository.insertIgnoreOperations(operations);
-			const dbOperations = await this.operationRepository.getOperationsByNames(operations.map(o => o.name));
+			await this.operationRepository.insertIgnoreOperations(this.trx, operations);
+			const dbOperations = await this.operationRepository.getOperationsByNames(this.trx, operations.map(o => o.name));
 			dbOperations.forEach(o => this.dbMap.set(o.name, o.id));
 		}
 		const result = queries.reduce((acc, cur) => {
@@ -560,7 +560,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		})
 		const operationParams = [...result.input, ...result.output];
 		if (operationParams.length > 0) {
-			await this.operationParamRepository.insertIgnoreOperationParams(operationParams);
+			await this.operationParamRepository.insertIgnoreOperationParams(this.trx, operationParams);
 		}
 	}
 
@@ -660,7 +660,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		if (this.subgraphTypes.length === 0) {
 			return
 		}
-		await this.subgraphRepository.insertIgnoreSubGraphs(this.subgraphTypes.map(s => {
+		await this.subgraphRepository.insertIgnoreSubGraphs(this.trx, this.subgraphTypes.map(s => {
 			return {
 				service_id: this.service_id,
 				type_id: s

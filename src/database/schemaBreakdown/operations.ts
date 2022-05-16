@@ -1,36 +1,26 @@
 import Knex, {Transaction} from 'knex';
 import {Operation, OperationPayload} from '../../model/operation';
-import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
+import {BreakDownRepository} from "./breakdown";
 
+const TABLE_NAME = 'type_def_operations';
+const TABLE_COLUMNS = [
+	'name',
+	'description',
+	'type',
+	'service_id'
+];
 
-interface OperationService {
-	insertIgnoreOperations(data: OperationPayload[]): Promise<void>
-	getOperationsByNames(names: string[]): Promise<Operation[]>
-}
-
-export class OperationTransactionalRepository implements OperationService {
-	private tableName = 'type_def_operations';
-
-	constructor(private trx: Transaction) {
+export class OperationTransactionalRepository extends BreakDownRepository<OperationPayload, Operation> {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS);
 	}
 
-	async getOperationsByNames(names: string[]) {
-		return this.trx(this.tableName)
-			.select()
-			.whereIn('name', names);
+	async getOperationsByNames(trx: Transaction, data: string[]) {
+		return super.get(trx, data, 'name');
 	}
 
-	async insertIgnoreOperations(data: OperationPayload[]) {
-		const columns = [
-			'name',
-			'description',
-			'type',
-			'service_id'
-		]
-		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
- 						VALUES ${insertBulkPayload(data, columns)}
- 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
+	async insertIgnoreOperations(trx: Transaction, data: OperationPayload[]) {
+		return super.insert(trx, data);
 	}
 
 }

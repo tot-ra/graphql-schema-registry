@@ -1,53 +1,40 @@
 import {Type, TypePayload} from "../../model/type";
 import {Transaction} from "knex";
-import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
+import {BreakDownRepository} from "./breakdown";
 
-interface TypeService {
-	getTypeByName(typeName: string)
-	getTypesByNames(typeNames: string[]): Promise<Type[]>
-	insertIgnoreTypes(data: TypePayload[]): Promise<void>
-	removeTypes(names: string[]): Promise<number>
-	removeTypesByService(): Promise<number>
-}
+const TABLE_NAME = 'type_def_types';
+const TABLE_COLUMNS = [
+	'name',
+	'description',
+	'type'
+];
 
-export class TypeTransactionalRepository implements TypeService {
-	private tableName = 'type_def_types';
+export class TypeTransactionalRepository extends BreakDownRepository<TypePayload, Type> {
 
-	constructor(private trx: Transaction) {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS);
 	}
 
-	async getTypeByName(typeName: string) {
-		return this.trx(this.tableName)
+	async getTypeByName(trx: Transaction, name: string) {
+		return trx(TABLE_NAME)
 			.select()
-			.where('name', typeName);
+			.where('name', name);
 	}
 
-	async getTypesByNames(typeNames: string[]) {
-		return this.trx(this.tableName)
-			.select()
-			.whereIn('name', typeNames);
+	async getTypesByNames(trx: Transaction, data: string[]) {
+		return super.get(trx, data, 'name')
 	}
 
-	async insertIgnoreTypes(data: TypePayload[]): Promise<void> {
-		const columns = [
-			'name',
-			'description',
-			'type'
-		]
-		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
- 						VALUES ${insertBulkPayload(data, columns)}
- 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
+	async insertIgnoreTypes(trx: Transaction, data: TypePayload[]): Promise<void> {
+		return super.insert(trx, data)
 	}
 
-	async removeTypes(names: string[]) {
-		return this.trx(this.tableName)
-			.whereIn('name', names)
-			.delete()
+	async removeTypes(trx: Transaction, data: string[]) {
+		return super.remove(trx, data, 'name')
 	}
 
-	async removeTypesByService() {
-		return this.trx
+	async removeTypesByService(trx: Transaction) {
+		return trx
 			.raw(`
 				DELETE t
 				FROM type_def_types t

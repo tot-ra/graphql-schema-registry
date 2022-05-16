@@ -1,30 +1,24 @@
 import {Transaction} from "knex";
 import {Implementation} from "../../model/implementation";
-import {insertBulkPayload, onDuplicateUpdatePayload} from "./utils";
+import {BreakDownRepository} from "./breakdown";
 
-interface ImplementationService {
-	insertIgnoreImplementations(data: Implementation[]): Promise<void>
-	removeImplementations(data: string[]): Promise<number>
-}
+const TABLE_NAME = 'type_def_implementations';
+const TABLE_COLUMNS = ['interface_id', 'implementation_id'];
 
-export class ImplementationTransactionRepository implements ImplementationService {
-	private tableName = 'type_def_implementations';
+export class ImplementationTransactionRepository extends BreakDownRepository<Implementation, Implementation> {
 
-	constructor(private trx: Transaction) {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS);
 	}
 
-	async insertIgnoreImplementations(data: Implementation[]) {
-		const columns = ['interface_id', 'implementation_id']
-		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (${columns.join(',')})
- 						VALUES ${insertBulkPayload(data, columns)}
- 						ON DUPLICATE KEY UPDATE ${onDuplicateUpdatePayload(columns)}`)
+	async insertIgnoreImplementations(trx: Transaction, data: Implementation[]) {
+		return super.insert(trx, data);
 	}
 
-	async removeImplementations(data: string[]) {
-		return this.trx
+	async removeImplementations(trx: Transaction, data: string[]) {
+		return trx
 			.raw(`
-			DELETE i FROM ${this.tableName} i
+			DELETE i FROM ${TABLE_NAME} i
 			INNER JOIN type_def_types t on i.implementation_id = t.id
 			WHERE t.name IN (${data.map(d => `'${d}'`).join(',')});`)
 	}
