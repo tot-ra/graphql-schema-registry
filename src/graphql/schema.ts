@@ -57,7 +57,7 @@ export default gql`
 		addedTime: Date
 		isActive: Boolean
 
-		schemas(limit: Int, offset: Int, filter: String): [SchemaDefinition!]!
+		schemas(limit: Int, offset: Int, filter: String): [SchemaDefinition!]
 	}
 
 	type PersistedQuery {

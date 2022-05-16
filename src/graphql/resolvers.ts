@@ -23,7 +23,8 @@ export default {
 			servicesModel.getServices(connection, limit, offset),
 		service: async (parent, { id }, { dataloaders }) =>
 			dataloaders.services.load(id),
-		schema: async (parent, { id }) => await schemaModel.getSchemaById(connection, id),
+		schema: async (parent, { id }) =>
+			await schemaModel.getSchemaById(connection, id),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
 			return await PersistedQueriesModel.list({
@@ -121,7 +122,29 @@ export interface Pagination {
 	totalPages: number;
 }
 
-export function getPagination(limit: number, offset: number, totalItems: number): Pagination {
+export async function getPaginatedResult<T>(
+	totalItems: number,
+	limit: number,
+	offset: number,
+	result: (safeOffset) => T
+) {
+	let pagination = getPagination(limit, offset, totalItems);
+	let safeOffset = offset;
+	if (isOffsetOutbounds(pagination)) {
+		pagination = { ...pagination, page: 1 };
+		safeOffset = 0;
+	}
+	return {
+		pagination,
+		...await result(safeOffset),
+	};
+}
+
+function getPagination(
+	limit: number,
+	offset: number,
+	totalItems: number
+): Pagination {
 	const totalPages = Math.ceil(totalItems / limit);
 	let page = Math.floor(offset / limit) + 1;
 
@@ -132,4 +155,5 @@ export function getPagination(limit: number, offset: number, totalItems: number)
 	} as Pagination;
 }
 
-export const isOffsetOutbounds = (pagination: Pagination) => pagination.page > pagination.totalPages;
+const isOffsetOutbounds = (pagination: Pagination) =>
+	pagination.page > pagination.totalPages;

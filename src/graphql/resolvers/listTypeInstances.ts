@@ -1,8 +1,9 @@
 import TypeTransactionalRepository from '../../database/schemaBreakdown/type';
 import OperationsRepository from '../../database/schemaBreakdown/operations';
 import { EntityType, OperationType } from '../../model/enums';
-import { getPagination, isOffsetOutbounds as isPageOutbounds, Pagination } from '../resolvers';
+import { getPaginatedResult, Pagination } from '../resolvers';
 import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
+import { GraphQLError } from 'graphql';
 
 interface ListedTypeInstances {
 	items: TypeInstance[];
@@ -16,17 +17,19 @@ async function listPaginatedInstances(
 	offset: number
 ) {
 	const totalItems = await repository.countByType(evaluatedType);
-	let pagination = getPagination(limit, offset, totalItems);
-    let safeOffset = offset;
-	if (isPageOutbounds(pagination)) {
-        pagination = {...pagination, page: 1}
-        safeOffset = 0;
-    }
 
-	return {
-		pagination,
-        items: await repository.listByType(evaluatedType, limit, safeOffset),
-	};
+	return await getPaginatedResult<Promise<{ items: TypeInstance[] }>>(
+		totalItems,
+		limit,
+		offset,
+		async (safeOffset: number) => ({
+			items: await repository.listByType(
+				evaluatedType,
+				limit,
+				safeOffset
+			),
+		})
+	);
 }
 
 const isEnum = (value: String, targetEnum) =>
@@ -44,7 +47,7 @@ export default async function listTypeInstances(
 	} else if (isEnum(evaluatedType, OperationType)) {
 		repository = OperationsRepository;
 	} else {
-		throw new Error(`Unknown type: ${type}`);
+		throw new GraphQLError(`Unknown type: ${type}`);
 	}
 
 	return listPaginatedInstances(repository, evaluatedType, limit, offset);
