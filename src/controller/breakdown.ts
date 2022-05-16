@@ -18,6 +18,7 @@ import {Subgraph} from "../model/subgraph";
 import * as logger from '../logger';
 import {Change, ChangeType, CriticalityLevel} from "@graphql-inspector/core";
 import {PublicError} from "../helpers/error";
+import {BreakDownStrategy} from "./schemaBreakdown/strategy";
 
 type DocumentMap = Map<string, any[]>
 type EnumPayload = {
@@ -63,12 +64,12 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		private service_id: number
 	) {
 		this.typeRepository = TypeTransactionalRepository.getInstance();
-		this.fieldRepository = new FieldTransactionRepository();
-		this.implementationRepository = new ImplementationTransactionRepository();
-		this.argumentRepository = new ArgumentTransactionRepository();
-		this.operationRepository = new OperationTransactionalRepository();
-		this.operationParamRepository = new OperationParamsTransactionalRepository();
-		this.subgraphRepository = new SubgraphTransactionalRepository();
+		this.fieldRepository = FieldTransactionRepository.getInstance();
+		this.implementationRepository = ImplementationTransactionRepository.getInstance();
+		this.argumentRepository = ArgumentTransactionRepository.getInstance();
+		this.operationRepository = OperationTransactionalRepository.getInstance();
+		this.operationParamRepository = OperationParamsTransactionalRepository.getInstance();
+		this.subgraphRepository = SubgraphTransactionalRepository.getInstance();
 		this.dbMap = new Map<string, number>();
 	}
 
@@ -134,6 +135,8 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 	async breakDown(): Promise<void> {
 		try {
+			// const breakDown = new BreakDownStrategy(this.type_defs, this.trx);
+			// await breakDown.execute();
 			const schema = parse(this.type_defs);
 			const mappedTypes = BreakDownSchemaCaseUse.mapTypes(schema);
 			await this.computeScalars(mappedTypes);
