@@ -7,8 +7,18 @@ const TABLE_COLUMNS = ['interface_id', 'implementation_id'];
 
 export class ImplementationTransactionRepository extends BreakDownRepository<Implementation, Implementation> {
 
+	private static instance: ImplementationTransactionRepository;
+
 	constructor() {
 		super(TABLE_NAME, TABLE_COLUMNS);
+	}
+
+	static getInstance(): ImplementationTransactionRepository {
+		if (!ImplementationTransactionRepository.instance) {
+			ImplementationTransactionRepository.instance = new ImplementationTransactionRepository();
+		}
+
+		return ImplementationTransactionRepository.instance;
 	}
 
 	async insertIgnoreImplementations(trx: Transaction, data: Implementation[]) {

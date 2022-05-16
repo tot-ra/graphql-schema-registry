@@ -11,8 +11,19 @@ const TABLE_COLUMNS = [
 ];
 
 export class OperationTransactionalRepository extends BreakDownRepository<OperationPayload, Operation> {
+
+	private static instance: OperationTransactionalRepository;
+
 	constructor() {
 		super(TABLE_NAME, TABLE_COLUMNS);
+	}
+
+	static getInstance(): OperationTransactionalRepository {
+		if (!OperationTransactionalRepository.instance) {
+			OperationTransactionalRepository.instance = new OperationTransactionalRepository();
+		}
+
+		return OperationTransactionalRepository.instance;
 	}
 
 	async getOperationsByNames(trx: Transaction, data: string[]) {

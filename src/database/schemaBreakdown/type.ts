@@ -10,9 +10,18 @@ const TABLE_COLUMNS = [
 ];
 
 export class TypeTransactionalRepository extends BreakDownRepository<TypePayload, Type> {
+	private static instance: TypeTransactionalRepository;
 
 	constructor() {
 		super(TABLE_NAME, TABLE_COLUMNS);
+	}
+
+	static getInstance(): TypeTransactionalRepository {
+		if (!TypeTransactionalRepository.instance) {
+			TypeTransactionalRepository.instance = new TypeTransactionalRepository();
+		}
+
+		return TypeTransactionalRepository.instance;
 	}
 
 	async getTypeByName(trx: Transaction, name: string) {

@@ -62,7 +62,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 		private type_defs: string,
 		private service_id: number
 	) {
-		this.typeRepository = new TypeTransactionalRepository();
+		this.typeRepository = TypeTransactionalRepository.getInstance();
 		this.fieldRepository = new FieldTransactionRepository();
 		this.implementationRepository = new ImplementationTransactionRepository();
 		this.argumentRepository = new ArgumentTransactionRepository();

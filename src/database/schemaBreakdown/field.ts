@@ -16,8 +16,18 @@ const TABLE_COLUMNS = [
 
 export class FieldTransactionRepository extends BreakDownRepository<FieldPayload, Field> {
 
+	private static instance: FieldTransactionRepository;
+
 	constructor() {
-		super(TABLE_NAME, TABLE_COLUMNS)
+		super(TABLE_NAME, TABLE_COLUMNS);
+	}
+
+	static getInstance(): FieldTransactionRepository {
+		if (!FieldTransactionRepository.instance) {
+			FieldTransactionRepository.instance = new FieldTransactionRepository();
+		}
+
+		return FieldTransactionRepository.instance;
 	}
 
 	async insertIgnoreFields(trx: Transaction, data: FieldPayload[]) {

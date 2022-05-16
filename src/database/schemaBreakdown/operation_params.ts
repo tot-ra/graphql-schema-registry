@@ -16,8 +16,18 @@ const TABLE_COLUMNS = [
 
 export class OperationParamsTransactionalRepository extends BreakDownRepository<OperationParam, OperationParam> {
 
+	private static instance: OperationParamsTransactionalRepository;
+
 	constructor() {
-		super(TABLE_NAME, TABLE_COLUMNS)
+		super(TABLE_NAME, TABLE_COLUMNS);
+	}
+
+	static getInstance(): OperationParamsTransactionalRepository {
+		if (!OperationParamsTransactionalRepository.instance) {
+			OperationParamsTransactionalRepository.instance = new OperationParamsTransactionalRepository();
+		}
+
+		return OperationParamsTransactionalRepository.instance;
 	}
 
 	async insertIgnoreOperationParams(trx: Transaction, data: OperationParam[]) {
