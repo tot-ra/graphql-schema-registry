@@ -4,6 +4,7 @@ import {ScalarStrategy} from "./scalar";
 import {Transaction} from "knex";
 import {EnumStrategy} from "./enum";
 import {InputStrategy} from "./input";
+import {DirectiveStrategy} from "./directive";
 
 type DocumentMap = Map<string, any[]>
 
@@ -63,6 +64,7 @@ export class BreakDownStrategy {
 		this.strategies.set(DocumentNodeType.SCALAR, new ScalarStrategy());
 		this.strategies.set(DocumentNodeType.ENUM, new EnumStrategy());
 		this.strategies.set(DocumentNodeType.INPUT, new InputStrategy());
+		this.strategies.set(DocumentNodeType.DIRECTIVE, new DirectiveStrategy());
 	}
 	private getStrategies(): TypeDefStrategy<any>[] {
 		const strategies: TypeDefStrategy<any>[] = [new ScalarStrategy()];
