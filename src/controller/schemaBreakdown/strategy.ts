@@ -3,6 +3,7 @@ import {DocumentNodeType} from "../../model/enums";
 import {ScalarStrategy} from "./scalar";
 import {Transaction} from "knex";
 import {EnumStrategy} from "./enum";
+import {InputStrategy} from "./input";
 
 type DocumentMap = Map<string, any[]>
 
@@ -61,6 +62,7 @@ export class BreakDownStrategy {
 	private initializeStrategies() {
 		this.strategies.set(DocumentNodeType.SCALAR, new ScalarStrategy());
 		this.strategies.set(DocumentNodeType.ENUM, new EnumStrategy());
+		this.strategies.set(DocumentNodeType.INPUT, new InputStrategy());
 	}
 	private getStrategies(): TypeDefStrategy<any>[] {
 		const strategies: TypeDefStrategy<any>[] = [new ScalarStrategy()];
