@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tests for usePrism should return a JSX element when code is provided 1`] = `
+<pre>
+  <code
+    className="language-graphql"
+  >
+    test code
+  </code>
+</pre>
+`;

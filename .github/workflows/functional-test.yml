@@ -40,7 +40,7 @@ jobs:
         run: npm install
 
       - name: Install dependencies
-        run: npm build
+        run: npm run build
 
       - name: Start containers
         run: docker-compose -f "docker-compose.functional.yml" up -d --build

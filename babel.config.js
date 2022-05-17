@@ -34,7 +34,7 @@ module.exports = (api) => {
 					css: true,
 				},
 			],
-			!api.env('production') && 'react-refresh/babel',
+			!api.env('production') && !api.env('test') && 'react-refresh/babel',
 		].filter(Boolean),
 	};
 };
