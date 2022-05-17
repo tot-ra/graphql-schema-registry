@@ -7,6 +7,7 @@ import {InputStrategy} from "./input";
 import {DirectiveStrategy} from "./directive";
 import {InterfaceStrategy} from "./interface";
 import {ObjectStrategy} from "./object";
+import {UnionStrategy} from "./union";
 
 type DocumentMap = Map<string, any[]>
 
@@ -69,6 +70,7 @@ export class BreakDownStrategy {
 		this.strategies.set(DocumentNodeType.DIRECTIVE, new DirectiveStrategy());
 		this.strategies.set(DocumentNodeType.INTERFACE, new InterfaceStrategy());
 		this.strategies.set(DocumentNodeType.OBJECT, new ObjectStrategy());
+		this.strategies.set(DocumentNodeType.UNION, new UnionStrategy());
 	}
 	private getStrategies(): TypeDefStrategy<any>[] {
 		const strategies: TypeDefStrategy<any>[] = [new ScalarStrategy()];
