@@ -26,7 +26,7 @@ export class ScalarStrategy implements TypeDefStrategy<ScalarTypeExtensionNode> 
 		const newScalars = data.mappedTypes.get(this.type) ?? [];
 		const existingScalars = this.getExistingScalars(data);
 		const internalScalars = [...newScalars, ...existingScalars]
-		if (data.mappedTypes.has(DocumentNodeType.SCALAR)) {
+		if (data.mappedTypes.has(DocumentNodeType.ENUM)) {
 			internalScalars.push({
 				kind: "ScalarTypeExtension",
 				name: {
@@ -51,7 +51,6 @@ export class ScalarStrategy implements TypeDefStrategy<ScalarTypeExtensionNode> 
 		await this.typeRepository.insert(data.trx, createTypes(entities, EntityType.SCALAR));
 		const dbTypes: Type[] = await this.typeRepository.getTypesByNames(data.trx, entities.map(e => e.name.value))
 		persistEntities(data.dbMap, data.subgraphTypes, dbTypes);
-		return;
 	}
 
 	private getExistingScalars(data: ITypeDefData): ScalarTypeExtensionNode[] {
