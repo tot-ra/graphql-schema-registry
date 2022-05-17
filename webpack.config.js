@@ -4,6 +4,7 @@ const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin');
 const webpack = require('webpack');
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 const isEnvDevelopment = process.env.NODE_ENV !== 'production';
 const isEnvProduction = process.env.NODE_ENV === 'production';
@@ -77,6 +78,11 @@ module.exports = {
 		}),
 		new MiniCssExtractPlugin({
 			filename: '[name].css?v=[contenthash]',
+		}),
+		new ESLintPlugin({
+			context: path.resolve(__dirname, 'client'),
+			cache: true,
+			extensions: ['js', 'jsx', 'ts', 'tsx'],
 		}),
 		isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
 		isEnvDevelopment &&

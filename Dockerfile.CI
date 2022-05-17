@@ -7,7 +7,7 @@ WORKDIR /app
 USER nobody
 COPY git_src/package.json git_src/package-lock.json ./
 RUN npm install
-COPY git_src/webpack.config.js git_src/babel.config.js git_src/tsconfig.json ./
+COPY git_src/webpack.config.js git_src/babel.config.js git_src/tsconfig.json git_src/.eslintrc git_src/.editorconfig ./
 COPY git_src/client ./client
 RUN npm run build-frontend
 
