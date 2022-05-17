@@ -51,7 +51,7 @@ export class ObjectStrategy implements TypeDefStrategy<ObjectTypeExtensionNode> 
 		const ops = this.getOperations(data, operations);
 		await this.operationsRepository.insertIgnoreOperations(data.trx, ops);
 		const dbOps: Operation[] = await this.operationsRepository.getOperationsByNames(data.trx, ops.map(o => o.name))
-		persistEntities(data.dbMap, data.subgraphTypes, dbOps);
+		dbOps.forEach(o => data.dbMap.set(o.name, o.id))
 		const opsParams = this.getOperationParams(data, operations);
 		await this.operationsParamsRepository.insertIgnoreOperationParams(data.trx, opsParams);
 	}

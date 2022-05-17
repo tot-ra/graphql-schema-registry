@@ -5,6 +5,7 @@ import {FieldPayload} from "../../model/field";
 import {ITypeDefData} from "./strategy";
 import {Operation} from "../../model/operation";
 import {OperationParam} from "../../model/operation_param";
+import {Subgraph} from "../../model/subgraph";
 
 export const persistEntities = (map: Map<string, number>, subgraph: number[], entities: Type[] | Operation[]) => {
 	entities.forEach(t => {
@@ -107,4 +108,13 @@ export const createOperationParam = (field: any, parentName: string, is_output: 
 		operation_id: data.dbMap.get(parentName),
 		type_id: data.dbMap.get(field.name.value)
 	} as OperationParam
+}
+
+export const createSubgraphs = (subgraphIds: number[], service_id: number): Subgraph[] => {
+	return subgraphIds.map(t => {
+		return {
+			service_id,
+			type_id: t
+		} as Subgraph
+	})
 }

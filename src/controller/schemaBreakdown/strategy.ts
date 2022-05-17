@@ -8,6 +8,8 @@ import {DirectiveStrategy} from "./directive";
 import {InterfaceStrategy} from "./interface";
 import {ObjectStrategy} from "./object";
 import {UnionStrategy} from "./union";
+import {SubgraphTransactionalRepository} from "../../database/schemaBreakdown/subgraph";
+import {SubgraphStrategy} from "./subgraph";
 
 type DocumentMap = Map<string, any[]>
 
@@ -25,7 +27,7 @@ export interface ITypeDefData {
 }
 
 export class BreakDownStrategy {
-	private mappedTypes: DocumentMap = new Map();
+	private readonly mappedTypes: DocumentMap = new Map();
 	private strategies: Map<string, TypeDefStrategy<any>> = new Map();
 
 	constructor(
@@ -52,6 +54,9 @@ export class BreakDownStrategy {
 			return await strategy.insertEntities(data, entities);
 		});
 		await Promise.all(promises);
+		const strategy = new SubgraphStrategy();
+		const subGraphs = strategy.getEntities(data);
+		await strategy.insertEntities(data, subGraphs);
 	}
 
 	private mapTypes(document: DocumentNode): DocumentMap {
