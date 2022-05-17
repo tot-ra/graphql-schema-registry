@@ -80,6 +80,7 @@ export class BreakDownStrategy {
 		this.strategies.set(DocumentNodeType.OBJECT, new ObjectStrategy());
 		this.strategies.set(DocumentNodeType.UNION, new UnionStrategy());
 	}
+
 	private getStrategies(): TypeDefStrategy<any>[] {
 		const strategies: TypeDefStrategy<any>[] = [new ScalarStrategy()];
 		this.strategies.forEach((value, key) => {

@@ -25,7 +25,11 @@ export class ArgumentTransactionRepository extends BreakDownRepository<Argument,
 		return super.insert(trx, data)
 	}
 
-	async removeArguments(trx: Transaction, data: number[]) {
-		return super.remove(trx, data, 'field_id')
+	async removeArguments(trx: Transaction, data: string[]) {
+		return trx
+			.raw(`
+			DELETE i FROM ${TABLE_NAME} i
+			INNER JOIN type_def_types t on i.field_id = t.id
+			WHERE t.name IN (${data.map(d => `'${d}'`).join(',')});`)
 	}
 }
