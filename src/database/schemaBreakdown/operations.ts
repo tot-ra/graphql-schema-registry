@@ -2,7 +2,7 @@ import Knex from 'knex';
 import { connection } from '../index';
 import { Operation, OperationPayload } from '../../model/operation';
 import { OperationType } from '../../model/enums';
-import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
+import { TypeInstance, TypeInstanceDetail, TypeInstanceRepository } from '../../model/repository';
 import { camelizeKeys } from 'humps';
 
 const table = 'type_def_operations';
@@ -64,6 +64,10 @@ export class OperationRepository implements OperationService {
 			.first()) as any;
 
 		return totalItems as number;
+	}
+
+	getDetails(id: number): Promise<TypeInstanceDetail> {
+		throw new Error('Method not implemented.');
 	}
 }
 

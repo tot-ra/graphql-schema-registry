@@ -1,9 +1,9 @@
 import TypeTransactionalRepository from '../../database/schemaBreakdown/type';
 import OperationsRepository from '../../database/schemaBreakdown/operations';
 import { EntityType, OperationType } from '../../model/enums';
-import { getPaginatedResult, Pagination } from '../resolvers';
 import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
 import { GraphQLError } from 'graphql';
+import { getPaginatedResult, isEnum, Pagination } from '../utils';
 
 interface ListedTypeInstances {
 	items: TypeInstance[];
@@ -31,9 +31,6 @@ async function listPaginatedInstances(
 		})
 	);
 }
-
-const isEnum = (value: String, targetEnum) =>
-	Object.values(targetEnum).includes(value);
 
 export default async function listTypeInstances(
 	_parent,

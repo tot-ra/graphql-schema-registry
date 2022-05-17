@@ -2,10 +2,11 @@ import { connection } from '../index';
 import {Type, TypePayload} from "../../model/type";
 import {Transaction} from "knex";
 import { EntityType } from '../../model/enums';
-import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
+import { TypeInstance, TypeInstanceDetail, TypeInstanceRepository } from '../../model/repository';
 import { servicesTable } from '../../database/services';
 import { camelizeKeys } from 'humps';
 import { Service } from '../../model/service';
+import { FieldTransactionRepository } from './field';
 
 interface TypeService extends TypeInstanceRepository {
 	getTypesByNames(trx: Transaction, typeNames: String[]): Promise<Type[]>
@@ -103,6 +104,24 @@ export class TypeTransactionalRepository implements TypeService {
 			.first() as any;
 
 		return totalItems as number;
+	}
+
+	async getDetails(id: number): Promise<TypeInstanceDetail> {
+		const fieldTypeNameAlias = 'ftn';
+		const fieldTypeAlias = 'ft';
+		const result = await connection(this.tableName)
+			.select()
+			.where(`${this.tableName}.id`, id)
+			// fields
+			.leftJoin(`${FieldTransactionRepository.tableName} as ${fieldTypeNameAlias}`, `${fieldTypeNameAlias}.parent_type_id`, '=', `${this.tableName}.id`)
+			.leftJoin(`${this.tableName} as ${fieldTypeAlias}`, `${fieldTypeNameAlias}.children_type_id`, '=', `${fieldTypeAlias}.id`)
+			 // inputParams
+			 
+			// outputParams
+			// usedBy
+			// implementations
+			.options({ nestTables: true })
+		throw new Error('Not implemented');
 	}
 }
 

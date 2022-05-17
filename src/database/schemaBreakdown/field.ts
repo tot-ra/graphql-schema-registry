@@ -6,14 +6,14 @@ interface FieldService {
 }
 
 export class FieldTransactionRepository implements FieldService {
-	private tableName = 'type_def_fields';
+	static tableName = 'type_def_fields';
 
 	constructor(private trx: Transaction) {
 	}
 
 	async insertIgnoreFields(data: FieldPayload[]) {
 		return this.trx
-			.raw(`INSERT INTO ${this.tableName} (name, is_nullable, is_array, is_array_nullable, is_deprecated, parent_type_id, children_type_id) VALUES ${FieldTransactionRepository.insertBulkPayload(data)}`)
+			.raw(`INSERT INTO ${FieldTransactionRepository.tableName} (name, is_nullable, is_array, is_array_nullable, is_deprecated, parent_type_id, children_type_id) VALUES ${FieldTransactionRepository.insertBulkPayload(data)}`)
 	}
 
 	private static insertBulkPayload(data: FieldPayload[]): string {

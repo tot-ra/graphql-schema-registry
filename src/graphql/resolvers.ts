@@ -9,6 +9,7 @@ import servicesModel from '../database/services';
 import PersistedQueriesModel from '../database/persisted_queries';
 import listTypeInstances from './resolvers/listTypeInstances';
 import listTypes from './resolvers/listTypes';
+import getTypeInstance from './resolvers/getTypeInstance';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -39,6 +40,7 @@ export default {
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 		listTypes,
 		listTypeInstances,
+		getTypeInstance,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
@@ -115,45 +117,3 @@ export default {
 		addedTime: (parent) => dateTime.format(parent.added_time),
 	},
 };
-
-export interface Pagination {
-	limit: number;
-	page: number;
-	totalPages: number;
-}
-
-export async function getPaginatedResult<T>(
-	totalItems: number,
-	limit: number,
-	offset: number,
-	result: (safeOffset) => T
-) {
-	let pagination = getPagination(limit, offset, totalItems);
-	let safeOffset = offset;
-	if (isOffsetOutbounds(pagination)) {
-		pagination = { ...pagination, page: 1 };
-		safeOffset = 0;
-	}
-	return {
-		pagination,
-		...await result(safeOffset),
-	};
-}
-
-function getPagination(
-	limit: number,
-	offset: number,
-	totalItems: number
-): Pagination {
-	const totalPages = Math.ceil(totalItems / limit);
-	let page = Math.floor(offset / limit) + 1;
-
-	return {
-		limit,
-		page,
-		totalPages,
-	} as Pagination;
-}
-
-const isOffsetOutbounds = (pagination: Pagination) =>
-	pagination.page > pagination.totalPages;
