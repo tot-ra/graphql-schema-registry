@@ -21,6 +21,7 @@ export interface ITypeDefData {
 	dbMap: Map<string, number>;
 	subgraphTypes: number[];
 	trx: Transaction;
+	service_id: number;
 }
 
 export class BreakDownStrategy {
@@ -29,7 +30,8 @@ export class BreakDownStrategy {
 
 	constructor(
 		private typeDef: string,
-		private trx: Transaction
+		private trx: Transaction,
+		private service_id: number
 	) {
 		const schema = parse(typeDef);
 		this.mappedTypes = this.mapTypes(schema);
@@ -40,7 +42,8 @@ export class BreakDownStrategy {
 			mappedTypes: this.mappedTypes,
 			dbMap: new Map<string, number>(),
 			subgraphTypes: [],
-			trx: this.trx
+			trx: this.trx,
+			service_id: this.service_id
 		} as ITypeDefData;
 		this.initializeStrategies();
 		const strategies = this.getStrategies();

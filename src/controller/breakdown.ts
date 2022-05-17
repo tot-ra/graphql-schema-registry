@@ -135,7 +135,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 
 	async breakDown(): Promise<void> {
 		try {
-			const breakDown = new BreakDownStrategy(this.type_defs, this.trx);
+			const breakDown = new BreakDownStrategy(this.type_defs, this.trx, this.service_id);
 			await breakDown.execute();
 			// const schema = parse(this.type_defs);
 			// const mappedTypes = BreakDownSchemaCaseUse.mapTypes(schema);
