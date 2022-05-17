@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.1] - 2022-05-14
+### Updated
+- Added react-refresh-webpack-plugin. It only executes in development mode: its setup is conditionally imported in server side, so its inclusion is omitted in production mode.
+- For the setup of the previous one, I've had to wrap all the server setup in a async function to make the conditional import works. It doesn't affect to any functionality.
+- Added source map loading for node_modules libraries.
+- Removed some unused dependencies.
+
 ## [3.2.0] - 2022-05-05
 
 ### Updated
@@ -245,7 +252,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...HEAD
+[3.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.0...v3.0.1
