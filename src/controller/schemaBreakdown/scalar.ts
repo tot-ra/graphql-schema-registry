@@ -35,11 +35,13 @@ export class ScalarStrategy implements TypeDefStrategy<ScalarTypeExtensionNode> 
 				}
 			} as ScalarTypeExtensionNode);
 		}
-		return internalScalars.filter((value, index, self) => {{
-			return index === self.findIndex(t => {
-				return t.name.value === value.name.value
-			});
-		}});
+		return internalScalars
+			.filter(Boolean)
+			.filter((value, index, self) => {{
+				return index === self.findIndex(t => {
+					return t?.name.value === value?.name.value
+				});
+			}});
 	}
 
 	async insertEntities(data: ITypeDefData, entities: ScalarTypeExtensionNode[]): Promise<void> {
