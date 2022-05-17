@@ -11,7 +11,7 @@ export class UnionStrategy implements TypeDefStrategy<UnionTypeExtensionNode> {
 	private typeRepository = TypeTransactionalRepository.getInstance();
 
 	getEntities(data: ITypeDefData): UnionTypeExtensionNode[] {
-		return data.mappedTypes.get(this.type);
+		return data.mappedTypes.get(this.type) ?? [];
 	}
 
 	async insertEntities(data: ITypeDefData, entities: UnionTypeExtensionNode[]): Promise<void> {

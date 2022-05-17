@@ -14,7 +14,7 @@ export class DirectiveStrategy implements TypeDefStrategy<DirectiveDefinitionNod
 	private fieldRepository = FieldTransactionRepository.getInstance();
 
 	getEntities(data: ITypeDefData): DirectiveDefinitionNode[] {
-		return data.mappedTypes.get(this.type);
+		return data.mappedTypes.get(this.type) ?? [];
 	}
 
 	async insertEntities(data: ITypeDefData, entities: DirectiveDefinitionNode[]): Promise<void> {

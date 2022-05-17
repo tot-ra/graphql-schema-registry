@@ -15,7 +15,7 @@ export class InputStrategy implements TypeDefStrategy<InputObjectTypeExtensionNo
 	private fieldRepository = FieldTransactionRepository.getInstance();
 
 	getEntities(data: ITypeDefData): InputObjectTypeExtensionNode[] {
-		return data.mappedTypes.get(this.type);
+		return data.mappedTypes.get(this.type) ?? [];
 	}
 
 	async insertEntities(data: ITypeDefData, entities: InputObjectTypeExtensionNode[]): Promise<void> {

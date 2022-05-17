@@ -27,7 +27,7 @@ export class ObjectStrategy implements TypeDefStrategy<ObjectTypeExtensionNode> 
 	private operationsParamsRepository = OperationParamsTransactionalRepository.getInstance();
 
 	getEntities(data: ITypeDefData): ObjectTypeExtensionNode[] {
-		return data.mappedTypes.get(this.type);
+		return data.mappedTypes.get(this.type) ?? [];
 	}
 
 	async insertEntities(data: ITypeDefData, entities: ObjectTypeExtensionNode[]): Promise<void> {

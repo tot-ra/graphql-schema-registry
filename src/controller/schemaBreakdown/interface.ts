@@ -14,7 +14,7 @@ export class InterfaceStrategy implements TypeDefStrategy<InterfaceTypeExtension
 	private fieldRepository = FieldTransactionRepository.getInstance();
 
 	getEntities(data: ITypeDefData): InterfaceTypeExtensionNode[] {
-		return data.mappedTypes.get(this.type);
+		return data.mappedTypes.get(this.type) ?? [];
 	}
 
 	async insertEntities(data: ITypeDefData, entities: InterfaceTypeExtensionNode[]): Promise<void> {

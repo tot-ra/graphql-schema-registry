@@ -23,7 +23,7 @@ export class ScalarStrategy implements TypeDefStrategy<ScalarTypeExtensionNode> 
 	private typeRepository = TypeTransactionalRepository.getInstance();
 
 	getEntities(data: ITypeDefData): ScalarTypeExtensionNode[] {
-		const newScalars = data.mappedTypes.get(this.type);
+		const newScalars = data.mappedTypes.get(this.type) ?? [];
 		const existingScalars = this.getExistingScalars(data);
 		const internalScalars = [...newScalars, ...existingScalars]
 		if (data.mappedTypes.has(DocumentNodeType.SCALAR)) {

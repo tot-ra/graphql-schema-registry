@@ -14,7 +14,7 @@ export class EnumStrategy implements TypeDefStrategy<EnumTypeExtensionNode> {
 	private fieldRepository = FieldTransactionRepository.getInstance();
 
 	getEntities(data: ITypeDefData): EnumTypeExtensionNode[] {
-		return data.mappedTypes.get(this.type);
+		return data.mappedTypes.get(this.type) ?? [];
 	}
 
 	async insertEntities(data: ITypeDefData, entities: EnumTypeExtensionNode[]): Promise<void> {
