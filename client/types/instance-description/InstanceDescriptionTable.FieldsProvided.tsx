@@ -1,24 +1,13 @@
 import { TableCell, TableRow } from '@material-ui/core';
-import styled from 'styled-components';
 import React from 'react';
 import { BaseTable } from './BaseTable';
-import { colors } from '../../utils';
 import { CommonLink } from '../../components/Link';
 import SchemasListing from '../schemas-listing';
 import { TypeInstanceOutput } from '../../utils/queries';
-
-const Section = styled.section`
-	display: grid;
-	grid-auto-columns: auto;
-	row-gap: 1rem;
-
-	h6 {
-		margin: 0;
-		text-transform: uppercase;
-		font-weight: normal;
-		color: ${colors.black.hex32};
-	}
-`;
+import {
+	Container,
+	InstanceDescriptionTableTitle,
+} from './InstanceDescriptionTable.Common';
 
 type InstanceDescriptionTableFieldsProvidedProps = {
 	fields: TypeInstanceOutput['getTypeInstance']['usedBy'];
@@ -33,8 +22,8 @@ export const InstanceDescriptionTableFieldsProvided = ({
 	label,
 	hideParentFromLabel = false,
 }: InstanceDescriptionTableFieldsProvidedProps) => (
-	<Section>
-		<h6>{title}</h6>
+	<Container>
+		<InstanceDescriptionTableTitle>{title}</InstanceDescriptionTableTitle>
 		<BaseTable label={label} columns="3">
 			{React.Children.toArray(
 				fields.map((field) => (
@@ -63,5 +52,5 @@ export const InstanceDescriptionTableFieldsProvided = ({
 				))
 			)}
 		</BaseTable>
-	</Section>
+	</Container>
 );

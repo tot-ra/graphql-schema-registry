@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { CommonLink } from '../../components/Link';
 import { colors } from '../../utils';
 
-const Container = styled.header`
+export const Container = styled.header`
 	display: grid;
 	grid-template-rows: repeat(3, auto);
 	row-gap: 1rem;

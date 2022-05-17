@@ -1,29 +1,12 @@
 import { TableCell, TableRow } from '@material-ui/core';
-import styled from 'styled-components';
 import React from 'react';
 import { BaseTable } from './BaseTable';
-import { colors } from '../../utils';
 import { Argument } from './Argument';
 import { InstanceDescriptionTableFieldsArguments } from './InstanceDescriptionTable.Fields.Arguments';
-
-const Section = styled.section`
-	display: grid;
-	grid-auto-columns: auto;
-	row-gap: 1rem;
-
-	h6 {
-		margin: 0;
-		text-transform: uppercase;
-		font-weight: normal;
-		color: ${colors.black.hex32};
-	}
-`;
-
-const ContainerTableCell = styled.div`
-	display: grid;
-	grid-template-columns: 1fr;
-	row-gap: 1rem;
-`;
+import {
+	Container,
+	InstanceDescriptionTableTitle,
+} from './InstanceDescriptionTable.Common';
 
 export type InstanceDescriptionTableFieldsProps = {
 	fields: {
@@ -59,8 +42,8 @@ export const InstanceDescriptionTableFields = ({
 	title,
 	label,
 }: InstanceDescriptionTableFieldsProps) => (
-	<Section>
-		<h6>{title}</h6>
+	<Container>
+		<InstanceDescriptionTableTitle>{title}</InstanceDescriptionTableTitle>
 		<BaseTable label={label}>
 			{React.Children.toArray(
 				fields.map((field) => (
@@ -76,18 +59,18 @@ export const InstanceDescriptionTableFields = ({
 							/>
 						</TableCell>
 						<TableCell>
-							<ContainerTableCell>
+							<Container>
 								{field.description ?? <i>No description</i>}
 								{field.arguments?.length > 0 && (
 									<InstanceDescriptionTableFieldsArguments
 										args={field.arguments}
 									/>
 								)}
-							</ContainerTableCell>
+							</Container>
 						</TableCell>
 					</TableRow>
 				))
 			)}
 		</BaseTable>
-	</Section>
+	</Container>
 );

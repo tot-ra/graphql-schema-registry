@@ -8,6 +8,7 @@ import {
 	TypeInstanceVars,
 	TYPE_INSTANCE,
 } from '../../utils/queries';
+import { InstanceDescriptionSkeleton } from './InstanceDescription.Skeleton';
 import { InstanceDescriptionTable } from './InstanceDescriptionTable';
 
 const safeParseInt = (input: string): number | undefined => {
@@ -38,11 +39,7 @@ export const InstanceDescription = () => {
 	const effectiveLoading = useMinimumTime(loading);
 
 	if (effectiveLoading) {
-		return (
-			<MainViewContainer>
-				<Typography component="span">loading</Typography>
-			</MainViewContainer>
-		);
+		return <InstanceDescriptionSkeleton />;
 	}
 
 	if (error || !data) {
