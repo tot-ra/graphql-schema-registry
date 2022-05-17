@@ -8,6 +8,8 @@ import {FieldTransactionRepository} from "../../database/schemaBreakdown/field";
 import {FieldPayload} from "../../model/field";
 import {Argument} from "../../model/argument";
 import {ArgumentTransactionRepository} from "../../database/schemaBreakdown/argument";
+import {Implementation} from "../../model/implementation";
+import {ImplementationTransactionRepository} from "../../database/schemaBreakdown/implementation";
 
 export class ObjectStrategy implements TypeDefStrategy<ObjectTypeExtensionNode> {
 	private type = DocumentNodeType.OBJECT;
@@ -16,6 +18,7 @@ export class ObjectStrategy implements TypeDefStrategy<ObjectTypeExtensionNode> 
 	private typeRepository = TypeTransactionalRepository.getInstance();
 	private fieldRepository = FieldTransactionRepository.getInstance();
 	private argumentRepository = ArgumentTransactionRepository.getInstance();
+	private implementationRepository = ImplementationTransactionRepository.getInstance();
 
 	getEntities(data: ITypeDefData): ObjectTypeExtensionNode[] {
 		return data.mappedTypes.get(this.type)
@@ -34,6 +37,8 @@ export class ObjectStrategy implements TypeDefStrategy<ObjectTypeExtensionNode> 
 		await this.fieldRepository.insertIgnoreFields(data.trx, fields);
 		const args = await this.getArgumentFields(data, entities, fields);
 		await this.argumentRepository.insertIgnoreArguments(data.trx, args);
+		const implementations = this.getImplementations(data, entities);
+		await this.implementationRepository.insertIgnoreImplementations(data.trx, implementations);
 	}
 
 	private getObjectFields(data: ITypeDefData, entities: ObjectTypeExtensionNode[]): FieldPayload[] {
@@ -65,4 +70,14 @@ export class ObjectStrategy implements TypeDefStrategy<ObjectTypeExtensionNode> 
 		}).flat(1)
 	}
 
+	private getImplementations(data: ITypeDefData, entities: ObjectTypeExtensionNode[]): Implementation[] {
+		return entities.map(o => {
+			return o.interfaces.map(i => {
+				return {
+					implementation_id: data.dbMap.get(o.name.value),
+					interface_id: data.dbMap.get(i.name.value)
+				} as Implementation
+			})
+		}).flat(1);
+	}
 }
