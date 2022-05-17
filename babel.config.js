@@ -17,8 +17,8 @@ module.exports = (api) => {
 			],
 		],
 		plugins: [
-			['babel-plugin-styled-components'],
-			['@babel/plugin-transform-runtime'],
+			'babel-plugin-styled-components',
+			'@babel/plugin-transform-runtime',
 			[
 				'prismjs',
 				{
@@ -27,6 +27,7 @@ module.exports = (api) => {
 					css: true,
 				},
 			],
-		],
+			!api.env('production') && 'react-refresh/babel',
+		].filter(Boolean),
 	};
 };
