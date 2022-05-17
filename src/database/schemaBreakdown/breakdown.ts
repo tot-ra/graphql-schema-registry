@@ -7,6 +7,9 @@ export class BreakDownRepository<T, K> {
 	) {}
 
 	async insert(trx: Transaction, data: T[]): Promise<any> {
+		if (data.length === 0) {
+			return;
+		}
 		return trx
 			.raw(`INSERT INTO ${this.tableName} (${this.columns.join(',')})
  						VALUES ${BreakDownRepository.insertBulkPayload(data, this.columns)}
@@ -14,12 +17,18 @@ export class BreakDownRepository<T, K> {
 	}
 
 	async get(trx: Transaction, data: string[] | number[], column: string): Promise<K[]> {
+		if (data.length === 0) {
+			return [];
+		}
 		return trx(this.tableName)
 			.select()
 			.whereIn(column, data);
 	}
 
 	async remove(trx: Transaction, data: string[] | number[], column: string): Promise<any> {
+		if (data.length === 0) {
+			return;
+		}
 		return trx(this.tableName)
 			.whereIn(column, data)
 			.delete()
