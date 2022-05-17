@@ -13,9 +13,9 @@ import useMinimumTime from '../../shared/useMinimumTime';
 export const TypesCountingList = () => {
 	const { loading, data, error } = useQuery<ListTypesOutput>(LIST_TYPES);
 
-	const efectiveLoading = useMinimumTime(loading);
+	const effectiveLoading = useMinimumTime(loading);
 
-	if (efectiveLoading) {
+	if (effectiveLoading) {
 		return <TypesCountingListSkeleton />;
 	}
 

@@ -1,5 +1,4 @@
 import {
-	makeStyles,
 	Paper,
 	Table,
 	TableBody,
@@ -12,41 +11,15 @@ import {
 } from '@material-ui/core';
 import styled from 'styled-components';
 import { CommonLink } from '../../components/Link';
-import { colors } from '../../utils';
 import { InstancesListingTitle } from './InstancesListingTitle';
-import { SchemasListing } from './SchemasListing';
+import SchemasListing from '../schemas-listing';
 import { ListTypeInstances } from '../../utils/queries';
-
-const useStyles = makeStyles({
-	container: {},
-	description: {
-		color: colors.black.hex32,
-	},
-});
+import { InnerTable } from '../../shared/styled';
 
 export const Container = styled.section`
 	display: grid;
 	grid-template-rows: auto 1fr;
 	row-gap: 2rem;
-`;
-
-export const InnerTable = styled.table`
-	width: 100%;
-	table-layout: fixed;
-
-	th:first-child {
-		width: 15%;
-	}
-
-	th:nth-child(2),
-	td:nth-child(2) {
-		width: 70%;
-		text-align: justify;
-	}
-
-	th:last-child {
-		width: 15%;
-	}
 `;
 
 interface InstancesListingProps extends ListTypeInstances {
@@ -62,8 +35,6 @@ export const InstancesListing = ({
 	onPageChange,
 	onRowsPerPageChange,
 }: InstancesListingProps) => {
-	const styles = useStyles();
-
 	const handleChangePage = (
 		event: React.MouseEvent<HTMLButtonElement> | null,
 		newPage: number
@@ -103,7 +74,7 @@ export const InstancesListing = ({
 									</CommonLink>
 								</TableCell>
 								<TableCell>
-									<span className={styles.description}>
+									<span>
 										{item.description ?? (
 											<i>No description</i>
 										)}

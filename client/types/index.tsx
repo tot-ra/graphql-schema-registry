@@ -4,6 +4,7 @@ import TypesCountingList from './types-counting-list';
 import TypeListingInstances from './type-listing-instances';
 import MainSectionContainer from '../components/MainSectionContainer';
 import InstancesSideListing from './instances-side-listing';
+import InstanceDescription from './instance-description';
 
 const Types = () => (
 	<MainSectionContainer gridColumns="0.2fr 0.8fr">
@@ -16,6 +17,7 @@ const Types = () => (
 		</Route>
 		<Route path="/types/:typeName/:instanceId">
 			<InstancesSideListing />
+			<InstanceDescription />
 		</Route>
 	</MainSectionContainer>
 );

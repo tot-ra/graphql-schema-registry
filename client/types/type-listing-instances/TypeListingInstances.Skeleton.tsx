@@ -8,8 +8,9 @@ import {
 	TableRow,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { Container, InnerTable } from './InstancesListing';
-import { SchemasListingSkeleton } from './SchemasListing.Skeleton';
+import { InnerTable } from '../../shared/styled';
+import { Container } from './InstancesListing';
+import { SchemasListingSkeleton } from '../schemas-listing';
 
 const data = Array(5)
 	.fill(null)

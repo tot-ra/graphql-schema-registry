@@ -126,11 +126,9 @@ type ListTypeItem = {
 type ListTypeInstance = ListTypeItem & {
 	description?: string;
 	type: string;
-	providedBy: [
-		{
-			name: string;
-		}
-	];
+	providedBy: {
+		name: string;
+	}[];
 };
 
 export type ListTypeInstances = ListType<ListTypeInstance> & {
@@ -174,6 +172,152 @@ export const TYPE_SIDE_INSTANCES = gql`
 			items {
 				id
 				name
+			}
+		}
+	}
+`;
+
+export type TypeInstanceVars = {
+	type: string;
+	instanceId: number;
+};
+
+type Param = {
+	description?: string;
+	isNullable: boolean;
+	isArray: boolean;
+	isArrayNullable: boolean;
+	parent: {
+		id: number;
+		name: string;
+		type: string;
+	};
+};
+
+type ParamProvidedBy = Omit<
+	Param,
+	'isNullable' | 'isArray' | 'isArrayNullable'
+> & {
+	key: string;
+	providedBy?: {
+		name: string;
+	}[];
+};
+
+type Field = Param & {
+	key: string;
+	isDeprecated: boolean;
+	arguments?: [
+		{
+			name: string;
+			description?: string;
+			parent: {
+				id: number;
+				type: string;
+				isNullable: boolean;
+				isArray: boolean;
+				isArrayNullable: boolean;
+			};
+		}
+	];
+};
+
+type InputParam = Param & {
+	key: string;
+	isDeprecated: boolean;
+};
+
+type OutputParam = Param & {
+	isDeprecated: boolean;
+};
+
+export type TypeInstanceOutput = {
+	getTypeInstance: {
+		name: string;
+		description: string;
+		type: string;
+		fields: Field[];
+		inputParams: InputParam[];
+		outputParams: OutputParam[];
+		usedBy: ParamProvidedBy[];
+		implementations: ParamProvidedBy[];
+	};
+};
+
+export const TYPE_INSTANCE = gql`
+	query GetTypeInstance($type: String!, $instanceId: Int!) {
+		getTypeInstance(type: $type, instanceId: $instanceId) {
+			name
+			description
+			type
+			fields {
+				key
+				description
+				isNullable
+				isArray
+				isArrayNullable
+				parent {
+					id
+					name
+					type
+				}
+				arguments {
+					name
+					description
+					parent {
+						id
+						type
+						isNullable
+						isArray
+						isArrayNullable
+					}
+				}
+			}
+			inputParams {
+				key
+				description
+				isNullable
+				isArray
+				isArrayNullable
+				parent {
+					id
+					name
+					type
+				}
+			}
+			outputParams {
+				key
+				description
+				isNullable
+				isArray
+				isArrayNullable
+				parent {
+					id
+					name
+					type
+				}
+			}
+			usedBy {
+				key
+				parent {
+					id
+					name
+					type
+				}
+				providedBy {
+					name
+				}
+			}
+			implementations {
+				key
+				parent {
+					id
+					name
+					type
+				}
+				providedBy {
+					name
+				}
 			}
 		}
 	}

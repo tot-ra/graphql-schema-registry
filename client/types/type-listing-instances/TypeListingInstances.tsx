@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
 import { DEFAULT_OFFSET, usePaginationValues } from '../../shared/pagination';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
@@ -12,11 +11,7 @@ import {
 } from '../../utils/queries';
 import { InstancesListing } from './InstancesListing';
 import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
-
-const TypeDescriptionContainer = styled.main`
-	overflow: auto;
-	padding: 2rem;
-`;
+import { MainViewContainer } from '../../shared/styled';
 
 export const TypeListingInstances = () => {
 	const [pagination, setPagination] = usePaginationValues();
@@ -54,19 +49,19 @@ export const TypeListingInstances = () => {
 
 	if (efectiveLoading) {
 		return (
-			<TypeDescriptionContainer>
+			<MainViewContainer>
 				<TypeListingInstancesSkeleton />
-			</TypeDescriptionContainer>
+			</MainViewContainer>
 		);
 	}
 
 	if (error) {
 		return (
-			<TypeDescriptionContainer>
+			<MainViewContainer>
 				<Typography component="span">
 					Something wrong happened :(
 				</Typography>
-			</TypeDescriptionContainer>
+			</MainViewContainer>
 		);
 	}
 
@@ -75,7 +70,7 @@ export const TypeListingInstances = () => {
 	} = data;
 
 	return (
-		<TypeDescriptionContainer>
+		<MainViewContainer>
 			<InstancesListing
 				typeName={typeName}
 				items={items}
@@ -83,6 +78,6 @@ export const TypeListingInstances = () => {
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
 			/>
-		</TypeDescriptionContainer>
+		</MainViewContainer>
 	);
 };

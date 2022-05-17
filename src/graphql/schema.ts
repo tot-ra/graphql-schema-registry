@@ -23,6 +23,7 @@ export default gql`
 			limit: Int
 			offset: Int
 		): ListTypeInstancesOutput!
+		getTypeInstance(type: String!, instanceId: Int!): GetTypeInstanceOutput!
 	}
 
 	type Mutation {
@@ -97,5 +98,68 @@ export default gql`
 	type ListTypeInstancesOutput {
 		items: [ListTypeInstancesItem!]!
 		pagination: Pagination
+	}
+
+	type ParamParent {
+		id: Int!
+		name: String!
+		type: String!
+	}
+
+	type FieldArgumentParent {
+		id: Int
+		type: String
+		isNullable: Boolean
+		isArray: Boolean
+		isArrayNullable: Boolean
+	}
+
+	type FieldArgument {
+		name: String!
+		description: String
+		parent: FieldArgumentParent
+	}
+
+	type Field {
+		key: String
+		isDeprecated: Boolean!
+		description: String
+		isNullable: Boolean!
+		isArray: Boolean!
+		isArrayNullable: Boolean!
+		parent: ParamParent!
+		arguments: [FieldArgument!]
+	}
+
+	type OutputParam {
+		key: String
+		description: String
+		isNullable: Boolean!
+		isArray: Boolean!
+		isArrayNullable: Boolean!
+		parent: ParamParent!
+	}
+
+	type ProvidedByParam {
+		key: String
+		isDeprecated: Boolean!
+		description: String
+		isNullable: Boolean!
+		isArray: Boolean!
+		isArrayNullable: Boolean!
+		parent: ParamParent!
+		providedBy: [ListTypeInstancesProviders!]!
+	}
+
+	type GetTypeInstanceOutput {
+		name: String!
+		description: String!
+		isDeprecated: Boolean!
+		type: String!
+		fields: [Field!]
+		inputParams: [Field!]
+		outputParams: [OutputParam!]
+		usedBy: [ProvidedByParam!]!
+		implementations: [ProvidedByParam!]
 	}
 `;
