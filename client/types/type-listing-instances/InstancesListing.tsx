@@ -96,9 +96,9 @@ export const InstancesListing = ({
 						<TableRow>
 							<TablePagination
 								rowsPerPageOptions={[10, 15, 25]}
-								count={pagination.totalPages}
+								count={pagination.total}
 								rowsPerPage={pagination.limit}
-								page={pagination.page}
+								page={pagination.page - 1}
 								SelectProps={{
 									inputProps: {
 										'aria-label': 'rows per page',

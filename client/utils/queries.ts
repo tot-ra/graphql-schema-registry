@@ -112,6 +112,7 @@ export type Pagination = {
 	page: number;
 	totalPages: number;
 	limit: number;
+	total: number;
 };
 
 type ListType<T> = {
@@ -154,6 +155,7 @@ export const TYPE_INSTANCES = gql`
 			pagination {
 				page
 				totalPages
+				total
 				limit
 			}
 		}

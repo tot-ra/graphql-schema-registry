@@ -71,6 +71,7 @@ export default gql`
 		page: Int!
 		totalPages: Int!
 		limit: Int!
+		total: Int!
 	}
 
 	type TypeCount {

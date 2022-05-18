@@ -11,13 +11,13 @@ export default {
 			offset: 0,
 		}
 	) => {
-		const { type, limit = 5, offset = 0 } = args;
+		const { type, limit = 5, offset = 1 } = args;
 
 		return {
 			items: Array(limit)
 				.fill(null)
 				.map((e, idx) => {
-					const id = offset + idx + 1;
+					const id = offset + idx;
 					const numDescriptions = getRandomArbitrary(0, 3);
 
 					return {
@@ -36,8 +36,9 @@ export default {
 					};
 				}),
 			pagination: {
-				page: offset / limit,
+				page: Math.floor(offset / limit) + 1,
 				totalPages: 1000,
+				total: 1000,
 				limit,
 			},
 		};
