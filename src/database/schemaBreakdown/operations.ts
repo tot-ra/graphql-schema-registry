@@ -5,7 +5,7 @@ import { OperationType } from '../../model/enums';
 import { TypeInstance, TypeInstanceDetail, TypeInstanceRepository } from '../../model/repository';
 import { camelizeKeys } from 'humps';
 
-const table = 'type_def_operations';
+export const table = 'type_def_operations';
 
 interface OperationService extends TypeInstanceRepository {
 	insertOperation(trx: Knex, data: OperationPayload): Promise<Operation>;
