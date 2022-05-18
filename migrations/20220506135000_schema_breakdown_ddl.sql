@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `type_def_types` (
     `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `description` TEXT,
+    `description` TINYTEXT,
     `type` ENUM('OBJECT', 'SCALAR', 'INTERFACE', 'ENUM', 'INPUT', 'UNION', 'DIRECTIVE') NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `type_def_types` (
 CREATE TABLE IF NOT EXISTS `type_def_fields` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   	`name` VARCHAR(255) NOT NULL,
-    `description` TEXT,
+    `description` TINYTEXT,
     `is_nullable` tinyint(1) NOT NULL DEFAULT 1,
     `is_array` tinyint(1) NOT NULL DEFAULT 0,
     `is_array_nullable` tinyint(1) NOT NULL DEFAULT 1,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `type_def_fields` (
 CREATE TABLE IF NOT EXISTS `type_def_operations` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `description` TEXT,
+    `description` TINYTEXT,
     `type` ENUM('QUERY', 'MUTATION', 'SUBSCRIPTION') NOT NULL,
     `service_id` INT UNSIGNED NOT NULL,
     PRIMARY KEY (`id`),
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `type_def_operation_parameters` (
     `operation_id` INT UNSIGNED,
     `type_id` INT UNSIGNED,
     `name` VARCHAR(255) NOT NULL,
-    `description` TEXT,
+    `description` TINYTEXT,
     `is_nullable` tinyint(1) NOT NULL DEFAULT 1,
     `is_array` tinyint(1) NOT NULL DEFAULT 0,
     `is_array_nullable` tinyint(1) NOT NULL DEFAULT 1,
