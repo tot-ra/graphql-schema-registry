@@ -23,7 +23,7 @@ export default gql`
 			limit: Int
 			offset: Int
 		): ListTypeInstancesOutput!
-		getTypeInstance(type: String!, instanceId: Int!): GetTypeInstanceOutput!
+		getTypeInstance(type: String!, id: Int!): GetTypeInstanceOutput!
 	}
 
 	type Mutation {

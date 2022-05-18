@@ -2,37 +2,37 @@
   "listTypes": {
     "operations": [
       {
-        "type": "query",
+        "type": "QUERY",
         "count": 2
       },
       {
-        "type": "mutation",
+        "type": "MUTATION",
         "count": 6
       }
     ],
     "entities": [
       {
-        "type": "object",
+        "type": "OBJECT",
         "count": 40
       },
       {
-        "type": "scalar",
+        "type": "SCALAR",
         "count": 11
       },
       {
-        "type": "interface",
+        "type": "INTERFACE",
         "count": 54
       },
       {
-        "type": "enum",
+        "type": "ENUM",
         "count": 1
       },
       {
-        "type": "input",
+        "type": "INPUT",
         "count": 0
       },
       {
-        "type": "directive",
+        "type": "DIRECTIVE",
         "count": 56
       }
     ]
