@@ -1,10 +1,6 @@
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-const mockLogger = {
-	debug: sinon.stub(),
-};
-
 import objectUnderTest from './schema';
 
 describe('app/database/schema.js', () => {

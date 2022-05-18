@@ -13,7 +13,7 @@ afterAll(async () => {
 });
 describe('POST /schema/validate', function () {
 	it('returns 200 if db was clean', async () => {
-		let result = await request({
+		const result = await request({
 			method: 'POST',
 			uri: 'http://localhost:6001/schema/validate',
 			resolveWithFullResponse: true,

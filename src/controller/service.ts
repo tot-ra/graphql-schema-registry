@@ -1,6 +1,6 @@
 import * as logger from '../logger';
 import servicesModel from '../database/services';
-import {connection, transact} from '../database';
+import {transact} from '../database';
 import {TypeTransactionalRepository} from "../database/schemaBreakdown/type";
 
 export async function deleteService({ name }) {

@@ -1,6 +1,5 @@
-import React from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
-import { format, formatDistance } from 'date-fns';
+import { useHistory, useParams } from 'react-router-dom';
+import { formatDistance } from 'date-fns';
 
 import { EntryGrid } from '../../components/styled';
 import { FlexRow, VersionRow, VersionTag } from '../styled';
@@ -12,7 +11,7 @@ import VersionCharDelta from './VersionCharDelta';
 const VersionsList = ({ service }) => {
 	const { serviceName, schemaId } = useParams();
 	const selectedSchema = parseInt(schemaId, 10);
-	let history = useHistory();
+	const history = useHistory();
 
 	if (!service) {
 		return;

@@ -16,4 +16,3 @@ export async function remove(req, res) {
 		data: null,
 	});
 }
-

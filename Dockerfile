@@ -8,7 +8,7 @@ WORKDIR /app
 USER nobody
 ADD package.json package-lock.json ./
 RUN npm install
-ADD webpack.config.cjs babel.config.cjs ./
+ADD webpack.config.js babel.config.js ./
 ADD client ./client
 RUN npm run build-frontend
 

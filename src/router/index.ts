@@ -1,10 +1,11 @@
 import express from 'express';
+// eslint-disable-next-line new-cap
 const router = express.Router();
 import { json } from 'body-parser';
 import { asyncWrap } from '../helpers/middleware';
 
 import parseMiddleware from '../middleware/parse-request';
-import {indexHtml, assetRouter}  from './assets';
+import { indexHtml, assetRouter } from './assets';
 import * as schema from './schema';
 import * as service from './service';
 import * as persistedQuery from './persisted-queries';

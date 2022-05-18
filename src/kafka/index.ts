@@ -6,7 +6,7 @@ const KAFKA_SCHEMA_REGISTRY =
 
 let producer = null;
 
-export async function init () {
+export async function init() {
 	const { host, port } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 	const kafka = new Kafka({
@@ -16,9 +16,9 @@ export async function init () {
 
 	producer = kafka.producer();
 	await producer.connect();
-};
+}
 
-export function send (data) {
+export function send(data) {
 	if (!producer) {
 		throw new Error('Kafka producer not initialized');
 	}
@@ -27,6 +27,6 @@ export function send (data) {
 		topic: process.env.KAFKA_TOPIC || 'test-topic',
 		messages: [{ value: JSON.stringify(data) }],
 	});
-};
+}
 
 exports.KAFKA_SCHEMA_REGISTRY = KAFKA_SCHEMA_REGISTRY;
