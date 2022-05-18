@@ -101,11 +101,11 @@ export const LIST_TYPES = gql`
 
 type BaseTypeInstancesVars = {
 	type: string;
-	limit?: number;
+	limit: number;
 };
 
 export type TypeInstancesVars = BaseTypeInstancesVars & {
-	offset?: number;
+	offset: number;
 };
 
 export type Pagination = {
@@ -140,7 +140,7 @@ export type TypeInstancesOutput = {
 };
 
 export const TYPE_INSTANCES = gql`
-	query GetListTypeInstances($type: String!, $limit: Int, $offset: Int) {
+	query GetListTypeInstances($type: String!, $limit: Int!, $offset: Int!) {
 		listTypeInstances(type: $type, limit: $limit, offset: $offset) {
 			items {
 				id
@@ -246,7 +246,7 @@ export type TypeInstanceOutput = {
 
 export const TYPE_INSTANCE = gql`
 	query GetTypeInstance($type: String!, $instanceId: Int!) {
-		getTypeInstance(type: $type, instanceId: $instanceId) {
+		getTypeInstance(type: $type, id: $instanceId) {
 			name
 			description
 			type
@@ -286,7 +286,6 @@ export const TYPE_INSTANCE = gql`
 				}
 			}
 			outputParams {
-				key
 				description
 				isNullable
 				isArray
