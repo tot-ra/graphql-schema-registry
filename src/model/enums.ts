@@ -1,32 +1,32 @@
 export enum OperationType {
-	QUERY = "query",
-	MUTATION = "mutation"
+	QUERY = 'query',
+	MUTATION = 'mutation',
 }
 
 export enum EntityType {
-	OBJECT = "object",
-	SCALAR = "scalar",
-	INTERFACE = "interface",
-	ENUM = "enum",
-	INPUT = "input",
-	DIRECTIVE = "directive"
+	OBJECT = 'object',
+	SCALAR = 'scalar',
+	INTERFACE = 'interface',
+	ENUM = 'enum',
+	INPUT = 'input',
+	DIRECTIVE = 'directive',
 }
 
 export enum DocumentNodeType {
-	SCALAR = "ScalarTypeDefinition",
-	ENUM = "EnumTypeDefinition",
-	OBJECT = "ObjectTypeDefinition",
-	SCHEMA = "SchemaDefinition",
-	DIRECTIVE = "DirectiveDefinition",
-	UNION = "UnionTypeDefinition",
-	FIELD = "FieldDefinition",
-	INTERFACE = "InterfaceTypeDefinition",
-	INPUT_VALUE = "InputValueDefinition",
-	INPUT = "InputObjectTypeDefinition",
-	NAMED = "NamedType"
+	SCALAR = 'ScalarTypeDefinition',
+	ENUM = 'EnumTypeDefinition',
+	OBJECT = 'ObjectTypeDefinition',
+	SCHEMA = 'SchemaDefinition',
+	DIRECTIVE = 'DirectiveDefinition',
+	UNION = 'UnionTypeDefinition',
+	FIELD = 'FieldDefinition',
+	INTERFACE = 'InterfaceTypeDefinition',
+	INPUT_VALUE = 'InputValueDefinition',
+	INPUT = 'InputObjectTypeDefinition',
+	NAMED = 'NamedType',
 }
 
 export enum FieldProperty {
-	NOT_NULL = "NonNullType",
-	IS_ARRAY = "ListType",
+	NOT_NULL = 'NonNullType',
+	IS_ARRAY = 'ListType',
 }

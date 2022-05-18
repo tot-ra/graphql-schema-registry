@@ -285,9 +285,9 @@ const schemaModel = {
 			services: [service],
 		});
 
-		const schema = result.find(r => r.service_id === serviceId);
+		const schema = result.find((r) => r.service_id === serviceId);
 		if (schema === undefined) {
-			return result[0]
+			return result[0];
 		}
 		return schema;
 	},

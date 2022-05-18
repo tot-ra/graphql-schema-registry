@@ -1,17 +1,14 @@
-import Knex, {Transaction} from 'knex';
-import {Operation, OperationPayload} from '../../model/operation';
-import {BreakDownRepository} from "./breakdown";
+import Knex, { Transaction } from 'knex';
+import { Operation, OperationPayload } from '../../model/operation';
+import { BreakDownRepository } from './breakdown';
 
 const TABLE_NAME = 'type_def_operations';
-const TABLE_COLUMNS = [
-	'name',
-	'description',
-	'type',
-	'service_id'
-];
+const TABLE_COLUMNS = ['name', 'description', 'type', 'service_id'];
 
-export class OperationTransactionalRepository extends BreakDownRepository<OperationPayload, Operation> {
-
+export class OperationTransactionalRepository extends BreakDownRepository<
+	OperationPayload,
+	Operation
+> {
 	private static instance: OperationTransactionalRepository;
 
 	constructor() {
@@ -20,7 +17,8 @@ export class OperationTransactionalRepository extends BreakDownRepository<Operat
 
 	static getInstance(): OperationTransactionalRepository {
 		if (!OperationTransactionalRepository.instance) {
-			OperationTransactionalRepository.instance = new OperationTransactionalRepository();
+			OperationTransactionalRepository.instance =
+				new OperationTransactionalRepository();
 		}
 
 		return OperationTransactionalRepository.instance;
@@ -33,5 +31,4 @@ export class OperationTransactionalRepository extends BreakDownRepository<Operat
 	async insertIgnoreOperations(trx: Transaction, data: OperationPayload[]) {
 		return super.insert(trx, data);
 	}
-
 }

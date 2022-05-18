@@ -1,12 +1,14 @@
-import {Transaction} from 'knex';
-import {Subgraph} from "../../model/subgraph";
-import {BreakDownRepository} from "./breakdown";
+import { Transaction } from 'knex';
+import { Subgraph } from '../../model/subgraph';
+import { BreakDownRepository } from './breakdown';
 
 const TABLE_NAME = 'type_def_subgraphs';
 const TABLE_COLUMNS = ['service_id', 'type_id'];
 
-export class SubgraphTransactionalRepository extends BreakDownRepository<Subgraph, Subgraph> {
-
+export class SubgraphTransactionalRepository extends BreakDownRepository<
+	Subgraph,
+	Subgraph
+> {
 	private static instance: SubgraphTransactionalRepository;
 
 	constructor() {
@@ -15,7 +17,8 @@ export class SubgraphTransactionalRepository extends BreakDownRepository<Subgrap
 
 	static getInstance(): SubgraphTransactionalRepository {
 		if (!SubgraphTransactionalRepository.instance) {
-			SubgraphTransactionalRepository.instance = new SubgraphTransactionalRepository();
+			SubgraphTransactionalRepository.instance =
+				new SubgraphTransactionalRepository();
 		}
 
 		return SubgraphTransactionalRepository.instance;

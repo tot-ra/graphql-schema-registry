@@ -7,8 +7,8 @@ export type FieldPayload = {
 	is_deprecated: Boolean;
 	children_type_id: number;
 	parent_type_id: number;
-}
+};
 
 export type Field = FieldPayload & {
 	id: number;
-}
+};

@@ -6,5 +6,5 @@ export type OperationParam = {
 	is_nullable: Boolean;
 	is_array: Boolean;
 	is_array_nullable: Boolean;
-	is_output: Boolean
-}
+	is_output: Boolean;
+};

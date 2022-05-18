@@ -1,6 +1,6 @@
-import {Field, FieldPayload} from "../../model/field";
-import {Transaction} from "knex";
-import {BreakDownRepository} from "./breakdown";
+import { Field, FieldPayload } from '../../model/field';
+import { Transaction } from 'knex';
+import { BreakDownRepository } from './breakdown';
 
 const TABLE_NAME = 'type_def_fields';
 const TABLE_COLUMNS = [
@@ -11,11 +11,13 @@ const TABLE_COLUMNS = [
 	'is_array_nullable',
 	'is_deprecated',
 	'parent_type_id',
-	'children_type_id'
-]
+	'children_type_id',
+];
 
-export class FieldTransactionRepository extends BreakDownRepository<FieldPayload, Field> {
-
+export class FieldTransactionRepository extends BreakDownRepository<
+	FieldPayload,
+	Field
+> {
 	private static instance: FieldTransactionRepository;
 
 	constructor() {
@@ -24,14 +26,15 @@ export class FieldTransactionRepository extends BreakDownRepository<FieldPayload
 
 	static getInstance(): FieldTransactionRepository {
 		if (!FieldTransactionRepository.instance) {
-			FieldTransactionRepository.instance = new FieldTransactionRepository();
+			FieldTransactionRepository.instance =
+				new FieldTransactionRepository();
 		}
 
 		return FieldTransactionRepository.instance;
 	}
 
 	async insertIgnoreFields(trx: Transaction, data: FieldPayload[]) {
-		return super.insert(trx, data)
+		return super.insert(trx, data);
 	}
 
 	async getFieldsByNames(trx: Transaction, data: string[]): Promise<Field[]> {

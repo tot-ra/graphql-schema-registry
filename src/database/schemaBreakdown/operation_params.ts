@@ -1,6 +1,6 @@
-import {Transaction} from 'knex';
-import {OperationParam} from "../../model/operation_param";
-import {BreakDownRepository} from "./breakdown";
+import { Transaction } from 'knex';
+import { OperationParam } from '../../model/operation_param';
+import { BreakDownRepository } from './breakdown';
 
 const TABLE_NAME = 'type_def_operation_parameters';
 const TABLE_COLUMNS = [
@@ -11,11 +11,13 @@ const TABLE_COLUMNS = [
 	'is_array_nullable',
 	'is_output',
 	'operation_id',
-	'type_id'
+	'type_id',
 ];
 
-export class OperationParamsTransactionalRepository extends BreakDownRepository<OperationParam, OperationParam> {
-
+export class OperationParamsTransactionalRepository extends BreakDownRepository<
+	OperationParam,
+	OperationParam
+> {
 	private static instance: OperationParamsTransactionalRepository;
 
 	constructor() {
@@ -24,14 +26,17 @@ export class OperationParamsTransactionalRepository extends BreakDownRepository<
 
 	static getInstance(): OperationParamsTransactionalRepository {
 		if (!OperationParamsTransactionalRepository.instance) {
-			OperationParamsTransactionalRepository.instance = new OperationParamsTransactionalRepository();
+			OperationParamsTransactionalRepository.instance =
+				new OperationParamsTransactionalRepository();
 		}
 
 		return OperationParamsTransactionalRepository.instance;
 	}
 
-	async insertIgnoreOperationParams(trx: Transaction, data: OperationParam[]) {
+	async insertIgnoreOperationParams(
+		trx: Transaction,
+		data: OperationParam[]
+	) {
 		return super.insert(trx, data);
 	}
-
 }

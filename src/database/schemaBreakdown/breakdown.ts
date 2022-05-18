@@ -1,52 +1,58 @@
-import {Transaction} from "knex";
+import { Transaction } from 'knex';
 
 export class BreakDownRepository<T, K> {
-	constructor(
-		private tableName: string,
-		private columns: string[]
-	) {}
+	constructor(private tableName: string, private columns: string[]) {}
 
 	async insert(trx: Transaction, data: T[]): Promise<any> {
 		if (data.length === 0) {
 			return;
 		}
-		return trx
-			.raw(`INSERT INTO ${this.tableName} (${this.columns.join(',')})
+		return trx.raw(`INSERT INTO ${this.tableName} (${this.columns.join(
+			','
+		)})
  						VALUES ${BreakDownRepository.insertBulkPayload(data, this.columns)}
- 						ON DUPLICATE KEY UPDATE ${BreakDownRepository.onDuplicateUpdatePayload(this.columns)}`)
+ 						ON DUPLICATE KEY UPDATE ${BreakDownRepository.onDuplicateUpdatePayload(
+							this.columns
+						)}`);
 	}
 
-	async get(trx: Transaction, data: string[] | number[], column: string): Promise<K[]> {
+	async get(
+		trx: Transaction,
+		data: string[] | number[],
+		column: string
+	): Promise<K[]> {
 		if (data.length === 0) {
 			return [];
 		}
-		return trx(this.tableName)
-			.select()
-			.whereIn(column, data);
+		return trx(this.tableName).select().whereIn(column, data);
 	}
 
-	async remove(trx: Transaction, data: string[] | number[], column: string): Promise<any> {
+	async remove(
+		trx: Transaction,
+		data: string[] | number[],
+		column: string
+	): Promise<any> {
 		if (data.length === 0) {
 			return;
 		}
-		return trx(this.tableName)
-			.whereIn(column, data)
-			.delete()
+		return trx(this.tableName).whereIn(column, data).delete();
 	}
 
 	private static onDuplicateUpdatePayload(columns: string[]): string {
-		const args = columns.map(columnName => `${columnName} = VALUES(${columnName})`);
+		const args = columns.map(
+			(columnName) => `${columnName} = VALUES(${columnName})`
+		);
 		return args.join(',');
 	}
 
 	private static insertBulkPayload(data: any[], columns: string[]): string {
-		const insertData = data.map(i => {
-			const fields = columns.map(column => {
+		const insertData = data.map((i) => {
+			const fields = columns.map((column) => {
 				const value = i[column];
 				if (value === undefined) return 'null';
 				else if (typeof value === 'string') return `'${value}'`;
 				else return value;
-			})
+			});
 			return `(${fields.join(',')})`;
 		});
 

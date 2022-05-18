@@ -1,11 +1,11 @@
-import {Change, diff} from '@graphql-inspector/core';
+import { Change, diff } from '@graphql-inspector/core';
 import * as logger from '../logger';
 
 import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
 import Knex from 'knex';
-import {BreakDownSchemaCaseUse} from "./breakdown";
+import { BreakDownSchemaCaseUse } from './breakdown';
 
 export async function getAndValidateSchema(trx: Knex, services = false) {
 	const schemas = services
@@ -36,9 +36,13 @@ export async function pushAndValidateSchema({ service, forcePush }) {
 
 		await getAndValidateSchema(trx);
 
-		const diff: Change[] = await diffSchemas({service});
+		const diff: Change[] = await diffSchemas({ service });
 
-		const breakDownService = new BreakDownSchemaCaseUse(trx, service.type_defs, schema.service_id);
+		const breakDownService = new BreakDownSchemaCaseUse(
+			trx,
+			service.type_defs,
+			schema.service_id
+		);
 		if (diff !== undefined) {
 			breakDownService.validateBreakDown(diff, forcePush);
 			await breakDownService.applyChanges(diff);
