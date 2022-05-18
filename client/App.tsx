@@ -3,6 +3,7 @@ import {
 	InMemoryCache,
 	HttpLink,
 	ApolloProvider,
+	defaultDataIdFromObject,
 } from '@apollo/client';
 import { HashRouter as Router } from 'react-router-dom';
 
@@ -16,11 +17,22 @@ type AppProps = {
 	api?: unknown;
 };
 
+const cache = new InMemoryCache({
+	dataIdFromObject(responseObject) {
+		if (responseObject.__typename === 'TypeInstance') {
+			return `${defaultDataIdFromObject(responseObject)}:${
+				responseObject.type
+			}`;
+		}
+		return defaultDataIdFromObject(responseObject);
+	},
+});
+
 const App = ({ api }: AppProps) => {
 	const config = createConfig(api);
 
 	const client = new ApolloClient({
-		cache: new InMemoryCache(),
+		cache,
 		link: new HttpLink({
 			uri: config.grapqhlEndpoint,
 			credentials: 'include',
