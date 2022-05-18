@@ -102,8 +102,9 @@ export default gql`
 
 	type Pagination {
 		page: Int!
-    	totalPages: Int!
-    	limit: Int!
+		totalPages: Int!
+		total: Int!
+		limit: Int!
 	}
 
 	type TypeInstance {

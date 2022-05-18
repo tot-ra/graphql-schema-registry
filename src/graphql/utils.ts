@@ -31,12 +31,13 @@ function getPagination(
 	totalItems: number
 ): Pagination {
 	const totalPages = Math.ceil(totalItems / limit);
-	let page = Math.floor(offset / limit) + 1;
+	const page = Math.floor(offset / limit) + 1;
 
 	return {
 		limit,
 		page,
 		totalPages,
+		total: totalItems,
 	} as Pagination;
 }
 

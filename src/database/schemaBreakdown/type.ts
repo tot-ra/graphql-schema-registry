@@ -113,14 +113,24 @@ export class TypeTransactionalRepository implements TypeService {
 			.select()
 			.where(`${this.tableName}.id`, id)
 			// fields
-			.leftJoin(`${FieldTransactionRepository.tableName} as ${fieldTypeNameAlias}`, `${fieldTypeNameAlias}.parent_type_id`, '=', `${this.tableName}.id`)
-			.leftJoin(`${this.tableName} as ${fieldTypeAlias}`, `${fieldTypeNameAlias}.children_type_id`, '=', `${fieldTypeAlias}.id`)
-			 // inputParams
-			 
+			.leftJoin(
+				`${FieldTransactionRepository.tableName} as ${fieldTypeNameAlias}`,
+				`${fieldTypeNameAlias}.parent_type_id`,
+				'=',
+				`${this.tableName}.id`
+			)
+			.leftJoin(
+				`${this.tableName} as ${fieldTypeAlias}`,
+				`${fieldTypeNameAlias}.children_type_id`,
+				'=',
+				`${fieldTypeAlias}.id`
+			)
+			// inputParams
+
 			// outputParams
 			// usedBy
 			// implementations
-			.options({ nestTables: true })
+			.options({ nestTables: true });
 		throw new Error('Not implemented');
 	}
 }
