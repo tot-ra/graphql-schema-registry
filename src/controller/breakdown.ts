@@ -1,6 +1,6 @@
 import { Transaction } from 'knex';
 
-import * as logger from '../logger';
+import { logger } from '../logger';
 import { Change, CriticalityLevel } from '@graphql-inspector/core';
 import { PublicError } from '../helpers/error';
 import { BreakDownStrategy } from './schemaBreakdown/strategy';

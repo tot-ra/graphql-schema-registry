@@ -1,4 +1,4 @@
-import * as logger from '../logger';
+import { logger } from '../logger';
 import servicesModel from '../database/services';
 import { transact } from '../database';
 import { TypeTransactionalRepository } from '../database/schemaBreakdown/type';
