@@ -1,4 +1,4 @@
-import { ListTypesOutput, LIST_TYPES } from '../../utils/queries';
+import { ListCount, ListTypesOutput, LIST_TYPES } from '../../utils/queries';
 import {
 	EmptyList,
 	ListContainer,
@@ -9,6 +9,19 @@ import CountLabel from './CountLabel';
 import { useQuery } from '@apollo/client';
 import { TypesCountingListSkeleton } from './TypesCountingList.Skeleton';
 import useMinimumTime from '../../shared/useMinimumTime';
+
+const renderList = (values: ListCount[]) => (
+	<NavigationList>
+		{values.map((value) => (
+			<NavigationListItem
+				key={value.type}
+				href={`/types/${value.type.toLowerCase()}`}
+				value={<CountLabel text={value.type} count={value.count} />}
+				showNavigationChevron={false}
+			/>
+		))}
+	</NavigationList>
+);
 
 export const TypesCountingList = () => {
 	const { loading, data, error } = useQuery<ListTypesOutput>(LIST_TYPES);
@@ -32,40 +45,8 @@ export const TypesCountingList = () => {
 			{!operations.length && !entities.length && (
 				<EmptyList>No types found!</EmptyList>
 			)}
-			{operations.length > 0 && (
-				<NavigationList>
-					{operations.map((operation) => (
-						<NavigationListItem
-							key={operation.type}
-							href={`/types/${operation.type}`}
-							value={
-								<CountLabel
-									text={operation.type}
-									count={operation.count}
-								/>
-							}
-							showNavigationChevron={false}
-						/>
-					))}
-				</NavigationList>
-			)}
-			{entities.length > 0 && (
-				<NavigationList>
-					{entities.map((entity) => (
-						<NavigationListItem
-							key={entity.type}
-							href={`/types/${entity.type}`}
-							value={
-								<CountLabel
-									text={entity.type}
-									count={entity.count}
-								/>
-							}
-							showNavigationChevron={false}
-						/>
-					))}
-				</NavigationList>
-			)}
+			{operations.length > 0 && renderList(operations)}
+			{entities.length > 0 && renderList(entities)}
 		</ListContainer>
 	);
 };

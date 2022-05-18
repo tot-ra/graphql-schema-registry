@@ -50,7 +50,10 @@ export const InstanceSideListingHeader = ({
 	return (
 		<Header>
 			<Typography variant="h6">
-				<CommonLink to={`/types/${typeName}`} onClick={onNavigate}>
+				<CommonLink
+					to={`/types/${typeName.toLowerCase()}`}
+					onClick={onNavigate}
+				>
 					<ArrowBackIcon />
 					<NormalizedLabel>{typeName}</NormalizedLabel>
 				</CommonLink>

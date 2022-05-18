@@ -22,7 +22,7 @@ export const SchemasListing = ({ schemas }: SchemasListingsProps) => {
 					disableGutters
 					key={name}
 					component={CommonLink}
-					to={`/schema/${name}`}
+					to={`/schema/${name.toLowerCase()}`}
 				>
 					<ListItemIcon className={styles.icon}>
 						<Icon fontSize="small" />

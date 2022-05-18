@@ -66,7 +66,9 @@ export const InstancesListing = ({
 								<TableCell component="th" scope="row">
 									<CommonLink
 										to={{
-											pathname: `/types/${item.type}/${item.id}`,
+											pathname: `/types/${item.type.toLowerCase()}/${
+												item.id
+											}`,
 											state: true,
 										}}
 									>

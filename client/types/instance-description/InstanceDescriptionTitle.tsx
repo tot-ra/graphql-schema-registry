@@ -43,7 +43,8 @@ export const InstanceDescriptionTitle = ({
 		<h3>{title}</h3>
 		<p>{description}</p>
 		<p>
-			Kind of type: <CommonLink to={`/types/${type}`}>{type}</CommonLink>
+			Kind of type:{' '}
+			<CommonLink to={`/types/${type.toLowerCase()}`}>{type}</CommonLink>
 		</p>
 	</Container>
 );

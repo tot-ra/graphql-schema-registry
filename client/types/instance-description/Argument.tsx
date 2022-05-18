@@ -50,7 +50,7 @@ export const Argument = ({
 				{(isArray || isArrayNullable) && (
 					<span className={styles.symbol}>[</span>
 				)}
-				<CommonLink to={`/types/${type.kind}/${type.id}`}>
+				<CommonLink to={`/types/${type.kind.toLowerCase()}/${type.id}`}>
 					{type.name}
 				</CommonLink>
 				{isArrayNullable && <span className={styles.symbol}>!</span>}

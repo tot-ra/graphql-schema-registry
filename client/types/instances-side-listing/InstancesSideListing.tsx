@@ -29,10 +29,12 @@ export const InstancesSideListing = () => {
 	const { loading, data, error } = useQuery<ListTypesOutput>(LIST_TYPES);
 
 	const counting =
-		data?.listTypes.operations.find((entity) => entity.type === typeName)
-			?.count ??
-		data?.listTypes.entities.find((entity) => entity.type === typeName)
-			?.count ??
+		data?.listTypes.operations.find(
+			(entity) => entity.type === typeName.toUpperCase()
+		)?.count ??
+		data?.listTypes.entities.find(
+			(entity) => entity.type === typeName.toUpperCase()
+		)?.count ??
 		0;
 
 	const [

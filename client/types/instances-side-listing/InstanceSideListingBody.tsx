@@ -37,7 +37,7 @@ export const InstanceSideListingBody = ({
 				{items.map((item) => (
 					<NavigationListItem
 						key={item.id}
-						href={`/types/${typeName}/${item.id}`}
+						href={`/types/${typeName.toLowerCase()}/${item.id}`}
 						value={item.name}
 						showNavigationChevron={false}
 						ref={
