@@ -1,24 +1,15 @@
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { ReactNode } from 'react';
+import { NormalizedLabel } from '../../shared/styled';
 
 type InstancesListingTitleProps = {
 	children: ReactNode;
 };
 
-const useStyles = makeStyles({
-	h5: {
-		textTransform: 'capitalize',
-	},
-});
-
 export const InstancesListingTitle = ({
 	children,
-}: InstancesListingTitleProps) => {
-	const styles = useStyles();
-
-	return (
-		<Typography variant="h5" className={styles.h5}>
-			{children}
-		</Typography>
-	);
-};
+}: InstancesListingTitleProps) => (
+	<Typography variant="h5" component={NormalizedLabel} as="h5">
+		{children}
+	</Typography>
+);

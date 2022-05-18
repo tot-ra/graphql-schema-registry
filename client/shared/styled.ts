@@ -38,17 +38,24 @@ export const InnerTable = styled.table`
 	table-layout: fixed;
 
 	th:first-child {
-		width: 15%;
+		width: 25%;
 	}
 
 	th:nth-child(2),
 	td:nth-child(2) {
-		width: 70%;
+		width: 60%;
 		text-align: justify;
 		color: ${colors.black.hex32};
 	}
 
 	th:last-child {
 		width: 15%;
+	}
+`;
+
+export const NormalizedLabel = styled.span`
+	text-transform: lowercase;
+	&::first-letter {
+		text-transform: uppercase;
 	}
 `;

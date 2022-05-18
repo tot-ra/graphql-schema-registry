@@ -1,5 +1,6 @@
 import { Chip } from '@material-ui/core';
 import styled from 'styled-components';
+import { NormalizedLabel } from '../../shared/styled';
 import { colors } from '../../utils';
 
 const CountLabelContainer = styled.div`
@@ -7,8 +8,7 @@ const CountLabelContainer = styled.div`
 	justify-content: space-between;
 	align-items: center;
 
-	& > span {
-		text-transform: capitalize;
+	& > ${NormalizedLabel} {
 		color: ${colors.black.hex5};
 	}
 `;
@@ -20,7 +20,7 @@ type CountLabelProps = {
 
 const CountLabel = ({ text, count }: CountLabelProps) => (
 	<CountLabelContainer>
-		<span>{text}</span>
+		<NormalizedLabel>{text}</NormalizedLabel>
 		<Chip label={count} size="small" color="default" />
 	</CountLabelContainer>
 );

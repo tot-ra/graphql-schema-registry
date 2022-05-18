@@ -168,7 +168,7 @@ export type TypeSideInstancesOutput = {
 
 export const TYPE_SIDE_INSTANCES = gql`
 	query GetListTypeSideInstances($type: String!, $limit: Int!) {
-		listTypeInstances(type: $type, limit: $limit) {
+		listTypeInstances(type: $type, limit: $limit, offset: 0) {
 			items {
 				id
 				name

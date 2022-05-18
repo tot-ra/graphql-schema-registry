@@ -4,10 +4,11 @@ import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { CommonLink } from '../../components/Link';
+import { NormalizedLabel } from '../../shared/styled';
 
 const Header = styled.header`
 	padding: 1rem 16px;
-	text-transform: capitalize;
+
 	background-color: #fff;
 
 	h6 {
@@ -51,7 +52,7 @@ export const InstanceSideListingHeader = ({
 			<Typography variant="h6">
 				<CommonLink to={`/types/${typeName}`} onClick={onNavigate}>
 					<ArrowBackIcon />
-					<span>{typeName}</span>
+					<NormalizedLabel>{typeName}</NormalizedLabel>
 				</CommonLink>
 				<Chip label={counting} size="small" color="default" />
 			</Typography>
