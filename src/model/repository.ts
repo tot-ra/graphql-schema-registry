@@ -24,13 +24,13 @@ type ArgumentParent = Parent & Nullable & {
 	type: string;
 }
 
-interface Argument {
+export interface Argument {
 	name: string;
 	description?: string;
 	parent: ArgumentParent;
 }
 
-type Field = Nullable & {
+export type Field = Nullable & {
 	description?: string;
 	parent: Parent;
 	key: string;
@@ -38,20 +38,20 @@ type Field = Nullable & {
 	arguments?: Argument[];
 }
 
-type InputParam = Nullable & {
+export type InputParam = Nullable & {
 	description?: string;
 	parent: Parent;
 	key: string;
 	isDeprecated: boolean;
 }
 
-type OutputParam = Nullable & {
+export type OutputParam = Nullable & {
 	description?: string;
 	parent: Parent;
 	isDeprecated: boolean;
 }
 
-type ParamProvidedBy = Nullable & {
+export type ParamProvidedBy = Nullable & {
 	description?: string;
 	parent: Parent;
 	key: string;
