@@ -62,7 +62,13 @@ export const NavigationListItem = React.forwardRef<
 	);
 
 	return (
-		<ListItem button component={CustomLink} selected={active} ref={ref}>
+		<ListItem
+			button
+			component={CustomLink}
+			selected={active}
+			ref={ref}
+			role="link"
+		>
 			<ListItemText primary={value} />
 			{showNavigationChevron && <ChevronRightIcon />}
 		</ListItem>

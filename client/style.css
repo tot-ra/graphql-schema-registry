@@ -6,9 +6,3 @@ body a {
 body {
 	font-family: Source Sans Pro;
 }
-
-#root {
-	height: 100vh;
-	display: grid;
-	grid-template-rows: auto 1fr;
-}

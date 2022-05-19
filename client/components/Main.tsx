@@ -13,8 +13,15 @@ import PersistedQueries, {
 	Tab as PersistedQueriesTab,
 } from '../persisted-queries';
 import Types from '../types';
+import styled from 'styled-components';
 
-const UITabs = [
+const MainContainer = styled.main`
+	height: 100vh;
+	display: grid;
+	grid-template-rows: auto 1fr;
+`;
+
+export const UITabs = [
 	{
 		Title: <span>Schema</span>,
 		href: '/schema',
@@ -53,7 +60,7 @@ const Main = () => {
 	};
 
 	return (
-		<>
+		<MainContainer>
 			<TopMenu
 				UITabs={UITabs}
 				selectedTab={selectedTab}
@@ -67,7 +74,7 @@ const Main = () => {
 				))}
 				<Redirect to="/schema" />
 			</Switch>
-		</>
+		</MainContainer>
 	);
 };
 
