@@ -134,6 +134,7 @@ export default gql`
 
 	type OutputParam {
 		key: String
+		isDeprecated: Boolean!
 		description: String
 		isNullable: Boolean!
 		isArray: Boolean!

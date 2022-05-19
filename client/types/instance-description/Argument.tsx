@@ -1,4 +1,4 @@
-import { makeStyles } from '@material-ui/core';
+import { Chip, makeStyles } from '@material-ui/core';
 import styled from 'styled-components';
 import { CommonLink } from '../../components/Link';
 import { colors } from '../../utils';
@@ -7,6 +7,7 @@ const Container = styled.section`
 	width: auto;
 	column-gap: 1rem;
 	display: flex;
+	align-items: center;
 `;
 
 type ArgumentProps = {
@@ -19,6 +20,7 @@ type ArgumentProps = {
 	isNullable: boolean;
 	isArray: boolean;
 	isArrayNullable: boolean;
+	isDeprecated?: boolean;
 };
 
 const useStyles = makeStyles({
@@ -36,6 +38,7 @@ export const Argument = ({
 	isArray,
 	isArrayNullable,
 	isNullable,
+	isDeprecated = false,
 }: ArgumentProps) => {
 	const styles = useStyles();
 	return (
@@ -59,6 +62,9 @@ export const Argument = ({
 				)}
 				{isNullable && <span className={styles.symbol}>!</span>}
 			</span>
+			{isDeprecated && (
+				<Chip label="Deprecated" size="small" color="primary" />
+			)}
 		</Container>
 	);
 };

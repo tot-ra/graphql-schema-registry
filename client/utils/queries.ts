@@ -226,12 +226,9 @@ type Field = Param & {
 
 type InputParam = Param & {
 	key: string;
-	isDeprecated: boolean;
 };
 
-type OutputParam = Param & {
-	isDeprecated: boolean;
-};
+type OutputParam = Param;
 
 export type TypeInstanceOutput = {
 	getTypeInstance: {
@@ -255,6 +252,7 @@ export const TYPE_INSTANCE = gql`
 			fields {
 				key
 				description
+				isDeprecated
 				isNullable
 				isArray
 				isArrayNullable

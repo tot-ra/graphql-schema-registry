@@ -28,6 +28,7 @@ export const InstanceDescriptionTable = ({
 			fields.map((field) => ({
 				name: field.key,
 				description: field.description,
+				isDeprecated: field.isDeprecated,
 				isArray: field.isArray,
 				isNullable: field.isNullable,
 				isArrayNullable: field.isArrayNullable,

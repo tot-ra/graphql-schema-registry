@@ -12,6 +12,7 @@ export type InstanceDescriptionTableFieldsProps = {
 	fields: {
 		name?: string;
 		description?: string;
+		isDeprecated?: boolean;
 		isArray: boolean;
 		isArrayNullable: boolean;
 		isNullable: boolean;
@@ -56,6 +57,7 @@ export const InstanceDescriptionTableFields = ({
 								isNullable={field.isNullable}
 								name={field.name}
 								type={field.type}
+								isDeprecated={field.isDeprecated}
 							/>
 						</TableCell>
 						<TableCell>
