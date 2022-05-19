@@ -51,7 +51,7 @@ export type OutputParam = Nullable & {
 	isDeprecated: boolean;
 }
 
-export type ParamProvidedBy = Nullable & {
+export type ParamProvidedBy = {
 	description?: string;
 	parent: Parent;
 	key: string;
@@ -64,14 +64,21 @@ export interface TypeInstanceDetail {
 	description?: string;
 	type: string;
 	fields: Field[];
-	inputParams: InputParam[];
-	outputParams: OutputParam[];
 	usedBy: ParamProvidedBy[];
 	implementations: ParamProvidedBy[];
+}
+
+export interface OperationInstanceDetail {
+	id: number;
+	name: string;
+	description?: string;
+	type: string;
+	inputParams: InputParam[];
+	outputParams: OutputParam[];
 }
 
 export interface TypeInstanceRepository {
 	listByType(type: string, limit: number, offset: number): Promise<TypeInstance[]>
 	countByType(type: string): Promise<number>
-	getDetails(id: number): Promise<TypeInstanceDetail>
+	getDetails(id: number): Promise<TypeInstanceDetail | OperationInstanceDetail>
 }

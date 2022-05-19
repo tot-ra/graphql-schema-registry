@@ -173,9 +173,9 @@ export class TypeTransactionalRepository implements TypeService {
 		};
 		// TODO: get only required fields in SELECTs
 		const result = await connection(this.tableName)
-		.select()
-		.where(`${this.tableName}.id`, id)
-		.first();
+			.select()
+			.where(`${this.tableName}.id`, id)
+			.first();
 		const fieldsResult = await connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
@@ -266,20 +266,22 @@ export class TypeTransactionalRepository implements TypeService {
 			)
 			.options({ nestTables: true });
 
-		const implementationResult = await connection('type_def_implementations')
+		const implementationResult = await connection(
+			'type_def_implementations'
+		)
 			.select()
 			.where(`type_def_implementations.interface_id`, id)
 			.join(
 				`${this.tableName} as ${alias.interfaceType}`,
 				`${alias.interfaceType}.id`,
 				'=',
-				`type_def_implementations.interface_id`,
+				`type_def_implementations.interface_id`
 			)
 			.join(
 				`${this.tableName} as ${alias.implementationType}`,
 				`${alias.implementationType}.id`,
 				'=',
-				`type_def_implementations.implementation_id`,
+				`type_def_implementations.implementation_id`
 			)
 			.join(
 				'type_def_subgraphs',
@@ -295,24 +297,27 @@ export class TypeTransactionalRepository implements TypeService {
 			)
 			.options({ nestTables: true });
 
-
-		const detail: TypeInstanceDetail = {
+		return {
 			...result,
 			fields: this.mapFields(fieldsResult, alias),
 			usedBy: [
 				...this.mapUsedByTypes(usedByTypesResult, alias),
 				...this.mapUsedByOperations(usedByOperationResult, alias),
 			],
-			implementations: this.mapImplementations(implementationResult, alias),
-			inputParams: null,
-			outputParams: null,
-		};
-		return detail;
+			implementations: this.mapImplementations(
+				implementationResult,
+				alias
+			),
+		} as TypeInstanceDetail;
 	}
 
 	private mapFields(
 		rawData: any[],
-		{ field: fieldAlias, fieldType: fieldTypeAlias, argument: argumentAlias }: FieldAliases
+		{
+			field: fieldAlias,
+			fieldType: fieldTypeAlias,
+			argument: argumentAlias,
+		}: FieldAliases
 	): Field[] {
 		return rawData.reduce((acc: Field[], row) => {
 			if (
@@ -338,9 +343,7 @@ export class TypeTransactionalRepository implements TypeService {
 
 	private mapUsedByTypes(rawData: any[], alias: Aliases): ParamProvidedBy[] {
 		return rawData.reduce((acc: ParamProvidedBy[], row) => {
-			const baseParam = camelizeKeys(
-				row[alias.usedByType]
-			);
+			const baseParam = camelizeKeys(row[alias.usedByType]);
 			acc.push({
 				...baseParam,
 				key: baseParam.name,
@@ -356,9 +359,7 @@ export class TypeTransactionalRepository implements TypeService {
 		alias: Aliases
 	): ParamProvidedBy[] {
 		return rawData.reduce((acc: ParamProvidedBy[], row) => {
-			const baseParam = camelizeKeys(
-				row[alias.usedByOperationParam]
-			);
+			const baseParam = camelizeKeys(row[alias.usedByOperationParam]);
 			acc.push({
 				...baseParam,
 				key: baseParam.name,

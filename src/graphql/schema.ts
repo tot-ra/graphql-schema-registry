@@ -22,7 +22,7 @@ export default gql`
 
 		listTypes: ListedTypes!
 		listTypeInstances(type: String!, limit: Int!, offset: Int!): ListedTypeInstances!
-		getTypeInstance(type: String!, id: Int!): FullTypeInstance!
+		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
 	}
 
 	type Mutation {
@@ -200,22 +200,28 @@ export default gql`
 	type ParamProvidedBy {
 		description: String
 		parent: Parent!
-		isNullable: Boolean!
-		isArray: Boolean!
-		isArrayNullable: Boolean!
 		key: String!
   		providedBy: Service!
 	}
 
-	type FullTypeInstance {
+	type TypeInstanceDetail {
 		id: Int!
         name: String!
         description: String
         type: String!
 		fields: [Field!]
-    	inputParams: [InputParam!]
-    	outputParams: [OutputParam!]
     	usedBy: [ParamProvidedBy!]
     	implementations: [ParamProvidedBy!]
 	}
+
+	type OperationInstanceDetail {
+		id: Int!
+        name: String!
+        description: String
+        type: String!
+    	inputParams: [InputParam!]
+    	outputParams: [OutputParam!]
+	}
+
+	union TypeInstanceDetailResponse = TypeInstanceDetail | OperationInstanceDetail
 `;
