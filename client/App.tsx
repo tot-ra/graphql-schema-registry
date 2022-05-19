@@ -3,7 +3,6 @@ import {
 	InMemoryCache,
 	HttpLink,
 	ApolloProvider,
-	defaultDataIdFromObject,
 } from '@apollo/client';
 import { HashRouter as Router } from 'react-router-dom';
 
@@ -18,13 +17,10 @@ type AppProps = {
 };
 
 const cache = new InMemoryCache({
-	dataIdFromObject(responseObject) {
-		if (responseObject.__typename === 'TypeInstance') {
-			return `${defaultDataIdFromObject(responseObject)}:${
-				responseObject.type
-			}`;
-		}
-		return defaultDataIdFromObject(responseObject);
+	typePolicies: {
+		TypeInstance: {
+			keyFields: ['id', 'type'],
+		},
 	},
 });
 
