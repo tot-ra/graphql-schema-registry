@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const DEFAULT_LIMIT = 10;
-export const DEFAULT_OFFSET = 1;
+export const DEFAULT_OFFSET = 0;
 
 export function useQuery() {
 	const { search } = useLocation();
