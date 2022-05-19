@@ -2,10 +2,17 @@ import Knex from 'knex';
 import { connection } from '../index';
 import { Operation, OperationPayload } from '../../model/operation';
 import { OperationType } from '../../model/enums';
-import { OperationInstanceDetail, TypeInstance, TypeInstanceRepository } from '../../model/repository';
+import {
+	InputParam,
+	OperationInstanceDetail,
+	OutputParam,
+	TypeInstance,
+	TypeInstanceRepository,
+} from '../../model/repository';
 import { camelizeKeys } from 'humps';
 
 export const table = 'type_def_operations';
+const parametersTableName = 'type_def_operation_parameters';
 
 interface OperationService extends TypeInstanceRepository {
 	insertOperation(trx: Knex, data: OperationPayload): Promise<Operation>;
@@ -43,16 +50,23 @@ export class OperationRepository implements OperationService {
 		const servicesTable = 'services';
 		const res = await connection(table)
 			.select()
-			.join( servicesTable, `${servicesTable}.id`, '=', `${table}.service_id`)
+			.join(
+				servicesTable,
+				`${servicesTable}.id`,
+				'=',
+				`${table}.service_id`
+			)
 			.where('type', type)
 			.limit(limit)
 			.offset(offset)
 			.options({ nestTables: true });
 
-		return res.map((row) => ({
-				...camelizeKeys(row[table]),
-				providedBy: [camelizeKeys(row[servicesTable])],
-			} as TypeInstance)
+		return res.map(
+			(row) =>
+				({
+					...camelizeKeys(row[table]),
+					providedBy: [camelizeKeys(row[servicesTable])],
+				} as TypeInstance)
 		);
 	}
 
@@ -67,21 +81,50 @@ export class OperationRepository implements OperationService {
 	}
 
 	async getDetails(id: number): Promise<OperationInstanceDetail> {
-		const result = await connection(table)
+		const parameterTypeAlias = 'parameterType';
+		const result = await connection(table).select().where('id', id).first();
+
+		const inputParamsResult = await connection(parametersTableName)
 			.select()
-			.where('id', id)
-			.first();
-		
-		const inputParamsResult = await connection('type_def_params')
+			.where('operation_id', id)
+			.join(
+				`type_def_types as ${parameterTypeAlias}`,
+				`${parameterTypeAlias}.id`,
+				'=',
+				`${parametersTableName}.type_id`
+			)
+			.options({ nestTables: true });
+
 		const details: OperationInstanceDetail = {
 			...camelizeKeys(result),
-			inputParams: this.mapToInputParams(inputParamsResult)
+			...this.mapToInputOutputParams(
+				inputParamsResult,
+				parameterTypeAlias
+			),
 		};
 		return details;
 	}
 
-	private mapToInputParams(inputParamsResult: any[]) {
-		return null;
+	private mapToInputOutputParams(
+		inputParamsResult: any[],
+		parameterTypeAlias: string
+	) {
+		const [outputParams, inputParams]: [InputParam[], OutputParam[]] =
+			inputParamsResult.reduce(
+				([outputs, inputs], current) => {
+					const parameter = camelizeKeys(current[parametersTableName]);
+					const hydratedParameter = {
+						...parameter,
+						key: parameter.name,
+						parent: camelizeKeys(current[parameterTypeAlias]),
+					};
+					return parameter.isOutput
+						? [[...outputs, hydratedParameter], inputs]
+						: [outputs, [...inputs, hydratedParameter]];
+				},
+				[[], []]
+			);
+		return { outputParams, inputParams };
 	}
 }
 
