@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export const DEFAULT_LIMIT = 10;
@@ -16,16 +16,35 @@ export type Pagination = {
 
 export const usePaginationValues = (): [
 	Pagination,
-	React.Dispatch<React.SetStateAction<Pagination>>
+	(values: Partial<Pagination>) => string
 ] => {
 	const query = useQuery();
 	const limit = query.get('limit');
 	const offset = query.get('offset');
+	const [selectedLimit, setLimit] = useState(
+		limit ? parseInt(limit, 10) : DEFAULT_LIMIT
+	);
 
-	const [pagination, setPagination] = useState<Pagination>({
-		limit: limit ? parseInt(limit, 10) : DEFAULT_LIMIT,
-		offset: offset ? parseInt(offset, 10) : DEFAULT_OFFSET,
-	});
+	const values = useMemo(
+		() => ({
+			limit: selectedLimit,
+			offset: offset ? parseInt(offset, 10) : DEFAULT_OFFSET,
+		}),
+		[selectedLimit, offset]
+	);
 
-	return [pagination, setPagination];
+	const createSearchParams = useCallback(
+		(params: Partial<Pagination>): string => {
+			const searchParams = new URLSearchParams();
+			const newLimit = params.limit ?? values.limit;
+			searchParams.set('limit', `${newLimit}`);
+			searchParams.set('offset', `${params.offset ?? values.offset}`);
+			setLimit(newLimit);
+
+			return searchParams.toString();
+		},
+		[values]
+	);
+
+	return [values, createSearchParams];
 };

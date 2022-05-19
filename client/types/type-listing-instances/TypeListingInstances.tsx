@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useQuery } from '@apollo/client';
 import { Typography } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { DEFAULT_OFFSET, usePaginationValues } from '../../shared/pagination';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
@@ -14,7 +14,8 @@ import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
 import { MainViewContainer } from '../../shared/styled';
 
 export const TypeListingInstances = () => {
-	const [pagination, setPagination] = usePaginationValues();
+	const history = useHistory();
+	const [pagination, createPaginationSearchParams] = usePaginationValues();
 	const { typeName } = useParams<{ typeName: string }>();
 
 	const { loading, data, error } = useQuery<
@@ -30,20 +31,26 @@ export const TypeListingInstances = () => {
 
 	const handleChangePage = useCallback(
 		(newPage: number) => {
-			setPagination({
-				limit: pagination.limit,
-				offset: newPage * pagination.limit,
+			history.push({
+				search: createPaginationSearchParams({
+					offset: newPage * pagination.limit,
+				}),
 			});
 		},
-		[pagination.limit]
+		[createPaginationSearchParams, history, pagination.limit]
 	);
 
-	const handleChangeRowsPerPage = (rowsPerPage: number) => {
-		setPagination({
-			limit: rowsPerPage,
-			offset: DEFAULT_OFFSET,
-		});
-	};
+	const handleChangeRowsPerPage = useCallback(
+		(rowsPerPage: number) => {
+			history.push({
+				search: createPaginationSearchParams({
+					limit: rowsPerPage,
+					offset: DEFAULT_OFFSET,
+				}),
+			});
+		},
+		[createPaginationSearchParams, history]
+	);
 
 	const efectiveLoading = useMinimumTime(loading);
 
