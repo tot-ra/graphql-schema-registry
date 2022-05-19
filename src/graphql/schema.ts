@@ -204,7 +204,7 @@ export default gql`
 		isArray: Boolean!
 		isArrayNullable: Boolean!
 		key: String!
-  		providedBy: [Service!]!
+  		providedBy: Service!
 	}
 
 	type FullTypeInstance {

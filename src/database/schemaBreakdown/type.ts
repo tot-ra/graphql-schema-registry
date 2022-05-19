@@ -25,15 +25,18 @@ interface TypeService extends TypeInstanceRepository {
 type Aliases = FieldAliases;
 
 interface FieldAliases {
-	fieldAlias: string;
-	fieldTypeAlias: string;
-	argumentAssociationAlias: string;
-	argumentTypeAlias: string;
-	argumentAlias: string;
-	usedByTypeAlias: string;
-	usedByOperationAlias: string;
-	usedByOperationParamAlias: string;
-	serviceAlias: string;
+	field: string;
+	fieldType: string;
+	argumentAssociation: string;
+	argumentType: string;
+	argument: string;
+	usedByType: string;
+	usedByOperation: string;
+	usedByOperationParam: string;
+	service: string;
+	usedByTypeParent: string;
+	implementationType: string;
+	interfaceType: string;
 }
 
 export type TypeCount = {
@@ -155,126 +158,171 @@ export class TypeTransactionalRepository implements TypeService {
 
 	async getDetails(id: number): Promise<TypeInstanceDetail> {
 		const alias: Aliases = {
-			fieldAlias: 'field',
-			fieldTypeAlias: 'fieldType',
-			argumentAssociationAlias: 'argumentAssociation',
-			argumentAlias: 'argument',
-			argumentTypeAlias: 'argumentType',
-			usedByTypeAlias: 'usedByType',
-			usedByOperationParamAlias: 'usedByOperationParam',
-			usedByOperationAlias: 'usedByOperation',
-			serviceAlias: 'service',
+			field: 'field',
+			fieldType: 'fieldType',
+			argumentAssociation: 'argumentAssociation',
+			argument: 'argument',
+			argumentType: 'argumentType',
+			usedByType: 'usedByType',
+			usedByOperationParam: 'usedByOperationParam',
+			usedByOperation: 'usedByOperation',
+			usedByTypeParent: 'usedByTypeParent',
+			interfaceType: 'interface',
+			implementationType: 'implementationType',
+			service: 'service',
 		};
+		// TODO: get only required fields in SELECTs
 		const result = await connection(this.tableName)
+		.select()
+		.where(`${this.tableName}.id`, id)
+		.first();
+		const fieldsResult = await connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
 			// fields
 			.leftJoin(
-				`${FieldTransactionRepository.tableName} as ${alias.fieldAlias}`,
-				`${alias.fieldAlias}.parent_type_id`,
+				`${FieldTransactionRepository.tableName} as ${alias.field}`,
+				`${alias.field}.parent_type_id`,
 				'=',
 				`${this.tableName}.id`
 			)
 			.leftJoin(
-				`${this.tableName} as ${alias.fieldTypeAlias}`,
-				`${alias.fieldTypeAlias}.id`,
+				`${this.tableName} as ${alias.fieldType}`,
+				`${alias.fieldType}.id`,
 				'=',
-				`${alias.fieldAlias}.children_type_id`
+				`${alias.field}.children_type_id`
 			)
 			// fields arguments
 			.leftJoin(
-				`type_def_field_arguments as ${alias.argumentAssociationAlias}`,
-				`${alias.argumentAssociationAlias}.field_id`,
+				`type_def_field_arguments as ${alias.argumentAssociation}`,
+				`${alias.argumentAssociation}.field_id`,
 				'=',
-				`${alias.fieldAlias}.id`
+				`${alias.field}.id`
 			)
 			.leftJoin(
-				`${FieldTransactionRepository.tableName} as ${alias.argumentAlias}`,
-				`${alias.argumentAlias}.id`,
+				`${FieldTransactionRepository.tableName} as ${alias.argument}`,
+				`${alias.argument}.id`,
 				'=',
-				`${alias.argumentAssociationAlias}.argument_id`
+				`${alias.argumentAssociation}.argument_id`
 			)
 			.leftJoin(
-				`${this.tableName} as ${alias.argumentTypeAlias}`,
-				`${alias.argumentTypeAlias}.id`,
+				`${this.tableName} as ${alias.argumentType}`,
+				`${alias.argumentType}.id`,
 				'=',
-				`${alias.argumentAlias}.children_type_id`
+				`${alias.argument}.children_type_id`
 			)
 			// implementations
-			// TODO: get only required fields in SELECTs
 			.options({ nestTables: true });
 
-		// usedBy
-		// todos los types que tengan parent_id = id
 		const usedByTypesResult = await connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
 			.join(
-				`${FieldTransactionRepository.tableName} as ${alias.usedByTypeAlias}`,
-				`${alias.usedByTypeAlias}.children_type_id`,
+				`${FieldTransactionRepository.tableName} as ${alias.usedByType}`,
+				`${alias.usedByType}.children_type_id`,
 				'=',
 				`${this.tableName}.id`
+			)
+			.join(
+				`${this.tableName} as ${alias.usedByTypeParent}`,
+				`${alias.usedByTypeParent}.id`,
+				'=',
+				`${alias.usedByType}.parent_type_id`
 			)
 			.join(
 				'type_def_subgraphs',
 				`type_def_subgraphs.type_id`,
 				'=',
-				`${this.tableName}.id`
+				`${alias.usedByTypeParent}.id`
 			)
 			.join(
-				`${servicesTable} as ${alias.serviceAlias}`,
-				`${alias.serviceAlias}.id`,
+				`${servicesTable} as ${alias.service}`,
+				`${alias.service}.id`,
 				'=',
 				`type_def_subgraphs.service_id`
 			)
 			.options({ nestTables: true });
 
-		// todos las operations que tengan un output/input con type_id = id
 		const usedByOperationResult = await connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
 			.join(
-				`type_def_operation_parameters as ${alias.usedByOperationParamAlias}`,
-				`${alias.usedByOperationParamAlias}.type_id`,
+				`type_def_operation_parameters as ${alias.usedByOperationParam}`,
+				`${alias.usedByOperationParam}.type_id`,
 				'=',
 				`${this.tableName}.id`
 			)
 			.join(
-				`${operationTableName} as ${alias.usedByOperationAlias}`,
-				`${alias.usedByOperationAlias}.id`,
+				`${operationTableName} as ${alias.usedByOperation}`,
+				`${alias.usedByOperation}.id`,
 				'=',
-				`${alias.usedByOperationParamAlias}.operation_id`
+				`${alias.usedByOperationParam}.operation_id`
 			)
 			.join(
-				`${servicesTable} as ${alias.serviceAlias}`,
-				`${alias.serviceAlias}.id`,
+				`${servicesTable} as ${alias.service}`,
+				`${alias.service}.id`,
 				'=',
-				`${alias.usedByOperationAlias}.service_id`
+				`${alias.usedByOperation}.service_id`
 			)
 			.options({ nestTables: true });
 
+		const implementationResult = await connection('type_def_implementations')
+			.select()
+			.where(`type_def_implementations.interface_id`, id)
+			.join(
+				`${this.tableName} as ${alias.interfaceType}`,
+				`${alias.interfaceType}.id`,
+				'=',
+				`type_def_implementations.interface_id`,
+			)
+			.join(
+				`${this.tableName} as ${alias.implementationType}`,
+				`${alias.implementationType}.id`,
+				'=',
+				`type_def_implementations.implementation_id`,
+			)
+			.join(
+				'type_def_subgraphs',
+				`type_def_subgraphs.type_id`,
+				'=',
+				`${alias.implementationType}.id`
+			)
+			.join(
+				`${servicesTable} as ${alias.service}`,
+				`${alias.service}.id`,
+				'=',
+				`type_def_subgraphs.service_id`
+			)
+			.options({ nestTables: true });
+
+
 		const detail: TypeInstanceDetail = {
-			...result[this.tableName],
-			fields: this.mapFields(result, alias),
+			...result,
+			fields: this.mapFields(fieldsResult, alias),
 			usedBy: [
 				...this.mapUsedByTypes(usedByTypesResult, alias),
 				...this.mapUsedByOperations(usedByOperationResult, alias),
 			],
+			implementations: this.mapImplementations(implementationResult, alias),
+			inputParams: null,
+			outputParams: null,
 		};
 		return detail;
 	}
 
 	private mapFields(
 		rawData: any[],
-		{ fieldAlias, fieldTypeAlias, argumentAlias }: FieldAliases
+		{ field: fieldAlias, fieldType: fieldTypeAlias, argument: argumentAlias }: FieldAliases
 	): Field[] {
 		return rawData.reduce((acc: Field[], row) => {
 			if (
 				row[fieldAlias].id !== null &&
 				row[fieldTypeAlias].id !== null
 			) {
+				const baseField = camelizeKeys(row[fieldAlias]);
 				acc.push({
-					...camelizeKeys(row[fieldAlias]),
+					...baseField,
+					key: baseField.name,
 					parent: camelizeKeys(row[fieldTypeAlias]),
 					arguments: this.mapArguments(rawData, argumentAlias),
 				});
@@ -284,7 +332,23 @@ export class TypeTransactionalRepository implements TypeService {
 	}
 
 	private mapArguments(rawData: any[], argumentAlias: string): Argument[] {
+		// TODO: check when arguments are working
 		return [];
+	}
+
+	private mapUsedByTypes(rawData: any[], alias: Aliases): ParamProvidedBy[] {
+		return rawData.reduce((acc: ParamProvidedBy[], row) => {
+			const baseParam = camelizeKeys(
+				row[alias.usedByType]
+			);
+			acc.push({
+				...baseParam,
+				key: baseParam.name,
+				parent: camelizeKeys(row[alias.usedByTypeParent]),
+				providedBy: camelizeKeys(row[alias.service]),
+			});
+			return acc;
+		}, []);
 	}
 
 	private mapUsedByOperations(
@@ -293,21 +357,34 @@ export class TypeTransactionalRepository implements TypeService {
 	): ParamProvidedBy[] {
 		return rawData.reduce((acc: ParamProvidedBy[], row) => {
 			const baseParam = camelizeKeys(
-				row[alias.usedByOperationParamAlias]
+				row[alias.usedByOperationParam]
 			);
 			acc.push({
 				...baseParam,
 				key: baseParam.name,
-				parent: camelizeKeys(row[alias.usedByOperationAlias]),
-				providedBy: camelizeKeys(row[alias.serviceAlias]),
+				parent: camelizeKeys(row[alias.usedByOperation]),
+				providedBy: camelizeKeys(row[alias.service]),
 			});
 			return acc;
 		}, []);
 	}
 
-	private mapUsedByTypes(rawData: any[], alias: Aliases): ParamProvidedBy[] {
-		// TODO: make sure data from joins is OK
-		return [];
+	private mapImplementations(
+		rawData: any[],
+		alias: Aliases
+	): ParamProvidedBy[] {
+		return rawData.reduce((acc: ParamProvidedBy[], row) => {
+			const baseImplementation = camelizeKeys(
+				row[alias.implementationType]
+			);
+			acc.push({
+				...baseImplementation,
+				key: baseImplementation.name,
+				parent: camelizeKeys(row[alias.interfaceType]),
+				providedBy: camelizeKeys(row[alias.service]),
+			});
+			return acc;
+		}, []);
 	}
 }
 

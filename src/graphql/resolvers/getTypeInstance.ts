@@ -5,10 +5,6 @@ import { isEnum } from '../utils';
 import { TypeInstanceRepository } from '../../model/repository';
 import { GraphQLError } from 'graphql';
 
-function a(repository: TypeInstanceRepository, id: number) {
-	repository.getDetails(id);
-}
-
 export default function getTypeInstance(_parent, { type, id }) {
 	const evaluatedType = type.toLowerCase();
 	let repository: TypeInstanceRepository;
@@ -21,5 +17,5 @@ export default function getTypeInstance(_parent, { type, id }) {
 		throw new GraphQLError(`Unknown type: ${type}`);
 	}
 
-	return a(repository, id);
+	return repository.getDetails(id);
 }
