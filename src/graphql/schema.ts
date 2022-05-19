@@ -185,7 +185,6 @@ export default gql`
 		isArray: Boolean!
 		isArrayNullable: Boolean!
 		key: String!
-  		isDeprecated: Boolean!
 	}
 
 	type OutputParam {
@@ -194,7 +193,6 @@ export default gql`
 		isNullable: Boolean!
 		isArray: Boolean!
 		isArrayNullable: Boolean!
-		isDeprecated: Boolean!
 	}
 
 	type ParamProvidedBy {

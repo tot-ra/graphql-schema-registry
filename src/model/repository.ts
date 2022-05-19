@@ -42,13 +42,11 @@ export type InputParam = Nullable & {
 	description?: string;
 	parent: Parent;
 	key: string;
-	isDeprecated: boolean;
 }
 
 export type OutputParam = Nullable & {
 	description?: string;
 	parent: Parent;
-	isDeprecated: boolean;
 }
 
 export type ParamProvidedBy = {
