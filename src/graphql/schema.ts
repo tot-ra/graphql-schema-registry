@@ -149,7 +149,7 @@ export default gql`
 		isArray: Boolean!
 		isArrayNullable: Boolean!
 		parent: ParamParent!
-		providedBy: [ListTypeInstancesProviders!]!
+		providedBy: ListTypeInstancesProviders!
 	}
 
 	type GetTypeInstanceOutput {

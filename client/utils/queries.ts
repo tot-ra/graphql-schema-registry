@@ -203,7 +203,7 @@ type ParamProvidedBy = Omit<
 	key: string;
 	providedBy?: {
 		name: string;
-	}[];
+	};
 };
 
 type Field = Param & {

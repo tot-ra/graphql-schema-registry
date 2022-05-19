@@ -74,11 +74,9 @@
           "name": "key_parent_1",
           "type": "string"
         },
-        "providedBy": [
-          {
-            "name": "Provider 1"
-          }
-        ]
+        "providedBy": {
+          "name": "Provider 1"
+        }
       }
     ],
     "implementations": [
@@ -89,11 +87,9 @@
           "name": "key_parent_1",
           "type": "string"
         },
-        "providedBy": [
-          {
-            "name": "Provider 1"
-          }
-        ]
+        "providedBy": {
+          "name": "Provider 1"
+        }
       }
     ]
   }

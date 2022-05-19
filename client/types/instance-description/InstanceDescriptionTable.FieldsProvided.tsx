@@ -46,7 +46,7 @@ export const InstanceDescriptionTableFieldsProvided = ({
 							{field.description ?? <i>No description</i>}
 						</TableCell>
 						<TableCell>
-							<SchemasListing schemas={field.providedBy} />
+							<SchemasListing schemas={[field.providedBy]} />
 						</TableCell>
 					</TableRow>
 				))
