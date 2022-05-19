@@ -9,7 +9,7 @@ type InstancesListingTitleProps = {
 export const InstancesListingTitle = ({
 	children,
 }: InstancesListingTitleProps) => (
-	<Typography variant="h5" component={NormalizedLabel} as="h5">
+	<Typography variant="h6" component={NormalizedLabel} as="h6">
 		{children}
 	</Typography>
 );

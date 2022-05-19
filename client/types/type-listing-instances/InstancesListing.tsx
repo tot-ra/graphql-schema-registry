@@ -19,7 +19,7 @@ import { InnerTable } from '../../shared/styled';
 export const Container = styled.section`
 	display: grid;
 	grid-template-rows: auto 1fr;
-	row-gap: 2rem;
+	row-gap: 1rem;
 `;
 
 interface InstancesListingProps extends ListTypeInstances {
