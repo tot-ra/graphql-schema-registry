@@ -14,6 +14,18 @@ Then(
 );
 
 Then(
+	'the database must not contain an operation named {string}',
+	async (name: string) => {
+		const { connection } = await import('../../../src/database');
+		const resp = await connection('type_def_operations')
+			.count('name', { as: 'totalOps' })
+			.where('name', name);
+
+		expect(resp[0]['totalOps']).toEqual(0);
+	}
+);
+
+Then(
 	'the database must contain a type {string} named {string}',
 	async (type: string, name: string) => {
 		const { connection } = await import('../../../src/database');
@@ -26,6 +38,7 @@ Then(
 	}
 );
 
+
 Then(
 	'the database must contain some {string} types as {string}',
 	async (type: string, names: string) => {
@@ -37,6 +50,20 @@ Then(
 			.where('type', type.toUpperCase());
 
 		expect(resp[0]['totalTypes']).toEqual(listOfNames.length);
+	}
+);
+
+Then(
+	'the database must not contain some {string} types as {string}',
+	async (type: string, names: string) => {
+		const listOfNames: string[] = names.split(',');
+		const { connection } = await import('../../../src/database');
+		const resp = await connection('type_def_types')
+			.count('name', { as: 'totalTypes' })
+			.whereIn('name', listOfNames)
+			.where('type', type.toUpperCase());
+
+		expect(resp[0]['totalTypes']).toEqual(0);
 	}
 );
 
@@ -77,4 +104,3 @@ Then(
 		expect(resp[0]['totalTypes']).toEqual(totalFields);
 	}
 );
-

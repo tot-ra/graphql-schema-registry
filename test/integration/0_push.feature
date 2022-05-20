@@ -7,12 +7,13 @@ Feature: As a customer
 		{
 		  "name": "test",
 		  "version": "latest",
-		  "type_defs": "type Query { fake: String }",
+		  "type_defs": "type Query { fake: Float }",
 		  "url": "http://127.0.0.1:4000/api/graphql/test"
 		}
 		"""
 		Then the database must contain an operation named "fake"
-		And the database must contain a type "Scalar" named "String"
+		And the database must contain a type "Scalar" named "Float"
+		And the database must contain 1 subgraph fields for service 3
 		And the response status code should be 200
 		And the response should be in JSON and contain:
 		"""
@@ -24,7 +25,7 @@ Feature: As a customer
 				"version": "latest",
 				"name": "test",
 				"url": "http://127.0.0.1:4000/api/graphql/test",
-				"type_defs": "type Query { fake: String }",
+				"type_defs": "type Query { fake: Float }",
 				"is_active": 1
 			}
 		}
@@ -84,7 +85,7 @@ Feature: As a customer
 		}
 		"""
 
-	Scenario: I request to update an existing schema but is forbidden because exists breaking changes
+	Scenario: I request to update an existing schema
 		When I send a "POST" request to "/schema/push" with body and forcing header:
 		"""
 		{
