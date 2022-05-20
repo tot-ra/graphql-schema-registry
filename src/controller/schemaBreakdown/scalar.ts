@@ -82,16 +82,22 @@ export class ScalarStrategy
 						? type.arguments.map((a) =>
 								this.getInternalScalars(a.type)
 						  )
-						: [])
+						: []),
 				];
-				const fields = ('fields' in type) ? type.fields?.map(f => {
-					return [
-						this.getInternalScalars(f.type),
-						...f.arguments?.map(a => this.getInternalScalars(a.type))
-					]
-				}).flat(1) : []
-				return [...args, ...fields]
-
+				const fields =
+					'fields' in type
+						? type.fields
+								?.map((f) => {
+									return [
+										this.getInternalScalars(f.type),
+										...('arguments' in f ? f.arguments?.map((a) =>
+											this.getInternalScalars(a.type)
+										) : []),
+									];
+								})
+								.flat(1)
+						: [];
+				return [...args, ...fields];
 			})
 			.flat(1);
 	}
