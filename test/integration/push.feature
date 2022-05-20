@@ -63,3 +63,57 @@ Feature: As a customer
 			}
 		}
 		"""
+
+	Scenario: I request to update an existing schema but is forbidden because exists breaking changes
+		When I send a "POST" request to "/schema/push" with body:
+		"""
+		{
+		  "name": "test2",
+		  "version": "latest",
+		  "type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+		  "url": "http://127.0.0.1:4000/api/graphql/test2"
+		}
+		"""
+		And the response status code should be 400
+		And the response should be in JSON and contain:
+		"""
+		{
+			"success": false,
+			"message": "Cannot push this schema because contains breaking changes. To force push it, you must add a header as (Force-Push: true)",
+			"details": null
+		}
+		"""
+
+	Scenario: I request to update an existing schema but is forbidden because exists breaking changes
+		When I send a "POST" request to "/schema/push" with body and forcing header:
+		"""
+		{
+		  "name": "test2",
+		  "version": "latest",
+		  "type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+		  "url": "http://127.0.0.1:4000/api/graphql/test2"
+		}
+		"""
+		Then the database must contain an operation named "hello"
+		And the database must contain some "Scalar" types as "String,Int"
+		And the database must contain some "Object" types as "Fake"
+		And the database must contain some "Enum" types as "TestEnum"
+		And the database must contain some fields as "E,N,U,M,integration,tests"
+		And the database must contain some query parameters as "world"
+		And the database must contain 4 subgraph fields for service 4
+		And the response status code should be 200
+		And the response should be in JSON and contain:
+		"""
+		{
+			"success": true,
+			"data": {
+				"id": 3,
+				"service_id": 4,
+				"version": "latest",
+				"name": "test2",
+				"url": "http://127.0.0.1:4000/api/graphql/test2",
+				"type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+				"is_active": 1
+			}
+		}
+		"""

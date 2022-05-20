@@ -14,6 +14,17 @@ When(
 	}
 );
 
+When(
+	'I send a "POST" request to {string} with body and forcing header:',
+	async (url: string, body: string) => {
+		response = await fetch(`http://localhost:3000${url}`, {
+			method: 'POST',
+			body,
+			headers: { 'Content-Type': 'application/json', 'Force-Push': true },
+		});
+	}
+);
+
 Then('the response status code should be {int}', async (status: number) => {
 	expect(response?.status).toEqual(status);
 });
