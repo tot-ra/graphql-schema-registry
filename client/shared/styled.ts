@@ -33,7 +33,7 @@ export const InnerTableTwoColumns = styled.table`
 	}
 `;
 
-export const InnerTable = styled.table`
+export const InnerTableThreeColumns = styled.table`
 	width: 100%;
 	table-layout: fixed;
 
@@ -50,6 +50,30 @@ export const InnerTable = styled.table`
 
 	th:last-child {
 		width: 15%;
+	}
+`;
+
+export const InnerTableFourColumns = styled.table`
+	width: 100%;
+	table-layout: fixed;
+
+	th:first-child {
+		width: 25%;
+	}
+
+	th:nth-child(2),
+	td:nth-child(2) {
+		width: 50%;
+		text-align: justify;
+		color: ${colors.black.hex32};
+	}
+
+	th:nth-child(3) {
+		width: 15%;
+	}
+
+	th:last-child {
+		width: 10%;
 	}
 `;
 

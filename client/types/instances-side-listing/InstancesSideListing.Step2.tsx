@@ -21,12 +21,14 @@ type InstancesSideListingStep2Props = {
 	typeName: string;
 	instanceId: string;
 	count: number;
+	buildHref?: Parameters<typeof InstancesSideListingBody>[0]['buildHref'];
 };
 
 export const InstancesSideListingStep2 = ({
 	count,
 	typeName,
 	instanceId,
+	buildHref,
 }: InstancesSideListingStep2Props) => {
 	const { loading, data, error, refetch } = useQuery<
 		TypeSideInstancesOutput,
@@ -59,6 +61,7 @@ export const InstancesSideListingStep2 = ({
 				items={items}
 				typeName={typeName}
 				instanceId={instanceId}
+				buildHref={buildHref}
 			/>
 		</InstancesSideListingContainer>
 	);

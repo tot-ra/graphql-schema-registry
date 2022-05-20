@@ -8,7 +8,7 @@ import {
 	TableRow,
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import { InnerTable } from '../../shared/styled';
+import { InnerTableFourColumns } from '../../shared/styled';
 import { Container } from './InstancesListing';
 import { SchemasListingSkeleton } from '../schemas-listing';
 
@@ -23,7 +23,7 @@ export const TypeListingInstancesSkeleton = () => (
 	<Container>
 		<Skeleton variant="rect" width="20%" height={25} />
 		<TableContainer component={Paper}>
-			<Table component={InnerTable}>
+			<Table component={InnerTableFourColumns}>
 				<TableHead>
 					<TableRow>
 						<TableCell>
@@ -33,6 +33,7 @@ export const TypeListingInstancesSkeleton = () => (
 						<TableCell>
 							<Skeleton variant="rect" width="100%" height={25} />
 						</TableCell>
+						<TableCell />
 					</TableRow>
 				</TableHead>
 				<TableBody>
@@ -56,6 +57,13 @@ export const TypeListingInstancesSkeleton = () => (
 								{schemas > 0 && (
 									<SchemasListingSkeleton schemas={schemas} />
 								)}
+							</TableCell>
+							<TableCell>
+								<Skeleton
+									variant="rect"
+									width="80%"
+									height={25}
+								/>
 							</TableCell>
 						</TableRow>
 					))}

@@ -15,9 +15,21 @@ const Types = () => (
 			<TypesCountingList />
 			<TypeListingInstances />
 		</Route>
-		<Route path="/types/:typeName/:instanceId">
-			<InstancesSideListing />
+		<Route path="/types/:typeName/:instanceId" exact>
+			<InstancesSideListing
+				buildHref={({ typeName, item }) =>
+					`/types/${typeName}/${item.id}`
+				}
+			/>
 			<InstanceDescription />
+		</Route>
+		<Route path="/types/:typeName/:instanceId/stats" exact>
+			<InstancesSideListing
+				buildHref={({ typeName, item }) =>
+					`/types/${typeName}/${item.id}/stats`
+				}
+			/>
+			<span />
 		</Route>
 	</MainSectionContainer>
 );

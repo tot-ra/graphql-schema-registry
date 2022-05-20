@@ -1,4 +1,5 @@
 import {
+	Link,
 	Paper,
 	Table,
 	TableBody,
@@ -14,7 +15,7 @@ import { CommonLink } from '../../components/Link';
 import { InstancesListingTitle } from './InstancesListingTitle';
 import SchemasListing from '../schemas-listing';
 import { ListTypeInstances } from '../../utils/queries';
-import { InnerTable } from '../../shared/styled';
+import { InnerTableFourColumns } from '../../shared/styled';
 
 export const Container = styled.section`
 	display: grid;
@@ -52,12 +53,13 @@ export const InstancesListing = ({
 		<Container>
 			<InstancesListingTitle>{typeName}</InstancesListingTitle>
 			<TableContainer component={Paper}>
-				<Table component={InnerTable}>
+				<Table component={InnerTableFourColumns}>
 					<TableHead>
 						<TableRow>
 							<TableCell>Types</TableCell>
 							<TableCell />
 							<TableCell>Schemas</TableCell>
+							<TableCell />
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -88,6 +90,17 @@ export const InstancesListing = ({
 											schemas={item.providedBy}
 										/>
 									)}
+								</TableCell>
+								<TableCell>
+									<Link
+										component={CommonLink}
+										variant="button"
+										to={`/types/${item.type.toLowerCase()}/${
+											item.id
+										}/stats`}
+									>
+										Stats
+									</Link>
 								</TableCell>
 							</TableRow>
 						))}
