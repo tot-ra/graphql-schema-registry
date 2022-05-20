@@ -132,19 +132,13 @@ export default gql`
 		type: String!
 	}
 
-	type ArgumentParent {
-		id: Int!
-		name: String!
-		type: String!
-		isNullable: Boolean!
-		isArray: Boolean!
-		isArrayNullable: Boolean!
-	}
-
 	type Argument {
         name: String!
         description: String
-        parent: ArgumentParent!
+		isNullable: Boolean!
+		isArray: Boolean!
+		isArrayNullable: Boolean!
+        parent: Parent!
 	}
 
 	type FieldDetails {
