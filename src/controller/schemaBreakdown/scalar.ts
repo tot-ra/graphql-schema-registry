@@ -90,9 +90,13 @@ export class ScalarStrategy
 								?.map((f) => {
 									return [
 										this.getInternalScalars(f.type),
-										...('arguments' in f ? f.arguments?.map((a) =>
-											this.getInternalScalars(a.type)
-										) : []),
+										...('arguments' in f
+											? f.arguments?.map((a) =>
+													this.getInternalScalars(
+														a.type
+													)
+											  )
+											: []),
 									];
 								})
 								.flat(1)
