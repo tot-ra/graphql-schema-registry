@@ -22,9 +22,7 @@ interface TypeService extends TypeInstanceRepository {
 	countTypesByType(): Promise<TypeCount[]>;
 }
 
-type TableAliases = FieldAliases;
-
-interface FieldAliases {
+interface TableAliases {
 	field: string;
 	fieldType: string;
 	argumentAssociation: string;
@@ -111,9 +109,9 @@ export class TypeTransactionalRepository implements TypeService {
 		);
 	}
 
-	private mapToTypeInstances(rawData: any[], typeAlias: string) {
+	private mapToTypeInstances(rows: any[], typeAlias: string) {
 		const typeMap = new Map<number, TypeInstance>();
-		rawData.forEach((row) => {
+		rows.forEach((row) => {
 			const typeId = row[typeAlias].id;
 			if (typeMap.has(typeId)) {
 				this.addProvidedByService(
@@ -136,13 +134,10 @@ export class TypeTransactionalRepository implements TypeService {
 		typeMap.get(typeId).providedBy.push(camelizeKeys(service));
 	}
 
-	private mapToTypeInstance(
-		typeRawData: any,
-		typeAlias: string
-	): TypeInstance {
+	private mapToTypeInstance(rows: any, typeAlias: string): TypeInstance {
 		return {
-			...typeRawData[typeAlias],
-			providedBy: [camelizeKeys(typeRawData[servicesTable])],
+			...rows[typeAlias],
+			providedBy: [camelizeKeys(rows[servicesTable])],
 		};
 	}
 
@@ -186,7 +181,7 @@ export class TypeTransactionalRepository implements TypeService {
 			this.getImplementationQuery(id, alias),
 		]);
 
-		return {
+		var a = {
 			...baseResult,
 			fields: this.mapFields(fieldsSettledResult || [], alias),
 			usedBy: [
@@ -198,6 +193,7 @@ export class TypeTransactionalRepository implements TypeService {
 				alias
 			),
 		} as TypeInstanceDetail;
+		return a;
 	}
 
 	private async getAsyncQueryResults(queries: any[]) {
@@ -348,41 +344,48 @@ export class TypeTransactionalRepository implements TypeService {
 			.options({ nestTables: true });
 	}
 
-	private mapFields(
-		rawData: any[],
-		{
-			field: fieldAlias,
-			fieldType: fieldTypeAlias,
-			argument: argumentAlias,
-		}: FieldAliases
-	): Field[] {
-		return rawData.reduce((acc: Field[], row) => {
+	private mapFields(rows: any[], alias: TableAliases): Field[] {
+		const fieldMap = new Map<number, Field>();
+		rows.forEach(row => {
 			if (
-				row[fieldAlias].id !== null &&
-				row[fieldTypeAlias].id !== null
+				row[alias.field].id !== null &&
+				row[alias.fieldType].id !== null
 			) {
-				const baseField = camelizeKeys(row[fieldAlias]);
-				acc.push({
+				const baseField = camelizeKeys(row[alias.field]);
+				fieldMap.set(baseField.id, {
 					...baseField,
 					key: baseField.name,
-					parent: camelizeKeys(row[fieldTypeAlias]),
-					arguments: this.mapArguments(rawData, argumentAlias),
+					parent: camelizeKeys(row[alias.fieldType]),
+					arguments: this.mapArguments(rows, baseField.id, alias),
 				});
+			}
+		});
+		return Array.from(fieldMap.values());
+	}
+
+	private mapArguments(
+		rows: any[],
+		fieldId: number,
+		alias: TableAliases
+	): Argument[] {
+		const fields = rows.filter((row) => row[alias.field].id === fieldId);
+		return fields.reduce((acc: Argument[], row) => {
+			if (row[alias.argument].id !== null) {
+				const argument: Argument = {
+					...camelizeKeys(row[alias.argument]),
+					parent: camelizeKeys(row[alias.argumentType]),
+				}
+				acc.push(argument);
 			}
 			return acc;
 		}, []);
 	}
 
-	private mapArguments(rawData: any[], argumentAlias: string): Argument[] {
-		// TODO: check when arguments are working
-		return [];
-	}
-
 	private mapUsedByTypes(
-		rawData: any[],
+		rows: any[],
 		alias: TableAliases
 	): ParamProvidedBy[] {
-		return rawData.reduce((acc: ParamProvidedBy[], row) => {
+		return rows.reduce((acc: ParamProvidedBy[], row) => {
 			const baseParam = camelizeKeys(row[alias.usedByType]);
 			acc.push({
 				...baseParam,
@@ -395,10 +398,10 @@ export class TypeTransactionalRepository implements TypeService {
 	}
 
 	private mapUsedByOperations(
-		rawData: any[],
+		rows: any[],
 		alias: TableAliases
 	): ParamProvidedBy[] {
-		return rawData.reduce((acc: ParamProvidedBy[], row) => {
+		return rows.reduce((acc: ParamProvidedBy[], row) => {
 			const baseParam = camelizeKeys(row[alias.usedByOperationParam]);
 			acc.push({
 				...baseParam,
@@ -411,10 +414,10 @@ export class TypeTransactionalRepository implements TypeService {
 	}
 
 	private mapImplementations(
-		rawData: any[],
+		rows: any[],
 		alias: TableAliases
 	): ParamProvidedBy[] {
-		return rawData.reduce((acc: ParamProvidedBy[], row) => {
+		return rows.reduce((acc: ParamProvidedBy[], row) => {
 			const baseImplementation = camelizeKeys(
 				row[alias.implementationType]
 			);
