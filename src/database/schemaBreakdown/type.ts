@@ -1,6 +1,6 @@
 import { connection } from '../index';
 import { Type, TypePayload } from '../../model/type';
-import { Transaction } from 'knex';
+import { QueryBuilder, Transaction } from 'knex';
 import { EntityType } from '../../model/enums';
 import {
 	Argument,
@@ -22,7 +22,7 @@ interface TypeService extends TypeInstanceRepository {
 	countTypesByType(): Promise<TypeCount[]>;
 }
 
-type Aliases = FieldAliases;
+type TableAliases = FieldAliases;
 
 interface FieldAliases {
 	field: string;
@@ -157,7 +157,7 @@ export class TypeTransactionalRepository implements TypeService {
 	}
 
 	async getDetails(id: number): Promise<TypeInstanceDetail> {
-		const alias: Aliases = {
+		const alias: TableAliases = {
 			field: 'field',
 			fieldType: 'fieldType',
 			argumentAssociation: 'argumentAssociation',
@@ -172,14 +172,54 @@ export class TypeTransactionalRepository implements TypeService {
 			service: 'service',
 		};
 		// TODO: get only required fields in SELECTs
-		const result = await connection(this.tableName)
+		const [
+			baseResult,
+			fieldsSettledResult,
+			usedByTypesResult,
+			usedByOperationResult,
+			implementationResult,
+		] = await this.getAsyncQueryResults([
+			this.getTypeByIdQuery(id),
+			this.getFieldsQuery(id, alias),
+			this.getUsedByTypesQuery(id, alias),
+			this.getUsedByOperationQuery(id, alias),
+			this.getImplementationQuery(id, alias),
+		]);
+
+		return {
+			...baseResult,
+			fields: this.mapFields(fieldsSettledResult || [], alias),
+			usedBy: [
+				...this.mapUsedByTypes(usedByTypesResult || [], alias),
+				...this.mapUsedByOperations(usedByOperationResult || [], alias),
+			],
+			implementations: this.mapImplementations(
+				implementationResult || [],
+				alias
+			),
+		} as TypeInstanceDetail;
+	}
+
+	private async getAsyncQueryResults(queries: any[]) {
+		const settledResults = await Promise.allSettled(queries);
+		return settledResults.map((r) => this.getSettledValue(r));
+	}
+
+	private getSettledValue(settled: PromiseSettledResult<any>): any | null {
+		return settled.status === 'fulfilled' ? settled.value : null;
+	}
+
+	private getTypeByIdQuery(id: number): QueryBuilder {
+		return connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
 			.first();
-		const fieldsResult = await connection(this.tableName)
+	}
+
+	private getFieldsQuery(id: number, alias: TableAliases): QueryBuilder {
+		return connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
-			// fields
 			.leftJoin(
 				`${FieldTransactionRepository.tableName} as ${alias.field}`,
 				`${alias.field}.parent_type_id`,
@@ -192,7 +232,6 @@ export class TypeTransactionalRepository implements TypeService {
 				'=',
 				`${alias.field}.children_type_id`
 			)
-			// fields arguments
 			.leftJoin(
 				`type_def_field_arguments as ${alias.argumentAssociation}`,
 				`${alias.argumentAssociation}.field_id`,
@@ -211,10 +250,11 @@ export class TypeTransactionalRepository implements TypeService {
 				'=',
 				`${alias.argument}.children_type_id`
 			)
-			// implementations
 			.options({ nestTables: true });
+	}
 
-		const usedByTypesResult = await connection(this.tableName)
+	private getUsedByTypesQuery(id: number, alias: TableAliases): QueryBuilder {
+		return connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
 			.join(
@@ -242,12 +282,18 @@ export class TypeTransactionalRepository implements TypeService {
 				`type_def_subgraphs.service_id`
 			)
 			.options({ nestTables: true });
+	}
 
-		const usedByOperationResult = await connection(this.tableName)
+	private getUsedByOperationQuery(
+		id: number,
+		alias: TableAliases
+	): QueryBuilder {
+		const operationParamsTableName = 'type_def_operation_parameters';
+		return connection(this.tableName)
 			.select()
 			.where(`${this.tableName}.id`, id)
 			.join(
-				`type_def_operation_parameters as ${alias.usedByOperationParam}`,
+				`${operationParamsTableName} as ${alias.usedByOperationParam}`,
 				`${alias.usedByOperationParam}.type_id`,
 				'=',
 				`${this.tableName}.id`
@@ -265,27 +311,31 @@ export class TypeTransactionalRepository implements TypeService {
 				`${alias.usedByOperation}.service_id`
 			)
 			.options({ nestTables: true });
+	}
 
-		const implementationResult = await connection(
-			'type_def_implementations'
-		)
+	private getImplementationQuery(
+		id: number,
+		alias: TableAliases
+	): QueryBuilder {
+		const implementationTableName = 'type_def_implementations';
+		const subgraphTableName = 'type_def_subgraphs';
+		return connection(implementationTableName)
 			.select()
-			.where(`type_def_implementations.interface_id`, id)
+			.where(`${implementationTableName}.interface_id`, id)
 			.join(
-				`${this.tableName} as ${alias.interfaceType}`,
-				`${alias.interfaceType}.id`,
+				`${this.tableName} as $name.id`,
 				'=',
-				`type_def_implementations.interface_id`
+				`${implementationTableName}.interface_id`
 			)
 			.join(
 				`${this.tableName} as ${alias.implementationType}`,
 				`${alias.implementationType}.id`,
 				'=',
-				`type_def_implementations.implementation_id`
+				`${implementationTableName}.implementation_id`
 			)
 			.join(
-				'type_def_subgraphs',
-				`type_def_subgraphs.type_id`,
+				subgraphTableName,
+				`${subgraphTableName}.type_id`,
 				'=',
 				`${alias.implementationType}.id`
 			)
@@ -293,22 +343,9 @@ export class TypeTransactionalRepository implements TypeService {
 				`${servicesTable} as ${alias.service}`,
 				`${alias.service}.id`,
 				'=',
-				`type_def_subgraphs.service_id`
+				`${subgraphTableName}.service_id`
 			)
 			.options({ nestTables: true });
-
-		return {
-			...result,
-			fields: this.mapFields(fieldsResult, alias),
-			usedBy: [
-				...this.mapUsedByTypes(usedByTypesResult, alias),
-				...this.mapUsedByOperations(usedByOperationResult, alias),
-			],
-			implementations: this.mapImplementations(
-				implementationResult,
-				alias
-			),
-		} as TypeInstanceDetail;
 	}
 
 	private mapFields(
@@ -341,7 +378,10 @@ export class TypeTransactionalRepository implements TypeService {
 		return [];
 	}
 
-	private mapUsedByTypes(rawData: any[], alias: Aliases): ParamProvidedBy[] {
+	private mapUsedByTypes(
+		rawData: any[],
+		alias: TableAliases
+	): ParamProvidedBy[] {
 		return rawData.reduce((acc: ParamProvidedBy[], row) => {
 			const baseParam = camelizeKeys(row[alias.usedByType]);
 			acc.push({
@@ -356,7 +396,7 @@ export class TypeTransactionalRepository implements TypeService {
 
 	private mapUsedByOperations(
 		rawData: any[],
-		alias: Aliases
+		alias: TableAliases
 	): ParamProvidedBy[] {
 		return rawData.reduce((acc: ParamProvidedBy[], row) => {
 			const baseParam = camelizeKeys(row[alias.usedByOperationParam]);
@@ -372,7 +412,7 @@ export class TypeTransactionalRepository implements TypeService {
 
 	private mapImplementations(
 		rawData: any[],
-		alias: Aliases
+		alias: TableAliases
 	): ParamProvidedBy[] {
 		return rawData.reduce((acc: ParamProvidedBy[], row) => {
 			const baseImplementation = camelizeKeys(
