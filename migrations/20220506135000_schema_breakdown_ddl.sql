@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `type_def_operation_parameters` (
     `is_output` tinyint(1) NOT NULL,
     FOREIGN KEY (`operation_id`) REFERENCES `type_def_operations`(`id`) ON DELETE CASCADE,
     FOREIGN KEY (`type_id`) REFERENCES `type_def_types`(`id`) ON DELETE CASCADE,
-    UNIQUE KEY `operation_id` (`operation_id`, `type_id`),
+    UNIQUE KEY `operation_id` (`operation_id`, `type_id`, `name`),
     INDEX `is_output` (`operation_id`, `is_output`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
 
