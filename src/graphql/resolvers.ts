@@ -15,7 +15,22 @@ const dateTime = new Intl.DateTimeFormat('en-GB', {
 	day: 'numeric',
 });
 
+export const commonResolvers = {
+	TypeInstanceDetailResponse: {
+		__resolveType(obj) {
+			if (obj.inputParams || obj.outputParams) {
+				return 'OperationInstanceDetail';
+			}
+			if (obj.fields) {
+				return 'TypeInstanceDetail';
+			}
+			return null;
+		},
+	},
+};
+
 export default {
+	...commonResolvers,
 	Query: {
 		services: async (parent, { limit, offset }) =>
 			servicesModel.getServices(connection, limit, offset),

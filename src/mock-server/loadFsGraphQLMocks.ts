@@ -1,4 +1,5 @@
 import { ApolloServerExpressConfig } from 'apollo-server-express';
+import { commonResolvers } from '../graphql/resolvers';
 import { listFsMocks } from './listFsMocks';
 
 type LoadFsGraphQlMocks = Pick<
@@ -25,6 +26,9 @@ export async function loadFsGraphQlMocks(): Promise<LoadFsGraphQlMocks> {
 	);
 
 	return {
-		resolvers: { Query: roots },
+		resolvers: {
+			...commonResolvers,
+			Query: roots,
+		},
 	};
 }

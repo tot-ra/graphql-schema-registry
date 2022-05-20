@@ -16,6 +16,7 @@ type InstanceDescriptionTableProps = TypeInstanceOutput['getTypeInstance'];
 export const InstanceDescriptionTable = ({
 	name,
 	description,
+	isDeprecated,
 	type,
 	fields,
 	inputParams,
@@ -25,7 +26,7 @@ export const InstanceDescriptionTable = ({
 }: InstanceDescriptionTableProps) => {
 	const fieldsMemo = useMemo(
 		() =>
-			fields.map((field) => ({
+			fields?.map((field) => ({
 				name: field.key,
 				description: field.description,
 				isDeprecated: field.isDeprecated,
@@ -40,9 +41,9 @@ export const InstanceDescriptionTable = ({
 				arguments: field.arguments?.map((argument) => ({
 					name: argument.name,
 					description: argument.description,
-					isArray: argument.parent.isArray,
-					isArrayNullable: argument.parent.isArrayNullable,
-					isNullable: argument.parent.isNullable,
+					isArray: argument.isArray,
+					isArrayNullable: argument.isArrayNullable,
+					isNullable: argument.isNullable,
 					type: {
 						id: argument.parent.id,
 						kind: argument.parent.type,
@@ -55,7 +56,7 @@ export const InstanceDescriptionTable = ({
 
 	const inputParamsMemo = useMemo(
 		() =>
-			inputParams.map((inputParam) => ({
+			inputParams?.map((inputParam) => ({
 				name: inputParam.key,
 				description: inputParam.description,
 				isArray: inputParam.isArray,
@@ -72,7 +73,7 @@ export const InstanceDescriptionTable = ({
 
 	const outputParamsMemo = useMemo(
 		() =>
-			outputParams.map((outputParam) => ({
+			outputParams?.map((outputParam) => ({
 				description: outputParam.description,
 				isArray: outputParam.isArray,
 				isNullable: outputParam.isNullable,
@@ -92,36 +93,37 @@ export const InstanceDescriptionTable = ({
 				title={name}
 				description={description}
 				type={type}
+				isDeprecated={isDeprecated}
 			/>
-			{fields.length > 0 && (
+			{fields?.length > 0 && (
 				<InstanceDescriptionTableFields
 					fields={fieldsMemo}
 					title="Fields"
 					label="Field"
 				/>
 			)}
-			{inputParams.length > 0 && (
+			{inputParams?.length > 0 && (
 				<InstanceDescriptionTableFields
 					fields={inputParamsMemo}
 					title="Input params"
 					label="Param"
 				/>
 			)}
-			{outputParams.length > 0 && (
+			{outputParams?.length > 0 && (
 				<InstanceDescriptionTableFields
 					fields={outputParamsMemo}
 					title="Output params"
 					label="Param"
 				/>
 			)}
-			{usedBy.length > 0 && (
+			{usedBy?.length > 0 && (
 				<InstanceDescriptionTableFieldsProvided
 					fields={usedBy}
 					title="Used by"
 					label="Entity"
 				/>
 			)}
-			{implementations.length > 0 && (
+			{implementations?.length > 0 && (
 				<InstanceDescriptionTableFieldsProvided
 					fields={implementations}
 					title="Implemented by"

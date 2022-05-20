@@ -31,6 +31,7 @@ export const InstanceDescriptionTableFieldsArguments = ({
 					<Argument
 						name={argument.name}
 						type={argument.type}
+						description={argument.description}
 						isArray={argument.isArray}
 						isArrayNullable={argument.isArrayNullable}
 						isNullable={argument.isNullable}

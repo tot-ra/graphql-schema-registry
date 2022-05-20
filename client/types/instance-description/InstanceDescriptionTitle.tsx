@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { DeprecatedLabel } from '../../components/DeprecatedLabel';
 import { CommonLink } from '../../components/Link';
 import { colors } from '../../utils';
 
@@ -28,19 +29,30 @@ export const Container = styled.header`
 	}
 `;
 
+const TitleContainer = styled.div`
+	display: flex;
+	align-items: center;
+	column-gap: 1rem;
+`;
+
 type InstanceDescriptionTitleProps = {
 	title: string;
 	description: string;
 	type: string;
+	isDeprecated?: boolean;
 };
 
 export const InstanceDescriptionTitle = ({
 	title,
 	description,
 	type,
+	isDeprecated,
 }: InstanceDescriptionTitleProps) => (
 	<Container>
-		<h3>{title}</h3>
+		<TitleContainer>
+			<h3>{title}</h3>
+			{isDeprecated && <DeprecatedLabel />}
+		</TitleContainer>
 		<p>{description}</p>
 		<p>
 			Kind of type:{' '}
