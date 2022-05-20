@@ -49,5 +49,5 @@ function sleep(ms) {
 
 AfterAll(async () => {
 	await Promise.all(containers.map((container) => container.stop()));
-	process.exit(-1);
+	// process.exit(-1);
 });
