@@ -5,7 +5,7 @@ import * as kafka from './kafka';
 import config from './config';
 import router from './router';
 import { logger } from './logger';
-import process  from 'process';
+import process from 'process';
 
 const app = express();
 
@@ -127,5 +127,5 @@ export async function stop() {
 	await server.close(() => {
 		logger.info('Server shutdown complete. Exiting process.');
 		process.exit(0);
-	})
+	});
 }
