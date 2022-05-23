@@ -181,7 +181,7 @@ export class TypeTransactionalRepository implements TypeService {
 			this.getImplementationQuery(id, alias),
 		]);
 
-		var a = {
+		return {
 			...baseResult,
 			fields: this.mapFields(fieldsSettledResult || [], alias),
 			usedBy: [
@@ -193,7 +193,6 @@ export class TypeTransactionalRepository implements TypeService {
 				alias
 			),
 		} as TypeInstanceDetail;
-		return a;
 	}
 
 	private async getAsyncQueryResults(queries: any[]) {
