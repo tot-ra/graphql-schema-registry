@@ -49,5 +49,7 @@ function sleep(ms) {
 
 AfterAll(async () => {
 	await Promise.all(containers.map((container) => container.stop()));
-	// process.exit(-1);
+	const { stop } = await import('../../../src');
+	await stop();
+	setTimeout(() => process.exit(0), 500);
 });
