@@ -17,7 +17,7 @@ type InstanceSideListingBodyProps = {
 	instanceId: string;
 };
 
-export const InstanceSideListingBody = ({
+export const InstancesSideListingBody = ({
 	items,
 	typeName,
 	instanceId,

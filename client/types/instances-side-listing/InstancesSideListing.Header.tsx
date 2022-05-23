@@ -30,7 +30,7 @@ type InstanceSideListingHeaderProps = {
 	counting: number;
 };
 
-export const InstanceSideListingHeader = ({
+export const InstancesSideListingHeader = ({
 	typeName,
 	counting,
 }: InstanceSideListingHeaderProps) => {
