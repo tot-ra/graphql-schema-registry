@@ -60,6 +60,7 @@ export const InstancesListing = ({
 	return (
 		<Container>
 			<InstancesListingTitle>{typeName}</InstancesListingTitle>
+			{/* <DateRangeSelector /> */}
 			<TableContainer component={Paper}>
 				<Table
 					component={
