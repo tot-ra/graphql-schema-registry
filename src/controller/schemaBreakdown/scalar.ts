@@ -57,7 +57,7 @@ export class ScalarStrategy
 		if (entities.length === 0) {
 			return;
 		}
-		await this.typeRepository.insert(
+		await this.typeRepository.insertIgnoreTypes(
 			data.trx,
 			createTypes(entities, EntityType.SCALAR)
 		);
@@ -77,18 +77,31 @@ export class ScalarStrategy
 
 		return types
 			.map((type) => {
-				return [
-					...('fields' in type
-						? type.fields.map((i) =>
-								this.getInternalScalars(i.type)
-						  )
-						: []),
+				const args = [
 					...('arguments' in type
 						? type.arguments.map((a) =>
 								this.getInternalScalars(a.type)
 						  )
 						: []),
 				];
+				const fields =
+					'fields' in type
+						? type.fields
+								?.map((f) => {
+									return [
+										this.getInternalScalars(f.type),
+										...('arguments' in f
+											? f.arguments?.map((a) =>
+													this.getInternalScalars(
+														a.type
+													)
+											  )
+											: []),
+									];
+								})
+								.flat(1)
+						: [];
+				return [...args, ...fields];
 			})
 			.flat(1);
 	}
