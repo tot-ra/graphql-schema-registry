@@ -1,5 +1,5 @@
-import TypeTransactionalRepository from '../../database/schemaBreakdown/type';
-import OperationsRepository from '../../database/schemaBreakdown/operations';
+import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
+import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
 import { EntityType, OperationType } from '../../model/enums';
 import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
 import { GraphQLError } from 'graphql';
@@ -40,9 +40,9 @@ export default async function listTypeInstances(
 	let repository: TypeInstanceRepository;
 
 	if (isEnum(evaluatedType, EntityType)) {
-		repository = TypeTransactionalRepository;
+		repository = TypeTransactionalRepository.getInstance();
 	} else if (isEnum(evaluatedType, OperationType)) {
-		repository = OperationsRepository;
+		repository = OperationTransactionalRepository.getInstance();
 	} else {
 		throw new GraphQLError(`Unknown type: ${type}`);
 	}

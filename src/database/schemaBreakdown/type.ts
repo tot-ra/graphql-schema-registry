@@ -452,5 +452,3 @@ export class TypeTransactionalRepository
 		}, []);
 	}
 }
-
-export default new TypeTransactionalRepository();

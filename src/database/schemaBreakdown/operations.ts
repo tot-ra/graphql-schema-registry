@@ -33,7 +33,7 @@ export type OperationCount = {
 	count: number;
 };
 
-export class OperationRepository
+export class OperationTransactionalRepository
 	extends BreakDownRepository<OperationPayload, Operation>
 	implements OperationService
 {
@@ -158,5 +158,3 @@ export class OperationRepository
 		return { outputParams, inputParams };
 	}
 }
-
-export default new OperationRepository();

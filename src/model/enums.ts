@@ -1,7 +1,7 @@
 export enum OperationType {
-	QUERY = "query",
-	MUTATION = "mutation",
-	SUBSCRIPTION = "subscription",
+	QUERY = 'query',
+	MUTATION = 'mutation',
+	SUBSCRIPTION = 'subscription',
 }
 
 export enum EntityType {
