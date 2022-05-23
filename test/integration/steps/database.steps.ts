@@ -38,7 +38,6 @@ Then(
 	}
 );
 
-
 Then(
 	'the database must contain some {string} types as {string}',
 	async (type: string, names: string) => {
