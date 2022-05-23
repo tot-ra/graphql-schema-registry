@@ -105,6 +105,7 @@ export class TypeTransactionalRepository
 		const typesData = connection(TABLE_NAME)
 			.select()
 			.where('type', type)
+			.orderBy(`${TABLE_NAME}.name`)
 			.limit(limit)
 			.offset(offset)
 			.as(paginatedTypesAlias);
