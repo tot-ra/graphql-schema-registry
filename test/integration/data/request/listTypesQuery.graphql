@@ -1,0 +1,12 @@
+query listTypesQuery {
+	listTypes {
+		operations {
+			type
+			count
+		}
+		entities {
+			type
+			count
+		}
+	}
+}

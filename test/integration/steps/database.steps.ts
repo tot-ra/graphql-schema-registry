@@ -1,5 +1,37 @@
-import { Then } from '@cucumber/cucumber';
+import path from 'path';
+import fs from 'fs';
+import { Given, Then } from '@cucumber/cucumber';
 import expect from 'expect';
+
+async function deleteAllBreakdownTables() {
+	const breakdownSchemaTables = [
+		'services',
+		'type_def_field_arguments',
+		'type_def_fields',
+		'type_def_implementations',
+		'type_def_operation_parameters',
+		'type_def_operations',
+		'type_def_subgraphs',
+		'type_def_types',
+	];
+	const { connection } = await import('../../../src/database');
+	await Promise.all(
+		breakdownSchemaTables.map((table) => connection(table).del())
+	);
+}
+
+Given(
+	'the database is imported from {string}',
+	async (dbStateFileName: string) => {
+		await deleteAllBreakdownTables();
+		const schemaFilePath = path.join(
+			__dirname,
+			`../data/sql/${dbStateFileName}.sql`
+		);
+		const { connection } = await import('../../../src/database');
+		await connection.raw(fs.readFileSync(schemaFilePath, 'utf8'));
+	}
+);
 
 Then(
 	'the database must contain an operation named {string}',
