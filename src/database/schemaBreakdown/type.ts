@@ -340,7 +340,8 @@ export class TypeTransactionalRepository
 			.select()
 			.where(`${implementationTableName}.interface_id`, id)
 			.join(
-				`${TABLE_NAME} as $name.id`,
+				`${TABLE_NAME} as ${alias.interfaceType}`,
+				`${alias.interfaceType}.id`,
 				'=',
 				`${implementationTableName}.interface_id`
 			)
