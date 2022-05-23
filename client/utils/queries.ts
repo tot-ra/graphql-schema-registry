@@ -219,6 +219,7 @@ type Field = Param & {
 			isArrayNullable: boolean;
 			parent: {
 				id: number;
+				name: string;
 				type: string;
 			};
 		}
@@ -273,6 +274,7 @@ export const TYPE_INSTANCE = gql`
 						isArrayNullable
 						parent {
 							id
+							name
 							type
 						}
 					}
@@ -305,7 +307,6 @@ export const TYPE_INSTANCE = gql`
 			... on OperationInstanceDetail {
 				name
 				description
-				isDeprecated
 				type
 				inputParams {
 					description

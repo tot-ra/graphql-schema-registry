@@ -47,7 +47,7 @@ export const InstanceDescriptionTable = ({
 					type: {
 						id: argument.parent.id,
 						kind: argument.parent.type,
-						name: argument.parent.type,
+						name: argument.parent.name,
 					},
 				})),
 			})),

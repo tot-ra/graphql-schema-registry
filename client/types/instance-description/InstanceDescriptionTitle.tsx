@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { DeprecatedLabel } from '../../components/DeprecatedLabel';
 import { CommonLink } from '../../components/Link';
+import { NormalizedLabel } from '../../shared/styled';
 import { colors } from '../../utils';
 
 export const Container = styled.header`
@@ -56,7 +57,9 @@ export const InstanceDescriptionTitle = ({
 		<p>{description}</p>
 		<p>
 			Kind of type:{' '}
-			<CommonLink to={`/types/${type.toLowerCase()}`}>{type}</CommonLink>
+			<CommonLink to={`/types/${type.toLowerCase()}`}>
+				<NormalizedLabel>{type}</NormalizedLabel>
+			</CommonLink>
 		</p>
 	</Container>
 );

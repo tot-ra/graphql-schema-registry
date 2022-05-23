@@ -71,7 +71,8 @@ export default {
 							isArrayNullable: true,
 							parent: {
 								id: 122,
-								type: 'string',
+								name: 'FLOAT',
+								type: 'SCALAR',
 							},
 						},
 						{
@@ -82,8 +83,9 @@ export default {
 							isArray: true,
 							isArrayNullable: true,
 							parent: {
-								id: 122,
-								type: 'string',
+								id: 123,
+								name: 'Dummy',
+								type: 'OBJECT',
 							},
 						},
 					],
@@ -97,18 +99,18 @@ export default {
 					isArray: true,
 					isArrayNullable: true,
 					parent: {
-						id: 235,
-						name: 'key_parent_1',
+						id: 237,
+						name: 'key_parent_2',
 						type: 'string',
 					},
 				},
 			],
 			usedBy: [
 				{
-					key: 'key_1',
+					key: 'key_1_long_long_enough',
 					parent: {
-						id: 235,
-						name: 'key_parent_1',
+						id: 236,
+						name: 'key_parent_1_so_so_so_so_so_long',
 						type: 'string',
 					},
 					providedBy: {

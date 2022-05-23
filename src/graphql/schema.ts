@@ -108,8 +108,9 @@ export default gql`
 	}
 
 	type FieldArgumentParent {
-		id: Int
-		type: String
+		id: Int!
+		name: String!
+		type: String!
 	}
 
 	type FieldArgument {
@@ -118,7 +119,7 @@ export default gql`
 		isNullable: Boolean
 		isArray: Boolean
 		isArrayNullable: Boolean
-		parent: FieldArgumentParent
+		parent: FieldArgumentParent!
 	}
 
 	type Field {

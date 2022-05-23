@@ -54,6 +54,7 @@ export const InnerTable = styled.table`
 `;
 
 export const NormalizedLabel = styled.span`
+	display: inline-block;
 	text-transform: lowercase;
 	&::first-letter {
 		text-transform: uppercase;

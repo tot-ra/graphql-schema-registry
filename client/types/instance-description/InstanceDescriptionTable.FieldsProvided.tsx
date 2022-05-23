@@ -8,6 +8,7 @@ import {
 	Container,
 	InstanceDescriptionTableTitle,
 } from './InstanceDescriptionTable.Common';
+import styled from 'styled-components';
 
 type InstanceDescriptionTableFieldsProvidedProps = {
 	fields: TypeInstanceOutput['getTypeInstance']['usedBy'];
@@ -15,6 +16,10 @@ type InstanceDescriptionTableFieldsProvidedProps = {
 	label: string;
 	hideParentFromLabel?: boolean;
 };
+
+const CustomCommonLink = styled(CommonLink)`
+	word-spacing: -4px;
+`;
 
 export const InstanceDescriptionTableFieldsProvided = ({
 	fields,
@@ -30,17 +35,19 @@ export const InstanceDescriptionTableFieldsProvided = ({
 					// eslint-disable-next-line react/jsx-key
 					<TableRow>
 						<TableCell component="th" scope="row">
-							<CommonLink
-								to={`/types/${field.parent.name}/${field.parent.id}`}
+							<CustomCommonLink
+								to={`/types/${field.parent.type.toLowerCase()}/${
+									field.parent.id
+								}`}
 							>
-								{[
-									!hideParentFromLabel &&
-										`${field.parent.name}.`,
-									`${field.key}`,
-								]
-									.filter(Boolean)
-									.join('')}
-							</CommonLink>
+								{!hideParentFromLabel && (
+									<>
+										<span>{field.parent.name}</span>
+										<span> . </span>
+									</>
+								)}
+								<span>{field.key}</span>
+							</CustomCommonLink>
 						</TableCell>
 						<TableCell>
 							{field.description ?? <i>No description</i>}
