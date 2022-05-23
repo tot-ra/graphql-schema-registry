@@ -16,7 +16,7 @@ export class PublicError extends Error {
 
 		this.isDisplayedToUser = true;
 	}
-};
+}
 
 export class InternalError extends Error {
 	isDisplayedToUser: boolean;
@@ -36,4 +36,4 @@ export class InternalError extends Error {
 
 		this.isDisplayedToUser = true;
 	}
-};
+}

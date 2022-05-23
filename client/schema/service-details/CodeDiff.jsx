@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDiffViewer, { DiffMethod } from 'react-diff-viewer';
 
 const newStyles = {

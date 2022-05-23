@@ -1,26 +1,48 @@
-import {FieldPayload} from "../../model/field";
-import {Transaction} from "knex";
+import { Field, FieldPayload } from '../../model/field';
+import { Transaction } from 'knex';
+import { BreakDownRepository } from './breakdown';
 
-interface FieldService {
-	insertIgnoreFields(data: FieldPayload[]): Promise<void>
-}
+const TABLE_NAME = 'type_def_fields';
+const TABLE_COLUMNS = [
+	'name',
+	'description',
+	'is_nullable',
+	'is_array',
+	'is_array_nullable',
+	'is_deprecated',
+	'parent_type_id',
+	'children_type_id',
+];
 
-export class FieldTransactionRepository implements FieldService {
+export class FieldTransactionRepository extends BreakDownRepository<
+	FieldPayload,
+	Field
+> {
 	static tableName = 'type_def_fields';
+	private static instance: FieldTransactionRepository;
 
-	constructor(private trx: Transaction) {
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS);
 	}
 
-	async insertIgnoreFields(data: FieldPayload[]) {
-		return this.trx
-			.raw(`INSERT INTO ${FieldTransactionRepository.tableName} (name, is_nullable, is_array, is_array_nullable, is_deprecated, parent_type_id, children_type_id) VALUES ${FieldTransactionRepository.insertBulkPayload(data)}`)
+	static getInstance(): FieldTransactionRepository {
+		if (!FieldTransactionRepository.instance) {
+			FieldTransactionRepository.instance =
+				new FieldTransactionRepository();
+		}
+
+		return FieldTransactionRepository.instance;
 	}
 
-	private static insertBulkPayload(data: FieldPayload[]): string {
-		const insertData = data.map(i => {
-			return `('${i.name}', ${i.is_nullable ? 1 : 0}, ${i.is_array ? 1 : 0}, ${i.is_array_nullable ? 1 : 0}, ${i.is_deprecated ? 1 : 0}, ${i.parent_type_id}, ${i.children_type_id})`;
-		})
+	async insertIgnoreFields(trx: Transaction, data: FieldPayload[]) {
+		return super.insert(trx, data);
+	}
 
-		return insertData.join(',');
+	async getFieldsByNames(trx: Transaction, data: string[]): Promise<Field[]> {
+		return super.get(trx, data, 'name');
+	}
+
+	async removeFields(trx: Transaction, data: string[]) {
+		return super.remove(trx, data, 'name');
 	}
 }

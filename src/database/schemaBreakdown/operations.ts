@@ -1,4 +1,5 @@
-import Knex from 'knex';
+import Knex, { Transaction } from 'knex';
+import { BreakDownRepository } from './breakdown';
 import { connection } from '../index';
 import { Operation, OperationPayload } from '../../model/operation';
 import { OperationType } from '../../model/enums';
@@ -13,6 +14,9 @@ import { camelizeKeys } from 'humps';
 
 export const table = 'type_def_operations';
 const parametersTableName = 'type_def_operation_parameters';
+
+const TABLE_NAME = 'type_def_operations';
+const TABLE_COLUMNS = ['name', 'description', 'type', 'service_id'];
 
 interface OperationService extends TypeInstanceRepository {
 	insertOperation(trx: Knex, data: OperationPayload): Promise<Operation>;
@@ -29,13 +33,38 @@ export type OperationCount = {
 	count: number;
 };
 
-export class OperationRepository implements OperationService {
+export class OperationRepository
+	extends BreakDownRepository<OperationPayload, Operation>
+	implements OperationService
+{
+	private static instance: OperationTransactionalRepository;
+
+	constructor() {
+		super(TABLE_NAME, TABLE_COLUMNS);
+	}
+
+	static getInstance(): OperationTransactionalRepository {
+		if (!OperationTransactionalRepository.instance) {
+			OperationTransactionalRepository.instance =
+				new OperationTransactionalRepository();
+		}
+
+		return OperationTransactionalRepository.instance;
+	}
+
+	async getOperationsByNames(trx: Transaction, data: string[]) {
+		return super.get(trx, data, 'name');
+	}
+
+	async insertIgnoreOperations(trx: Transaction, data: OperationPayload[]) {
+		return super.insert(trx, data);
+	}
 	async insertOperation(trx: Knex, data: OperationPayload) {
-		const id = await trx().insert(data).into(table).returning('id');
+		const [id] = await trx().insert(data).into(table).returning('id');
 
 		return {
 			...data,
-			id: 12,
+			id,
 		} as Operation;
 	}
 
@@ -112,7 +141,9 @@ export class OperationRepository implements OperationService {
 		const [outputParams, inputParams]: [InputParam[], OutputParam[]] =
 			inputParamsResult.reduce(
 				([outputs, inputs], current) => {
-					const parameter = camelizeKeys(current[parametersTableName]);
+					const parameter = camelizeKeys(
+						current[parametersTableName]
+					);
 					const hydratedParameter = {
 						...parameter,
 						key: parameter.name,

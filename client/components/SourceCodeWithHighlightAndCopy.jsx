@@ -1,4 +1,3 @@
-import React from 'react';
 import CheckIcon from '@material-ui/icons/Check';
 import FilterNoneIcon from '@material-ui/icons/FilterNone';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
