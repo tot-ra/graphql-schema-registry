@@ -54,7 +54,7 @@
     "date-fns": "2.28.0",
     "dotenv": "10.0.0",
     "express": "4.17.2",
-    "graphql": "15.4.0",
+    "graphql": "15.5.3",
     "graphql-voyager": "1.0.0-rc.31",
     "humps": "^2.0.1",
     "joi": "17.6.0",
