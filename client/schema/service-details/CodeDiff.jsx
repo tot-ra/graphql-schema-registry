@@ -30,30 +30,25 @@ const newStyles = {
 		},
 	},
 	emptyGutter: {
-		'min-width': '1px',
-		padding: '0',
-	},
-	gutter: {
-		'min-width': '1px',
+		width: 'auto',
 	},
 	line: {
+		display: 'flex',
 		'line-height': '1',
-		'font-size': '13px',
+		'font-size': '14px',
 		'font-family': 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
 		'&:hover': {
 			background: '#000e95',
 		},
 	},
-	content: {
-		height: '18px',
-		width: 'auto',
-		pre: {
-			'line-height': '18px',
-		},
+	gutter: {
+		minWidth: '20px',
 	},
-	diffContainer: {
+	content: {
+		flexGrow: 1,
+		overflow: 'none',
 		pre: {
-			'line-height': '18px',
+			'font-family': 'Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace',
 		},
 	},
 	marker: {

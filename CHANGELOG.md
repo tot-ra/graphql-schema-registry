@@ -8,7 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [3.2.1] - 2022-05-14
+
 ### Updated
+
 - Added react-refresh-webpack-plugin. It only executes in development mode: its setup is conditionally imported in server side, so its inclusion is omitted in production mode.
 - For the setup of the previous one, I've had to wrap all the server setup in a async function to make the conditional import works. It doesn't affect to any functionality.
 - Added source map loading for node_modules libraries.
