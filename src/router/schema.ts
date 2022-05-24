@@ -119,3 +119,7 @@ export async function diff(req, res) {
 		data: await diffSchemas({ service }),
 	});
 }
+
+export async function usage(req, res) {
+	return res.json('OK');
+}

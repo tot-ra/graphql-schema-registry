@@ -33,4 +33,6 @@ router.post('/schema/validate', asyncWrap(schema.validate));
 
 router.delete('/service/:name', asyncWrap(service.remove));
 
+router.post('/api/ingress/traces', asyncWrap(schema.usage));
+
 export default router;
