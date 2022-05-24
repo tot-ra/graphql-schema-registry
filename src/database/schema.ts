@@ -2,6 +2,7 @@ import Knex from 'knex';
 import { unionBy } from 'lodash';
 import { connection } from './index';
 import servicesModel from './services';
+import { PublicError } from '../helpers/error';
 import { logger } from '../logger';
 
 function isDevVersion(version: string) {
@@ -217,6 +218,12 @@ const schemaModel = {
 			})
 		)[0]?.id;
 
+		if (existingService && !schemaId && await versionExists(trx, existingService.id, service.version)) {
+			const message = `Schema [${existingService.name}] and version [${service.version}] already exist in registry. `
+				+ `You should not register different type_defs with same version.`;
+			throw new PublicError(message, null);
+		}
+
 		if (schemaId) {
 			await trx('schema')
 				.where('id', '=', schemaId)
@@ -384,5 +391,14 @@ const schemaModel = {
 			});
 	},
 };
+
+async function versionExists(trx, serviceId, version) {
+	return (
+		await trx('container_schema').select('id').where({
+			service_id: serviceId,
+			version: version,
+		})
+	)[0]?.id;
+}
 
 export default schemaModel;
