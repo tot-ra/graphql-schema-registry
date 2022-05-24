@@ -12,7 +12,7 @@ exports[`Lists tests NavigationListItem tests should render a chevron icon when 
     class="MuiListItemText-root"
   >
     <span
-      class="MuiTypography-root MuiListItemText-primary MuiTypography-body1 MuiTypography-displayBlock"
+      class="MuiTypography-root makeStyles-text-2 MuiTypography-body1 MuiTypography-displayBlock"
     >
       Test
     </span>
