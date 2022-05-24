@@ -211,7 +211,7 @@ npm run test-functional
 ```
 
 ### Performance tests
-use k6 + dockerized setup similar to functional tests above + grafana and influxdb for reporting the load
+use [k6](https://k6.io/docs/) + dockerized setup similar to functional tests above + grafana and influxdb for reporting the load
 these tests are intended just to show/detect avg latencies of most important endpoints
 
 ```
@@ -221,7 +221,7 @@ open http://localhost:8087/dashboard/import
 
 docker-compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/schema-latest.test.js
 ```
-
+<img width="900" alt="Screenshot 2022-05-25 at 01 54 30" src="https://user-images.githubusercontent.com/445122/170144969-d46089ae-b049-459b-a37d-b4d197753bc6.png">
 
 ### Testing Dockerimage build
 
