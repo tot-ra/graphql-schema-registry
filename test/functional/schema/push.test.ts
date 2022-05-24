@@ -61,4 +61,76 @@ describe('POST /schema/push', function () {
 			);
 		}
 	});
+
+	it('allows to register same schema from same service twice, because multiple pods can start at the same time', async () => {
+		let result = await request({
+			method: 'POST',
+			uri: 'http://localhost:6001/schema/push',
+			resolveWithFullResponse: true,
+			json: true,
+			body: {
+				name: 'service_c',
+				version: 'v1',
+				type_defs: '\n\ttype Query {\n\t\tme: String\n\t}\n',
+			},
+		});
+
+		expect(result.statusCode).toBe(200);
+
+		try {
+			result = await request({
+				method: 'POST',
+				uri: 'http://localhost:6001/schema/push',
+				resolveWithFullResponse: true,
+				json: true,
+				body: {
+					name: 'service_c',
+					version: 'v1',
+					type_defs: '\n\ttype Query {\n\t\tme: String\n\t}\n',
+				},
+			});
+		} catch (err) {
+			expect(err).toBe('unexpected error');
+		}
+
+		expect(result.statusCode).toBe(200);
+	});
+
+	it('returns 400 if new schema definition gets pushed with an existing version', async () => {
+		let result = await request({
+			method: 'POST',
+			uri: 'http://localhost:6001/schema/push',
+			resolveWithFullResponse: true,
+			json: true,
+			body: {
+				name: 'service_c',
+				version: 'v1',
+				type_defs: '\n\ttype Query {\n\t\tme: String\n\t}\n',
+			},
+		});
+
+		expect(result.statusCode).toBe(200);
+
+		try {
+			 result = await request({
+				method: 'POST',
+				uri: 'http://localhost:6001/schema/push',
+				resolveWithFullResponse: true,
+				json: true,
+				body: {
+					name: 'service_c',
+					version: 'v1',
+					type_defs: '\n\ttype Query {\n\t\tme: String\n\tyou:String\n\t}\n',
+				},
+			});
+		} catch (err) {
+			expect(err.statusCode).toBe(400);
+			expect(err.response.body).toEqual(
+				expect.objectContaining({
+					success: false,
+					message: expect.stringContaining('You should not register different type_defs with same version')
+				})
+			);
+		}
+	});
 });
