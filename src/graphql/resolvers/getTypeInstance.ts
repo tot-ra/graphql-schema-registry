@@ -3,7 +3,7 @@ import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
 import { isEnum } from '../utils';
 import { TypeInstanceRepository } from '../../model/repository';
-import { GraphQLError } from 'graphql';
+import { UserInputError } from 'apollo-server-express';
 
 export default function getTypeInstance(_parent, { type, id }) {
 	const evaluatedType = type.toLowerCase();
@@ -14,7 +14,7 @@ export default function getTypeInstance(_parent, { type, id }) {
 	} else if (isEnum(evaluatedType, OperationType)) {
 		repository = OperationTransactionalRepository.getInstance();
 	} else {
-		throw new GraphQLError(`Unknown type: ${type}`);
+		throw new UserInputError(`Unknown type: ${type}`);
 	}
 
 	return repository.getDetails(id);

@@ -1,9 +1,19 @@
 import 'reflect-metadata';
+import { resolve } from 'path';
 import { AfterAll, BeforeAll } from '@cucumber/cucumber';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import config from '../../../src/config';
 import { getSeedFile } from './db-config';
+import { extendExpect } from './customMatchers/toContainObject';
+import expect from 'expect';
 
+extendExpect(expect);
+
+const dataPath = resolve(__dirname, '..', 'data');
+export const requestDataPath = resolve(dataPath, 'request');
+export const responseDataPath = resolve(dataPath, 'response');
+export const sqlDataPath = resolve(dataPath, 'sql');
+export let apolloServer;
 let containers: StartedTestContainer[] = [];
 
 BeforeAll({ timeout: 60000 * 1000 }, async () => {
@@ -41,6 +51,8 @@ BeforeAll({ timeout: 60000 * 1000 }, async () => {
 	await sleep(1500);
 	const { warmup } = await import('../../../src/start');
 	await warmup();
+	const { server } = await import('../../../src/graphql/index');
+	apolloServer = server;
 });
 
 function sleep(ms) {

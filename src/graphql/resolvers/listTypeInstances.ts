@@ -2,8 +2,8 @@ import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
 import { EntityType, OperationType } from '../../model/enums';
 import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
-import { GraphQLError } from 'graphql';
 import { getPaginatedResult, isEnum, Pagination } from '../utils';
+import { UserInputError } from 'apollo-server-express';
 
 interface ListedTypeInstances {
 	items: TypeInstance[];
@@ -44,7 +44,7 @@ export default async function listTypeInstances(
 	} else if (isEnum(evaluatedType, OperationType)) {
 		repository = OperationTransactionalRepository.getInstance();
 	} else {
-		throw new GraphQLError(`Unknown type: ${type}`);
+		throw new UserInputError(`Unknown type: ${type}`);
 	}
 
 	return listPaginatedInstances(repository, evaluatedType, limit, offset);
