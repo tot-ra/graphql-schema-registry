@@ -5,6 +5,7 @@ import TypeListingInstances from './type-listing-instances';
 import MainSectionContainer from '../components/MainSectionContainer';
 import InstancesSideListing from './instances-side-listing';
 import InstanceDescription from './instance-description';
+import InstanceStats from './instance-stats';
 
 const Types = () => (
 	<MainSectionContainer gridColumns="0.2fr 0.8fr">
@@ -29,7 +30,7 @@ const Types = () => (
 					`/types/${typeName}/${item.id}/stats`
 				}
 			/>
-			<span />
+			<InstanceStats />
 		</Route>
 	</MainSectionContainer>
 );

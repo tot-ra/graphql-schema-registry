@@ -1,32 +1,54 @@
-import zIndex from '@material-ui/core/styles/zIndex';
-import { useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
-import styled from 'styled-components';
+import { useQuery } from '@apollo/client';
+import { MainViewContainer } from '../../shared/styled';
+import useMinimumTime from '../../shared/useMinimumTime';
+import useCommonParams from '../../shared/useCommonParams';
+import {
+	TypeInstanceStatsOutput,
+	TypeInstanceStatsVars,
+	TYPE_INSTANCE_STATS,
+} from '../../utils/queries';
+import { InstanceStatsListing } from './InstanceStatsListing';
+import { Typography } from '@material-ui/core';
+import { InstanceStatsListingSkeleton } from './InstanceStatsListing.Skeleton';
 
-const Container = styled.div`
-	position: fixed;
-	top: 0;
-	right: 0;
-	z-index: ${zIndex.modal};
-`;
+const date = new Date();
 
 export const InstanceStats = () => {
-	const rootElement = useRef<HTMLElement>(null);
+	const { typeName, instanceId } = useCommonParams();
 
-	if (!rootElement.current) {
-		rootElement.current = document.createElement('div');
-		document.body.appendChild(rootElement.current);
-	}
-
-	useEffect(() => () => {
-		const el = rootElement.current;
-		if (el) {
-			document.body.removeChild(el);
-		}
+	const { loading, error, data } = useQuery<
+		TypeInstanceStatsOutput,
+		TypeInstanceStatsVars
+	>(TYPE_INSTANCE_STATS, {
+		variables: {
+			type: typeName,
+			id: instanceId,
+			startDate: date,
+			endDate: date,
+		},
 	});
 
-	return ReactDOM.createPortal(
-		<Container>holi</Container>,
-		rootElement.current
+	const effectiveLoading = useMinimumTime(loading);
+
+	if (effectiveLoading) {
+		return <InstanceStatsListingSkeleton />;
+	}
+
+	if (error || !data) {
+		return (
+			<MainViewContainer>
+				<Typography component="span">
+					Something wrong happened :(
+				</Typography>
+			</MainViewContainer>
+		);
+	}
+
+	const { getUsageTrack, getTypeInstance } = data;
+
+	return (
+		<MainViewContainer>
+			<InstanceStatsListing items={getUsageTrack} {...getTypeInstance} />
+		</MainViewContainer>
 	);
 };

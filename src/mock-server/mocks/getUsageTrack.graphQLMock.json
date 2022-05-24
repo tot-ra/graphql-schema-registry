@@ -1,0 +1,103 @@
+{
+  "getUsageTrack": [
+    {
+      "client": {
+        "name": "client_1",
+        "versions": [
+          {
+            "id": "0.0.2",
+            "operations": [
+              {
+                "name": "operation_1",
+                "executions": 12,
+                "fields": [
+                  {
+                    "id": 1,
+                    "type": "String",
+                    "name": "Field_1"
+                  },
+                  {
+                    "id": 2,
+                    "type": "String",
+                    "name": "Field_2"
+                  },
+                  {
+                    "id": 3,
+                    "type": "String",
+                    "name": "Field_3"
+                  }
+                ]
+              },
+              {
+                "name": "operation_2",
+                "executions": 15,
+                "fields": [
+                  {
+                    "id": 1,
+                    "type": "String",
+                    "name": "Field_1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "0.0.3",
+            "operations": [
+              {
+                "name": "operation_1",
+                "executions": 12,
+                "fields": [
+                  {
+                    "id": 1,
+                    "type": "String",
+                    "name": "Field_1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "client": {
+        "name": "client_2",
+        "versions": [
+          {
+            "id": "0.0.2",
+            "operations": [
+              {
+                "name": "operation_1",
+                "executions": 12,
+                "fields": [
+                  {
+                    "id": 1,
+                    "type": "String",
+                    "name": "Field_1"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "0.0.3",
+            "operations": [
+              {
+                "name": "operation_1",
+                "executions": 12,
+                "fields": [
+                  {
+                    "id": 1,
+                    "type": "String",
+                    "name": "Field_1"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

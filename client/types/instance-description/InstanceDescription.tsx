@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
-import { useParams } from 'react-router-dom';
 import { ErrorRetry } from '../../components/ErrorRetry';
 import { MainViewContainer } from '../../shared/styled';
+import useCommonParams from '../../shared/useCommonParams';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
 	TypeInstanceOutput,
@@ -11,20 +11,8 @@ import {
 import { InstanceDescriptionSkeleton } from './InstanceDescription.Skeleton';
 import { InstanceDescriptionTable } from './InstanceDescriptionTable';
 
-const safeParseInt = (input: string): number | undefined => {
-	if (/\d+/.test(input)) {
-		return parseInt(input, 10);
-	}
-	return undefined;
-};
-
 export const InstanceDescription = () => {
-	const { typeName, instanceId } = useParams<{
-		typeName: string;
-		instanceId: string;
-	}>();
-
-	const effectiveInstanceId = safeParseInt(instanceId) ?? -1;
+	const { typeName, instanceId } = useCommonParams();
 
 	const { loading, data, error, refetch } = useQuery<
 		TypeInstanceOutput,
@@ -32,7 +20,7 @@ export const InstanceDescription = () => {
 	>(TYPE_INSTANCE, {
 		variables: {
 			type: typeName,
-			instanceId: effectiveInstanceId,
+			instanceId,
 		},
 	});
 

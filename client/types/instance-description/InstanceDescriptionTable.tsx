@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import useStats from '../../shared/useStats';
 import { TypeInstanceOutput } from '../../utils/queries';
 import { InstanceDescriptionTableFields } from './InstanceDescriptionTable.Fields';
 import { InstanceDescriptionTableFieldsProvided } from './InstanceDescriptionTable.FieldsProvided';
@@ -14,6 +15,7 @@ export const Container = styled.section`
 type InstanceDescriptionTableProps = TypeInstanceOutput['getTypeInstance'];
 
 export const InstanceDescriptionTable = ({
+	id,
 	name,
 	description,
 	isDeprecated,
@@ -87,6 +89,8 @@ export const InstanceDescriptionTable = ({
 		[outputParams]
 	);
 
+	const [hasStats, buildUrl] = useStats(type);
+
 	return (
 		<Container>
 			<InstanceDescriptionTitle
@@ -94,6 +98,7 @@ export const InstanceDescriptionTable = ({
 				description={description}
 				type={type}
 				isDeprecated={isDeprecated}
+				statsPath={hasStats ? buildUrl(id) : undefined}
 			/>
 			{fields?.length > 0 && (
 				<InstanceDescriptionTableFields

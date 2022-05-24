@@ -1,8 +1,21 @@
+import { Link } from '@material-ui/core';
 import styled from 'styled-components';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
 import { DeprecatedLabel } from '../../components/DeprecatedLabel';
 import { CommonLink } from '../../components/Link';
 import { NormalizedLabel } from '../../shared/styled';
 import { colors } from '../../utils';
+
+const CustomCommonLink = styled(CommonLink)`
+	display: inline-flex;
+	align-items: flex-end;
+	column-gap: 0.3rem;
+
+	& > span {
+		font-size: 0.9rem;
+		line-height: 1rem;
+	}
+`;
 
 export const Container = styled.header`
 	display: grid;
@@ -41,6 +54,7 @@ type InstanceDescriptionTitleProps = {
 	description: string;
 	type: string;
 	isDeprecated?: boolean;
+	statsPath?: string;
 };
 
 export const InstanceDescriptionTitle = ({
@@ -48,11 +62,23 @@ export const InstanceDescriptionTitle = ({
 	description,
 	type,
 	isDeprecated,
+	statsPath,
 }: InstanceDescriptionTitleProps) => (
 	<Container>
 		<TitleContainer>
 			<h3>{title}</h3>
 			{isDeprecated && <DeprecatedLabel />}
+			{statsPath && (
+				<Link
+					component={CustomCommonLink}
+					variant="button"
+					to={statsPath}
+					starIc
+				>
+					<EqualizerIcon titleAccess="Stats" fontSize="small" />
+					<span>Stats</span>
+				</Link>
+			)}
 		</TitleContainer>
 		<p>{description}</p>
 		<p>

@@ -232,12 +232,16 @@ type InputParam = Param & {
 
 type OutputParam = Param;
 
+type GetTypeInstanceBase = {
+	id: number;
+	name: string;
+	description?: string;
+	isDeprecated?: boolean;
+	type: string;
+};
+
 export type TypeInstanceOutput = {
-	getTypeInstance: {
-		name: string;
-		description: string;
-		isDeprecated?: boolean;
-		type: string;
+	getTypeInstance: GetTypeInstanceBase & {
 		fields?: Field[];
 		inputParams?: InputParam[];
 		outputParams?: OutputParam[];
@@ -251,6 +255,7 @@ export const TYPE_INSTANCE = gql`
 		getTypeInstance(type: $type, id: $instanceId) {
 			__typename
 			... on TypeInstanceDetail {
+				id
 				name
 				description
 				type
@@ -305,6 +310,7 @@ export const TYPE_INSTANCE = gql`
 				}
 			}
 			... on OperationInstanceDetail {
+				id
 				name
 				description
 				type
@@ -331,6 +337,83 @@ export const TYPE_INSTANCE = gql`
 					isArray
 					isArrayNullable
 				}
+			}
+		}
+	}
+`;
+
+export type TypeInstanceStatsOutput = {
+	getUsageTrack: {
+		client: {
+			name: string;
+			versions: {
+				id: string;
+				operations: {
+					name: string;
+					executions: number;
+					fields: {
+						id: number;
+						type: string;
+						name: string;
+					}[];
+				}[];
+			}[];
+		};
+	}[];
+
+	getTypeInstance: GetTypeInstanceBase;
+};
+
+export type TypeInstanceStatsVars = {
+	id: number;
+	type: string;
+	startDate: Date;
+	endDate: Date;
+};
+
+export const TYPE_INSTANCE_STATS = gql`
+	query GetTypeInstanceStats(
+		$id: Int!
+		$type: String!
+		$startDate: Date!
+		$endDate: Date!
+	) {
+		getUsageTrack(
+			id: $id
+			type: $type
+			startDate: $startDate
+			endDate: $endDate
+		) {
+			client {
+				name
+				versions {
+					id
+					operations {
+						name
+						executions
+						fields {
+							id
+							type
+							name
+						}
+					}
+				}
+			}
+		}
+
+		getTypeInstance(type: $type, id: $id) {
+			__typename
+			... on TypeInstanceDetail {
+				id
+				name
+				description
+				type
+			}
+			... on OperationInstanceDetail {
+				id
+				name
+				description
+				type
 			}
 		}
 	}

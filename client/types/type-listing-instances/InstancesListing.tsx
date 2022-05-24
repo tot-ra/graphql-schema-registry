@@ -20,8 +20,8 @@ import {
 	InnerTableFourColumns,
 	InnerTableThreeColumns,
 } from '../../shared/styled';
-
-const withStats = ['query', 'mutation', 'object'];
+import useStats from '../../shared/useStats';
+// import DateRangeSelector from '../../components/DateRangeSelector';
 
 export const Container = styled.section`
 	display: grid;
@@ -55,7 +55,7 @@ export const InstancesListing = ({
 		onRowsPerPageChange(parseInt(event.target.value, 10));
 	};
 
-	const hasStats = withStats.includes(typeName.toLowerCase());
+	const [hasStats, buildUrl] = useStats(typeName);
 
 	return (
 		<Container>
@@ -111,9 +111,7 @@ export const InstancesListing = ({
 										<Link
 											component={CommonLink}
 											variant="button"
-											to={`/types/${item.type.toLowerCase()}/${
-												item.id
-											}/stats`}
+											to={buildUrl(item.id)}
 										>
 											<EqualizerIcon titleAccess="Stats" />
 										</Link>

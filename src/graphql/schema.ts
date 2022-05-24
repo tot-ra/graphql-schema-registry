@@ -24,6 +24,12 @@ export default gql`
 			offset: Int
 		): ListTypeInstancesOutput!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
+		getUsageTrack(
+			id: Int!
+			type: String!
+			startDate: Date!
+			endDate: Date!
+		): [UsageTrackResponse!]!
 	}
 
 	type Mutation {
@@ -162,6 +168,7 @@ export default gql`
 	}
 
 	type TypeInstanceDetail {
+		id: ID!
 		name: String!
 		description: String!
 		type: String!
@@ -171,6 +178,7 @@ export default gql`
 	}
 
 	type OperationInstanceDetail {
+		id: ID!
 		name: String!
 		description: String!
 		isDeprecated: Boolean!
@@ -182,4 +190,30 @@ export default gql`
 	union TypeInstanceDetailResponse =
 		  TypeInstanceDetail
 		| OperationInstanceDetail
+
+	type UsageTrackField {
+		id: ID!
+		type: String!
+		name: String!
+	}
+
+	type UsageTrackOperation {
+		name: String!
+		executions: Int!
+		fields: [UsageTrackField!]!
+	}
+
+	type UsageTrackVersion {
+		id: String!
+		operations: [UsageTrackOperation!]!
+	}
+
+	type UsageTrackClient {
+		name: String!
+		versions: [UsageTrackVersion!]!
+	}
+
+	type UsageTrackResponse {
+		client: UsageTrackClient!
+	}
 `;

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useQuery } from '@apollo/client';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { DEFAULT_OFFSET, usePaginationValues } from '../../shared/pagination';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
@@ -12,11 +12,12 @@ import { InstancesListing } from './InstancesListing';
 import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
 import { MainViewContainer } from '../../shared/styled';
 import { ErrorRetry } from '../../components/ErrorRetry';
+import useCommonParams from '../../shared/useCommonParams';
 
 export const TypeListingInstances = () => {
 	const history = useHistory();
 	const [pagination, createPaginationSearchParams] = usePaginationValues();
-	const { typeName } = useParams<{ typeName: string }>();
+	const { typeName } = useCommonParams();
 
 	const { loading, data, error, refetch } = useQuery<
 		TypeInstancesOutput,
