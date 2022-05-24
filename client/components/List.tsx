@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemText, makeStyles } from '@material-ui/core';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import React, { ReactNode, useCallback, useState } from 'react';
 import {
@@ -30,6 +30,13 @@ type NavigationListItemProps = {
 	showNavigationChevron?: boolean;
 };
 
+const useStyles = makeStyles({
+	text: {
+		color: '#515151',
+		fontSize: '0.9rem',
+	},
+});
+
 export const NavigationListItem = React.forwardRef<
 	HTMLAnchorElement,
 	NavigationListItemProps
@@ -37,6 +44,7 @@ export const NavigationListItem = React.forwardRef<
 	{ href, value, showNavigationChevron = true },
 	ref
 ) {
+	const styles = useStyles();
 	const [active, setActive] = useState(false);
 	const isActive = useCallback((match) => {
 		setActive(!!match);
@@ -69,7 +77,10 @@ export const NavigationListItem = React.forwardRef<
 			ref={ref}
 			role="link"
 		>
-			<ListItemText primary={value} />
+			<ListItemText
+				primary={value}
+				primaryTypographyProps={{ className: styles.text }}
+			/>
 			{showNavigationChevron && <ChevronRightIcon />}
 		</ListItem>
 	);
