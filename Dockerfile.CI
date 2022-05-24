@@ -19,7 +19,7 @@ RUN mkdir -p /app && \
 chown nobody:nobody /app
 WORKDIR /app
 USER nobody
-COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.conf.js ./
+COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.config.js ./
 RUN npm install
 ADD git_src/src ./src
 RUN npm run build-backend
