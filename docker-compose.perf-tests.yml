@@ -1,0 +1,98 @@
+version: '3'
+services:
+  gql-schema-registry-db:
+    image: mysql:8
+    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    environment:
+      SERVICE_3306_NAME: gql-schema-registry-db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: schema_registry
+    ports:
+      - 6000:3306
+    volumes:
+      - gql-schema-registry-db-volume:/var/lib/mysql
+    healthcheck:
+      test:
+        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'healthcheck']
+      timeout: 5s
+      retries: 10
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-db'
+
+  gql-schema-registry:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: ./node_modules/.bin/ts-node src/schema-registry.ts
+    ports:
+      - 6001:3000
+      - 6002:5850
+    environment:
+      - ENV_ID=dev
+      - SERVICE_5850_IGNORE=true
+      - WITH_WEBPACK=${WITH_WEBPACK-1}
+      - SERVICE_NAME=schema-registry
+      - SERVICE_3000_NAME=schema-registry
+      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - NODE_ENV=production
+    volumes:
+      - .:/app/
+    restart: always
+    depends_on:
+      - gql-schema-registry-redis
+      - gql-schema-registry-db
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry'
+
+  gql-schema-registry-redis:
+    image: redis:6-alpine
+    ports:
+      - 6004:6379
+    environment:
+      SERVICE_NAME: 'gql-schema-registry-redis'
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry-redis'
+  k6:
+    image: loadimpact/k6:latest
+    environment:
+      - K6_OUT=influxdb=http://influxdb:8086/k6
+    networks:
+      - gql-schema
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./test/perf:/scripts
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    environment:
+      - INFLUXDB_DB=k6
+    networks:
+      gql-schema:
+        aliases:
+          - 'influxdb'
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - gql-schema
+    ports:
+      - "8087:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+    volumes:
+      - ./test/perf/grafana-datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+
+networks:
+  gql-schema:
+
+volumes:
+  gql-schema-registry-db-volume:

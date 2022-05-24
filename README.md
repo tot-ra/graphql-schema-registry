@@ -194,20 +194,34 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ## Testing
-
-Unit tests use jest, coverage is quite low as most logic is in db or libraries.
+### Unit tests
+use jest, coverage is quite low as most logic is in db or libraries.
 
 ```
 npm run test
 ```
 
-Functional tests require docker, mostly blackbox type - real http requests are done against containers.
+### Functional tests
+require docker, mostly blackbox type - real http requests are done against containers.
 DB tables are truncated after every test from within `test/functional/bootstrap.js`
 Jest runs in single worker mode to avoid tests from affecting each other due to same state.
 
 ```
 npm run test-functional
 ```
+
+### Performance tests
+use k6 + dockerized setup similar to functional tests above + grafana and influxdb for reporting the load
+these tests are intended just to show/detect avg latencies of most important endpoints
+
+```
+docker-compose -f docker-compose.perf-tests.yml up
+open http://localhost:8087/dashboard/import
+// Add "2587" to ID, pick influxdb datasource, import dashboard and observe it when you run tests
+
+docker-compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/schema-latest.test.js
+```
+
 
 ### Testing Dockerimage build
 

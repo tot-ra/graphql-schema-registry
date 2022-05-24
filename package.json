@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema-registry",
-  "version": "3.2.3",
+  "version": "3.3.0",
   "description": "Graphql schema registry",
   "main": "app/schema-registry.js",
   "scripts": {
@@ -10,6 +10,8 @@
     "coverage": "./node_modules/.bin/jest --config test/unit/jest.coverage.cjs && coveralls < coverage/lcov.info",
     "test-travis": "npm run test",
     "test-functional": "./node_modules/.bin/jest --config test/functional/jest.config.cjs",
+    "test:performance": "TARGET_URL=localhost:6001 k6 run test/perf/minimum.test.js",
+    "test:performance:dockerized": "docker-compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/minimum.test.js",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,yml,yaml,graphql}'",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md",
     "build": "npm run build-backend && npm run build-frontend",
@@ -107,6 +109,7 @@
     "fork-ts-checker-webpack-plugin": "^6.5.2",
     "husky": "^4.2.5",
     "jest": "^27.5.1",
+    "k6": "^0.0.0",
     "mini-css-extract-plugin": "^2.6.0",
     "morgan": "^1.9.1",
     "prettier": "^2.6.2",
