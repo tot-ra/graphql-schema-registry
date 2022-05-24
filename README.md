@@ -250,12 +250,17 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 
 ### GET /schema/latest
 
-Simplified version of /schema/compose where latest versions from different services is composed. Needed mostly for debugging
+Simplified version of /schema/compose where latest versions from different services are composed.
+Some services prefer this to use this natural schema composition, as its natural and time-based.
 
 ### POST /schema/compose
+Advanced version of schema composition, where you need to provide services & their versions.
+Used by graphql gateway to fetch schema based on currently running containers.
 
-Lists schema based on passed services & their versions.
-Used by graphql gateway to fetch schema based on current containers
+The advantage over time-based composition is that versioned composition allows to automatically
+update federated schema when you deploy older version of the pod in case of some incident.
+If you deploy older pods they can ofc try to register old schema again, but as it already exists
+in schema-registry, it will not be considered as "latest".
 
 #### Request params (optional, raw body)
 
@@ -333,6 +338,7 @@ URL is optional if you use urls from schema-registry as service discovery
   "url": "http://service-b.develop.svc.cluster.local"
 }
 ```
+- ❌ 400 "You should not register different type_defs with same version."
 
 #### POST /schema/validate
 

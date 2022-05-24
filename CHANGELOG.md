@@ -5,16 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+Types of changes:
+- Added for new features.
+- Changed for changes in existing functionality.
+- Deprecated for soon-to-be removed features.
+- Removed for now removed features.
+- Fixed for any bug fixes.
+- Security in case of vulnerabilities.
+
 ## [Unreleased]
 
+## [3.2.3] - 2022-05-25
+## Fixed
+- /schema/push now returns 400 instead of 500 if you attempt to register service schema with same version
+- note, that you can register schema from multiple pods if it is the same (type definitions are matched)
+
 ## [3.2.2] - 2022-05-24
+
 ## Updated
+
 - Fonts in diff & definition tabs are now monospace & same size
 - Added support for use `TypeScript` in the client side code. A pair of components were converted to TypeScript to validate the configuration.
 - Added the configuration for `testing-library/react` and `testing-library/react-hooks`, so unit tests could be added to the client side code. A pair of tests were added to validate the configuration.
 - `eslint-webpack-plugin` was added to avoid forgetting to fix eslint and prettier issues during development.
 - Some commands on Dockerfiles were rewritten to benefit from caching when executing `npm install`
-
 
 ## [3.2.1] - 2022-05-14
 
@@ -263,7 +277,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.2...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.3...HEAD
+[3.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.2...v3.2.3
 [3.2.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.1.0...v3.2.0
