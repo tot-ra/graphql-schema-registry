@@ -11,7 +11,7 @@ import config from '../config';
 import * as kafka from '../kafka';
 
 export async function composeLatest(req, res) {
-	const schema = await getAndValidateSchema(connection);
+	const schema = await getAndValidateSchema(connection, false, false);
 
 	return res.json({
 		success: true,
