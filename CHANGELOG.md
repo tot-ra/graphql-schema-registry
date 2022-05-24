@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.2] - 2022-05-24
+## Updated
+- Fonts in diff & definition tabs are now monospace & same size
+- Added support for use `TypeScript` in the client side code. A pair of components were converted to TypeScript to validate the configuration.
+- Added the configuration for `testing-library/react` and `testing-library/react-hooks`, so unit tests could be added to the client side code. A pair of tests were added to validate the configuration.
+- `eslint-webpack-plugin` was added to avoid forgetting to fix eslint and prettier issues during development.
+- Some commands on Dockerfiles were rewritten to benefit from caching when executing `npm install`
+
+
 ## [3.2.1] - 2022-05-14
 
 ### Updated
@@ -254,7 +263,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.2...HEAD
+[3.2.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.1...v3.1.0
