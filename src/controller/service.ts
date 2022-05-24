@@ -1,6 +1,7 @@
-import * as logger from '../logger';
 import servicesModel from '../database/services';
 import { connection } from '../database';
+
+import { logger } from '../logger';
 
 export async function deleteService({ name }) {
 	const services = await servicesModel.deleteService(connection, name);
@@ -10,4 +11,4 @@ export async function deleteService({ name }) {
 		logger.info('Service was not deleted from DB (not found)', { name });
 	}
 	return services;
-};
+}

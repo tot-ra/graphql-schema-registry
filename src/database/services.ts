@@ -1,5 +1,4 @@
 import Knex from 'knex';
-import { connection } from './index';
 
 const servicesModel = {
 	getActiveServices: async function (trx: Knex) {

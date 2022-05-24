@@ -1,10 +1,11 @@
 import { diff } from '@graphql-inspector/core';
-import * as logger from '../logger';
 
 import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
 import Knex from 'knex';
+
+import { logger } from '../logger';
 
 export async function getAndValidateSchema(trx: Knex, services = false) {
 	const schemas = services
@@ -37,11 +38,13 @@ export async function pushAndValidateSchema({ service }) {
 
 		return schema;
 	});
-};
+}
 
 export async function validateSchema({ service }) {
 	return await transact(async (trx) => {
-		const schemas = await schemaModel.getLastUpdatedForActiveServices({ trx });
+		const schemas = await schemaModel.getLastUpdatedForActiveServices({
+			trx,
+		});
 
 		federationHelper.composeAndValidateSchema(
 			schemas
@@ -49,25 +52,27 @@ export async function validateSchema({ service }) {
 				.concat(service)
 		);
 	});
-};
+}
 
 export async function deactivateSchema({ id }) {
 	return await transact(async (trx) => {
 		await schemaModel.toggleSchema({ trx, id }, false);
 		await getAndValidateSchema(trx);
 	});
-};
+}
 
 export async function activateSchema({ id }) {
 	return await transact(async (trx) => {
 		await schemaModel.toggleSchema({ trx, id }, true);
 		await getAndValidateSchema(trx);
 	});
-};
+}
 
 export async function diffSchemas({ service }) {
 	return await transact(async (trx) => {
-		const schemas = await schemaModel.getLastUpdatedForActiveServices({ trx });
+		const schemas = await schemaModel.getLastUpdatedForActiveServices({
+			trx,
+		});
 
 		if (schemas && schemas.length) {
 			const original = federationHelper.composeAndValidateSchema(schemas);
@@ -80,4 +85,4 @@ export async function diffSchemas({ service }) {
 			return diff(original, updated);
 		}
 	});
-};
+}

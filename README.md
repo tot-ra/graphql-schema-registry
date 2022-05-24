@@ -8,6 +8,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ![](https://img.shields.io/travis/pipedrive/graphql-schema-registry/master?logo=travis)
 ![](https://img.shields.io/github/v/release/pipedrive/graphql-schema-registry?sort=semver)
 ![](https://img.shields.io/coveralls/github/pipedrive/graphql-schema-registry/master?logo=coveralls)
+[![](https://snyk.io/test/github/pipedrive/graphql-schema-registry/badge.svg)](https://snyk.io/test/github/pipedrive/graphql-schema-registry)
 
 ## Features
 
@@ -26,13 +27,14 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 (Pull requests are encouraged on these topics)
 
 - Usage tracking (to avoid breaking changes) - needs a separate docker sub-process in golang
-  - registered clients (based on headers, including apollo-* ones)
+  - registered clients (based on headers, including apollo-\* ones)
   - schema usage breakdown by multiple facets - property, day, query name, client name
   - fixed data retention
+- schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
+  - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 - Performance tracking (to know what resolvers to optimize)
 - access control - lightweight authentication in case this internal tool is publicly accessible
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
-- integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 
 ## Configuration
 
@@ -61,6 +63,8 @@ The following are the different environment variables that are looked up that al
 | ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
 | KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
 | KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
+| LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
+| LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 Node service uses to connect to mysql & redis and change it if you install it with own setup.
@@ -81,7 +85,7 @@ node app/schema-registry.js
 ### Docker image
 
 We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry/tags) for main node service.
-It assumes you have mysql/redis running separately. 
+It assumes you have mysql/redis running separately.
 Use exact IP instead of `localhost`.
 Use exact docker image tag to avoid breaking changes.
 
@@ -164,7 +168,7 @@ docker-compose -f docker-compose.dev.yml up
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```
-docker-compose -f docker-compose.light.yml up
+docker-compose -f docker-compose.light.yml up -d
 npm run develop
 ```
 
@@ -194,7 +198,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 Unit tests use jest, coverage is quite low as most logic is in db or libraries.
 
 ```
-npm run test-unit
+npm run test
 ```
 
 Functional tests require docker, mostly blackbox type - real http requests are done against containers.
@@ -203,6 +207,21 @@ Jest runs in single worker mode to avoid tests from affecting each other due to 
 
 ```
 npm run test-functional
+```
+
+### Testing Dockerimage build
+
+If you change build process in Dockerfile or Dockerfile.CI, consider checking also testing it
+
+```
+# run db
+docker-compose -f docker-compose.light.yml up
+
+#build local image
+docker build -t local/graphql-schema-registry .
+
+# try to run it
+docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 local/graphql-schema-registry
 ```
 
 ## Contribution

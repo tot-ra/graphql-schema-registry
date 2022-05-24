@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { EntryPanel } from '../components/styled';
 import QueryName from './QueryName';

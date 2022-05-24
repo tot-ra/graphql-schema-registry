@@ -15,4 +15,4 @@ export async function remove(req, res) {
 		success: services > 0,
 		data: null,
 	});
-};
+}

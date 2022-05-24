@@ -1,7 +1,7 @@
 export default {
 	port: process.env.PORT || '3000',
 
-	//override me
+	// override me
 	formatCommitLink: (serviceName, hash) =>
 		`https://github.com/MY_ORGANIZATION/${serviceName}/commit/${hash}`,
 
