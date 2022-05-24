@@ -198,7 +198,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 Unit tests use jest, coverage is quite low as most logic is in db or libraries.
 
 ```
-npm run test-unit
+npm run test
 ```
 
 Functional tests require docker, mostly blackbox type - real http requests are done against containers.
