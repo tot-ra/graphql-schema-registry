@@ -168,7 +168,7 @@ docker-compose -f docker-compose.dev.yml up
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```
-docker-compose -f docker-compose.light.yml up
+docker-compose -f docker-compose.light.yml up -d
 npm run develop
 ```
 
@@ -210,7 +210,9 @@ npm run test-functional
 ```
 
 ### Testing Dockerimage build
+
 If you change build process in Dockerfile or Dockerfile.CI, consider checking also testing it
+
 ```
 # run db
 docker-compose -f docker-compose.light.yml up
