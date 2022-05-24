@@ -5,10 +5,10 @@ export interface KeyHandlerService {
 
 export class KeyHandler implements KeyHandlerService {
 	createClientUsageKey(clientId: number, query: String): String {
-		return "";
+		return '';
 	}
 
 	createCounterKey(clientId: number, query: String): String {
-		return "";
+		return '';
 	}
 }
