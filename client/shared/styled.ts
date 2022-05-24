@@ -58,7 +58,7 @@ export const InnerTableFourColumns = styled.table`
 	table-layout: fixed;
 
 	th:first-child {
-		width: 25%;
+		width: 30%;
 	}
 
 	th:nth-child(2),
@@ -73,7 +73,7 @@ export const InnerTableFourColumns = styled.table`
 	}
 
 	th:last-child {
-		width: 10%;
+		width: 5%;
 	}
 `;
 

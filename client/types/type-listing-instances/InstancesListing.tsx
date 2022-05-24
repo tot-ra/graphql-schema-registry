@@ -10,12 +10,18 @@ import {
 	TablePagination,
 	TableRow,
 } from '@material-ui/core';
+import EqualizerIcon from '@material-ui/icons/Equalizer';
 import styled from 'styled-components';
 import { CommonLink } from '../../components/Link';
 import { InstancesListingTitle } from './InstancesListingTitle';
 import SchemasListing from '../schemas-listing';
 import { ListTypeInstances } from '../../utils/queries';
-import { InnerTableFourColumns } from '../../shared/styled';
+import {
+	InnerTableFourColumns,
+	InnerTableThreeColumns,
+} from '../../shared/styled';
+
+const withStats = ['query', 'mutation', 'object'];
 
 export const Container = styled.section`
 	display: grid;
@@ -49,17 +55,25 @@ export const InstancesListing = ({
 		onRowsPerPageChange(parseInt(event.target.value, 10));
 	};
 
+	const hasStats = withStats.includes(typeName.toLowerCase());
+
 	return (
 		<Container>
 			<InstancesListingTitle>{typeName}</InstancesListingTitle>
 			<TableContainer component={Paper}>
-				<Table component={InnerTableFourColumns}>
+				<Table
+					component={
+						hasStats
+							? InnerTableFourColumns
+							: InnerTableThreeColumns
+					}
+				>
 					<TableHead>
 						<TableRow>
 							<TableCell>Types</TableCell>
 							<TableCell />
 							<TableCell>Schemas</TableCell>
-							<TableCell />
+							{hasStats && <TableCell />}
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -91,17 +105,19 @@ export const InstancesListing = ({
 										/>
 									)}
 								</TableCell>
-								<TableCell>
-									<Link
-										component={CommonLink}
-										variant="button"
-										to={`/types/${item.type.toLowerCase()}/${
-											item.id
-										}/stats`}
-									>
-										Stats
-									</Link>
-								</TableCell>
+								{hasStats && (
+									<TableCell>
+										<Link
+											component={CommonLink}
+											variant="button"
+											to={`/types/${item.type.toLowerCase()}/${
+												item.id
+											}/stats`}
+										>
+											<EqualizerIcon titleAccess="Stats" />
+										</Link>
+									</TableCell>
+								)}
 							</TableRow>
 						))}
 					</TableBody>
