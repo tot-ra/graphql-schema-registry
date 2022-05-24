@@ -1,0 +1,56 @@
+name: Performance Tests
+
+on:
+  push:
+    branches:
+      - master
+      - features/**
+      - dependabot/**
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
+  statuses: write
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  security-events: none
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Start service + stub services
+        run: docker compose -f "docker-compose.perf-tests.yml" up -d --build
+
+      - name: Sleep for 20 seconds until everything is up
+        run: sleep 20s
+        shell: bash
+
+      - run: docker compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/schema-latest.test.js
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f "docker-compose.perf-tests.yml" down

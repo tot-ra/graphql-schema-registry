@@ -15,6 +15,12 @@ Types of changes:
 
 ## [Unreleased]
 
+## [3.3.0] - 2022-05-25
+## Updated
+- /schema/latest now does not have schema validation, because we expect schema to be validated
+during /schema/push. This is performance improvement
+- added performance tests. Mean duration for simple schema perf test ~ 660 ms (dockerized, your experience may differ)
+
 ## [3.2.3] - 2022-05-25
 ## Fixed
 - /schema/push now returns 400 instead of 500 if you attempt to register service schema with same version
