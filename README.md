@@ -209,6 +209,19 @@ Jest runs in single worker mode to avoid tests from affecting each other due to 
 npm run test-functional
 ```
 
+### Testing Dockerimage build
+If you change build process in Dockerfile or Dockerfile.CI, consider checking also testing it
+```
+# run db
+docker-compose -f docker-compose.light.yml up
+
+#build local image
+docker build -t local/graphql-schema-registry .
+
+# try to run it
+docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 local/graphql-schema-registry
+```
+
 ## Contribution
 
 - Commit often (instead of making huge commits)
