@@ -1,4 +1,4 @@
-import { MainViewContainer } from '../../shared/styled';
+import { MainViewContainer } from '../../components/MainViewContainer';
 import { InstanceDescriptionTableSkeleton } from './InstanceDescriptionTable.Skeleton';
 
 export const InstanceDescriptionSkeleton = () => (

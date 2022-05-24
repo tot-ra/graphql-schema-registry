@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client';
-import { MainViewContainer } from '../../shared/styled';
 import useMinimumTime from '../../shared/useMinimumTime';
 import useCommonParams from '../../shared/useCommonParams';
 import {
@@ -10,6 +9,7 @@ import {
 import { InstanceStatsListing } from './InstanceStatsListing';
 import { Typography } from '@material-ui/core';
 import { InstanceStatsListingSkeleton } from './InstanceStatsListing.Skeleton';
+import { MainViewContainer } from '../../components/MainViewContainer';
 
 const date = new Date();
 

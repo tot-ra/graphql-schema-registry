@@ -9,15 +9,6 @@ export const FlexRow = styled.div`
 	justify-content: space-between;
 `;
 
-export const MainViewContainer = styled.main`
-	overflow: auto;
-	padding: 2rem;
-	display: grid;
-	grid-template-rows: auto 1fr;
-	row-gap: 2rem;
-	background-color: #f5f5f8;
-`;
-
 export const InnerTableTwoColumns = styled.table`
 	width: 100%;
 	table-layout: fixed;

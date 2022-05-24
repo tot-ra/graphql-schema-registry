@@ -10,9 +10,9 @@ import {
 } from '../../utils/queries';
 import { InstancesListing } from './InstancesListing';
 import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
-import { MainViewContainer } from '../../shared/styled';
 import { ErrorRetry } from '../../components/ErrorRetry';
 import useCommonParams from '../../shared/useCommonParams';
+import { MainViewContainer } from '../../components/MainViewContainer';
 
 export const TypeListingInstances = () => {
 	const history = useHistory();

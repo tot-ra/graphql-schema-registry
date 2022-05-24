@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { ErrorRetry } from '../../components/ErrorRetry';
-import { MainViewContainer } from '../../shared/styled';
+import { MainViewContainer } from '../../components/MainViewContainer';
 import useCommonParams from '../../shared/useCommonParams';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
