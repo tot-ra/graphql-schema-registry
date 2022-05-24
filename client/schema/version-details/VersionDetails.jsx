@@ -5,7 +5,6 @@ import TabPanel from '../../components/TabPanel';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 import {
-	Container,
 	VersionHeader,
 	VersionHeaderTitle,
 	VersionHeaderTime,
@@ -19,6 +18,7 @@ import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighl
 
 import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
+import { MainViewContainer } from '../../shared/styled';
 
 export function useSchemaParam() {
 	const { schemaId } = useParams();
@@ -72,7 +72,7 @@ const VersionDetails = () => {
 	}
 
 	return (
-		<Container>
+		<MainViewContainer>
 			<div>
 				<VersionHeader>
 					<div>
@@ -144,7 +144,7 @@ const VersionDetails = () => {
 					</table>
 				</TabPanel>
 			</div>
-		</Container>
+		</MainViewContainer>
 	);
 };
 

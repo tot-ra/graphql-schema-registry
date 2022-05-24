@@ -1,18 +1,16 @@
 import { useQuery } from '@apollo/client';
 
 import { ServiceListColumnEmpty } from '../styled';
-
 import { SERVICES_LIST } from '../../utils/queries';
-import { useRouteMatch, useHistory } from 'react-router-dom';
 
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import { ListContainer } from '../../components/List';
+import {
+	ListContainer,
+	NavigationList,
+	NavigationListItem,
+} from '../../components/List';
 
 const ServiceList = () => {
 	const { data } = useQuery(SERVICES_LIST);
-	const match = useRouteMatch('/:serviceName');
-	const history = useHistory();
 
 	if (!data || !data.services || data.services.length === 0) {
 		return (
@@ -35,21 +33,16 @@ const ServiceList = () => {
 
 	return (
 		<ListContainer>
-			<List component="nav">
+			<NavigationList component="nav">
 				{data.services.map((service) => (
-					<ListItem
+					<NavigationListItem
 						key={service.name}
-						button
-						onClick={() => history.push(`/schema/${service.name}`)}
-						selected={service.name === match?.params?.serviceName}
-					>
-						<ListItemText primary={service.name} />
-						<ListItemIcon>
-							<ChevronRightIcon />
-						</ListItemIcon>
-					</ListItem>
+						href={`/schema/${service.name}`}
+						value={service.name}
+						showNavigationChevron
+					/>
 				))}
-			</List>
+			</NavigationList>
 		</ListContainer>
 	);
 };

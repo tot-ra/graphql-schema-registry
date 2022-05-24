@@ -26,23 +26,20 @@ export const ServiceListColumn = styled.div`
 	border-right: 1px solid ${colors.black.hex256};
 `;
 
-export const SchemaListColumn = styled.div`
-	min-width: 250px;
-	flex-shrink: 0;
-	border-right: 1px solid ${colors.black.hex256};
-`;
-
 export const Container = styled.section`
 	flex: 100%;
 	overflow: hidden;
 `;
+
 export const VersionHeaderTitle = styled.h2`
 	font-weight: 400;
 	margin: ${({ noMargin }) => (noMargin ? 0 : '0 16px')};
 `;
+
 export const VersionHeaderTime = styled.div`
 	color: gray;
 `;
+
 export const VersionHeaderUrl = styled.div`
 	color: gray;
 `;
@@ -56,7 +53,6 @@ export const SelectServiceGuide = styled.h1`
 export const VersionHeader = styled.div`
 	display: flex;
 	justify-content: space-between;
-	padding: 20px;
 `;
 export const VersionRow = styled.div`
 	display: flex;

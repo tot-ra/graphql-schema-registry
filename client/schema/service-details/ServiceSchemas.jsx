@@ -2,11 +2,17 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 
 import SpinnerCenter from '../../components/SpinnerCenter';
-import { SchemaListColumn } from '../styled';
 import VersionsList from './VersionsList';
 
 import { SERVICE_SCHEMAS } from '../../utils/queries';
 import Filter from '../service-list/Filter';
+import { ListContainer } from '../../components/List';
+import styled from 'styled-components';
+
+const CustomListcontainer = styled(ListContainer)`
+	display: grid;
+	grid-template-rows: auto 1fr;
+`;
 
 const ServiceSchemas = ({ service }) => {
 	const [filterValue, setFilterValue] = useState('');
@@ -23,10 +29,10 @@ const ServiceSchemas = ({ service }) => {
 	}
 
 	return (
-		<SchemaListColumn all="m">
+		<CustomListcontainer>
 			<Filter filterValue={filterValue} setFilterValue={setFilterValue} />
 			{content}
-		</SchemaListColumn>
+		</CustomListcontainer>
 	);
 };
 
