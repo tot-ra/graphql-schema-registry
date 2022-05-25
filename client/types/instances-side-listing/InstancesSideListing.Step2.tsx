@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
+import { ErrorRetry } from '../../components/ErrorRetry';
 import { ListContainer } from '../../components/List';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
@@ -27,7 +28,7 @@ export const InstancesSideListingStep2 = ({
 	typeName,
 	instanceId,
 }: InstancesSideListingStep2Props) => {
-	const { loading, data, error } = useQuery<
+	const { loading, data, error, refetch } = useQuery<
 		TypeSideInstancesOutput,
 		TypeSideInstancesVars
 	>(TYPE_SIDE_INSTANCES, {
@@ -44,7 +45,7 @@ export const InstancesSideListingStep2 = ({
 	}
 
 	if (error) {
-		return <ListContainer>Something wrong happened :(</ListContainer>;
+		return <ErrorRetry onRetry={refetch} />;
 	}
 
 	const {

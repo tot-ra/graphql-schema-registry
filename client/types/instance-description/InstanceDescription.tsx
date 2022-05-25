@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
+import { ErrorRetry } from '../../components/ErrorRetry';
 import { MainViewContainer } from '../../shared/styled';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
@@ -26,7 +26,7 @@ export const InstanceDescription = () => {
 
 	const effectiveInstanceId = safeParseInt(instanceId) ?? -1;
 
-	const { loading, data, error } = useQuery<
+	const { loading, data, error, refetch } = useQuery<
 		TypeInstanceOutput,
 		TypeInstanceVars
 	>(TYPE_INSTANCE, {
@@ -43,13 +43,7 @@ export const InstanceDescription = () => {
 	}
 
 	if (error || !data) {
-		return (
-			<MainViewContainer>
-				<Typography component="span">
-					Something wrong happened :(
-				</Typography>
-			</MainViewContainer>
-		);
+		return <ErrorRetry onRetry={refetch} />;
 	}
 
 	const { getTypeInstance: payload } = data;

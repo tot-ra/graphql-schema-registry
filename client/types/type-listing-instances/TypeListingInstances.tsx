@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useQuery } from '@apollo/client';
-import { Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 import { DEFAULT_OFFSET, usePaginationValues } from '../../shared/pagination';
 import useMinimumTime from '../../shared/useMinimumTime';
@@ -12,13 +11,14 @@ import {
 import { InstancesListing } from './InstancesListing';
 import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
 import { MainViewContainer } from '../../shared/styled';
+import { ErrorRetry } from '../../components/ErrorRetry';
 
 export const TypeListingInstances = () => {
 	const history = useHistory();
 	const [pagination, createPaginationSearchParams] = usePaginationValues();
 	const { typeName } = useParams<{ typeName: string }>();
 
-	const { loading, data, error } = useQuery<
+	const { loading, data, error, refetch } = useQuery<
 		TypeInstancesOutput,
 		TypeInstancesVars
 	>(TYPE_INSTANCES, {
@@ -63,13 +63,7 @@ export const TypeListingInstances = () => {
 	}
 
 	if (error) {
-		return (
-			<MainViewContainer>
-				<Typography component="span">
-					Something wrong happened :(
-				</Typography>
-			</MainViewContainer>
-		);
+		return <ErrorRetry onRetry={refetch} />;
 	}
 
 	const {

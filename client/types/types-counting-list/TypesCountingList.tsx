@@ -9,6 +9,7 @@ import CountLabel from './CountLabel';
 import { useQuery } from '@apollo/client';
 import { TypesCountingListSkeleton } from './TypesCountingList.Skeleton';
 import useMinimumTime from '../../shared/useMinimumTime';
+import { ErrorRetry } from '../../components/ErrorRetry';
 
 const renderList = (values: ListCount[]) => (
 	<NavigationList>
@@ -24,7 +25,8 @@ const renderList = (values: ListCount[]) => (
 );
 
 export const TypesCountingList = () => {
-	const { loading, data, error } = useQuery<ListTypesOutput>(LIST_TYPES);
+	const { loading, data, error, refetch } =
+		useQuery<ListTypesOutput>(LIST_TYPES);
 
 	const effectiveLoading = useMinimumTime(loading);
 
@@ -33,7 +35,7 @@ export const TypesCountingList = () => {
 	}
 
 	if (error) {
-		return <ListContainer>Something wrong happened :(</ListContainer>;
+		return <ErrorRetry onRetry={refetch} />;
 	}
 
 	const {
