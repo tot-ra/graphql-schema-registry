@@ -1,6 +1,8 @@
 export const colors = {
 	green: {
 		hex: 'green',
+		dark: '#2c4d2c',
+		ligth: '#5a945a',
 	},
 	black: {
 		hex4: '#111111',

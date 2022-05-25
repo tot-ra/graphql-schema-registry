@@ -21,7 +21,6 @@ import {
 	InnerTableThreeColumns,
 } from '../../shared/styled';
 import useStats from '../../shared/useStats';
-// import DateRangeSelector from '../../components/DateRangeSelector';
 
 export const Container = styled.section`
 	display: grid;
@@ -60,7 +59,6 @@ export const InstancesListing = ({
 	return (
 		<Container>
 			<InstancesListingTitle>{typeName}</InstancesListingTitle>
-			{/* <DateRangeSelector /> */}
 			<TableContainer component={Paper}>
 				<Table
 					component={

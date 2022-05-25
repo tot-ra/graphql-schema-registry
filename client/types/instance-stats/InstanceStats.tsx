@@ -7,24 +7,26 @@ import {
 	TYPE_INSTANCE_STATS,
 } from '../../utils/queries';
 import { InstanceStatsListing } from './InstanceStatsListing';
-import { Typography } from '@material-ui/core';
 import { InstanceStatsListingSkeleton } from './InstanceStatsListing.Skeleton';
 import { MainViewContainer } from '../../components/MainViewContainer';
-
-const date = new Date();
+import { useDateRangeSelector } from '../../components/DateRangeSelector.Context';
+import { ErrorRetry } from '../../components/ErrorRetry';
 
 export const InstanceStats = () => {
 	const { typeName, instanceId } = useCommonParams();
+	const {
+		range: { from, to },
+	} = useDateRangeSelector();
 
-	const { loading, error, data } = useQuery<
+	const { loading, error, data, refetch } = useQuery<
 		TypeInstanceStatsOutput,
 		TypeInstanceStatsVars
 	>(TYPE_INSTANCE_STATS, {
 		variables: {
 			type: typeName,
 			id: instanceId,
-			startDate: date,
-			endDate: date,
+			startDate: from,
+			endDate: to,
 		},
 	});
 
@@ -35,13 +37,7 @@ export const InstanceStats = () => {
 	}
 
 	if (error || !data) {
-		return (
-			<MainViewContainer>
-				<Typography component="span">
-					Something wrong happened :(
-				</Typography>
-			</MainViewContainer>
-		);
+		return <ErrorRetry onRetry={refetch} />;
 	}
 
 	const { getUsageTrack, getTypeInstance } = data;

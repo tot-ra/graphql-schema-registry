@@ -14,6 +14,7 @@ import PersistedQueries, {
 } from '../persisted-queries';
 import Types from '../types';
 import styled from 'styled-components';
+import { DateRangeSelectorProvider } from './DateRangeSelector.Context';
 
 const MainContainer = styled.main`
 	height: 100vh;
@@ -23,19 +24,19 @@ const MainContainer = styled.main`
 
 export const UITabs = [
 	{
-		Title: <span>Schema</span>,
+		title: <span>Schema</span>,
 		href: '/schema',
 		icon: 'dashboard',
 		component: Schema,
 	},
 	{
-		Title: <span>Types</span>,
+		title: <span>Types</span>,
 		href: '/types',
 		icon: 'dashboard',
 		component: Types,
 	},
 	{
-		Title: <PersistedQueriesTab />,
+		title: <PersistedQueriesTab />,
 		icon: 'ac-document',
 		href: '/persisted-queries',
 		component: PersistedQueries,
@@ -55,25 +56,27 @@ const Main = () => {
 		setSelectedTab(index >= 0 ? index : 0);
 	}, [pathname]);
 
-	const handleChange = (event, newValue) => {
+	const handleChange = (newValue) => {
 		setSelectedTab(newValue);
 	};
 
 	return (
 		<MainContainer>
-			<TopMenu
-				UITabs={UITabs}
-				selectedTab={selectedTab}
-				handleChange={handleChange}
-			/>
-			<Switch>
-				{UITabs.map(({ component: Component, ...tab }) => (
-					<Route key={tab.href} path={tab.href} exact={false}>
-						<Component />
-					</Route>
-				))}
-				<Redirect to="/schema" />
-			</Switch>
+			<DateRangeSelectorProvider>
+				<TopMenu
+					tabs={UITabs}
+					selectedTab={selectedTab}
+					handleChange={handleChange}
+				/>
+				<Switch>
+					{UITabs.map(({ component: Component, ...tab }) => (
+						<Route key={tab.href} path={tab.href} exact={false}>
+							<Component />
+						</Route>
+					))}
+					<Redirect to="/schema" />
+				</Switch>
+			</DateRangeSelectorProvider>
 		</MainContainer>
 	);
 };

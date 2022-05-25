@@ -15,10 +15,10 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
-import { green } from '@material-ui/core/colors';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import { colors } from '../utils';
 import CustomDateRangeSelectorDialog from './CustomDateRangeSelectorDialog';
+import zIndex from '@material-ui/core/styles/zIndex';
 
 const parseRangeFromDuration = (duration: Duration) => {
 	const now = new Date();
@@ -28,20 +28,15 @@ const parseRangeFromDuration = (duration: Duration) => {
 	};
 };
 
-const parseRangeToUTC = ({ from, to }) => ({
-	from: from.toISOString(),
-	to: to.toISOString(),
-});
-
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		paper: {
 			margin: theme.spacing(2),
 		},
 		button: {
-			backgroundColor: colors.green.hex,
+			backgroundColor: colors.green.dark,
 			'&:hover': {
-				backgroundColor: green[700],
+				backgroundColor: colors.green.ligth,
 			},
 		},
 	})
@@ -54,27 +49,25 @@ const GreenRadio = withStyles({
 		},
 	},
 	checked: {},
-})(Radio);
-
-interface RangeUTC {
-	from: string;
-	to: string;
-}
+})(Radio) as typeof Radio;
 
 interface Range {
 	from: Date;
 	to: Date;
 }
 
-interface DateRangeSelectorProps {
+export interface DateRangeSelectorProps {
 	range?: Range;
 	onRangeChange?: (range: Range) => void;
 }
 
+export const getDefaultRange = () => parseRangeFromDuration({ hours: 1 });
+
 const DateRangeSelector = ({
-	range = parseRangeFromDuration({ hours: 1 }),
-	onRangeChange = () => {},
+	range,
+	onRangeChange = () => null,
 }: DateRangeSelectorProps) => {
+	const effectiveRange = range ?? getDefaultRange();
 	const classes = useStyles();
 	const [open, setOpen] = useState(false);
 	const [openCustomDialog, setOpenCustomDialog] = useState(false);
@@ -86,10 +79,7 @@ const DateRangeSelector = ({
 	};
 
 	const handleClose = (event: React.MouseEvent<EventTarget>) => {
-		if (
-			anchorRef.current &&
-			anchorRef.current.contains(event.target as HTMLElement)
-		) {
+		if (anchorRef.current?.contains(event.target as HTMLElement)) {
 			return;
 		}
 
@@ -97,9 +87,10 @@ const DateRangeSelector = ({
 	};
 
 	const prevOpen = useRef(open);
+
 	useEffect(() => {
 		if (prevOpen.current && !open) {
-			anchorRef.current!.focus();
+			anchorRef.current?.focus();
 		}
 
 		prevOpen.current = open;
@@ -182,7 +173,7 @@ const DateRangeSelector = ({
 									: 'center bottom',
 						}}
 					>
-						<Paper>
+						<Paper style={{ zIndex: zIndex.tooltip }}>
 							<ClickAwayListener onClickAway={handleClose}>
 								<div className={classes.paper}>
 									<FormLabel component="legend">
@@ -196,11 +187,10 @@ const DateRangeSelector = ({
 									>
 										{Object.entries(rangeOptions).map(
 											([key, { label }]) => {
-												
 												return (
 													<FormControlLabel
+														key={key}
 														value={key}
-                            // @ts-ignore
 														control={<GreenRadio />}
 														label={label}
 													/>
@@ -215,7 +205,7 @@ const DateRangeSelector = ({
 				)}
 			</Popper>
 			<CustomDateRangeSelectorDialog
-				range={range}
+				range={effectiveRange}
 				isOpen={openCustomDialog}
 				onClose={handleCloseCustomDialog}
 			/>
@@ -223,25 +213,4 @@ const DateRangeSelector = ({
 	);
 };
 
-export default () => {
-	const [rangeUTC, setRangeUTC] = useState<RangeUTC | undefined>();
-	const [range, setRange] = useState<Range | undefined>();
-
-	useEffect(() => {
-		if (range) {
-			setRangeUTC(parseRangeToUTC(range));
-		}
-	}, [range]);
-
-	useEffect(() => {
-		if (rangeUTC) {
-			console.log(rangeUTC);
-		}
-	}, [rangeUTC]);
-
-	const onRangeChange = (r: Range) => {
-		setRange(r);
-	};
-
-	return <DateRangeSelector range={range} onRangeChange={onRangeChange} />;
-};
+export default DateRangeSelector;

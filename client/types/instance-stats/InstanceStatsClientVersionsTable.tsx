@@ -23,6 +23,8 @@ export const Container = styled(CommonContainer)`
 		font-size: 0.8rem;
 		color: #737373;
 	}
+	padding-inline-start: 0;
+	list-style: none;
 `;
 
 type InstanceStatsClientVersionsTableProps = {
@@ -32,9 +34,9 @@ type InstanceStatsClientVersionsTableProps = {
 export const InstanceStatsClientVersionsTable = ({
 	versions,
 }: InstanceStatsClientVersionsTableProps) => (
-	<Container>
+	<Container as="ul">
 		{versions.map((version) => (
-			<React.Fragment key={version.id}>
+			<CommonContainer as="li" key={version.id}>
 				<Typography variant="h6" component="h5">
 					{version.id}
 				</Typography>
@@ -71,7 +73,7 @@ export const InstanceStatsClientVersionsTable = ({
 						</TableBody>
 					</Table>
 				</TableContainer>
-			</React.Fragment>
+			</CommonContainer>
 		))}
 	</Container>
 );
