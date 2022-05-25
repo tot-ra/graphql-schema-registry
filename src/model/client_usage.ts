@@ -1,5 +1,5 @@
-export interface ClientUsage {
-	query: String;
+export interface ClientQueryDAO {
+	query: string;
 	operations: number[];
 	fields: number[];
 }
