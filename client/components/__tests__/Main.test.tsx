@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom';
-import Main, { UITabs } from '../Main';
+import Main, { tabs } from '../Main';
 
 jest.mock('../TopMenu', () => ({
 	__esModule: true,
@@ -37,7 +37,7 @@ const customRender = (
 describe('Main tests', () => {
 	it('should render for Schema', async () => {
 		customRender(<Main />, {
-			initialEntries: [UITabs[0].href],
+			initialEntries: [tabs[0].href],
 			initialIndex: 0,
 		});
 		const main = await screen.findByRole('main');
@@ -48,7 +48,7 @@ describe('Main tests', () => {
 
 	it('should render for Types', async () => {
 		customRender(<Main />, {
-			initialEntries: [UITabs[1].href],
+			initialEntries: [tabs[1].href],
 			initialIndex: 1,
 		});
 
@@ -60,7 +60,7 @@ describe('Main tests', () => {
 
 	it('should render for PersistedQueries', async () => {
 		customRender(<Main />, {
-			initialEntries: [UITabs[2].href],
+			initialEntries: [tabs[2].href],
 			initialIndex: 2,
 		});
 

@@ -1,8 +1,8 @@
 import { AppBar, Box, Tab, Tabs, Toolbar } from '@material-ui/core';
-import { Route, useHistory } from 'react-router-dom';
+import { Link, Route, useRouteMatch } from 'react-router-dom';
 import ReactLogo from './logo';
 import DateRangeSelector from './DateRangeSelector';
-import { ReactNode, useCallback, useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { colors } from '../utils';
 import { useDateRangeSelector } from './DateRangeSelector.Context';
 
@@ -11,8 +11,6 @@ type TopMenuProps = {
 		title: ReactNode;
 		href: string;
 	}[];
-	selectedTab: number;
-	handleChange: (newTab: number) => unknown;
 };
 
 const DateRangeSelectorHolder = () => {
@@ -28,19 +26,9 @@ const DateRangeSelectorHolder = () => {
 	return <DateRangeSelector range={range} onRangeChange={onRangeChange} />;
 };
 
-export default function TopMenu({
-	tabs,
-	selectedTab,
-	handleChange,
-}: TopMenuProps) {
-	const history = useHistory();
-
-	const onTabChange = useCallback(
-		(_, newTab) => {
-			handleChange(newTab);
-		},
-		[handleChange]
-	);
+export default function TopMenu({ tabs }: TopMenuProps) {
+	const routeMatch = useRouteMatch(tabs.map((tab) => tab.href));
+	const currentTab = routeMatch?.path;
 
 	return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -55,15 +43,17 @@ export default function TopMenu({
 				<Toolbar style={{ minHeight: 'unset' }}>
 					<ReactLogo />
 					<Tabs
-						value={selectedTab}
-						onChange={onTabChange}
-						aria-label="simple tabs example"
+						value={currentTab}
+						aria-label="main sections"
+						component="nav"
 					>
 						{tabs.map((tab) => (
 							<Tab
 								key={tab.href}
-								onClick={() => history.push(tab.href)}
+								value={tab.href}
 								label={tab.title}
+								component={Link}
+								to={tab.href}
 							/>
 						))}
 					</Tabs>
