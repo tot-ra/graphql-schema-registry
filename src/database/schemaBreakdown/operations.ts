@@ -86,6 +86,7 @@ export class OperationTransactionalRepository
 				`${table}.service_id`
 			)
 			.where('type', type)
+			.orderBy(`${table}.name`)
 			.limit(limit)
 			.offset(offset)
 			.options({ nestTables: true });

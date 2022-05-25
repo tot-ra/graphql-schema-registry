@@ -1,0 +1,87 @@
+query queryTypeInstanceDetail($id: Int!, $type: String!) {
+	getTypeInstance(id: $id, type: $type) {
+		__typename
+		... on TypeInstanceDetail {
+			id
+			name
+			description
+			type
+			fields {
+				description
+				isNullable
+				isArray
+				isArrayNullable
+				key
+				isDeprecated
+				arguments {
+					name
+					description
+					isNullable
+					isArray
+					isArrayNullable
+					parent {
+						id
+						name
+						type
+					}
+				}
+			}
+			usedBy {
+				description
+				key
+				parent {
+					id
+					name
+					type
+				}
+				providedBy {
+					id
+					name
+				}
+			}
+			implementations {
+				description
+				parent {
+					id
+					name
+					type
+				}
+				key
+				providedBy {
+					id
+					name
+				}
+			}
+		}
+		... on OperationInstanceDetail {
+			id
+			name
+			description
+			type
+
+			inputParams {
+				description
+				parent {
+					id
+					name
+					type
+				}
+				isNullable
+				isArray
+				isArrayNullable
+				key
+			}
+			outputParams {
+				description
+				parent {
+					id
+					name
+					type
+				}
+				isNullable
+				isArray
+				isArrayNullable
+			}
+		}
+	}
+}

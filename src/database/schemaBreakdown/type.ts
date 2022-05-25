@@ -105,6 +105,7 @@ export class TypeTransactionalRepository
 		const typesData = connection(TABLE_NAME)
 			.select()
 			.where('type', type)
+			.orderBy(`${TABLE_NAME}.name`)
 			.limit(limit)
 			.offset(offset)
 			.as(paginatedTypesAlias);
@@ -188,7 +189,6 @@ export class TypeTransactionalRepository
 			implementationType: 'implementationType',
 			service: 'service',
 		};
-		// TODO: get only required fields in SELECTs
 		const [
 			baseResult,
 			fieldsSettledResult,
@@ -222,6 +222,7 @@ export class TypeTransactionalRepository
 		return settledResults.map((r) => this.getSettledValue(r));
 	}
 
+	// eslint-disable-next-line no-undef
 	private getSettledValue(settled: PromiseSettledResult<any>): any | null {
 		return settled.status === 'fulfilled' ? settled.value : null;
 	}
@@ -340,7 +341,8 @@ export class TypeTransactionalRepository
 			.select()
 			.where(`${implementationTableName}.interface_id`, id)
 			.join(
-				`${TABLE_NAME} as $name.id`,
+				`${TABLE_NAME} as ${alias.interfaceType}`,
+				`${alias.interfaceType}.id`,
 				'=',
 				`${implementationTableName}.interface_id`
 			)
