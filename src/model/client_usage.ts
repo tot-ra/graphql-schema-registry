@@ -3,3 +3,8 @@ export interface ClientQueryDAO {
 	operations: number[];
 	fields: number[];
 }
+
+export interface ClientUsageDAO {
+	success: number;
+	error: number;
+}
