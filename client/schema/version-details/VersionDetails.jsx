@@ -18,7 +18,7 @@ import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighl
 
 import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
-import { MainViewContainer } from '../../shared/styled';
+import { MainViewContainer } from '../../components/MainViewContainer';
 
 export function useSchemaParam() {
 	const { schemaId } = useParams();
