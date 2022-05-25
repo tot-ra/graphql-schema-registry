@@ -1,7 +1,9 @@
+import { ClientQueryDAO, ClientUsageDAO } from '../model/client_usage';
+
 export interface RedisService {
 	set(key: String, value: String, expireAt?: number): Promise<void>;
-	getClientUsage(key: String): Promise<any>;
-	getCounters(pattern: String): Promise<any[]>;
+	getClientUsage(key: String): Promise<ClientQueryDAO>;
+	getCounters(pattern: String): Promise<ClientUsageDAO[]>;
 }
 
 export class RedisRepository implements RedisService {
@@ -15,11 +17,11 @@ export class RedisRepository implements RedisService {
 		return RedisRepository.instance;
 	}
 
-	getClientUsage(key: String): Promise<any> {
+	getClientUsage(key: String): Promise<ClientQueryDAO> {
 		return Promise.resolve(undefined);
 	}
 
-	getCounters(pattern: String): Promise<any[]> {
+	getCounters(pattern: String): Promise<ClientUsageDAO[]> {
 		return Promise.resolve([]);
 	}
 
