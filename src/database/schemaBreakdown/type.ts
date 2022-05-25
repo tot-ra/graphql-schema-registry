@@ -189,7 +189,6 @@ export class TypeTransactionalRepository
 			implementationType: 'implementationType',
 			service: 'service',
 		};
-		// TODO: get only required fields in SELECTs
 		const [
 			baseResult,
 			fieldsSettledResult,
@@ -223,6 +222,7 @@ export class TypeTransactionalRepository
 		return settledResults.map((r) => this.getSettledValue(r));
 	}
 
+	// eslint-disable-next-line no-undef
 	private getSettledValue(settled: PromiseSettledResult<any>): any | null {
 		return settled.status === 'fulfilled' ? settled.value : null;
 	}

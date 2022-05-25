@@ -8,7 +8,7 @@ import {
 	responseDataPath,
 } from '../config/config';
 
-let response: any;
+let response;
 
 when(
 	'I execute the graphQL query in file {string} with variables:',
