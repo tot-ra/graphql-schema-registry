@@ -69,12 +69,8 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 			);
 			//TODO Sync with Marc
 			//TODO Check if errors
-			await redisWrapper.set(
-				`s_${client.id}_${hash}_000000`, 1, ttl
-			);
-			await redisWrapper.set(
-				`e_${client.id}_${hash}_000000`, 0, ttl
-			);
+			await redisWrapper.set(`s_${client.id}_${hash}_000000`, 1, ttl);
+			await redisWrapper.set(`e_${client.id}_${hash}_000000`, 0, ttl);
 		});
 	}
 
