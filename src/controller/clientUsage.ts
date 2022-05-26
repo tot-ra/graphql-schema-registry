@@ -36,11 +36,20 @@ export class ClientUsageController {
 			clientName,
 			clientVersion
 		);
-		const hash = crypto.createHash('md5').update(Object.keys(decodedReport.tracesPerQuery)[0]).digest('hex');
-		const isError = ('error') in firstQuery.trace[0].root;
+		const hash = crypto
+			.createHash('md5')
+			.update(Object.keys(decodedReport.tracesPerQuery)[0])
+			.digest('hex');
+		const isError = 'error' in firstQuery.trace[0].root;
 
 		if (!client || !(await redisWrapper.get(`o_${client.id}_${hash}`))) {
-			const strategy = new RegisterUsage(decodedReport, clientName, clientVersion, isError, hash);
+			const strategy = new RegisterUsage(
+				decodedReport,
+				clientName,
+				clientVersion,
+				isError,
+				hash
+			);
 			await strategy.execute();
 			return;
 		}

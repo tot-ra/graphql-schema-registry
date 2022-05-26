@@ -1,7 +1,7 @@
 import { Client, ClientPayload } from '../model/client';
 import { connection } from './index';
 import { Transaction } from 'knex';
-import {BreakDownRepository} from "./schemaBreakdown/breakdown";
+import { BreakDownRepository } from './schemaBreakdown/breakdown';
 
 interface ClientService {
 	getClientByUnique(name: string, version: string): Promise<Client>;
@@ -16,7 +16,10 @@ interface ClientService {
 const TABLE_NAME = 'clients';
 const TABLE_COLUMNS = ['name', 'version'];
 
-export class ClientRepository extends BreakDownRepository<ClientPayload, Client> implements ClientService {
+export class ClientRepository
+	extends BreakDownRepository<ClientPayload, Client>
+	implements ClientService
+{
 	private static instance: ClientRepository;
 
 	constructor() {
@@ -55,6 +58,6 @@ export class ClientRepository extends BreakDownRepository<ClientPayload, Client>
 		trx: Transaction,
 		client: ClientPayload
 	): Promise<number> {
-		return super.insert(trx, [client])
+		return super.insert(trx, [client]);
 	}
 }
