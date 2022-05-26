@@ -1,0 +1,190 @@
+{
+  "data": {
+    "getTypeInstance": {
+      "__typename": "TypeInstanceDetail",
+      "id": 27,
+      "name": "Tipsheet",
+      "description": null,
+      "type": "OBJECT",
+      "fields": [
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "id",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "title",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "platform",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "body",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": true,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "leadParagraph",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "visible",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "categoryId",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": true,
+          "isArrayNullable": true,
+          "key": "categories",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": true,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "slug",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "picture",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "categoryPicture",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "buttonText",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "buttonUrl",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": false,
+          "isArrayNullable": true,
+          "key": "author",
+          "isDeprecated": false,
+          "arguments": []
+        },
+        {
+          "description": null,
+          "isNullable": false,
+          "isArray": true,
+          "isArrayNullable": true,
+          "key": "features",
+          "isDeprecated": false,
+          "arguments": []
+        }
+      ],
+      "usedBy": [
+        {
+          "description": null,
+          "key": "Tipsheet",
+          "parent": {
+            "id": 5,
+            "name": "tipsheet",
+            "type": "QUERY"
+          },
+          "providedBy": {
+            "id": 4,
+            "name": "tipsheets"
+          }
+        },
+        {
+          "description": "homepageB2cTipsheets is now deprecated",
+          "key": "Tipsheet",
+          "parent": {
+            "id": 8,
+            "name": "homepageB2cTipsheets",
+            "type": "QUERY"
+          },
+          "providedBy": {
+            "id": 5,
+            "name": "homepage-b2c"
+          }
+        },
+        {
+          "description": null,
+          "key": "Tipsheet",
+          "parent": {
+            "id": 9,
+            "name": "homepageB2cTipsheetsV1",
+            "type": "QUERY"
+          },
+          "providedBy": {
+            "id": 5,
+            "name": "homepage-b2c"
+          }
+        }
+      ],
+      "implementations": []
+    }
+  }
+}
