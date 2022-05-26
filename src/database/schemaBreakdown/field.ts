@@ -48,7 +48,7 @@ export class FieldTransactionRepository extends BreakDownRepository<
 			.select()
 			.where('name', name)
 			.andWhere('parent_type_id', parentId)
-			.first()
+			.first();
 	}
 
 	async removeFields(trx: Transaction, data: string[]) {

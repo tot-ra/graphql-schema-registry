@@ -1,32 +1,41 @@
-import {ClientRepository} from "../database/client";
+import { ClientRepository } from '../database/client';
 
 const { Report } = require('apollo-reporting-protobuf');
 import { gql } from '@apollo/client/core';
-import {NotRegisteredClientStrategy} from "./clientUsage/notRegisteredClient";
-import {RegisteredClientStrategy} from "./clientUsage/registeredClient";
-import {Client} from "../model/client";
+import { NotRegisteredClientStrategy } from './clientUsage/notRegisteredClient';
+import { RegisteredClientStrategy } from './clientUsage/registeredClient';
+import { Client } from '../model/client';
 
 interface ClientUsageService {
 	registerUsage(buffer: Buffer): Promise<void>;
 }
 
 export interface ClientUsageStrategy {
-	execute(): Promise<void>
+	execute(): Promise<void>;
 }
 
 export class ClientUsageController implements ClientUsageService {
-
 	private clientRepository = ClientRepository.getInstance();
 
 	async registerUsage(buffer: Buffer) {
 		const decodedReport = Report.decode(buffer).toJSON();
-		const firstQuery = decodedReport.tracesPerQuery[Object.keys(decodedReport.tracesPerQuery)[0]];
+		const firstQuery =
+			decodedReport.tracesPerQuery[
+				Object.keys(decodedReport.tracesPerQuery)[0]
+			];
 		const { clientName, clientVersion } = firstQuery.trace[0];
 
-		const client = await this.clientRepository.getClientByUnique(clientName, clientVersion);
-		const strategy: ClientUsageStrategy =
-			(!client) ? new NotRegisteredClientStrategy(decodedReport, clientName, clientVersion)
-				: new RegisteredClientStrategy(decodedReport, client);
+		const client = await this.clientRepository.getClientByUnique(
+			clientName,
+			clientVersion
+		);
+		const strategy: ClientUsageStrategy = !client
+			? new NotRegisteredClientStrategy(
+					decodedReport,
+					clientName,
+					clientVersion
+			  )
+			: new RegisteredClientStrategy(decodedReport, client);
 		return strategy.execute();
 	}
 }

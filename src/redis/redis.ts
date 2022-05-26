@@ -8,8 +8,7 @@ export class RedisRepository implements RedisService {
 
 	static getInstance(): RedisRepository {
 		if (!RedisRepository.instance) {
-			RedisRepository.instance =
-				new RedisRepository();
+			RedisRepository.instance = new RedisRepository();
 		}
 
 		return RedisRepository.instance;

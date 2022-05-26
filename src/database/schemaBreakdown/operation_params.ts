@@ -1,7 +1,7 @@
 import { Transaction } from 'knex';
 import { OperationParam } from '../../model/operation_param';
 import { BreakDownRepository } from './breakdown';
-import {connection} from "../index";
+import { connection } from '../index';
 
 const TABLE_NAME = 'type_def_operation_parameters';
 const TABLE_COLUMNS = [
@@ -45,6 +45,6 @@ export class OperationParamsTransactionalRepository extends BreakDownRepository<
 		return connection(TABLE_NAME)
 			.where('operation_id', parentId)
 			.andWhere('is_output', 1)
-			.first()
+			.first();
 	}
 }

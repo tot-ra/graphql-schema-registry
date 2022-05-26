@@ -1,23 +1,25 @@
-import {Client, ClientPayload} from "../model/client";
+import { Client, ClientPayload } from '../model/client';
 import { connection } from './index';
-import {Transaction} from "knex";
+import { Transaction } from 'knex';
 
 interface ClientService {
 	getClientByUnique(name: string, version: string): Promise<Client>;
-	getClientByUniqueTrx(trx: Transaction, name: string, version: string): Promise<Client>;
+	getClientByUniqueTrx(
+		trx: Transaction,
+		name: string,
+		version: string
+	): Promise<Client>;
 	insertClient(trx: Transaction, client: ClientPayload): Promise<number>;
 }
 
 const TABLE_NAME = 'clients';
 
 export class ClientRepository implements ClientService {
-
 	private static instance: ClientRepository;
 
 	static getInstance(): ClientRepository {
 		if (!ClientRepository.instance) {
-			ClientRepository.instance =
-				new ClientRepository();
+			ClientRepository.instance = new ClientRepository();
 		}
 
 		return ClientRepository.instance;
@@ -28,20 +30,25 @@ export class ClientRepository implements ClientService {
 			.select()
 			.where('name', name)
 			.andWhere('version', version)
-			.first()
+			.first();
 	}
 
-
-	async getClientByUniqueTrx(trx: Transaction, name: string, version: string) {
+	async getClientByUniqueTrx(
+		trx: Transaction,
+		name: string,
+		version: string
+	) {
 		return trx(TABLE_NAME)
 			.select()
 			.where('name', name)
 			.andWhere('version', version)
-			.first()
+			.first();
 	}
 
-	async insertClient(trx: Transaction, client: ClientPayload): Promise<number> {
-		return trx(TABLE_NAME)
-			.insert(client)
+	async insertClient(
+		trx: Transaction,
+		client: ClientPayload
+	): Promise<number> {
+		return trx(TABLE_NAME).insert(client);
 	}
 }

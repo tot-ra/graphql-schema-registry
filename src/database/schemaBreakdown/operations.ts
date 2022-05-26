@@ -53,10 +53,7 @@ export class OperationTransactionalRepository
 	}
 
 	async getOperationByName(name: string) {
-		return connection(table)
-			.select()
-			.where('name', name)
-			.first()
+		return connection(table).select().where('name', name).first();
 	}
 
 	async getOperationsByNames(trx: Transaction, data: string[]) {
