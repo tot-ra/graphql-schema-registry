@@ -57,6 +57,10 @@ const redisWrapper = {
 		await (await redisWrapper.getInstance()).set(key, value, 'EX', ttl);
 	},
 
+	incr: async (key) => {
+		await (await redisWrapper.getInstance()).incr(key);
+	},
+
 	delete: async (key) => {
 		return await (await redisWrapper.getInstance()).del(key);
 	},
