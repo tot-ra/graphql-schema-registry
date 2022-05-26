@@ -1,50 +1,17 @@
-import { useQuery } from '@apollo/client';
-import useMinimumTime from '../../shared/useMinimumTime';
 import useCommonParams from '../../shared/useCommonParams';
-import {
-	TypeInstanceStatsOutput,
-	TypeInstanceStatsVars,
-	TYPE_INSTANCE_STATS,
-} from '../../utils/queries';
-import { InstanceStatsListing } from './InstanceStatsListing';
-import { InstanceStatsListingSkeleton } from './InstanceStatsListing.Skeleton';
-import { MainViewContainer } from '../../components/MainViewContainer';
-import { useDateRangeSelector } from '../../components/DateRangeSelector.Context';
-import { ErrorRetry } from '../../components/ErrorRetry';
+import { InstanceStatsOperation } from './InstanceStats.Operation';
+import { InstanceStatsEntity } from './InstanceStats.Entity';
 
 export const InstanceStats = () => {
-	const { typeName, instanceId } = useCommonParams();
-	const {
-		range: { from, to },
-	} = useDateRangeSelector();
+	const { typeName } = useCommonParams();
 
-	const { loading, error, data, refetch } = useQuery<
-		TypeInstanceStatsOutput,
-		TypeInstanceStatsVars
-	>(TYPE_INSTANCE_STATS, {
-		variables: {
-			type: typeName,
-			id: instanceId,
-			startDate: from,
-			endDate: to,
-		},
-	});
-
-	const effectiveLoading = useMinimumTime(loading);
-
-	if (effectiveLoading) {
-		return <InstanceStatsListingSkeleton />;
+	if (typeName === 'query' || typeName === 'mutation') {
+		return <InstanceStatsOperation />;
 	}
 
-	if (error || !data) {
-		return <ErrorRetry onRetry={refetch} />;
+	if (typeName === 'object') {
+		return <InstanceStatsEntity />;
 	}
 
-	const { getUsageTrack, getTypeInstance } = data;
-
-	return (
-		<MainViewContainer>
-			<InstanceStatsListing items={getUsageTrack} {...getTypeInstance} />
-		</MainViewContainer>
-	);
+	return null;
 };

@@ -342,20 +342,19 @@ export const TYPE_INSTANCE = gql`
 	}
 `;
 
-export type TypeInstanceStatsOutput = {
-	getUsageTrack: {
+export type TypeInstanceOperationStatsOutput = {
+	getOperationUsageTrack: {
 		client: {
 			name: string;
 			versions: {
 				id: string;
 				operations: {
 					name: string;
-					executions: number;
-					fields: {
-						id: number;
-						type: string;
-						name: string;
-					}[];
+					executions: {
+						success: number;
+						error: number;
+						total: number;
+					};
 				}[];
 			}[];
 		};
@@ -364,23 +363,25 @@ export type TypeInstanceStatsOutput = {
 	getTypeInstance: GetTypeInstanceBase;
 };
 
-export type TypeInstanceStatsVars = {
+type TypeInstanceBaseStatsVars = {
 	id: number;
-	type: string;
 	startDate: Date;
 	endDate: Date;
 };
 
-export const TYPE_INSTANCE_STATS = gql`
-	query GetTypeInstanceStats(
+export type TypeInstanceOperationStatsVars = TypeInstanceBaseStatsVars & {
+	type: string;
+};
+
+export const TYPE_INSTANCE_OPERATION_STATS = gql`
+	query GetTypeInstanceOperationStats(
 		$id: Int!
 		$type: String!
 		$startDate: Date!
 		$endDate: Date!
 	) {
-		getUsageTrack(
+		getOperationUsageTrack(
 			id: $id
-			type: $type
 			startDate: $startDate
 			endDate: $endDate
 		) {
@@ -390,11 +391,10 @@ export const TYPE_INSTANCE_STATS = gql`
 					id
 					operations {
 						name
-						executions
-						fields {
-							id
-							type
-							name
+						executions {
+							success
+							error
+							total
 						}
 					}
 				}
@@ -402,6 +402,72 @@ export const TYPE_INSTANCE_STATS = gql`
 		}
 
 		getTypeInstance(type: $type, id: $id) {
+			__typename
+			... on TypeInstanceDetail {
+				id
+				name
+				description
+				type
+			}
+			... on OperationInstanceDetail {
+				id
+				name
+				description
+				type
+			}
+		}
+	}
+`;
+
+export type TypeInstanceObjectStatsVars = TypeInstanceBaseStatsVars;
+
+export type TypeInstanceObjectStatsOutput = {
+	getEntityUsageTrack: {
+		name: string;
+		description?: string;
+		isNullable: boolean;
+		isArray: boolean;
+		isArrayNullable: boolean;
+		parent: {
+			id: number;
+			name: string;
+			type: string;
+		};
+		executions: {
+			success: number;
+			error: number;
+			total: number;
+		};
+	}[];
+
+	getTypeInstance: GetTypeInstanceBase;
+};
+
+export const TYPE_INSTANCE_OBJECT_STATS = gql`
+	query GetTypeInstanceObjectStats(
+		$id: Int!
+		$startDate: Date!
+		$endDate: Date!
+	) {
+		getEntityUsageTrack(id: $id, startDate: $startDate, endDate: $endDate) {
+			name
+			description
+			isNullable
+			isArrayNullable
+			isArray
+			parent {
+				id
+				name
+				type
+			}
+			executions {
+				success
+				error
+				total
+			}
+		}
+
+		getTypeInstance(type: "object", id: $id) {
 			__typename
 			... on TypeInstanceDetail {
 				id

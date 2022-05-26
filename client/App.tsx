@@ -11,6 +11,22 @@ import Main from './components/Main';
 
 import './style.css';
 import './prism-material-light.css';
+import { createTheme, ThemeProvider } from '@material-ui/core';
+
+const theme = createTheme({
+	overrides: {
+		MuiTableHead: {
+			root: {
+				backgroundColor: '#e4e9e4f7',
+			},
+		},
+		MuiTableCell: {
+			head: {
+				color: '#666666',
+			},
+		},
+	},
+});
 
 type AppProps = {
 	api?: unknown;
@@ -37,11 +53,13 @@ const App = ({ api }: AppProps) => {
 
 	return (
 		<GlobalConfigContext.Provider value={config}>
-			<ApolloProvider client={client}>
-				<Router>
-					<Main />
-				</Router>
-			</ApolloProvider>
+			<ThemeProvider theme={theme}>
+				<ApolloProvider client={client}>
+					<Router>
+						<Main />
+					</Router>
+				</ApolloProvider>
+			</ThemeProvider>
 		</GlobalConfigContext.Provider>
 	);
 };

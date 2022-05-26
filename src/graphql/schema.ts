@@ -24,12 +24,16 @@ export default gql`
 			offset: Int
 		): ListTypeInstancesOutput!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
-		getUsageTrack(
+		getOperationUsageTrack(
 			id: Int!
-			type: String!
 			startDate: Date!
 			endDate: Date!
-		): [UsageTrackResponse!]!
+		): [OperationUsageTrackResponse!]!
+		getEntityUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [EntityUsageTrackResponse!]!
 	}
 
 	type Mutation {
@@ -191,29 +195,44 @@ export default gql`
 		  TypeInstanceDetail
 		| OperationInstanceDetail
 
-	type UsageTrackField {
-		id: ID!
-		type: String!
-		name: String!
+	type UsageExecution {
+		success: Int!
+		error: Int!
+		total: Int!
 	}
 
-	type UsageTrackOperation {
+	type OperationUsageTrackOperation {
 		name: String!
-		executions: Int!
-		fields: [UsageTrackField!]!
+		executions: UsageExecution!
 	}
 
-	type UsageTrackVersion {
+	type OperationUsageTrackVersion {
 		id: String!
-		operations: [UsageTrackOperation!]!
+		operations: [OperationUsageTrackOperation!]!
 	}
 
-	type UsageTrackClient {
+	type OperationUsageTrackClient {
 		name: String!
-		versions: [UsageTrackVersion!]!
+		versions: [OperationUsageTrackVersion!]!
 	}
 
-	type UsageTrackResponse {
-		client: UsageTrackClient!
+	type OperationUsageTrackResponse {
+		client: OperationUsageTrackClient!
+	}
+
+	type EntityUsageTrackParent {
+		id: Int!
+		name: String!
+		type: String!
+	}
+
+	type EntityUsageTrackResponse {
+		name: String!
+		description: String
+		isNullable: Boolean!
+		isArray: Boolean!
+		isArrayNullable: Boolean!
+		parent: EntityUsageTrackParent!
+		executions: UsageExecution!
 	}
 `;

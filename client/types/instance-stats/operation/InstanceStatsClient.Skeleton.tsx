@@ -1,6 +1,6 @@
 import { Skeleton } from '@material-ui/lab';
-import { InstanceStatsClientVersionsTableSkeleton } from './InstanceStatsClientVersionsTable.Skeleton';
-import { Container } from './InstanceStatsListing';
+import { InstanceStatsTableSkeleton } from '../common/InstanceStatsTable.Skeleton';
+import { Container } from '../common/InstanceStatsListing';
 
 type InstanceStatsClientSkeletonProps = {
 	amount?: number;
@@ -14,7 +14,7 @@ export const InstanceStatsClientSkeleton = ({
 		{Array(amount)
 			.fill(null)
 			.map((_, index) => (
-				<InstanceStatsClientVersionsTableSkeleton key={index} />
+				<InstanceStatsTableSkeleton key={index} />
 			))}
 	</Container>
 );
