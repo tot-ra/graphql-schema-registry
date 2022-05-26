@@ -1,20 +1,27 @@
 import { ClientRepository } from '../database/client';
 
 const { Report } = require('apollo-reporting-protobuf');
-import { gql } from '@apollo/client/core';
-import { NotRegisteredClientStrategy } from './clientUsage/notRegisteredClient';
-import { RegisteredClientStrategy } from './clientUsage/registeredClient';
-import { Client } from '../model/client';
+import { RegisterUsage } from './clientUsage/notRegisteredClient';
+import { UpdateUsageStrategy } from './clientUsage/registeredClient';
+import redisWrapper from '../redis';
+import crypto from 'crypto';
 
-interface ClientUsageService {
-	registerUsage(buffer: Buffer): Promise<void>;
-}
-
-export interface ClientUsageStrategy {
-	execute(): Promise<void>;
-}
-
-export class ClientUsageController implements ClientUsageService {
+/*
+const ops = Object.keys(this.decodedReport.tracesPerQuery);
+		const op = ops[0];
+		const hash = crypto.createHash('md5').update(op).digest('hex');
+		const redisKey = `o_${this.client.id}_${hash}`;
+		const operation = await redisWrapper.get(redisKey);
+		if (!operation) {
+			const newQuery = new NotRegisteredClientStrategy(this.decodedReport, this.c)
+			return;
+		}
+		const key = `${this.client.id}_${hash}-${getTimestamp()}`;
+		const isError =
+			'error' in this.decodedReport.tracesPerQuery[op].trace[0].root;
+		await redisWrapper.incr(`${isError ? 'e' : 's'}_${key}`);
+ */
+export class ClientUsageController {
 	private clientRepository = ClientRepository.getInstance();
 
 	async registerUsage(buffer: Buffer) {
@@ -29,35 +36,19 @@ export class ClientUsageController implements ClientUsageService {
 			clientName,
 			clientVersion
 		);
-		const strategy: ClientUsageStrategy = !client
-			? new NotRegisteredClientStrategy(
-					decodedReport,
-					clientName,
-					clientVersion
-			  )
-			: new RegisteredClientStrategy(decodedReport, client);
-		return strategy.execute();
+		const hash = crypto.createHash('md5').update(Object.keys(decodedReport.tracesPerQuery)[0]).digest('hex');
+		const isError = ('error') in firstQuery.trace[0].root;
+
+		if (!client || !(await redisWrapper.get(`o_${client.id}_${hash}`))) {
+			const strategy = new RegisterUsage(decodedReport, clientName, clientVersion, isError, hash);
+			await strategy.execute();
+			return;
+		}
+
+		return await new UpdateUsageStrategy(
+			isError,
+			client.id,
+			hash
+		).execute();
 	}
 }
-// export async function registerUsage(buffer: Buffer) {
-// 	console.log("CONTROLLER BUFFER");
-// 	const decodedReport = Report.decode(buffer);
-// 	const query = decodedReport.toJSON()
-// 	const trace = query.tracesPerQuery;
-// 	const keys = Object.keys(trace);
-// 	const replacedQueries = keys.map(key => {
-// 		const operationName = key.match(/# (\w+)/);
-// 		return query.replace(/# \w+/, '').trim();
-// 	})
-// const query = "# homeBrands\nfragment HomeBrands on Brand{__typename brandId id logo title}query homeBrands($platform:Platform!){homepageB2cBrands(platform:$platform){__typename...HomeBrands}}";
-// const queryDefinition = gql`${result}`
-// console.log(`Apollo usage report: ${JSON.stringify(query)}`);
-// }
-
-/* CLIENT NOT FOUND
-1. Remove # {name}\n
-2. La parte derecha es el schema que he de guardar
-3. Hago "gql" de la parte derecha
-4. Encuentro la operationName y los fieldNames en el resultado de gql
-5. Guardo en redis
- */

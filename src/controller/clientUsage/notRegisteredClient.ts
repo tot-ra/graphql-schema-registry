@@ -1,4 +1,3 @@
-import { ClientUsageStrategy } from '../clientUsage';
 import { gql } from '@apollo/client/core';
 import { OperationDefinitionNode } from 'graphql';
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
@@ -13,7 +12,7 @@ import { getTimestamp } from '../../redis/utils';
 
 const { Report } = require('apollo-reporting-protobuf');
 
-export class NotRegisteredClientStrategy implements ClientUsageStrategy {
+export class RegisterUsage {
 	private operationRepository =
 		OperationTransactionalRepository.getInstance();
 	private operationParamRepository =
@@ -25,7 +24,9 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 	constructor(
 		private decodedReport: typeof Report,
 		private clientName: string,
-		private clientVersion: string
+		private clientVersion: string,
+		private isError: boolean,
+		private hash: string
 	) {}
 
 	async execute() {
@@ -34,8 +35,6 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 		const definition = gql`
 			${op}
 		`;
-		const isError =
-			'error' in this.decodedReport.tracesPerQuery[op].trace[0].root;
 		const outerPromises = definition.definitions.map(
 			async (clientOp: OperationDefinitionNode) => {
 				const promises = clientOp.selectionSet.selections.map((q) => {
@@ -56,7 +55,6 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 				this.clientName,
 				this.clientVersion
 			);
-			const hash = crypto.createHash('md5').update(op).digest('hex');
 			const payload = {
 				query: {
 					name: op.match(/# (\w+)/)[1],
@@ -66,18 +64,18 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 			};
 			const ttl = 24 * 3600 * 30;
 			await redisWrapper.set(
-				`o_${client.id}_${hash}`,
+				`o_${client.id}_${this.hash}`,
 				JSON.stringify(payload),
 				ttl
 			);
 			await redisWrapper.set(
-				`s_${client.id}_${hash}-${getTimestamp()}`,
-				Number(!isError),
+				`s_${client.id}_${this.hash}-${getTimestamp()}`,
+				Number(!this.isError),
 				ttl
 			);
 			await redisWrapper.set(
-				`e_${client.id}_${hash}-${getTimestamp()}`,
-				Number(isError),
+				`e_${client.id}_${this.hash}-${getTimestamp()}`,
+				Number(this.isError),
 				ttl
 			);
 		});
