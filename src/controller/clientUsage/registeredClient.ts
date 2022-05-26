@@ -1,10 +1,10 @@
-import {getTimestamp} from "../../redis/utils";
+import { getTimestamp } from '../../redis/utils';
 
 const { Report } = require('apollo-reporting-protobuf');
 import { ClientUsageStrategy } from '../clientUsage';
 import { Client } from '../../model/client';
 import redisWrapper from '../../redis';
-import crypto from "crypto";
+import crypto from 'crypto';
 
 export class RegisteredClientStrategy implements ClientUsageStrategy {
 	constructor(private decodedReport: typeof Report, private client: Client) {}
@@ -19,7 +19,8 @@ export class RegisteredClientStrategy implements ClientUsageStrategy {
 			return;
 		}
 		const key = `${this.client.id}_${hash}-${getTimestamp()}`;
-		const isError = ('error' in this.decodedReport.tracesPerQuery[op].trace[0].root);
-		await redisWrapper.incr(`${isError ? 'e' : 's'}_${key}`)
+		const isError =
+			'error' in this.decodedReport.tracesPerQuery[op].trace[0].root;
+		await redisWrapper.incr(`${isError ? 'e' : 's'}_${key}`);
 	}
 }

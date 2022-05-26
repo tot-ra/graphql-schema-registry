@@ -9,7 +9,7 @@ import { transact } from '../../database';
 import { ClientRepository } from '../../database/client';
 import crypto from 'crypto';
 import redisWrapper from '../../redis';
-import {getTimestamp} from "../../redis/utils";
+import { getTimestamp } from '../../redis/utils';
 
 const { Report } = require('apollo-reporting-protobuf');
 
@@ -34,7 +34,8 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 		const definition = gql`
 			${op}
 		`;
-		const isError = ('error' in this.decodedReport.tracesPerQuery[op].trace[0].root);
+		const isError =
+			'error' in this.decodedReport.tracesPerQuery[op].trace[0].root;
 		const outerPromises = definition.definitions.map(
 			async (clientOp: OperationDefinitionNode) => {
 				const promises = clientOp.selectionSet.selections.map((q) => {
@@ -69,8 +70,16 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 				JSON.stringify(payload),
 				ttl
 			);
-			await redisWrapper.set(`s_${client.id}_${hash}-${getTimestamp()}`, Number(!isError), ttl);
-			await redisWrapper.set(`e_${client.id}_${hash}-${getTimestamp()}`, Number(isError), ttl);
+			await redisWrapper.set(
+				`s_${client.id}_${hash}-${getTimestamp()}`,
+				Number(!isError),
+				ttl
+			);
+			await redisWrapper.set(
+				`e_${client.id}_${hash}-${getTimestamp()}`,
+				Number(isError),
+				ttl
+			);
 		});
 	}
 
