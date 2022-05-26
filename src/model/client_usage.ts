@@ -1,10 +1,19 @@
-export interface ClientQueryDAO {
-	query: string;
-	operations: number[];
+interface ClientOperationEntity {
+	objectId: number;
 	fields: number[];
 }
 
-export interface ClientUsageDAO {
-	success: number;
-	error: number;
+interface ClientOperation {
+	id: number;
+	entities: ClientOperationEntity[];
+}
+
+interface ClientQuery {
+	name: string;
+	sdl: string;
+}
+
+export interface ClientOperationDAO {
+	query: ClientQuery;
+	operations: ClientOperation[];
 }
