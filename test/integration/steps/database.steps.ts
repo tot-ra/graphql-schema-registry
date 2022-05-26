@@ -149,3 +149,16 @@ Then(
 		expect(resp[0]['totalTypes']).toEqual(totalFields);
 	}
 );
+
+Then(
+	'the database must contain a client with name {string} and version {string}',
+	async (clientName: string, clientVersion: string) => {
+		const connection = await getConnection();
+		const resp = await connection('clients')
+			.count('name', {as: 'clients'})
+			.where('name', clientName)
+			.andWhere('version', clientVersion);
+
+		expect(resp[0]['clients']).toEqual(1)
+	}
+)

@@ -6,21 +6,6 @@ import { UpdateUsageStrategy } from './clientUsage/registeredClient';
 import redisWrapper from '../redis';
 import crypto from 'crypto';
 
-/*
-const ops = Object.keys(this.decodedReport.tracesPerQuery);
-		const op = ops[0];
-		const hash = crypto.createHash('md5').update(op).digest('hex');
-		const redisKey = `o_${this.client.id}_${hash}`;
-		const operation = await redisWrapper.get(redisKey);
-		if (!operation) {
-			const newQuery = new NotRegisteredClientStrategy(this.decodedReport, this.c)
-			return;
-		}
-		const key = `${this.client.id}_${hash}-${getTimestamp()}`;
-		const isError =
-			'error' in this.decodedReport.tracesPerQuery[op].trace[0].root;
-		await redisWrapper.incr(`${isError ? 'e' : 's'}_${key}`);
- */
 export class ClientUsageController {
 	private clientRepository = ClientRepository.getInstance();
 

@@ -37,7 +37,7 @@ Feature: As a customer
 		{
 		  "name": "test2",
 		  "version": "latest",
-		  "type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] } scalar BigInteger",
+		  "type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] } scalar BigInteger",
 		  "url": "http://127.0.0.1:4000/api/graphql/test2"
 		}
 		"""
@@ -59,7 +59,7 @@ Feature: As a customer
 				"version": "latest",
 				"name": "test2",
 				"url": "http://127.0.0.1:4000/api/graphql/test2",
-				"type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] } scalar BigInteger",
+				"type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] } scalar BigInteger",
 				"is_active": 1
 			}
 		}
@@ -71,7 +71,7 @@ Feature: As a customer
 		{
 		  "name": "test2",
 		  "version": "latest",
-		  "type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+		  "type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
 		  "url": "http://127.0.0.1:4000/api/graphql/test2"
 		}
 		"""
@@ -91,7 +91,7 @@ Feature: As a customer
 		{
 		  "name": "test2",
 		  "version": "latest",
-		  "type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+		  "type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
 		  "url": "http://127.0.0.1:4000/api/graphql/test2"
 		}
 		"""
@@ -113,7 +113,7 @@ Feature: As a customer
 				"version": "latest",
 				"name": "test2",
 				"url": "http://127.0.0.1:4000/api/graphql/test2",
-				"type_defs": "type Query { hello(world: String): String } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+				"type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
 				"is_active": 1
 			}
 		}
