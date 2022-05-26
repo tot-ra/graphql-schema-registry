@@ -9,7 +9,7 @@ import {
 import { connection } from '../database';
 import config from '../config';
 import * as kafka from '../kafka';
-import {ClientUsageController} from "../controller/clientUsage";
+import { ClientUsageController } from '../controller/clientUsage';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection);

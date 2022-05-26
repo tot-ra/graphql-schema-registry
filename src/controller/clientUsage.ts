@@ -1,24 +1,34 @@
-const { Report } = require("apollo-reporting-protobuf");
-import {
-	gql,
-} from '@apollo/client/core';
+import {ClientRepository} from "../database/client";
+
+const { Report } = require('apollo-reporting-protobuf');
+import { gql } from '@apollo/client/core';
+import {NotRegisteredClientStrategy} from "./clientUsage/notRegisteredClient";
+import {RegisteredClientStrategy} from "./clientUsage/registeredClient";
+import {Client} from "../model/client";
 
 interface ClientUsageService {
-	registerUsage(buffer: Buffer): Promise<void>
+	registerUsage(buffer: Buffer): Promise<void>;
+}
+
+export interface ClientUsageStrategy {
+	execute(): Promise<void>
 }
 
 export class ClientUsageController implements ClientUsageService {
+
+	private clientRepository = ClientRepository.getInstance();
+
 	async registerUsage(buffer: Buffer) {
 		const decodedReport = Report.decode(buffer).toJSON();
-		const firstQuery = decodedReport.tracesPerQuery[0];
-		const {
-			clientName,
-			clientVersion
-		} = firstQuery.trace[0];
+		const firstQuery = decodedReport.tracesPerQuery[Object.keys(decodedReport.tracesPerQuery)[0]];
+		const { clientName, clientVersion } = firstQuery.trace[0];
 
-		console.log("END");
+		const client = await this.clientRepository.getClientByUnique(clientName, clientVersion);
+		const strategy: ClientUsageStrategy =
+			(!client) ? new NotRegisteredClientStrategy(decodedReport, clientName, clientVersion)
+				: new RegisteredClientStrategy(decodedReport, client);
+		return strategy.execute();
 	}
-
 }
 // export async function registerUsage(buffer: Buffer) {
 // 	console.log("CONTROLLER BUFFER");
@@ -30,9 +40,9 @@ export class ClientUsageController implements ClientUsageService {
 // 		const operationName = key.match(/# (\w+)/);
 // 		return query.replace(/# \w+/, '').trim();
 // 	})
-	// const query = "# homeBrands\nfragment HomeBrands on Brand{__typename brandId id logo title}query homeBrands($platform:Platform!){homepageB2cBrands(platform:$platform){__typename...HomeBrands}}";
-	// const queryDefinition = gql`${result}`
-	// console.log(`Apollo usage report: ${JSON.stringify(query)}`);
+// const query = "# homeBrands\nfragment HomeBrands on Brand{__typename brandId id logo title}query homeBrands($platform:Platform!){homepageB2cBrands(platform:$platform){__typename...HomeBrands}}";
+// const queryDefinition = gql`${result}`
+// console.log(`Apollo usage report: ${JSON.stringify(query)}`);
 // }
 
 /* CLIENT NOT FOUND

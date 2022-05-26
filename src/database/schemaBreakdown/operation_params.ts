@@ -1,6 +1,7 @@
 import { Transaction } from 'knex';
 import { OperationParam } from '../../model/operation_param';
 import { BreakDownRepository } from './breakdown';
+import {connection} from "../index";
 
 const TABLE_NAME = 'type_def_operation_parameters';
 const TABLE_COLUMNS = [
@@ -38,5 +39,12 @@ export class OperationParamsTransactionalRepository extends BreakDownRepository<
 		data: OperationParam[]
 	) {
 		return super.insert(trx, data);
+	}
+
+	async getOperationParamOutputByParent(parentId: number) {
+		return connection(TABLE_NAME)
+			.where('operation_id', parentId)
+			.andWhere('is_output', 1)
+			.first()
 	}
 }

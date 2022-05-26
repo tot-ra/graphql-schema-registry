@@ -68,6 +68,10 @@ export class TypeTransactionalRepository
 		return trx(TABLE_NAME).select().where('name', name);
 	}
 
+	async getTypeById(id: number) {
+		return connection(TABLE_NAME).select().where('id', id).first();
+	}
+
 	async getTypesByNames(trx: Transaction, data: string[]) {
 		return super.get(trx, data, 'name');
 	}
