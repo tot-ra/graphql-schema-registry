@@ -38,8 +38,7 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 				const promises = clientOp.selectionSet.selections.map((q) => {
 					return this.mapOperation(q);
 				});
-				const inner = await Promise.all(promises);
-				return inner[0];
+				return await Promise.all(promises);
 			}
 		);
 		let operations = await Promise.all(outerPromises);
@@ -60,7 +59,7 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 					name: op.match(/# (\w+)/)[1],
 					sdl: op.replace(/# \w+/, '').trim(),
 				},
-				operations,
+				operations: operations[0],
 			};
 			const ttl = 24 * 3600 * 30;
 			await redisWrapper.set(
@@ -71,12 +70,10 @@ export class NotRegisteredClientStrategy implements ClientUsageStrategy {
 			//TODO Sync with Marc
 			//TODO Check if errors
 			await redisWrapper.set(
-				`e_${client.id}_${hash}_000000`,
-				JSON.stringify({
-					success: 1,
-					error: 0,
-				}),
-				ttl
+				`s_${client.id}_${hash}_000000`, 1, ttl
+			);
+			await redisWrapper.set(
+				`e_${client.id}_${hash}_000000`, 0, ttl
 			);
 		});
 	}
