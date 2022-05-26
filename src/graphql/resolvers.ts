@@ -10,6 +10,7 @@ import PersistedQueriesModel from '../database/persisted_queries';
 import listTypeInstances from './resolvers/listTypeInstances';
 import listTypes from './resolvers/listTypes';
 import getTypeInstance from './resolvers/getTypeInstance';
+import getOperationUsageTrack from './resolvers/getOperationUsageTrack';
 import TypeInstanceDetailResponse from './resolvers/union/typeInstanceDetailResponse';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
@@ -43,6 +44,7 @@ export default {
 		listTypes,
 		listTypeInstances,
 		getTypeInstance,
+		getOperationUsageTrack,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
