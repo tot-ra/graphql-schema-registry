@@ -125,6 +125,6 @@ export async function usage(req, res) {
 	const controller = new ClientUsageController();
 	await controller.registerUsage(req.body);
 	return res.json({
-		success: true
+		success: true,
 	});
 }
