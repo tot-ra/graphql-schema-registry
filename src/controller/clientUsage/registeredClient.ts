@@ -11,7 +11,7 @@ export class UpdateUsageStrategy {
 
 	async execute() {
 		const redisKey = `o_${this.clientId}_${this.hash}`;
-		const key = `${this.clientId}_${this.hash}-${getTimestamp()}`;
+		const key = `${this.clientId}_${this.hash}_${getTimestamp()}`;
 		await redisWrapper.incr(`${this.isError ? 'e' : 's'}_${key}`);
 	}
 }

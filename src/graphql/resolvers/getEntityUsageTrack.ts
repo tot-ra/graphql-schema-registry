@@ -39,10 +39,14 @@ export default async function getEntityUsageTrack(
 			o.entities.forEach((e) => {
 				e.fields.forEach((fieldId) => {
 					if (!fieldIds.includes(fieldId)) {
-						fields.set(
-							fieldId,
-							sumExecutions(fields.get(fieldId), executions)
-						);
+						if (fields.has(fieldId)) {
+							fields.set(
+								fieldId,
+								sumExecutions(fields.get(fieldId), executions)
+							);
+						} else {
+							fields.set(fieldId, executions);
+						}
 						fieldIds.push(fieldId);
 					}
 				});

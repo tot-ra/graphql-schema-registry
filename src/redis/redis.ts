@@ -71,7 +71,7 @@ export class RedisRepository implements RedisService {
 			);
 		});
 		const executions = await this.client.multiGet<number>(keysInDates);
-		return executions.reduce((acc, curr) => (acc += curr), 0);
+		return executions.reduce((acc, curr) => (acc += Number(curr)), 0);
 	}
 
 	async getExecutionsFromOperation(

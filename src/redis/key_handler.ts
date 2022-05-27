@@ -26,7 +26,7 @@ export class KeyHandler implements KeyHandlerService {
 
 	parseOperationKey(key: string) {
 		const pattern = /^[^_\W]+_([^_\W]+)_([^_\W]+)/i;
-		const [clientId, hash] = key.match(pattern).slice(1);
+		const [_, clientId, hash] = key.match(pattern);
 		return {
 			clientId,
 			hash,
@@ -35,7 +35,7 @@ export class KeyHandler implements KeyHandlerService {
 
 	getDateSecondsFromKey(key: string): number {
 		const pattern = /_([0-9]+)$/;
-		const [dateSeconds] = key.match(pattern).slice(1);
+		const [_,dateSeconds] = key.match(pattern);
 		return parseInt(dateSeconds, 10);
 	}
 
@@ -49,6 +49,6 @@ export class KeyHandler implements KeyHandlerService {
 			.toString()
 			.slice(0, -differenceSeconds);
 
-		return `${prefix}*_${input.hash}_${commonSeconds}*}`;
+		return `${prefix}*_${input.hash}_${commonSeconds}*`;
 	}
 }

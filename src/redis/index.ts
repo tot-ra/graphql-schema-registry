@@ -54,6 +54,9 @@ const redisWrapper = {
 	},
 
 	multiGet: async <T>(keys: string[]): Promise<(T | null)[]> => {
+		if (keys.length === 0) {
+			return [];
+		}
 		return await (await redisWrapper.getInstance()).mget(keys);
 	},
 

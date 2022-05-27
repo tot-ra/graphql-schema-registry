@@ -237,7 +237,7 @@ export default gql`
 
 	type OperationExecutions {
 		name: String!
-		executions: [Executions!]!
+		executions: Executions!
 	}
 
 	type VersionOperations {
