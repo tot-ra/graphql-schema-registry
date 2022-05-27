@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, {
+	useRef,
+	useState,
+	useEffect,
+	useMemo,
+	useCallback,
+} from 'react';
 import sub from 'date-fns/sub';
 import {
 	createStyles,
@@ -19,6 +25,36 @@ import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import { colors } from '../utils';
 import CustomDateRangeSelectorDialog from './CustomDateRangeSelectorDialog';
 import zIndex from '@material-ui/core/styles/zIndex';
+
+export const OPTIONS: Record<
+	string,
+	{ label: string; duration: Duration | 'custom' }
+> = Object.freeze({
+	hour: {
+		label: 'Last hour',
+		duration: { hours: 1 },
+	},
+	day: {
+		label: 'Last day',
+		duration: { days: 1 },
+	},
+	'3days': {
+		label: 'Last three days',
+		duration: { days: 3 },
+	},
+	week: {
+		label: 'Last week',
+		duration: { weeks: 1 },
+	},
+	month: {
+		label: 'Last month',
+		duration: { months: 1 },
+	},
+	custom: {
+		label: 'Custom...',
+		duration: 'custom',
+	},
+});
 
 const parseRangeFromDuration = (duration: Duration) => {
 	const now = new Date();
@@ -103,43 +139,36 @@ const DateRangeSelector = ({
 		setOpenCustomDialog(false);
 	};
 
-	const setRangeFromDuration = (duration: Duration) => {
-		onRangeChange(parseRangeFromDuration(duration));
-	};
+	const setRangeFromDuration = useCallback(
+		(duration: Duration) => {
+			onRangeChange(parseRangeFromDuration(duration));
+		},
+		[onRangeChange]
+	);
 
-	const rangeOptions = {
-		hour: {
-			label: 'Last hour',
-			fn: () => setRangeFromDuration({ hours: 1 }),
-		},
-		day: {
-			label: 'Last day',
-			fn: () => setRangeFromDuration({ days: 1 }),
-		},
-		'3days': {
-			label: 'Last three days',
-			fn: () => setRangeFromDuration({ days: 3 }),
-		},
-		week: {
-			label: 'Last week',
-			fn: () => setRangeFromDuration({ weeks: 1 }),
-		},
-		month: {
-			label: 'Last month',
-			fn: () => setRangeFromDuration({ months: 1 }),
-		},
-		custom: {
-			label: 'Custom...',
-			fn: () => {
-				setOpenCustomDialog(true);
-			},
-		},
-	};
+	const rangeOptions = useMemo(
+		() =>
+			Object.fromEntries(
+				Object.entries(OPTIONS).map(([key, { label, duration }]) => [
+					key,
+					{
+						label,
+						fn:
+							duration === 'custom'
+								? () => {
+										setOpenCustomDialog(true);
+								  }
+								: () => setRangeFromDuration(duration),
+					},
+				])
+			),
+		[setRangeFromDuration]
+	);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setValue((event.target as HTMLInputElement).value);
-		rangeOptions[(event.target as HTMLInputElement).value].fn();
+		setValue(event.target.value);
 		setOpen(false);
+		rangeOptions[event.target.value].fn();
 	};
 
 	return (
@@ -159,7 +188,7 @@ const DateRangeSelector = ({
 			<Popper
 				open={open}
 				anchorEl={anchorRef.current}
-				role={undefined}
+				role="menubar"
 				transition
 				disablePortal
 			>

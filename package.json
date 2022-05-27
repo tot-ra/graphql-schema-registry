@@ -7,6 +7,7 @@
     "develop": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/schema-registry.ts --watch src --inspect",
     "develop:mock": "PORT=6001 ts-node-dev --respawn --transpile-only src/mock-server/index.ts --watch src --inspect",
     "test": "jest --config jest.config.ts",
+    "test:coverage": "jest --config jest.config.ts --coverage",
     "test:watch": "jest --config jest.config.ts --watch",
     "coverage": "./node_modules/.bin/jest --config test/unit/jest.coverage.cjs && coveralls < coverage/lcov.info",
     "test-travis": "npm run test",

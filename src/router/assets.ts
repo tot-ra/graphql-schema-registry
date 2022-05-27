@@ -5,7 +5,7 @@ export function assetRouter(router) {
 }
 
 export function indexHtml() {
-	const assetsRootUrl = process.env.ASSETS_URL || 'http://localhost:6001';
+	const assetsRootUrl = process.env.ASSETS_URL || '';
 	const assetsVersion = 'latest';
 
 	return function (req, res) {
