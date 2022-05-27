@@ -27,6 +27,16 @@ export default gql`
 			offset: Int!
 		): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
+		getOperationUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [ClientOperationUsageTrack!]!
+		getEntityUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [EntityUsageTrack!]!
 	}
 
 	type Mutation {
@@ -217,6 +227,36 @@ export default gql`
 		type: String!
 		inputParams: [InputParam!]
 		outputParams: [OutputParam!]
+	}
+
+	type Executions {
+		success: Int!
+		error: Int!
+		total: Int!
+	}
+
+	type OperationExecutions {
+		name: String!
+		executions: [Executions!]!
+	}
+
+	type VersionOperations {
+		id: String!
+		operations: [OperationExecutions!]!
+	}
+
+	type ClientVersion {
+		name: String!
+		versions: [VersionOperations!]!
+	}
+
+	type ClientOperationUsageTrack {
+		client: ClientVersion!
+	}
+
+	type EntityUsageTrack {
+		id: Int!
+		executions: Executions!
 	}
 
 	union TypeInstanceDetailResponse =

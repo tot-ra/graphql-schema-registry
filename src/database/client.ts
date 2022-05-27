@@ -54,6 +54,10 @@ export class ClientRepository
 			.first();
 	}
 
+	async getClientById(id: string) {
+		return connection(TABLE_NAME).select().where('id', Number(id)).first();
+	}
+
 	async insertClient(
 		trx: Transaction,
 		client: ClientPayload

@@ -6,7 +6,7 @@ export type TypeInstance = (Type | Operation) & {
 	providedBy: Service[];
 };
 
-interface Parent {
+export interface Parent {
 	id: number;
 	name: string;
 	type: string;
