@@ -9,6 +9,7 @@ import {
 import { connection } from '../database';
 import config from '../config';
 import * as kafka from '../kafka';
+import { ClientUsageController } from '../controller/clientUsage';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection);
@@ -118,4 +119,10 @@ export async function diff(req, res) {
 		success: true,
 		data: await diffSchemas({ service }),
 	});
+}
+
+export async function usage(req, res) {
+	const controller = new ClientUsageController();
+	await controller.registerUsage(req.body);
+	return res.json('OK');
 }

@@ -5,7 +5,11 @@ export const servicesTable = 'services';
 const servicesModel = {
 	getActiveServices: async function (trx: Knex) {
 		return trx(servicesTable)
-			.select(`${servicesTable}.id`, `${servicesTable}.name`, `${servicesTable}.url`)
+			.select(
+				`${servicesTable}.id`,
+				`${servicesTable}.name`,
+				`${servicesTable}.url`
+			)
 			.where('is_active', true);
 	},
 

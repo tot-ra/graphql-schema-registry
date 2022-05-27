@@ -18,6 +18,8 @@ const redisWrapper = {
 			redisServiceName
 		);
 
+		console.log('REDIS CONFIG', host, port);
+
 		const redisOptions = {
 			host,
 			port,
@@ -80,8 +82,16 @@ const redisWrapper = {
 		return found;
 	},
 
+	incr: async (key) => {
+		await (await redisWrapper.getInstance()).incr(key);
+	},
+
 	delete: async (key) => {
 		return await (await redisWrapper.getInstance()).del(key);
+	},
+
+	keys: async (pattern) => {
+		return await (await redisWrapper.getInstance()).keys(pattern);
 	},
 
 	onEnd: function () {

@@ -21,7 +21,11 @@ export default gql`
 		persistedQueriesCount: Int!
 
 		listTypes: ListedTypes!
-		listTypeInstances(type: String!, limit: Int!, offset: Int!): ListedTypeInstances!
+		listTypeInstances(
+			type: String!
+			limit: Int!
+			offset: Int!
+		): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
 		getOperationUsageTrack(
 			id: Int!
@@ -255,5 +259,7 @@ export default gql`
 		executions: Executions!
 	}
 
-	union TypeInstanceDetailResponse = TypeInstanceDetail | OperationInstanceDetail
+	union TypeInstanceDetailResponse =
+		  TypeInstanceDetail
+		| OperationInstanceDetail
 `;
