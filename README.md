@@ -18,6 +18,8 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Stores & shows in UI persisted queries passed by the gateway for debugging
 - Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
 - Async schema registration of new schema with events to avoid polling (`schema-registry -> kafka -> gateway`)
+- Schema breakdown to be able to display it on the UI
+- Schema usage, storing the number of query success and errors given by the gateway
 
 <img width="1312" alt="Screenshot 2022-02-08 at 00 16 49" src="https://user-images.githubusercontent.com/445122/152881795-535a6990-a318-4e89-afc9-c508ddc840fa.png">
 
@@ -26,9 +28,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 (Pull requests are encouraged on these topics)
 
 - Usage tracking (to avoid breaking changes) - needs a separate docker sub-process in golang
-  - registered clients (based on headers, including apollo-\* ones)
-  - schema usage breakdown by multiple facets - property, day, query name, client name
-  - fixed data retention
+- fixed data retention
 - schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
   - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 - Performance tracking (to know what resolvers to optimize)
@@ -149,7 +149,7 @@ In gateway, you may also find useful our [graphql-query-cost](https://github.com
 ### DB structure
 
 Migrations are done using knex
-![](https://app.lucidchart.com/publicSegments/view/74fc86d4-671e-4644-a198-41d7ff681cae/image.png)
+![](https://i.ibb.co/Y7pdWQr/schema-registry.png)
 
 ## Development
 
@@ -206,6 +206,13 @@ Jest runs in single worker mode to avoid tests from affecting each other due to 
 
 ```
 npm run test-functional
+```
+
+Integration tests use test-containers to set-up a testing containers to be able to reproduce the production scenario.
+Right now simulate mysql database and redis.
+
+```
+npm run test-integration
 ```
 
 ## Contribution
@@ -376,3 +383,13 @@ Adds persisted query to DB & redis cache
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 | `value`  | string | Graphql query                    |
+
+#### POST /api/ingress/traces
+
+Registers query usage provided by the gateway
+
+##### Request body param
+
+| Property | Type   | Comments                         |
+| -------- | ------ | -------------------------------- |
+| `data`    | gzip | query compressed by the gateway |
