@@ -45,9 +45,9 @@ export interface ClientUsage {
 	versions: ClientVersion[];
 }
 
-export interface OperationUsageResponse {
-	client: ClientUsage[];
-}
+export type OperationUsageResponse = {
+	client: ClientUsage;
+}[];
 
 export interface FieldUsage {
 	id: number;

@@ -34,26 +34,24 @@ export default async function getOperationUsageTrack(
 	const resultClients = await Promise.all(clients);
 	const resultExecutions = await Promise.all(executions);
 
-	return {
-		client: resultClients.map((c) => {
-			const versionOperations: OperationExecutions[] = [];
-			operations.forEach((operation, key) => {
-				const { hash } = keyHandler.parseOperationKey(key);
-				if (hash === key) {
-					versionOperations.push({
-						name: operation.query.name,
-						executions: resultExecutions.find(
-							(e) => e.hash === hash
-						),
-					});
-				}
-			});
-			return {
+	return resultClients.map((c) => {
+		const versionOperations: OperationExecutions[] = [];
+		operations.forEach((operation, key) => {
+			const { hash } = keyHandler.parseOperationKey(key);
+			if (hash === key) {
+				versionOperations.push({
+					name: operation.query.name,
+					executions: resultExecutions.find((e) => e.hash === hash),
+				});
+			}
+		});
+		return {
+			client: {
 				name: c.name,
 				versions: [{ id: c.version, operations: versionOperations }],
-			};
-		}),
-	};
+			},
+		};
+	});
 }
 
 export function parseInputDate(date: string): number {

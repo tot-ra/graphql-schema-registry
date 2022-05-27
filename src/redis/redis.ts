@@ -41,14 +41,15 @@ export class RedisRepository implements RedisService {
 	): Promise<ClientOperationsDTO> {
 		const allOperationsPattern = `${this.keyHandler.prefixes.operation}*`;
 		const allOperationKeys = await this.client.scan(allOperationsPattern);
-		const allOperations = await this.client.multiGet<ClientOperationDAO>(
+		const allOperations = await this.client.multiGet<string>(
 			allOperationKeys
 		);
 		const operations: ClientOperationsDTO = new Map<
 			string,
 			ClientOperationDAO
 		>();
-		allOperations.forEach((operation, index) => {
+		allOperations.forEach((o, index) => {
+			const operation = JSON.parse(o);
 			if (operation !== null && this.validateUsage(id, operation, type)) {
 				operations.set(allOperationKeys[index], operation);
 			}

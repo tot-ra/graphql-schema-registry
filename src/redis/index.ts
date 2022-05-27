@@ -56,7 +56,7 @@ const redisWrapper = {
 	},
 
 	multiGet: async <T>(keys: string[]): Promise<(T | null)[]> => {
-		return await (await redisWrapper.getInstance()).multiGet(keys);
+		return await (await redisWrapper.getInstance()).mget(keys);
 	},
 
 	set: async (key, value, ttl = DEFAULT_TTL) => {
