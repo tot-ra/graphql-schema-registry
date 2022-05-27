@@ -4,7 +4,7 @@ import { logger } from '../logger';
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
-	process.env.REDIS_SCHEMA_REGISTRY || 'schema-registry-redis';
+	process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis';
 
 const redisWrapper = {
 	redisInstance: null,
@@ -17,6 +17,8 @@ const redisWrapper = {
 		const { host, port, password } = await diplomat.getServiceInstance(
 			redisServiceName
 		);
+
+		console.log('REDIS CONFIG', host, port);
 
 		const redisOptions = {
 			host,
@@ -57,8 +59,16 @@ const redisWrapper = {
 		await (await redisWrapper.getInstance()).set(key, value, 'EX', ttl);
 	},
 
+	incr: async (key) => {
+		await (await redisWrapper.getInstance()).incr(key);
+	},
+
 	delete: async (key) => {
 		return await (await redisWrapper.getInstance()).del(key);
+	},
+
+	keys: async (pattern) => {
+		return await (await redisWrapper.getInstance()).keys(pattern);
 	},
 
 	onEnd: function () {

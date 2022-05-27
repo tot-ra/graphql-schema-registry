@@ -1,3 +1,4 @@
+import { connection } from '../index';
 import { Field, FieldPayload } from '../../model/field';
 import { Transaction } from 'knex';
 import { BreakDownRepository } from './breakdown';
@@ -40,6 +41,14 @@ export class FieldTransactionRepository extends BreakDownRepository<
 
 	async getFieldsByNames(trx: Transaction, data: string[]): Promise<Field[]> {
 		return super.get(trx, data, 'name');
+	}
+
+	async getFieldByNameAndParent(name: string, parentId: number) {
+		return connection(TABLE_NAME)
+			.select()
+			.where('name', name)
+			.andWhere('parent_type_id', parentId)
+			.first();
 	}
 
 	async removeFields(trx: Transaction, data: string[]) {

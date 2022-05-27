@@ -52,6 +52,10 @@ export class OperationTransactionalRepository
 		return OperationTransactionalRepository.instance;
 	}
 
+	async getOperationByName(name: string) {
+		return connection(table).select().where('name', name).first();
+	}
+
 	async getOperationsByNames(trx: Transaction, data: string[]) {
 		return super.get(trx, data, 'name');
 	}

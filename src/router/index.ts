@@ -3,6 +3,7 @@ import express from 'express';
 const router = express.Router();
 import { json } from 'body-parser';
 import { asyncWrap } from '../helpers/middleware';
+import usageMiddleware from '../middleware/usage-request';
 
 import parseMiddleware from '../middleware/parse-request';
 import { indexHtml, assetRouter } from './assets';
@@ -32,5 +33,7 @@ router.delete('/schema/:schemaId', asyncWrap(schema.remove));
 router.post('/schema/validate', asyncWrap(schema.validate));
 
 router.delete('/service/:name', asyncWrap(service.remove));
+
+router.post('/api/ingress/traces', usageMiddleware, asyncWrap(schema.usage));
 
 export default router;

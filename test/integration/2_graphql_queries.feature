@@ -6,7 +6,7 @@ Feature: As a customer
         When I execute the graphQL query in file "listTypesQuery.graphql"
         Then the response contains no errors
         And the response contains JSON from file "listTypesQuery.json"
-    
+
     Scenario: I request a paginated list of object instances in the supergraph
         Given the database is imported from 'breakdown_schema_db'
         When I execute the graphQL query in file "getListTypeInstances.graphql" with variables:
@@ -54,4 +54,3 @@ Feature: As a customer
         }
         """
         Then the response contains "BAD_USER_INPUT" error
-        
