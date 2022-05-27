@@ -390,6 +390,6 @@ Registers query usage provided by the gateway
 
 ##### Request body param
 
-| Property | Type   | Comments                         |
-| -------- | ------ | -------------------------------- |
-| `data`    | gzip | query compressed by the gateway |
+| Property | Type | Comments                        |
+| -------- | ---- | ------------------------------- |
+| `data`   | gzip | query compressed by the gateway |
