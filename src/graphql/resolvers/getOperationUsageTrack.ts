@@ -5,13 +5,14 @@ import {
 } from '../../model/client_usage';
 import { RedisRepository } from '../../redis/redis';
 import { KeyHandler } from '../../redis/key_handler';
+import { ClientRepository } from '../../database/client';
 
 export default async function getOperationUsageTrack(
 	_parent,
 	{ id, startDate, endDate }
 ): Promise<OperationUsageResponse> {
 	const redisRepo = RedisRepository.getInstance();
-	const clientRepo = {} as any; // TODO: get mysql repo to get client table
+	const clientRepo = ClientRepository.getInstance();
 	const keyHandler = new KeyHandler();
 
 	const operations = await redisRepo.getOperationsByUsage(id, 'operation');
@@ -27,7 +28,7 @@ export default async function getOperationUsageTrack(
 				endSeconds: parseInputDate(endDate),
 			})
 		);
-		clients.push(clientRepo.findByIds(clientId));
+		clients.push(clientRepo.getClientById(clientId));
 	});
 
 	const resultClients = await Promise.all(clients);
