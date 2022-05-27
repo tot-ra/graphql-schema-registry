@@ -29,7 +29,7 @@ export class ClientUsageController {
 
 		if (!client || !(await redisWrapper.get(`o_${client.id}_${hash}`))) {
 			const strategy = new RegisterUsage(
-				decodedReport,
+				Object.keys(decodedReport.tracesPerQuery)[0],
 				clientName,
 				clientVersion,
 				isError,

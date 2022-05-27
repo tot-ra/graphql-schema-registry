@@ -22,7 +22,7 @@ export class RegisterUsage {
 	private clientRepository = ClientRepository.getInstance();
 
 	constructor(
-		private decodedReport: typeof Report,
+		private op: string,
 		private clientName: string,
 		private clientVersion: string,
 		private isError: boolean,
@@ -30,10 +30,8 @@ export class RegisterUsage {
 	) {}
 
 	async execute() {
-		const ops = Object.keys(this.decodedReport.tracesPerQuery);
-		const op = ops[0];
 		const definition = gql`
-			${op}
+			${this.op}
 		`;
 		const outerPromises = definition.definitions.map(
 			async (clientOp: OperationDefinitionNode) => {
@@ -57,8 +55,8 @@ export class RegisterUsage {
 			);
 			const payload = {
 				query: {
-					name: op.match(/# (\w+)/)[1],
-					sdl: op.replace(/# \w+/, '').trim(),
+					name: this.op.match(/# (\w+)/)[1],
+					sdl: this.op.replace(/# \w+/, '').trim(),
 				},
 				operations: operations[0],
 			};

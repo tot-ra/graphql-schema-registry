@@ -18,6 +18,8 @@ const redisWrapper = {
 			redisServiceName
 		);
 
+		console.log('REDIS CONFIG', host, port);
+
 		const redisOptions = {
 			host,
 			port,
@@ -63,6 +65,10 @@ const redisWrapper = {
 
 	delete: async (key) => {
 		return await (await redisWrapper.getInstance()).del(key);
+	},
+
+	keys: async (pattern) => {
+		return await (await redisWrapper.getInstance()).keys(pattern);
 	},
 
 	onEnd: function () {

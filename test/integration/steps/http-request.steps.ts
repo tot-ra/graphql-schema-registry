@@ -2,9 +2,9 @@ import { When, Then, Given } from '@cucumber/cucumber';
 import fetch from 'node-fetch';
 let response: any;
 import expect from 'expect';
-import zlib from 'zlib';
-const { Report } = require('apollo-reporting-protobuf');
-const { gzip } = require('node-gzip');
+import crypto from "crypto";
+import {UpdateUsageStrategy} from "../../../src/controller/clientUsage/registeredClient";
+const fs = require('fs');
 
 When(
 	'I send a {string} request to {string}',
@@ -20,7 +20,7 @@ When(
 	async (op: string, url: string, body: string) => {
 		response = await fetch(`http://localhost:3000${url}`, {
 			method: op,
-			body,
+			body: body,
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
@@ -31,47 +31,39 @@ When(
 	async (url: string, body: string) => {
 		response = await fetch(`http://localhost:3000${url}`, {
 			method: 'POST',
-			body,
+			body: body,
 			headers: { 'Content-Type': 'application/json', 'Force-Push': true },
 		});
 	}
 );
 
 Given(
-	'a trace on {string} for client {string} and version {string} with schema:',
-	async (
-		url: string,
-		clientName: string,
-		clientVersion: string,
-		query: string
-	) => {
-		const message = Report.encode(query).finish();
-		const compressed = await new Promise<Buffer>((resolve, reject) => {
-			const messageBuffer = Buffer.from(
-				message.buffer as ArrayBuffer,
-				message.byteOffset,
-				message.byteLength
-			);
+	'a not registered client {string} and version {string} for an {string} query:',
+	async (clientName: string, clientVersion: string, isError: string, query: string) => {
+		const {RegisterUsage} = await import('../../../src/controller/clientUsage/notRegisteredClient');
+		const hash = crypto.createHash('md5').update(query).digest('hex');
+		const strategy = new RegisterUsage(
+			query,
+			clientName,
+			clientVersion,
+			isError === 'invalid',
+			hash
+		)
+		const result = await strategy.execute();
+	}
+);
 
-			zlib.gzip(messageBuffer, (err, buffer) => {
-				if (err) {
-					reject(err);
-				} else {
-					resolve(buffer);
-				}
-			});
-		});
-
-		response = await fetch(`http://localhost:3000${url}`, {
-			method: 'POST',
-			body: compressed,
-			headers: {
-				'content-encoding': 'gzip',
-				accept: 'application/json',
-				'apollographql-client-name': clientName,
-				'apollographql-client-version': clientVersion,
-			},
-		});
+Given(
+	'a registered client {int} for an {string} query:',
+	async (clientId: number, isError: string, query: string) => {
+		const {UpdateUsageStrategy} = await import('../../../src/controller/clientUsage/registeredClient');
+		const hash = crypto.createHash('md5').update(query).digest('hex');
+		const strategy = new UpdateUsageStrategy(
+			isError === 'invalid',
+			clientId,
+			hash
+		)
+		const result = await strategy.execute();
 	}
 );
 
