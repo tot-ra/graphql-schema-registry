@@ -67,12 +67,12 @@ export class RegisterUsage {
 				ttl
 			);
 			await redisWrapper.set(
-				`s_${client.id}_${this.hash}-${getTimestamp()}`,
+				`s_${client.id}_${this.hash}_${getTimestamp()}`,
 				Number(!this.isError),
 				ttl
 			);
 			await redisWrapper.set(
-				`e_${client.id}_${this.hash}-${getTimestamp()}`,
+				`e_${client.id}_${this.hash}_${getTimestamp()}`,
 				Number(this.isError),
 				ttl
 			);
