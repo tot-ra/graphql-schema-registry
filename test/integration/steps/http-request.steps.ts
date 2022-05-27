@@ -2,8 +2,8 @@ import { When, Then, Given } from '@cucumber/cucumber';
 import fetch from 'node-fetch';
 let response: any;
 import expect from 'expect';
-import crypto from "crypto";
-import {UpdateUsageStrategy} from "../../../src/controller/clientUsage/registeredClient";
+import crypto from 'crypto';
+import { UpdateUsageStrategy } from '../../../src/controller/clientUsage/registeredClient';
 const fs = require('fs');
 
 When(
@@ -39,8 +39,15 @@ When(
 
 Given(
 	'a not registered client {string} and version {string} for an {string} query:',
-	async (clientName: string, clientVersion: string, isError: string, query: string) => {
-		const {RegisterUsage} = await import('../../../src/controller/clientUsage/notRegisteredClient');
+	async (
+		clientName: string,
+		clientVersion: string,
+		isError: string,
+		query: string
+	) => {
+		const { RegisterUsage } = await import(
+			'../../../src/controller/clientUsage/notRegisteredClient'
+		);
 		const hash = crypto.createHash('md5').update(query).digest('hex');
 		const strategy = new RegisterUsage(
 			query,
@@ -48,7 +55,7 @@ Given(
 			clientVersion,
 			isError === 'invalid',
 			hash
-		)
+		);
 		const result = await strategy.execute();
 	}
 );
@@ -56,13 +63,15 @@ Given(
 Given(
 	'a registered client {int} for an {string} query:',
 	async (clientId: number, isError: string, query: string) => {
-		const {UpdateUsageStrategy} = await import('../../../src/controller/clientUsage/registeredClient');
+		const { UpdateUsageStrategy } = await import(
+			'../../../src/controller/clientUsage/registeredClient'
+		);
 		const hash = crypto.createHash('md5').update(query).digest('hex');
 		const strategy = new UpdateUsageStrategy(
 			isError === 'invalid',
 			clientId,
 			hash
-		)
+		);
 		const result = await strategy.execute();
 	}
 );

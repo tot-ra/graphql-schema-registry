@@ -14,7 +14,7 @@ Then(
 
 Then(
 	'{int} error registered for client {int}',
-	async(totalErrors: number, clientId: number) => {
+	async (totalErrors: number, clientId: number) => {
 		const redisWrapper = await import('../../../src/redis');
 
 		const keys = await redisWrapper.default.keys(`e_${clientId}_*`);
@@ -22,11 +22,11 @@ Then(
 
 		expect(+value).toEqual(totalErrors);
 	}
-)
+);
 
 Then(
 	'{int} success registered for client {int}',
-	async(totalErrors: number, clientId: number) => {
+	async (totalErrors: number, clientId: number) => {
 		const redisWrapper = await import('../../../src/redis');
 
 		const keys = await redisWrapper.default.keys(`s_${clientId}_*`);
@@ -34,4 +34,4 @@ Then(
 
 		expect(+value).toEqual(totalErrors);
 	}
-)
+);
