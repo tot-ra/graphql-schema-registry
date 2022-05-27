@@ -8,7 +8,6 @@ import { DirectiveStrategy } from './directive';
 import { InterfaceStrategy } from './interface';
 import { ObjectStrategy } from './object';
 import { UnionStrategy } from './union';
-import { SubgraphTransactionalRepository } from '../../database/schemaBreakdown/subgraph';
 import { SubgraphStrategy } from './subgraph';
 
 type DocumentMap = Map<string, any[]>;

@@ -5,8 +5,6 @@ import { FieldTransactionRepository } from '../../database/schemaBreakdown/field
 import { InputObjectTypeExtensionNode } from 'graphql';
 import { createField, createTypes, persistEntities } from './utils';
 import { Type } from '../../model/type';
-import { FieldDefinitionNode } from 'graphql/language/ast';
-import { Field } from '../../model/field';
 
 export class InputStrategy
 	implements TypeDefStrategy<InputObjectTypeExtensionNode>

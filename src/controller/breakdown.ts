@@ -32,7 +32,6 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 	}
 
 	async applyChanges(changes: Change[]) {
-		// const removalChanges = changes.filter(change => )
 		const regexExpr = new RegExp('_REMOVED$');
 		const removalChanges = changes.filter((change) =>
 			regexExpr.test(change.type)

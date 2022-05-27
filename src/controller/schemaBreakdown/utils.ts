@@ -1,5 +1,4 @@
 import { Type, TypePayload } from '../../model/type';
-import { ScalarTypeExtensionNode } from 'graphql/language/ast';
 import {
 	DocumentNodeType,
 	EntityType,

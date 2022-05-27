@@ -1,5 +1,5 @@
 import { ITypeDefData, TypeDefStrategy } from './strategy';
-import { EnumTypeExtensionNode, UnionTypeExtensionNode } from 'graphql';
+import { UnionTypeExtensionNode } from 'graphql';
 import { DocumentNodeType, EntityType } from '../../model/enums';
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
 import { createTypes, persistEntities } from './utils';
