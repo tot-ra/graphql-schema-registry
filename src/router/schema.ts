@@ -124,5 +124,7 @@ export async function diff(req, res) {
 export async function usage(req, res) {
 	const controller = new ClientUsageController();
 	await controller.registerUsage(req.body);
-	return res.json('OK');
+	return res.json({
+		success: true
+	});
 }

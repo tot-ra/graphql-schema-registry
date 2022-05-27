@@ -18,8 +18,6 @@ const redisWrapper = {
 			redisServiceName
 		);
 
-		console.log('REDIS CONFIG', host, port);
-
 		const redisOptions = {
 			host,
 			port,
