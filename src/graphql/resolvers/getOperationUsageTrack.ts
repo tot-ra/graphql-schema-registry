@@ -14,17 +14,17 @@ export default async function getOperationUsageTrack(
 	const clientRepo = {} as any; // TODO: get mysql repo to get client table
 	const keyHandler = new KeyHandler();
 
-	const operations = await redisRepo.getOperationUsageByField(id);
+	const operations = await redisRepo.getOperationsByUsage(id, 'operation');
 	const executions: Promise<ExecutionsDAO>[] = [];
 	const clients: Promise<{ name: string; id: number; version: string }>[] =
 		[];
-	operations.forEach((operation, key) => {
+	operations.forEach((_o, key) => {
 		const { hash, clientId } = keyHandler.parseOperationKey(key);
 		executions.push(
 			redisRepo.getExecutionsFromOperation({
 				hash,
-				startDate: new Date(startDate),
-				endDate: new Date(endDate),
+				startSeconds: parseInputDate(startDate),
+				endSeconds: parseInputDate(endDate),
 			})
 		);
 		clients.push(clientRepo.findByIds(clientId));
@@ -32,6 +32,7 @@ export default async function getOperationUsageTrack(
 
 	const resultClients = await Promise.all(clients);
 	const resultExecutions = await Promise.all(executions);
+
 	return {
 		client: resultClients.map((c) => {
 			const versionOperations: OperationExecutions[] = [];
@@ -52,4 +53,8 @@ export default async function getOperationUsageTrack(
 			};
 		}),
 	};
+}
+
+export function parseInputDate(date: string): number {
+	return Math.floor(new Date(date).getTime() / 1000);
 }

@@ -23,8 +23,16 @@ export default gql`
 		listTypes: ListedTypes!
 		listTypeInstances(type: String!, limit: Int!, offset: Int!): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
-		getOperationUsageTrack(id: Int!, startDate: Date!, endDate: Date!): [ClientOperationUsageTrack!]!
-		getEntityUsageTrack(id: Int!, startDate: Date!, endDate: Date!): [EntityUsageTrack!]!
+		getOperationUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [ClientOperationUsageTrack!]!
+		getEntityUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [EntityUsageTrack!]!
 	}
 
 	type Mutation {
@@ -111,10 +119,10 @@ export default gql`
 
 	type TypeInstance {
 		id: Int!
-        name: String!
-        description: String
-        type: String!
-        providedBy: [Service!]!
+		name: String!
+		description: String
+		type: String!
+		providedBy: [Service!]!
 	}
 
 	type ListedTypeInstances {
@@ -135,32 +143,32 @@ export default gql`
 	}
 
 	type Argument {
-        name: String!
-        description: String
+		name: String!
+		description: String
 		isNullable: Boolean!
 		isArray: Boolean!
 		isArrayNullable: Boolean!
-        parent: Parent!
+		parent: Parent!
 	}
 
 	type FieldDetails {
 		key: String!
-  		isDeprecated: Boolean!
-  		arguments: [Argument!]
+		isDeprecated: Boolean!
+		arguments: [Argument!]
 	}
 
 	type InputDetails {
 		key: String!
-  		isDeprecated: Boolean!
+		isDeprecated: Boolean!
 	}
 
 	type OutputDetails {
-  		isDeprecated: Boolean!
+		isDeprecated: Boolean!
 	}
-	
+
 	type ProvidedByDetails {
 		key: String!
-  		providedBy: [Service!]!
+		providedBy: [Service!]!
 	}
 
 	type Field {
@@ -170,8 +178,8 @@ export default gql`
 		isArray: Boolean!
 		isArrayNullable: Boolean!
 		key: String!
-  		isDeprecated: Boolean!
-  		arguments: [Argument!]
+		isDeprecated: Boolean!
+		arguments: [Argument!]
 	}
 
 	type InputParam {
@@ -195,26 +203,26 @@ export default gql`
 		description: String
 		parent: Parent!
 		key: String!
-  		providedBy: Service!
+		providedBy: Service!
 	}
 
 	type TypeInstanceDetail {
 		id: Int!
-        name: String!
-        description: String
-        type: String!
+		name: String!
+		description: String
+		type: String!
 		fields: [Field!]
-    	usedBy: [ParamProvidedBy!]
-    	implementations: [ParamProvidedBy!]
+		usedBy: [ParamProvidedBy!]
+		implementations: [ParamProvidedBy!]
 	}
 
 	type OperationInstanceDetail {
 		id: Int!
-        name: String!
-        description: String
-        type: String!
-    	inputParams: [InputParam!]
-    	outputParams: [OutputParam!]
+		name: String!
+		description: String
+		type: String!
+		inputParams: [InputParam!]
+		outputParams: [OutputParam!]
 	}
 
 	type Executions {
@@ -243,12 +251,7 @@ export default gql`
 	}
 
 	type EntityUsageTrack {
-		name: String!
-		description: String
-		parent: Parent!
-		isNullable: Boolean!
-		isArray: Boolean!
-		isArrayNullable: Boolean!
+		id: Int!
 		executions: Executions!
 	}
 

@@ -33,22 +33,22 @@ export class KeyHandler implements KeyHandlerService {
 		};
 	}
 
-	getSuccessExecutionsKeyPattern(input: ExecutionsInput) {
-		return `${this.prefixes.success}${this.getExecutionsKeyPattern(input)}`;
+	getDateSecondsFromKey(key: string): number {
+		const pattern = /_([0-9]+)$/;
+		const [dateSeconds] = key.match(pattern).slice(1);
+		return parseInt(dateSeconds, 10);
 	}
 
-	getErrorExecutionsKeyPattern(input: ExecutionsInput) {
-		return `${this.prefixes.error}${this.getExecutionsKeyPattern(input)}`;
-	}
-
-	private getExecutionsKeyPattern(input: ExecutionsInput) {
-		const startSeconds = Math.floor(input.startDate.getTime() / 1000);
-		const endSeconds = Math.floor(input.endDate.getTime() / 1000);
-		const differenceSeconds = (endSeconds - startSeconds).toString().length;
-		const commonSeconds = startSeconds
+	getExecutionsKeyPattern(input: ExecutionsInput, type: 'error' | 'success') {
+		const prefix =
+			type === 'error' ? this.prefixes.error : this.prefixes.success;
+		const differenceSeconds = (
+			input.endSeconds - input.startSeconds
+		).toString().length;
+		const commonSeconds = input.startSeconds
 			.toString()
 			.slice(0, -differenceSeconds);
 
-		return `*_${input.hash}_${commonSeconds}*}`;
+		return `${prefix}*_${input.hash}_${commonSeconds}*}`;
 	}
 }

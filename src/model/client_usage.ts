@@ -1,5 +1,3 @@
-import { Parent } from './repository';
-
 interface ClientOperationEntity {
 	objectId: number;
 	fields: number[];
@@ -51,12 +49,9 @@ export interface OperationUsageResponse {
 	client: ClientUsage[];
 }
 
-export interface EntityUsageResponse {
-	name: string;
-	description?: string;
-	isNullable: boolean;
-	isArray: boolean;
-	isArrayNullable: boolean;
-	parent: Parent;
+export interface FieldUsage {
+	id: number;
 	executions: Executions;
 }
+
+export type EntityUsageResponse = FieldUsage[];
