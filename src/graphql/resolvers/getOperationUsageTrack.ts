@@ -38,7 +38,7 @@ export default async function getOperationUsageTrack(
 		const versionOperations: OperationExecutions[] = [];
 		operations.forEach((operation, key) => {
 			const { hash } = keyHandler.parseOperationKey(key);
-			if (key.includes(hash)) {
+			if (key.includes(c.id.toString())) {
 				versionOperations.push({
 					name: operation.query.name,
 					executions: resultExecutions.find((e) => e.hash === hash),
