@@ -1,7 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 
-import { Container } from '../styled';
 import Empty from './Empty';
 import ServiceSchemas from './ServiceSchemas';
 
@@ -22,11 +21,7 @@ const ServiceDetails = () => {
 		return <Empty />;
 	}
 
-	return (
-		<Container>
-			<ServiceSchemas service={service} />
-		</Container>
-	);
+	return <ServiceSchemas service={service} />;
 };
 
 export default ServiceDetails;

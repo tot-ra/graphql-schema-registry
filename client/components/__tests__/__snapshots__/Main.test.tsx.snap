@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Main tests should render for PersistedQueries 1`] = `
+<main
+  class="Main__MainContainer-sc-sjcz9g-0 bSxpxG"
+>
+  TopMenu
+  PersistedQueries
+</main>
+`;
+
+exports[`Main tests should render for Schema 1`] = `
+<main
+  class="Main__MainContainer-sc-sjcz9g-0 bSxpxG"
+>
+  TopMenu
+  Schema
+</main>
+`;
+
+exports[`Main tests should render for Types 1`] = `
+<main
+  class="Main__MainContainer-sc-sjcz9g-0 bSxpxG"
+>
+  TopMenu
+  Types
+</main>
+`;

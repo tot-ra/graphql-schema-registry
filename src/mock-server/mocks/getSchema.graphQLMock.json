@@ -1,0 +1,23 @@
+{
+  "schema": {
+    "id": 3,
+    "typeDefs": "    type Query {getMessage(id: ID!): String }  ",
+    "isActive": true,
+    "addedTime": "2022-05-02T12:49:28.000Z",
+    "service": {
+      "url": "http://127.0.0.1:4000/api/graphql/customer-segment",
+      "__typename": "Service"
+    },
+    "containerCount": 0,
+    "containers": [
+      {
+        "version": "latest",
+        "addedTime": "2022-05-02T12:49:28.000Z",
+        "commitLink": null,
+        "__typename": "Container"
+      }
+    ],
+    "previousSchema": null,
+    "__typename": "SchemaDefinition"
+  }
+}

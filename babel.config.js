@@ -12,6 +12,13 @@ module.exports = (api) => {
 				},
 			],
 			[
+				'@babel/preset-typescript',
+				{
+					isTSX: true,
+					allExtensions: true,
+				},
+			],
+			[
 				'@babel/preset-react',
 				{ development: !api.env('production'), runtime: 'automatic' },
 			],
@@ -27,7 +34,7 @@ module.exports = (api) => {
 					css: true,
 				},
 			],
-			!api.env('production') && 'react-refresh/babel',
+			!api.env('production') && !api.env('test') && 'react-refresh/babel',
 		].filter(Boolean),
 	};
 };

@@ -11,7 +11,6 @@ import listTypeInstances from './resolvers/listTypeInstances';
 import listTypes from './resolvers/listTypes';
 import getTypeInstance from './resolvers/getTypeInstance';
 import getOperationUsageTrack from './resolvers/getOperationUsageTrack';
-import TypeInstanceDetailResponse from './resolvers/union/typeInstanceDetailResponse';
 import getEntityUsageTrack from './resolvers/getEntityUsageTrack';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
@@ -21,8 +20,22 @@ const dateTime = new Intl.DateTimeFormat('en-GB', {
 	day: 'numeric',
 });
 
+export const commonResolvers = {
+	TypeInstanceDetailResponse: {
+		__resolveType(obj) {
+			if (obj.inputParams || obj.outputParams) {
+				return 'OperationInstanceDetail';
+			}
+			if (obj.fields) {
+				return 'TypeInstanceDetail';
+			}
+			return null;
+		},
+	},
+};
+
 export default {
-	TypeInstanceDetailResponse,
+	...commonResolvers,
 	Query: {
 		services: async (parent, { limit, offset }) =>
 			servicesModel.getServices(connection, limit, offset),

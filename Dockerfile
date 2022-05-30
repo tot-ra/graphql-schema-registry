@@ -6,10 +6,10 @@ RUN mkdir -p /app && \
 chown nobody:nobody /app
 WORKDIR /app
 USER nobody
-ADD package.json package-lock.json ./
+COPY package.json package-lock.json ./
 RUN npm install
-ADD webpack.config.js babel.config.js ./
-ADD client ./client
+COPY webpack.config.js babel.config.js tsconfig.json .eslintrc .editorconfig ./
+COPY client ./client
 RUN npm run build-frontend
 
 # 2. BUILD BACKEND source from .ts, uses dev-dependencies
@@ -20,10 +20,10 @@ RUN mkdir -p /app && \
 chown nobody:nobody /app
 WORKDIR /app
 USER nobody
-ADD src ./src
-ADD package.json package-lock.json tsconfig.json ./
-RUN npm install && \
-npm run build-backend
+COPY package.json package-lock.json tsconfig.json ./
+RUN npm install
+COPY src ./src
+RUN npm run build-backend
 
 # 3. BUILD FINAL IMAGE
 FROM node:14-alpine

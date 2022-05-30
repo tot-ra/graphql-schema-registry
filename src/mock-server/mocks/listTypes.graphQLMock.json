@@ -1,0 +1,40 @@
+{
+  "listTypes": {
+    "operations": [
+      {
+        "type": "QUERY",
+        "count": 2
+      },
+      {
+        "type": "MUTATION",
+        "count": 6
+      }
+    ],
+    "entities": [
+      {
+        "type": "OBJECT",
+        "count": 40
+      },
+      {
+        "type": "SCALAR",
+        "count": 11
+      },
+      {
+        "type": "INTERFACE",
+        "count": 54
+      },
+      {
+        "type": "ENUM",
+        "count": 1
+      },
+      {
+        "type": "INPUT",
+        "count": 0
+      },
+      {
+        "type": "DIRECTIVE",
+        "count": 56
+      }
+    ]
+  }
+}

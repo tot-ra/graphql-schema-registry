@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Lists tests NavigationListItem tests should render a chevron icon when the prop is active 1`] = `
+<a
+  aria-disabled="false"
+  class="MuiButtonBase-root MuiListItem-root MuiListItem-gutters MuiListItem-button"
+  href="/test"
+  role="link"
+  tabindex="0"
+>
+  <div
+    class="MuiListItemText-root"
+  >
+    <span
+      class="MuiTypography-root makeStyles-text-2 MuiTypography-body1 MuiTypography-displayBlock"
+    >
+      Test
+    </span>
+  </div>
+  <svg
+    aria-hidden="true"
+    class="MuiSvgIcon-root"
+    focusable="false"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"
+    />
+  </svg>
+  <span
+    class="MuiTouchRipple-root"
+  />
+</a>
+`;

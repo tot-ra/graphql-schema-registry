@@ -5,10 +5,10 @@ ENV npm_config_cache=/tmp/.npm
 RUN mkdir -p /tmp/.npm /app && chown nobody:nobody /tmp/.npm /app
 WORKDIR /app
 USER nobody
-ADD git_src/package.json git_src/package-lock.json ./
+COPY git_src/package.json git_src/package-lock.json ./
 RUN npm install
-ADD git_src/webpack.config.js git_src/babel.config.js ./
-ADD git_src/client ./client
+COPY git_src/webpack.config.js git_src/babel.config.js git_src/tsconfig.json git_src/.eslintrc git_src/.editorconfig ./
+COPY git_src/client ./client
 RUN npm run build-frontend
 
 # 2. BUILD BACKEND source from .ts, uses dev-dependencies
@@ -19,10 +19,10 @@ RUN mkdir -p /app && \
 chown nobody:nobody /app
 WORKDIR /app
 USER nobody
+COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.conf.js ./
+RUN npm install
 ADD git_src/src ./src
-ADD git_src/package.json git_src/package-lock.json git_src/tsconfig.json ./
-RUN npm install && \
-npm run build-backend
+RUN npm run build-backend
 
 # 3. BUILD FINAL IMAGE
 FROM node:14-alpine
