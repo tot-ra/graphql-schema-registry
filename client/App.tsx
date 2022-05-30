@@ -37,6 +37,9 @@ const cache = new InMemoryCache({
 		TypeInstance: {
 			keyFields: ['id', 'type'],
 		},
+		Parent: {
+			keyFields: ['id', 'type'],
+		},
 	},
 });
 
