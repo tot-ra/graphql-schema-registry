@@ -47,6 +47,7 @@ describe('POST /schema/compose', function () {
 					version: 'v1',
 					type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
 				},
+				headers: {'Force-Push': true}
 			});
 			expect(result.statusCode).toBe(200);
 
@@ -60,6 +61,7 @@ describe('POST /schema/compose', function () {
 					version: 'v2',
 					type_defs: '\n\ttype Query {\n\t\tprivet: Int\n\t}\n',
 				},
+				headers: {'Force-Push': true}
 			});
 			expect(result.statusCode).toBe(200);
 
@@ -73,6 +75,7 @@ describe('POST /schema/compose', function () {
 					version: 'v1',
 					type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
 				},
+				headers: {'Force-Push': true}
 			});
 			expect(result.statusCode).toBe(200);
 
@@ -86,6 +89,7 @@ describe('POST /schema/compose', function () {
 					version: 'v2',
 					type_defs: '\n\ttype Query {\n\t\tmir: String\n\t}\n',
 				},
+				headers: {'Force-Push': true}
 			});
 			expect(result.statusCode).toBe(200);
 
@@ -100,6 +104,7 @@ describe('POST /schema/compose', function () {
 						{ name: 'service_b', version: 'v1' },
 					],
 				},
+				headers: {'Force-Push': true}
 			});
 
 			expect(result.statusCode).toBe(200);
