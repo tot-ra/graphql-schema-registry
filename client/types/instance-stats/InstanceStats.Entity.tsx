@@ -53,23 +53,24 @@ export const InstanceStatsEntity = () => {
 			<InstanceStatsListing {...getTypeInstance}>
 				<InstanceStatsTable
 					headerLabel="Field"
-					items={items.map((item) => ({
-						id: item.name,
+					items={getTypeInstance.fields?.map((field) => ({
+						id: field.key,
 						label: (
 							<Argument
-								name={item.name}
+								name={field.key}
 								type={{
-									id: item.parent.id,
-									kind: item.parent.type,
-									name: item.parent.name,
+									id: field.parent.id,
+									kind: field.parent.type,
+									name: field.parent.name,
 								}}
-								isArray={item.isArray}
-								isArrayNullable={item.isArrayNullable}
-								isNullable={item.isNullable}
+								isArray={field.isArray}
+								isArrayNullable={field.isArrayNullable}
+								isNullable={field.isNullable}
 							/>
 						),
 						href: `/types/object/${getTypeInstance.id}`,
-						executions: item.executions,
+						executions: items.find((item) => item.id === field.id)
+							?.executions,
 					}))}
 				/>
 			</InstanceStatsListing>

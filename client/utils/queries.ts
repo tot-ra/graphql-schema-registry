@@ -208,6 +208,7 @@ type ParamProvidedBy = Omit<
 };
 
 type Field = Param & {
+	id: number;
 	key: string;
 	isDeprecated: boolean;
 	arguments?: [
@@ -421,26 +422,15 @@ export const TYPE_INSTANCE_OPERATION_STATS = gql`
 
 export type TypeInstanceObjectStatsVars = TypeInstanceBaseStatsVars;
 
-export type TypeInstanceObjectStatsOutput = {
+export type TypeInstanceObjectStatsOutput = TypeInstanceOutput & {
 	getEntityUsageTrack: {
-		name: string;
-		description?: string;
-		isNullable: boolean;
-		isArray: boolean;
-		isArrayNullable: boolean;
-		parent: {
-			id: number;
-			name: string;
-			type: string;
-		};
+		id: number;
 		executions: {
 			success: number;
 			error: number;
 			total: number;
 		};
 	}[];
-
-	getTypeInstance: GetTypeInstanceBase;
 };
 
 export const TYPE_INSTANCE_OBJECT_STATS = gql`
@@ -450,16 +440,7 @@ export const TYPE_INSTANCE_OBJECT_STATS = gql`
 		$endDate: Date!
 	) {
 		getEntityUsageTrack(id: $id, startDate: $startDate, endDate: $endDate) {
-			name
-			description
-			isNullable
-			isArrayNullable
-			isArray
-			parent {
-				id
-				name
-				type
-			}
+			id
 			executions {
 				success
 				error
@@ -474,12 +455,20 @@ export const TYPE_INSTANCE_OBJECT_STATS = gql`
 				name
 				description
 				type
-			}
-			... on OperationInstanceDetail {
-				id
-				name
-				description
-				type
+				fields {
+					id
+					description
+					isNullable
+					isArray
+					isArrayNullable
+					key
+					isDeprecated
+					parent {
+						id
+						name
+						type
+					}
+				}
 			}
 		}
 	}

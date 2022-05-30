@@ -29,6 +29,7 @@ export const InstanceDescriptionTable = ({
 	const fieldsMemo = useMemo(
 		() =>
 			fields?.map((field) => ({
+				id: field.id,
 				name: field.key,
 				description: field.description,
 				isDeprecated: field.isDeprecated,

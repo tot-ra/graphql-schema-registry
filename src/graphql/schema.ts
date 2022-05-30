@@ -133,6 +133,7 @@ export default gql`
 	}
 
 	type Field {
+		id: Int!
 		key: String
 		isDeprecated: Boolean!
 		description: String
@@ -227,12 +228,7 @@ export default gql`
 	}
 
 	type EntityUsageTrackResponse {
-		name: String!
-		description: String
-		isNullable: Boolean!
-		isArray: Boolean!
-		isArrayNullable: Boolean!
-		parent: EntityUsageTrackParent!
+		id: Int!
 		executions: UsageExecution!
 	}
 `;

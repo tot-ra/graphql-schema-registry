@@ -30,7 +30,7 @@ type InstanceStatsTableProps = {
 	items: {
 		id: React.Key;
 		label: React.ReactNode;
-		executions: {
+		executions?: {
 			success: number;
 			error: number;
 			total: number;
@@ -67,13 +67,13 @@ export const InstanceStatsTable = ({
 								{label}
 							</TableCell>
 							<TableCell component="th" scope="row">
-								{executions.total}
+								{executions?.total ?? 0}
 							</TableCell>
 							<TableCell component="th" scope="row">
-								{executions.success}
+								{executions?.success ?? 0}
 							</TableCell>
 							<TableCell component="th" scope="row">
-								{executions.error}
+								{executions?.error ?? 0}
 							</TableCell>
 						</TableRow>
 					))}

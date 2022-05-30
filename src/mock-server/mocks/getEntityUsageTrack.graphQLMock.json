@@ -1,16 +1,7 @@
 {
   "getEntityUsageTrack": [
     {
-      "name": "Field 1",
-      "description": "Nulla officia reprehenderit id fugiat et adipisicing reprehenderit. Eu incididunt officia exercitation occaecat aliqua Lorem excepteur amet commodo. Sit reprehenderit esse excepteur esse nostrud ea. Laboris id commodo do do nisi. Consequat veniam nostrud qui consectetur ad mollit reprehenderit nulla veniam amet nostrud ullamco.",
-      "isNullable": true,
-      "isArray": false,
-      "isArrayNullable": true,
-      "parent": {
-        "id": 1,
-        "name": "parent_1",
-        "type": "String"
-      },
+      "id": 1,
       "executions": {
         "success": 10,
         "error": 2,

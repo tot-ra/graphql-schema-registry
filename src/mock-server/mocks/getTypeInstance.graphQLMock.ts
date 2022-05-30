@@ -51,6 +51,7 @@ export default {
 			type,
 			fields: [
 				{
+					id: 0,
 					key: 'key_1',
 					description:
 						'Commodo laborum ullamco est in non cillum ullamco et proident ea qui mollit esse minim. Dolore culpa minim dolore ea id do adipisicing irure deserunt. Non consequat do sunt reprehenderit. Lorem veniam anim sunt dolore consectetur occaecat ut exercitation exercitation nisi adipisicing esse. Reprehenderit labore nostrud excepteur id consectetur ullamco ullamco dolore cupidatat incididunt. Nisi id aliqua dolor eu.',
@@ -93,6 +94,7 @@ export default {
 					],
 				},
 				{
+					id: 1,
 					key: 'key_2',
 					description:
 						'Commodo laborum ullamco est in non cillum ullamco et proident ea qui mollit esse minim. Dolore culpa minim dolore ea id do adipisicing irure deserunt. Non consequat do sunt reprehenderit. Lorem veniam anim sunt dolore consectetur occaecat ut exercitation exercitation nisi adipisicing esse. Reprehenderit labore nostrud excepteur id consectetur ullamco ullamco dolore cupidatat incididunt. Nisi id aliqua dolor eu.',
