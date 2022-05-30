@@ -9,6 +9,7 @@ import {
 import { connection } from '../database';
 import config from '../config';
 import * as kafka from '../kafka';
+import { ClientUsageController } from '../controller/clientUsage';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection);
@@ -56,7 +57,10 @@ export async function push(req, res) {
 		})
 	);
 
-	const data = await pushAndValidateSchema({ service });
+	const data = await pushAndValidateSchema({
+		service,
+		forcePush: req.headers['force-push'],
+	});
 
 	if (config.asyncSchemaUpdates) {
 		await kafka.send(data);
@@ -114,5 +118,13 @@ export async function diff(req, res) {
 	return res.json({
 		success: true,
 		data: await diffSchemas({ service }),
+	});
+}
+
+export async function usage(req, res) {
+	const controller = new ClientUsageController();
+	await controller.registerUsage(req.body);
+	return res.json({
+		success: true,
 	});
 }

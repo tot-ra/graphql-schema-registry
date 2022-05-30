@@ -280,12 +280,16 @@ const schemaModel = {
 
 		logger.info(`Registering schema with containerId = ${containerId}`);
 
-		const result = await schemaModel.getSchemaByServiceVersions({
+		const result: any[] = await schemaModel.getSchemaByServiceVersions({
 			trx,
 			services: [service],
 		});
 
-		return result[0];
+		const schema = result.find((r) => r.service_id === serviceId);
+		if (schema === undefined) {
+			return result[0];
+		}
+		return schema;
 	},
 
 	toggleSchema: async function ({ trx, id }, isActive) {

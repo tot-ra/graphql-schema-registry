@@ -1,0 +1,79 @@
+{
+  "data": {
+    "listTypeInstances": {
+      "items": [
+        {
+          "id": 47,
+          "name": "CustomerSegments",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "customer-segment" }]
+        },
+        {
+          "id": 51,
+          "name": "LoyaltyProgramRewardStatus",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "loyalty-program" }]
+        },
+        {
+          "id": 61,
+          "name": "Coupon",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "coupons" }]
+        },
+        {
+          "id": 97,
+          "name": "FederatedPromotionCampaigns",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "campaigns" }]
+        },
+        {
+          "id": 117,
+          "name": "MasterProduct",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "products" }]
+        },
+        {
+          "id": 121,
+          "name": "Description",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "products" }]
+        },
+        {
+          "id": 134,
+          "name": "CurrentPrice",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "products" }]
+        },
+        {
+          "id": 135,
+          "name": "MeasurementPrice",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "products" }]
+        },
+        {
+          "id": 136,
+          "name": "Delivery",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "products" }]
+        },
+        {
+          "id": 155,
+          "name": "Engine",
+          "description": null,
+          "type": "OBJECT",
+          "providedBy": [{ "name": "recommendation" }]
+        }
+      ],
+      "pagination": { "page": 2, "totalPages": 5, "total": 41, "limit": 10 }
+    }
+  }
+}

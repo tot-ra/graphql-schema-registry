@@ -7,6 +7,12 @@ import schemaModel from '../database/schema';
 import containersModel from '../database/containers';
 import servicesModel from '../database/services';
 import PersistedQueriesModel from '../database/persisted_queries';
+import listTypeInstances from './resolvers/listTypeInstances';
+import listTypes from './resolvers/listTypes';
+import getTypeInstance from './resolvers/getTypeInstance';
+import getOperationUsageTrack from './resolvers/getOperationUsageTrack';
+import TypeInstanceDetailResponse from './resolvers/union/typeInstanceDetailResponse';
+import getEntityUsageTrack from './resolvers/getEntityUsageTrack';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -16,6 +22,7 @@ const dateTime = new Intl.DateTimeFormat('en-GB', {
 });
 
 export default {
+	TypeInstanceDetailResponse,
 	Query: {
 		services: async (parent, { limit, offset }) =>
 			servicesModel.getServices(connection, limit, offset),
@@ -35,6 +42,11 @@ export default {
 			return await PersistedQueriesModel.get(key);
 		},
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
+		listTypes,
+		listTypeInstances,
+		getTypeInstance,
+		getOperationUsageTrack,
+		getEntityUsageTrack,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {

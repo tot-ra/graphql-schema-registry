@@ -35,7 +35,6 @@ export const connection = knex({
 	},
 	connection: async () => {
 		logger.info(`connecting to DB ${host}:${port}`);
-
 		return {
 			host,
 			port,

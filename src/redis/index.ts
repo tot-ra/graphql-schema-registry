@@ -4,7 +4,7 @@ import { logger } from '../logger';
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
-	process.env.REDIS_SCHEMA_REGISTRY || 'schema-registry-redis';
+	process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis';
 
 const redisWrapper = {
 	redisInstance: null,
@@ -53,12 +53,46 @@ const redisWrapper = {
 		return await (await redisWrapper.getInstance()).get(key);
 	},
 
+	multiGet: async <T>(keys: string[]): Promise<(T | null)[]> => {
+		if (keys.length === 0) {
+			return [];
+		}
+		return await (await redisWrapper.getInstance()).mget(keys);
+	},
+
 	set: async (key, value, ttl = DEFAULT_TTL) => {
 		await (await redisWrapper.getInstance()).set(key, value, 'EX', ttl);
 	},
 
+	scan: async (pattern: string): Promise<string[]> => {
+		const client = await redisWrapper.getInstance();
+		const found: string[] = [];
+		const endCursor = '0';
+		let cursor = endCursor;
+
+		do {
+			const [newCursor, foundKeys] = await client.scan(
+				cursor,
+				'match',
+				pattern
+			);
+			cursor = newCursor;
+			found.push(...foundKeys);
+		} while (cursor !== endCursor);
+
+		return found;
+	},
+
+	incr: async (key) => {
+		await (await redisWrapper.getInstance()).incr(key);
+	},
+
 	delete: async (key) => {
 		return await (await redisWrapper.getInstance()).del(key);
+	},
+
+	keys: async (pattern) => {
+		return await (await redisWrapper.getInstance()).keys(pattern);
 	},
 
 	onEnd: function () {
