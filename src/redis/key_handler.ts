@@ -35,7 +35,7 @@ export class KeyHandler implements KeyHandlerService {
 
 	getDateSecondsFromKey(key: string): number {
 		const pattern = /_([0-9]+)$/;
-		const [_,dateSeconds] = key.match(pattern);
+		const [_, dateSeconds] = key.match(pattern);
 		return parseInt(dateSeconds, 10);
 	}
 
