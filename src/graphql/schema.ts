@@ -176,6 +176,7 @@ export default gql`
 	}
 
 	type Field {
+		id: Int!
 		description: String
 		parent: Parent!
 		isNullable: Boolean!
