@@ -54,8 +54,8 @@ export class ClientRepository
 			.first();
 	}
 
-	async getClientById(id: string) {
-		return connection(TABLE_NAME).select().where('id', Number(id)).first();
+	async getClientById(id: number) {
+		return connection(TABLE_NAME).select().where('id', id).first();
 	}
 
 	async insertClient(
