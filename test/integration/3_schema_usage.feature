@@ -17,7 +17,16 @@ Feature: As a customer
 		And 0 success registered for client 1
 
 	Scenario: Recurrent client with an existing query with error
-		Given a registered client 1 for an "invalid" query:
+		Given a not registered client "test" and version "0.0.1" for an "invalid" query:
+		"""
+		# IntegrationTest
+		query IntegrationTest($platform: Platform!) {
+			proBrands(platform: $platform) {
+				logo
+			  }
+		}
+		"""
+        And a registered client 1 for an "invalid" query:
 		"""
 		# IntegrationTest
 		query IntegrationTest($platform: Platform!) {
@@ -32,7 +41,25 @@ Feature: As a customer
 		And 0 success registered for client 1
 
 	Scenario: Recurrent client with an existing query without errors
-		Given a registered client 1 for an "valid" query:
+        Given a not registered client "test" and version "0.0.1" for an "invalid" query:
+		"""
+		# IntegrationTest
+		query IntegrationTest($platform: Platform!) {
+			proBrands(platform: $platform) {
+				logo
+			  }
+		}
+		"""
+        And a registered client 1 for an "invalid" query:
+		"""
+		# IntegrationTest
+		query IntegrationTest($platform: Platform!) {
+			proBrands(platform: $platform) {
+				logo
+			  }
+		}
+		"""
+		And a registered client 1 for an "valid" query:
 		"""
 		# IntegrationTest
 		query IntegrationTest($platform: Platform!) {
