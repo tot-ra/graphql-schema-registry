@@ -95,6 +95,10 @@ const redisWrapper = {
 		return await (await redisWrapper.getInstance()).keys(pattern);
 	},
 
+	flush: async () => {
+		return await (await redisWrapper.getInstance()).flushall();
+	},
+
 	onEnd: function () {
 		logger.info('Redis server connection has closed!');
 	},

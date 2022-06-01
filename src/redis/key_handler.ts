@@ -28,7 +28,7 @@ export class KeyHandler implements KeyHandlerService {
 		const pattern = /^[^_\W]+_([^_\W]+)_([^_\W]+)/i;
 		const [_, clientId, hash] = key.match(pattern);
 		return {
-			clientId,
+			clientId: Number(clientId),
 			hash,
 		};
 	}

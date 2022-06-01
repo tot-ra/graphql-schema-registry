@@ -13,7 +13,7 @@ const dataPath = resolve(__dirname, '..', 'data');
 export const requestDataPath = resolve(dataPath, 'request');
 export const responseDataPath = resolve(dataPath, 'response');
 export const sqlDataPath = resolve(dataPath, 'sql');
-export const usageDataPath = resolve(dataPath, 'usage');
+export const redisDataPath = resolve(dataPath, 'redis');
 export let apolloServer;
 let containers: StartedTestContainer[] = [];
 

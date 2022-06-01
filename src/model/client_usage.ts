@@ -35,7 +35,7 @@ export interface OperationExecutions {
 	executions: Executions;
 }
 
-interface ClientVersion {
+export interface ClientVersion {
 	id: string;
 	operations: OperationExecutions[];
 }

@@ -1,0 +1,18 @@
+query getOperationUsageTrack($id: Int!, $startDate: Date!, $endDate: Date!) {
+	getOperationUsageTrack(id: $id, startDate: $startDate, endDate: $endDate) {
+		client {
+			name
+			versions {
+				id
+				operations {
+					name
+					executions {
+						success
+						error
+						total
+					}
+				}
+			}
+		}
+	}
+}
