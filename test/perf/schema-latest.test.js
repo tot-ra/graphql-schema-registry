@@ -18,29 +18,38 @@ export const options = {
 };
 
 export function setup() {
-	console.log(http.post(`http://${domain}/schema/push`, JSON.stringify({
-			name: 'service_a', // service name
-			version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
-			type_defs: 'type Query {\n		hi: String\n	}',
-			url: 'http://localhost:6101',
-		}), {
-			headers: {
-				'Content-Type': 'application/json'
+	console.log(
+		http.post(
+			`http://${domain}/schema/push`,
+			JSON.stringify({
+				name: 'service_a', // service name
+				version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
+				type_defs: 'type Query {\n		hi: String\n	}',
+				url: 'http://localhost:6101',
+			}),
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			}
-		},
-	));
-	console.log(http.post(`http://${domain}/schema/push`, JSON.stringify({
-			name: 'service_b', // service name
-			version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
-			type_defs: 'type Query {\n		world: String\n	}',
-			url: 'http://localhost:6101',
-		}), {
-			headers: {
-				'Content-Type': 'application/json'
+		)
+	);
+	console.log(
+		http.post(
+			`http://${domain}/schema/push`,
+			JSON.stringify({
+				name: 'service_b', // service name
+				version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
+				type_defs: 'type Query {\n		world: String\n	}',
+				url: 'http://localhost:6101',
+			}),
+			{
+				headers: {
+					'Content-Type': 'application/json',
+				},
 			}
-		},
-	));
-
+		)
+	);
 }
 
 export default function () {
@@ -58,4 +67,4 @@ export default function () {
 		'body is not empty': (r) => res.body && res.body.length > 0,
 	});
 	sleep(1);
-};
+}

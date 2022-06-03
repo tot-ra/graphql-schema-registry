@@ -6,6 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 Types of changes:
+
 - Added for new features.
 - Changed for changes in existing functionality.
 - Deprecated for soon-to-be removed features.
@@ -14,15 +15,21 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+## Updated
+- nodejs version 14 -> 16
 
 ## [3.3.0] - 2022-05-25
+
 ## Updated
+
 - /schema/latest now does not have schema validation, because we expect schema to be validated
-during /schema/push. This is performance improvement
+  during /schema/push. This is performance improvement
 - added performance tests. Mean duration for simple schema perf test ~ 660 ms (dockerized, your experience may differ)
 
 ## [3.2.3] - 2022-05-25
+
 ## Fixed
+
 - /schema/push now returns 400 instead of 500 if you attempt to register service schema with same version
 - note, that you can register schema from multiple pods if it is the same (type definitions are matched)
 

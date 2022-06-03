@@ -112,7 +112,7 @@ describe('POST /schema/push', function () {
 		expect(result.statusCode).toBe(200);
 
 		try {
-			 result = await request({
+			result = await request({
 				method: 'POST',
 				uri: 'http://localhost:6001/schema/push',
 				resolveWithFullResponse: true,
@@ -120,7 +120,8 @@ describe('POST /schema/push', function () {
 				body: {
 					name: 'service_c',
 					version: 'v1',
-					type_defs: '\n\ttype Query {\n\t\tme: String\n\tyou:String\n\t}\n',
+					type_defs:
+						'\n\ttype Query {\n\t\tme: String\n\tyou:String\n\t}\n',
 				},
 			});
 		} catch (err) {
@@ -128,7 +129,9 @@ describe('POST /schema/push', function () {
 			expect(err.response.body).toEqual(
 				expect.objectContaining({
 					success: false,
-					message: expect.stringContaining('You should not register different type_defs with same version')
+					message: expect.stringContaining(
+						'You should not register different type_defs with same version'
+					),
 				})
 			);
 		}

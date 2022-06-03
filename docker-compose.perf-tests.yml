@@ -65,13 +65,13 @@ services:
     networks:
       - gql-schema
     ports:
-      - "6565:6565"
+      - '6565:6565'
     volumes:
       - ./test/perf:/scripts
   influxdb:
     image: influxdb:1.8
     ports:
-      - "8086:8086"
+      - '8086:8086'
     environment:
       - INFLUXDB_DB=k6
     networks:
@@ -83,7 +83,7 @@ services:
     networks:
       - gql-schema
     ports:
-      - "8087:3000"
+      - '8087:3000'
     environment:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_ANONYMOUS_ENABLED=true

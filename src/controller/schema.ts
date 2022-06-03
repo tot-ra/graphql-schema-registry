@@ -7,7 +7,11 @@ import Knex from 'knex';
 
 import { logger } from '../logger';
 
-export async function getAndValidateSchema(trx: Knex, services = false, validate = true) {
+export async function getAndValidateSchema(
+	trx: Knex,
+	services = false,
+	validate = true
+) {
 	const schemas = services
 		? await schemaModel.getSchemaByServiceVersions({ trx, services })
 		: await schemaModel.getLastUpdatedForActiveServices({ trx });
