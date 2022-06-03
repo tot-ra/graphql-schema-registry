@@ -84,6 +84,9 @@ export class RegisterUsage {
 		const operation = await this.operationRepository.getOperationByName(
 			operationName
 		);
+		if (!operation) {
+			return;
+		}
 		const outputParam =
 			await this.operationParamRepository.getOperationParamOutputByParent(
 				operation.id
