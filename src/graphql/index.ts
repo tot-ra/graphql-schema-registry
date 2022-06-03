@@ -1,12 +1,16 @@
 import { ApolloServer } from 'apollo-server-express';
 import { getServerProps } from './server';
 
-const initServer = async (app) => {
+let server;
+
+export const initServer = async (app) => {
 	const props = getServerProps();
 
-	const server = new ApolloServer(props);
+	server = new ApolloServer(props);
 
 	server.applyMiddleware({ app });
 };
 
-export default initServer;
+export const getServer = () => {
+	return server;
+};

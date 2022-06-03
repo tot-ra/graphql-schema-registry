@@ -18,9 +18,10 @@ export default async function getEntityUsageTrack(
 	const operations = await redisRepo.getOperationsByUsage(id, 'entity');
 	const executions: Promise<ExecutionsDAO>[] = [];
 	operations.forEach((_o, key) => {
-		const { hash } = keyHandler.parseOperationKey(key);
+		const { hash, clientId } = keyHandler.parseOperationKey(key);
 		executions.push(
 			redisRepo.getExecutionsFromOperation({
+				clientId,
 				hash,
 				startSeconds: parseInputDate(startDate),
 				endSeconds: parseInputDate(endDate),

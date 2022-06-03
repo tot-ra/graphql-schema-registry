@@ -49,6 +49,6 @@ export class KeyHandler implements KeyHandlerService {
 			.toString()
 			.slice(0, -differenceSeconds);
 
-		return `${prefix}*_${input.hash}_${commonSeconds}*`;
+		return `${prefix}${input.clientId}_${input.hash}_${commonSeconds}*`;
 	}
 }

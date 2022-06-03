@@ -7,12 +7,12 @@ jest.mock('../TopMenu', () => ({
 	default: () => 'TopMenu',
 }));
 
-jest.mock('../../Schema', () => ({
+jest.mock('../../schema', () => ({
 	__esModule: true,
 	default: () => 'Schema',
 }));
 
-jest.mock('../../Types', () => ({
+jest.mock('../../types', () => ({
 	__esModule: true,
 	default: () => 'Types',
 }));

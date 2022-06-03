@@ -7,6 +7,7 @@ import redisClient from './index';
 import { KeyHandler } from './key_handler';
 
 export interface ExecutionsInput {
+	clientId: number;
 	hash: string;
 	startSeconds: number;
 	endSeconds: number;
@@ -84,6 +85,7 @@ export class RedisRepository implements RedisService {
 			success,
 			total: error + success,
 			hash: input.hash,
+			clientId: input.clientId,
 		} as ExecutionsDAO;
 	}
 

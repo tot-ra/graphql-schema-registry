@@ -1,6 +1,6 @@
 import express from 'express';
 import { get } from 'lodash';
-import initGraphql from './graphql';
+import { initServer } from './graphql/index';
 import * as kafka from './kafka';
 import config from './config';
 import router from './router';
@@ -47,7 +47,7 @@ const setupServer = async () => {
 	});
 
 	app.use(router);
-	initGraphql(app);
+	initServer(app);
 
 	// eslint-disable-next-line
 	app.use((err, req, res, next) => {

@@ -20,6 +20,7 @@ export interface ClientOperationDAO {
 
 export type ExecutionsDAO = Executions & {
 	hash: string;
+	clientId: number;
 };
 
 export type ClientOperationsDTO = Map<string, ClientOperationDAO>;

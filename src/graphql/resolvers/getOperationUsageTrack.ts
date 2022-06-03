@@ -38,6 +38,7 @@ export default async function getOperationUsageTrack(
 		const { hash, clientId } = keyHandler.parseOperationKey(key);
 		executions.push(
 			redisRepo.getExecutionsFromOperation({
+				clientId,
 				hash,
 				startSeconds: parseInputDate(startDate),
 				endSeconds: parseInputDate(endDate),
@@ -90,28 +91,31 @@ function mapToOperationUsageResponse(
 			c.versions.forEach((version) => {
 				const { id, tag } = version;
 				const { hash, clientId } = keyHandler.parseOperationKey(key);
-				if (clientId === id) {
-					const existingVersionTag = versions.find(
-						(v) => v.id === tag
-					);
-					if (existingVersionTag) {
-						existingVersionTag.operations.push({
-							name: operation.query.name,
-							executions: executions.find((e) => e.hash === hash),
-						});
-					} else {
-						versions.push({
-							id: tag,
-							operations: [
-								{
-									name: operation.query.name,
-									executions: executions.find(
-										(e) => e.hash === hash
-									),
-								},
-							],
-						});
-					}
+				if (clientId !== id) {
+					return;
+				}
+				const existingVersionTag = versions.find((v) => v.id === tag);
+				const clientExecutions = executions.find(
+					(e) => e.hash === hash && e.clientId === clientId
+				);
+				if (!clientExecutions) {
+					return;
+				}
+				if (existingVersionTag) {
+					existingVersionTag.operations.push({
+						name: operation.query.name,
+						executions: clientExecutions,
+					});
+				} else {
+					versions.push({
+						id: tag,
+						operations: [
+							{
+								name: operation.query.name,
+								executions: clientExecutions,
+							},
+						],
+					});
 				}
 			});
 		});
