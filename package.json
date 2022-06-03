@@ -3,6 +3,10 @@
   "version": "3.3.0",
   "description": "Graphql schema registry",
   "main": "app/schema-registry.js",
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  },
   "scripts": {
     "develop": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/schema-registry.ts --watch src --inspect",
     "test": "jest --config jest.config.ts",
