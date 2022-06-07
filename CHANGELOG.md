@@ -15,6 +15,8 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+
+## [3.4.0] - 2022-06-07
 ## Updated
 - nodejs version 14 -> 16
 
