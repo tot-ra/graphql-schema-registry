@@ -194,7 +194,9 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ## Testing
+
 ### Unit tests
+
 use jest, coverage is quite low as most logic is in db or libraries.
 
 ```
@@ -202,6 +204,7 @@ npm run test
 ```
 
 ### Functional tests
+
 require docker, mostly blackbox type - real http requests are done against containers.
 DB tables are truncated after every test from within `test/functional/bootstrap.js`
 Jest runs in single worker mode to avoid tests from affecting each other due to same state.
@@ -211,6 +214,7 @@ npm run test-functional
 ```
 
 ### Performance tests
+
 use [k6](https://k6.io/docs/) + dockerized setup similar to functional tests above + grafana and influxdb for reporting the load
 these tests are intended just to show/detect avg latencies of most important endpoints
 
@@ -221,6 +225,7 @@ open http://localhost:8087/dashboard/import
 
 docker-compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/schema-latest.test.js
 ```
+
 <img width="900" alt="Screenshot 2022-05-25 at 01 54 30" src="https://user-images.githubusercontent.com/445122/170144969-d46089ae-b049-459b-a37d-b4d197753bc6.png">
 
 ### Testing Dockerimage build
@@ -268,6 +273,7 @@ Simplified version of /schema/compose where latest versions from different servi
 Some services prefer this to use this natural schema composition, as its natural and time-based.
 
 ### POST /schema/compose
+
 Advanced version of schema composition, where you need to provide services & their versions.
 Used by graphql gateway to fetch schema based on currently running containers.
 
@@ -352,6 +358,7 @@ URL is optional if you use urls from schema-registry as service discovery
   "url": "http://service-b.develop.svc.cluster.local"
 }
 ```
+
 - ❌ 400 "You should not register different type_defs with same version."
 
 #### POST /schema/validate
