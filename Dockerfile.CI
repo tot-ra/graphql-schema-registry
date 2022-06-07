@@ -2,9 +2,7 @@
 FROM node:16-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
-RUN mkdir -p /tmp/.npm /app && chown nobody:nobody /tmp/.npm /app
 WORKDIR /app
-USER nobody
 COPY git_src/package.json git_src/package-lock.json ./
 RUN npm install
 COPY git_src/webpack.config.js git_src/babel.config.js git_src/tsconfig.json git_src/.eslintrc git_src/.editorconfig ./
@@ -15,13 +13,10 @@ RUN npm run build-frontend
 FROM node:16-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
-RUN mkdir -p /app && \
-chown nobody:nobody /app
 WORKDIR /app
-USER nobody
 COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.config.js ./
 RUN npm install
-ADD git_src/src ./src
+COPY git_src/src ./src
 RUN npm run build-backend
 
 # 3. BUILD FINAL IMAGE
@@ -31,15 +26,15 @@ ENV NODE_ENV=${env}
 RUN mkdir -p /app && \
 chown nobody:nobody /app
 WORKDIR /app
-COPY --from=builder-frontend /app/dist /app/dist
-COPY --from=builder-backend /app/app /app/app
+COPY --chown=nobody:nobody --from=builder-frontend /app/dist /app/dist
+COPY --chown=nobody:nobody --from=builder-backend /app/app /app/app
 
 # 3.1 copy only required files
-COPY git_src/migrations /app/migrations
-COPY git_src/container-health.js /app/container-health.js
-COPY git_src/knexfile.js /app/knexfile.js
-COPY git_src/package.json /app/package.json
-COPY git_src/package-lock.json /app/package-lock.json
+COPY --chown=nobody:nobody git_src/migrations /app/migrations
+COPY --chown=nobody:nobody git_src/container-health.js /app/container-health.js
+COPY --chown=nobody:nobody git_src/knexfile.js /app/knexfile.js
+COPY --chown=nobody:nobody git_src/package.json /app/package.json
+COPY --chown=nobody:nobody git_src/package-lock.json /app/package-lock.json
 
 # 3.2 install production dependencies only. Cleanup cache after that
 RUN mkdir -p /.npm && \
