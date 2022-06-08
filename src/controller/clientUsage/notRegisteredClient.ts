@@ -53,6 +53,9 @@ export class RegisterUsage {
 				this.clientName,
 				this.clientVersion
 			);
+			if (!client) {
+				return
+			}
 			const payload = {
 				query: {
 					name: this.op.match(/# (\w+)/)[1],
