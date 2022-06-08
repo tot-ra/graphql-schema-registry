@@ -67,12 +67,12 @@ const setupServer = async () => {
 			});
 		}
 
-		logger.error(`A server error occurred: ${JSON.parse(err.message)}`, {
+		logger.error(`A server error occurred: ${err.message}`, {
 			original_error: err,
 			...errorDetails,
 		});
 
-		logger.error(`Details: ${JSON.stringify(errorDetails)}`);
+		logger.error(`Trace: ${err.stack}`);
 
 		return res
 			.status(500)
