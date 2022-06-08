@@ -125,9 +125,10 @@ export class RegisterUsage {
 				fieldName,
 				parentId
 			);
-			if (f) {
-				this.insertIntoMap(entities, parentId, f.id);
+			if (!f) {
+				return entities;
 			}
+			this.insertIntoMap(entities, parentId, f.id);
 			if (field.selectionSet) {
 				const subfields = await this.getFields(
 					field.selectionSet.selections,
