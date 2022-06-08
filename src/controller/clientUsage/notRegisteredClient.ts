@@ -54,7 +54,7 @@ export class RegisterUsage {
 				this.clientVersion
 			);
 			if (!client) {
-				return
+				return;
 			}
 			const payload = {
 				query: {
