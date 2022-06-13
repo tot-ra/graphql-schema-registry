@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { resolve } from 'path';
-import { AfterAll, BeforeAll } from '@cucumber/cucumber';
+import { AfterAll, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber';
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 import config from '../../../src/config';
 import { getSeedFile } from './db-config';
@@ -19,6 +19,7 @@ export let apolloServer;
 let containers: StartedTestContainer[] = [];
 
 BeforeAll({ timeout: 60000 * 1000 }, async () => {
+	setDefaultTimeout(20 * 1000);
 	const dbContainer = await new GenericContainer('mysql:8.0')
 		.withExposedPorts(3306)
 		.withEnv('SERVICE_3306_NAME', 'gql-schema-registry-db')

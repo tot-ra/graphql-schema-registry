@@ -11,8 +11,7 @@ Feature: As a customer
 			  }
 		}
 		"""
-		Then the database must contain a client with name "test" and version "0.0.1"
-		And the redis must contain 3 entries for client 1
+		Then the redis must contain 3 entries for client 1
 		And 1 error registered for client 1
 		And 0 success registered for client 1
 
@@ -35,8 +34,7 @@ Feature: As a customer
 			  }
 		}
 		"""
-		Then the database must contain a client with name "test" and version "0.0.1"
-		And the redis must contain 3 entries for client 1
+		Then the redis must contain 3 entries for client 1
 		And 2 error registered for client 1
 		And 0 success registered for client 1
 
@@ -68,7 +66,6 @@ Feature: As a customer
 			  }
 		}
 		"""
-		Then the database must contain a client with name "test" and version "0.0.1"
-		And the redis must contain 3 entries for client 1
+		Then the redis must contain 3 entries for client 1
 		And 2 error registered for client 1
 		And 1 success registered for client 1

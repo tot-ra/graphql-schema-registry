@@ -4,8 +4,11 @@ import { Given, Then } from '@cucumber/cucumber';
 import expect from 'expect';
 import { sqlDataPath } from '../config/config';
 import Knex from 'knex';
+import { setDefaultTimeout } from '@cucumber/cucumber';
 
 let dbConnection: Knex<any, unknown[]>;
+
+setDefaultTimeout(20 * 1000);
 
 async function getConnection() {
 	if (!dbConnection) {

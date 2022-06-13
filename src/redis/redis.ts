@@ -111,7 +111,9 @@ export class RedisRepository implements RedisService {
 		id: number,
 		dao: ClientOperationDAO
 	): boolean {
-		return dao.operations.some((operation) => operation.id === id);
+		return dao.operations
+			.filter(Boolean)
+			.some((operation) => operation.id === id);
 	}
 
 	private validateEntityUsage(id: number, dao: ClientOperationDAO): boolean {

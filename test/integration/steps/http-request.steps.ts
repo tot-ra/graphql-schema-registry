@@ -4,7 +4,9 @@ let response: any;
 import expect from 'expect';
 import crypto from 'crypto';
 import { UpdateUsageStrategy } from '../../../src/controller/clientUsage/registeredClient';
-const fs = require('fs');
+import { setDefaultTimeout } from '@cucumber/cucumber';
+
+setDefaultTimeout(20 * 1000);
 
 When(
 	'I send a {string} request to {string}',
@@ -51,12 +53,18 @@ Given(
 		const hash = crypto.createHash('md5').update(query).digest('hex');
 		const strategy = new RegisterUsage(
 			query,
-			clientName,
-			clientVersion,
-			isError === 'invalid',
+			{
+				id: 1,
+				name: clientName,
+				version: clientVersion,
+			},
+			{
+				errors: Number(isError === 'invalid'),
+				success: Number(isError !== 'invalid'),
+			},
 			hash
 		);
-		const result = await strategy.execute();
+		await strategy.execute();
 	}
 );
 
@@ -68,11 +76,14 @@ Given(
 		);
 		const hash = crypto.createHash('md5').update(query).digest('hex');
 		const strategy = new UpdateUsageStrategy(
-			isError === 'invalid',
+			{
+				errors: Number(isError === 'invalid'),
+				success: Number(isError !== 'invalid'),
+			},
 			clientId,
 			hash
 		);
-		const result = await strategy.execute();
+		await strategy.execute();
 	}
 );
 

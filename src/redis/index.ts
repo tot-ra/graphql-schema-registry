@@ -83,8 +83,8 @@ const redisWrapper = {
 		return found;
 	},
 
-	incr: async (key) => {
-		await (await redisWrapper.getInstance()).incr(key);
+	incr: async (key, total) => {
+		await (await redisWrapper.getInstance()).incrby(key, total);
 	},
 
 	delete: async (key) => {

@@ -1,16 +1,22 @@
 import { getTimestamp } from '../../redis/utils';
 
 import redisWrapper from '../../redis';
+import { QueryResult } from '../../model/usage_counter';
 
 export class UpdateUsageStrategy {
 	constructor(
-		private isError: boolean,
+		private queryResult: QueryResult,
 		private clientId: number,
 		private hash: string
 	) {}
 
-	async execute() {
+	async execute(totalQueries: number = 1) {
 		const key = `${this.clientId}_${this.hash}_${getTimestamp()}`;
-		await redisWrapper.incr(`${this.isError ? 'e' : 's'}_${key}`);
+		if (this.queryResult.errors > 0) {
+			await redisWrapper.incr(`e_${key}`, this.queryResult.errors);
+		}
+		if (this.queryResult.success > 0) {
+			await redisWrapper.incr(`s_${key}`, this.queryResult.success);
+		}
 	}
 }

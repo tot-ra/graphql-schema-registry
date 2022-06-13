@@ -10,7 +10,7 @@ interface ClientService {
 		name: string,
 		version: string
 	): Promise<Client>;
-	insertClient(trx: Transaction, client: ClientPayload): Promise<number>;
+	insertClient(client: ClientPayload): Promise<number>;
 }
 
 const TABLE_NAME = 'clients';
@@ -58,10 +58,7 @@ export class ClientRepository
 		return connection(TABLE_NAME).select().where('id', id).first();
 	}
 
-	async insertClient(
-		trx: Transaction,
-		client: ClientPayload
-	): Promise<number> {
-		return super.insert(trx, [client]);
+	async insertClient(client: ClientPayload): Promise<number> {
+		return connection(TABLE_NAME).insert(client);
 	}
 }

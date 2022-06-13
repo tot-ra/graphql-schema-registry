@@ -4,13 +4,10 @@ import { OperationTransactionalRepository } from '../../database/schemaBreakdown
 import { OperationParamsTransactionalRepository } from '../../database/schemaBreakdown/operation_params';
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
 import { FieldTransactionRepository } from '../../database/schemaBreakdown/field';
-import { transact } from '../../database';
-import { ClientRepository } from '../../database/client';
-import crypto from 'crypto';
 import redisWrapper from '../../redis';
 import { getTimestamp } from '../../redis/utils';
-
-const { Report } = require('apollo-reporting-protobuf');
+import { Client } from '../../model/client';
+import { QueryResult } from '../../model/usage_counter';
 
 export class RegisterUsage {
 	private operationRepository =
@@ -19,17 +16,18 @@ export class RegisterUsage {
 		OperationParamsTransactionalRepository.getInstance();
 	private typeRepository = TypeTransactionalRepository.getInstance();
 	private fieldRepository = FieldTransactionRepository.getInstance();
-	private clientRepository = ClientRepository.getInstance();
 
 	constructor(
 		private op: string,
-		private clientName: string,
-		private clientVersion: string,
-		private isError: boolean,
+		private client: Client,
+		private queryResult: QueryResult,
 		private hash: string
 	) {}
 
 	async execute() {
+		if (!this.client) {
+			return;
+		}
 		const definition = gql`
 			${this.op}
 		`;
@@ -42,44 +40,29 @@ export class RegisterUsage {
 			}
 		);
 		let operations = await Promise.all(outerPromises);
-		return await transact(async (trx) => {
-			const clientPayload = {
-				name: this.clientName,
-				version: this.clientVersion,
-			};
-			await this.clientRepository.insertClient(trx, clientPayload);
-			const client = await this.clientRepository.getClientByUniqueTrx(
-				trx,
-				this.clientName,
-				this.clientVersion
-			);
-			if (!client) {
-				return;
-			}
-			const payload = {
-				query: {
-					name: this.op.match(/# (\w+)/)[1],
-					sdl: this.op.replace(/# \w+/, '').trim(),
-				},
-				operations: operations[0],
-			};
-			const ttl = 24 * 3600 * 30;
-			await redisWrapper.set(
-				`o_${client.id}_${this.hash}`,
-				JSON.stringify(payload),
-				ttl
-			);
-			await redisWrapper.set(
-				`s_${client.id}_${this.hash}_${getTimestamp()}`,
-				Number(!this.isError),
-				ttl
-			);
-			await redisWrapper.set(
-				`e_${client.id}_${this.hash}_${getTimestamp()}`,
-				Number(this.isError),
-				ttl
-			);
-		});
+		const payload = {
+			query: {
+				name: this.op.match(/# (\w+)/)[1],
+				sdl: this.op.replace(/# \w+/, '').trim(),
+			},
+			operations: operations[0],
+		};
+		const ttl = 24 * 3600 * 30;
+		await redisWrapper.set(
+			`o_${this.client.id}_${this.hash}`,
+			JSON.stringify(payload),
+			ttl
+		);
+		await redisWrapper.set(
+			`s_${this.client.id}_${this.hash}_${getTimestamp()}`,
+			this.queryResult.success,
+			ttl
+		);
+		await redisWrapper.set(
+			`e_${this.client.id}_${this.hash}_${getTimestamp()}`,
+			this.queryResult.errors,
+			ttl
+		);
 	}
 
 	private async mapOperation(op: any) {
