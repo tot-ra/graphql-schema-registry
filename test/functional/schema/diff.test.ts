@@ -52,6 +52,8 @@ describe('POST /schema/diff', function () {
 					message: "Field 'privet' was added to object type 'Query'",
 					path: 'Query.privet',
 					type: 'FIELD_ADDED',
+					isBreakingChange: false,
+					totalUsages: 0,
 				},
 				{
 					criticality: {
@@ -62,6 +64,8 @@ describe('POST /schema/diff', function () {
 						"Enum value 'SERVICE_B' was added to enum 'join__Graph'",
 					path: 'join__Graph.SERVICE_B',
 					type: 'ENUM_VALUE_ADDED',
+					isBreakingChange: false,
+					totalUsages: 0,
 				},
 			],
 			success: true,
@@ -112,6 +116,8 @@ describe('POST /schema/diff', function () {
 						"Field 'world' was removed from object type 'Query'",
 					path: 'Query.world',
 					type: 'FIELD_REMOVED',
+					isBreakingChange: false,
+					totalUsages: 0,
 				},
 			],
 			success: true,

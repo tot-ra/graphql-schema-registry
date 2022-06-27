@@ -10,6 +10,8 @@ import { connection } from '../database';
 import config from '../config';
 import * as kafka from '../kafka';
 import { ClientUsageController } from '../controller/clientUsage';
+import { Change } from '@graphql-inspector/core';
+import { BreakingChangeHandler } from '../controller/breakingChange';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection);
@@ -59,7 +61,6 @@ export async function push(req, res) {
 
 	const data = await pushAndValidateSchema({
 		service,
-		forcePush: req.headers['force-push'],
 	});
 
 	if (config.asyncSchemaUpdates) {
@@ -106,18 +107,42 @@ export async function remove(req, res) {
 }
 
 export async function diff(req, res) {
-	const service = Joi.attempt(
+	const body = Joi.attempt(
 		req.body,
 		Joi.object().keys({
 			name: Joi.string().min(3).max(200).required(),
 			version: Joi.string().min(1).max(100).required(),
 			type_defs: Joi.string().required(),
+			usage_days: Joi.number().max(30).optional().default(30),
+			min_usages: Joi.number().min(1).optional(),
 		})
 	);
 
+	const service = (({ name, version, type_defs }) => ({
+		name,
+		version,
+		type_defs,
+	}))(body);
+	const limits = (({ usage_days, min_usages }) => ({
+		usage_days,
+		min_usages,
+	}))(body);
+
+	const diff: Change[] = await diffSchemas({ service });
+
+	if (diff !== undefined) {
+		const handler = new BreakingChangeHandler(service, diff, limits);
+		const changes = await handler.handle();
+
+		return res.json({
+			success: !changes.some((change) => change.isBreakingChange),
+			data: changes,
+		});
+	}
+
 	return res.json({
 		success: true,
-		data: await diffSchemas({ service }),
+		data: diff,
 	});
 }
 

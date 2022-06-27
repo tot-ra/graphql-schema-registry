@@ -19,6 +19,7 @@ const changesType = {
 		ChangeType.FieldRemoved,
 		ChangeType.EnumValueRemoved,
 		ChangeType.FieldArgumentRemoved,
+		ChangeType.InputFieldRemoved,
 	],
 	type: [ChangeType.TypeRemoved, ChangeType.DirectiveRemoved],
 	implementation: [ChangeType.ObjectTypeInterfaceRemoved],

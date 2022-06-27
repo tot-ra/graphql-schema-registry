@@ -65,28 +65,8 @@ Feature: As a customer
 		}
 		"""
 
-	Scenario: I request to update an existing schema but is forbidden because exists breaking changes
-		When I send a "POST" request to "/schema/push" with body:
-		"""
-		{
-		  "name": "test2",
-		  "version": "latest",
-		  "type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
-		  "url": "http://127.0.0.1:4000/api/graphql/test2"
-		}
-		"""
-		And the response status code should be 400
-		And the response should be in JSON and contain:
-		"""
-		{
-			"success": false,
-			"message": "Cannot push this schema because contains breaking changes. To force push it, you must add a header as (Force-Push: true)",
-			"details": null
-		}
-		"""
-
 	Scenario: I request to update an existing schema
-		When I send a "POST" request to "/schema/push" with body and forcing header:
+		When I send a "POST" request to "/schema/push" with body:
 		"""
 		{
 		  "name": "test2",

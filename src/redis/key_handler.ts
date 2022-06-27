@@ -42,9 +42,8 @@ export class KeyHandler implements KeyHandlerService {
 	getExecutionsKeyPattern(input: ExecutionsInput, type: 'error' | 'success') {
 		const prefix =
 			type === 'error' ? this.prefixes.error : this.prefixes.success;
-		const differenceSeconds = (
-			input.endSeconds - input.startSeconds
-		).toString().length;
+		const differenceSeconds =
+			(input.endSeconds - input.startSeconds).toString().length + 1;
 		const commonSeconds = input.startSeconds
 			.toString()
 			.slice(0, -differenceSeconds);

@@ -18,7 +18,8 @@ import { table as operationTableName } from './operations';
 import { BreakDownRepository } from './breakdown';
 
 interface TypeService extends TypeInstanceRepository {
-	getTypesByNames(trx: Transaction, typeNames: String[]): Promise<Type[]>;
+	getTypeByName(name: string): Promise<Type>;
+	getTypesByNames(trx: Transaction, typeNames: string[]): Promise<Type[]>;
 	insertIgnoreTypes(trx: Transaction, data: TypePayload[]): Promise<void>;
 	countTypesByType(): Promise<TypeCount[]>;
 }
@@ -64,8 +65,8 @@ export class TypeTransactionalRepository
 		return TypeTransactionalRepository.instance;
 	}
 
-	async getTypeByName(trx: Transaction, name: string) {
-		return trx(TABLE_NAME).select().where('name', name);
+	async getTypeByName(name: string) {
+		return connection(TABLE_NAME).select().where('name', name).first();
 	}
 
 	async getTypeById(id: number) {

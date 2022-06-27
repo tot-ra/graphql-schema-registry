@@ -51,6 +51,12 @@ export class FieldTransactionRepository extends BreakDownRepository<
 			.first();
 	}
 
+	async getFieldByChildren(childrenId: number): Promise<Field[]> {
+		return connection(TABLE_NAME)
+			.select()
+			.where('children_type_id', childrenId);
+	}
+
 	async removeFields(trx: Transaction, data: string[]) {
 		return super.remove(trx, data, 'name');
 	}

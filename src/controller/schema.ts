@@ -26,7 +26,7 @@ export async function getAndValidateSchema(trx: Knex, services = false) {
 	return schemas;
 }
 
-export async function pushAndValidateSchema({ service, forcePush }) {
+export async function pushAndValidateSchema({ service }) {
 	return await transact(async (trx) => {
 		const schema = await schemaModel.registerSchema({ trx, service });
 
@@ -44,7 +44,6 @@ export async function pushAndValidateSchema({ service, forcePush }) {
 			schema.service_id
 		);
 		if (diff !== undefined) {
-			breakDownService.validateBreakDown(diff, forcePush);
 			await breakDownService.applyChanges(diff);
 		}
 		await breakDownService.breakDown();

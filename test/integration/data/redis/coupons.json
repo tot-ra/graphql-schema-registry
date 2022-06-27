@@ -1,0 +1,22 @@
+{
+  "object": {
+    "query": {
+      "name": "DiffTest",
+      "sdl": "query loyaltyCoupons($platform:Platform!){expirationDate}"
+    },
+    "operations": [
+      {
+        "id": 15,
+        "entities": [
+          {
+            "objectId": 62,
+            "fields": [106]
+          }
+        ]
+      }
+    ]
+  },
+  "errors": "2",
+  "success": "9",
+  "days": 10
+}

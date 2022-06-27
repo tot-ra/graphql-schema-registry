@@ -52,6 +52,10 @@ export class OperationTransactionalRepository
 		return OperationTransactionalRepository.instance;
 	}
 
+	async removeOperations(trx: Transaction, data: string[]) {
+		return super.remove(trx, data, 'name');
+	}
+
 	async getOperationByName(name: string) {
 		return connection(table).select().where('name', name).first();
 	}

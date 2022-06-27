@@ -38,7 +38,7 @@ export class RedisRepository implements RedisService {
 
 	async getOperationsByUsage(
 		id: number,
-		type: 'operation' | 'entity'
+		type: 'operation' | 'entity' | 'field'
 	): Promise<ClientOperationsDTO> {
 		const allOperationsPattern = `${this.keyHandler.prefixes.operation}*`;
 		const allOperationKeys = await this.client.scan(allOperationsPattern);
@@ -100,11 +100,15 @@ export class RedisRepository implements RedisService {
 	private validateUsage(
 		id: number,
 		dao: ClientOperationDAO,
-		type: 'operation' | 'entity'
+		type: 'operation' | 'entity' | 'field'
 	): boolean {
-		return type === 'operation'
-			? this.validateOperationUsage(id, dao)
-			: this.validateEntityUsage(id, dao);
+		if (type === 'operation') {
+			return this.validateOperationUsage(id, dao);
+		} else if (type === 'entity') {
+			return this.validateEntityUsage(id, dao);
+		} else {
+			return this.validateFieldUsage(id, dao);
+		}
 	}
 
 	private validateOperationUsage(
@@ -117,9 +121,19 @@ export class RedisRepository implements RedisService {
 	}
 
 	private validateEntityUsage(id: number, dao: ClientOperationDAO): boolean {
-		return dao.operations.some((operation) =>
-			operation.entities.some((e) => e.objectId === id)
-		);
+		return dao.operations
+			.filter(Boolean)
+			.some((operation) =>
+				operation.entities.some((e) => e.objectId === id)
+			);
+	}
+
+	private validateFieldUsage(id: number, dao: ClientOperationDAO): boolean {
+		return dao.operations
+			.filter(Boolean)
+			.some((operation) =>
+				operation.entities.some((entity) => entity.fields.includes(id))
+			);
 	}
 
 	private get;

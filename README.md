@@ -302,7 +302,7 @@ If `services` is not passed, schema-registry tries to find most recent versions.
 
 ### POST /schema/push
 
-Validates and registers new schema for a service.
+Validates and registers new schema for a service. If changes encountered, it also breaks down the new changes
 
 #### Request params (optional, raw body)
 
@@ -337,11 +337,33 @@ Validates schema, without adding to DB
 
 #### POST /schema/diff
 
-Compares schemas and finds breaking or dangerous changes between provided and latest schemas.
+Compares schemas and finds breaking or dangerous changes between provided and latest schemas. If 1 breaking change is encountered, all diff is counted as breaking change.
+In the data field in the response is showing information about all the changes.
 
 - name
 - version
 - type_defs
+- min_usages: Minimum number of usages to validate if it is considered a breaking change. (DEFAULT: 10)
+- usage_days: Period in days to validate the usages (DEFAULT: 30)
+
+```json
+{
+  "success": false,
+  "data": [
+    {
+      "criticality": {
+        "level": "BREAKING",
+        "reason": "Removing a field is a breaking change. It is preferable to deprecate the field before removing it."
+      },
+      "type": "FIELD_REMOVED",
+      "message": "Field 'XXX' was removed from object type 'YYY'",
+      "path": "YYY.XXX",
+      "isBreakingChange": true,
+      "totalUsages": 11
+    }
+  ]
+}
+```
 
 #### DELETE /schema/:schemaId
 
