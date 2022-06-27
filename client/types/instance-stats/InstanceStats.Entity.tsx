@@ -16,7 +16,7 @@ import { InstanceStatsTableSkeleton } from './common/InstanceStatsTable.Skeleton
 import { Argument } from '../instance-description/Argument';
 
 export const InstanceStatsEntity = () => {
-	const { instanceId } = useCommonParams();
+	const { instanceId = 0 } = useCommonParams();
 	const {
 		range: { from, to },
 	} = useDateRangeSelector();
@@ -52,26 +52,31 @@ export const InstanceStatsEntity = () => {
 		<MainViewContainer>
 			<InstanceStatsListing {...getTypeInstance}>
 				<InstanceStatsTable
+					showUsageDetail
 					headerLabel="Field"
-					items={getTypeInstance.fields?.map((field) => ({
-						id: field.key,
-						label: (
-							<Argument
-								name={field.key}
-								type={{
-									id: field.parent.id,
-									kind: field.parent.type,
-									name: field.parent.name,
-								}}
-								isArray={field.isArray}
-								isArrayNullable={field.isArrayNullable}
-								isNullable={field.isNullable}
-							/>
-						),
-						href: `/types/object/${getTypeInstance.id}`,
-						executions: items.find((item) => item.id === field.id)
-							?.executions,
-					}))}
+					items={
+						getTypeInstance.fields?.map((field) => ({
+							id: field.id,
+							name: field.key,
+							label: (
+								<Argument
+									name={field.key}
+									type={{
+										id: field.parent.id,
+										kind: field.parent.type,
+										name: field.parent.name,
+									}}
+									isArray={field.isArray}
+									isArrayNullable={field.isArrayNullable}
+									isNullable={field.isNullable}
+								/>
+							),
+							href: `/types/object/${getTypeInstance.id}`,
+							executions: items.find(
+								(item) => item.id === field.id
+							)?.executions,
+						})) ?? []
+					}
 				/>
 			</InstanceStatsListing>
 		</MainViewContainer>

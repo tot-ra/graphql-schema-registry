@@ -12,6 +12,7 @@ import listTypes from './resolvers/listTypes';
 import getTypeInstance from './resolvers/getTypeInstance';
 import getOperationUsageTrack from './resolvers/getOperationUsageTrack';
 import getEntityUsageTrack from './resolvers/getEntityUsageTrack';
+import getFieldUsageTrack from './resolvers/getFieldUsageTrack';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -60,6 +61,7 @@ export default {
 		getTypeInstance,
 		getOperationUsageTrack,
 		getEntityUsageTrack,
+		getFieldUsageTrack,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {

@@ -25,7 +25,7 @@ const ClientsList = styled.ul`
 `;
 
 export const InstanceStatsOperation = () => {
-	const { typeName, instanceId } = useCommonParams();
+	const { typeName = '', instanceId = 0 } = useCommonParams();
 	const {
 		range: { from, to },
 	} = useDateRangeSelector();

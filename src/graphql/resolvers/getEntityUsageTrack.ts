@@ -5,7 +5,7 @@ import {
 } from '../../model/client_usage';
 import { KeyHandler } from '../../redis/key_handler';
 import { RedisRepository } from '../../redis/redis';
-import { parseInputDate } from './getOperationUsageTrack';
+import { parseInputDate } from '../utils';
 
 export default async function getEntityUsageTrack(
 	_parent,
@@ -14,7 +14,6 @@ export default async function getEntityUsageTrack(
 	const redisRepo = RedisRepository.getInstance();
 	const keyHandler = new KeyHandler();
 
-	// todas las operations de redis que tienen la entity.id
 	const operations = await redisRepo.getOperationsByUsage(id, 'entity');
 	const executions: Promise<ExecutionsDAO>[] = [];
 	operations.forEach((_o, key) => {

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-const safeParseInt = (input: string): number | undefined => {
+export const safeParseInt = (input: string): number | undefined => {
 	if (/\d+/.test(input)) {
 		return parseInt(input, 10);
 	}
@@ -16,7 +16,7 @@ type Params<InstanceIDType = string> = {
 type UseCommonParamsType = () => Partial<Params<number>>;
 
 const useCommonParams: UseCommonParamsType = () => {
-	const { typeName, instanceId } = useParams<Partial<Params>>();
+	const { typeName, instanceId = '' } = useParams<Partial<Params>>();
 
 	return useMemo(
 		() => ({

@@ -16,6 +16,21 @@ interface ClientService {
 const TABLE_NAME = 'clients';
 const TABLE_COLUMNS = ['name', 'version'];
 
+export interface ClientDAO {
+	id?: number;
+	name?: string;
+	version?: string;
+}
+
+export interface ClientVersion {
+	id: number;
+	tag: string;
+}
+export interface ClientDTO {
+	name: string;
+	versions: ClientVersion[];
+}
+
 export class ClientRepository
 	extends BreakDownRepository<ClientPayload, Client>
 	implements ClientService
@@ -60,5 +75,28 @@ export class ClientRepository
 
 	async insertClient(client: ClientPayload): Promise<number> {
 		return connection(TABLE_NAME).insert(client);
+	}
+
+	async getClientsByIds(ids: number[]): Promise<ClientDTO[]> {
+		const clients = await connection(TABLE_NAME)
+			.select()
+			.whereIn('id', ids);
+		return this.groupClientsByName(clients);
+	}
+
+	private groupClientsByName(clients: ClientDAO[]): ClientDTO[] {
+		return clients.reduce((acc, client) => {
+			const { name, id, version } = client;
+			const existingClient = acc.find((c) => c.name === name);
+			if (existingClient) {
+				existingClient.versions.push({ id, tag: version });
+			} else {
+				acc.push({
+					name,
+					versions: [{ id, tag: version }],
+				});
+			}
+			return acc;
+		}, [] as ClientDTO[]);
 	}
 }

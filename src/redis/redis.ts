@@ -14,14 +14,16 @@ export interface ExecutionsInput {
 }
 
 export interface RedisService {
-	set(key: String, value: String, expireAt?: number): Promise<void>;
+	set(key: string, value: string, expireAt?: number): Promise<void>;
 	getOperationsByUsage(
 		id: number,
-		type: 'operation' | 'entity'
+		type: validationType
 	): Promise<ClientOperationsDTO>;
-	getCounters(pattern: String): Promise<ExecutionsDAO[]>;
+	getCounters(pattern: string): Promise<ExecutionsDAO[]>;
 	getExecutionsFromOperation(input: ExecutionsInput): Promise<ExecutionsDAO>;
 }
+
+type validationType = 'operation' | 'entity' | 'field';
 
 export class RedisRepository implements RedisService {
 	private static instance: RedisRepository;
@@ -38,7 +40,7 @@ export class RedisRepository implements RedisService {
 
 	async getOperationsByUsage(
 		id: number,
-		type: 'operation' | 'entity' | 'field'
+		type: validationType
 	): Promise<ClientOperationsDTO> {
 		const allOperationsPattern = `${this.keyHandler.prefixes.operation}*`;
 		const allOperationKeys = await this.client.scan(allOperationsPattern);
@@ -89,25 +91,26 @@ export class RedisRepository implements RedisService {
 		} as ExecutionsDAO;
 	}
 
-	getCounters(pattern: String): Promise<ExecutionsDAO[]> {
+	getCounters(pattern: string): Promise<ExecutionsDAO[]> {
 		return Promise.resolve([]);
 	}
 
-	set(key: String, value: String, expireAt?: number): Promise<void> {
+	set(key: string, value: string, expireAt?: number): Promise<void> {
 		return Promise.resolve(undefined);
 	}
 
 	private validateUsage(
 		id: number,
 		dao: ClientOperationDAO,
-		type: 'operation' | 'entity' | 'field'
+		type: validationType
 	): boolean {
-		if (type === 'operation') {
-			return this.validateOperationUsage(id, dao);
-		} else if (type === 'entity') {
-			return this.validateEntityUsage(id, dao);
-		} else {
-			return this.validateFieldUsage(id, dao);
+		switch (type) {
+			case 'entity':
+				return this.validateEntityUsage(id, dao);
+			case 'operation':
+				return this.validateOperationUsage(id, dao);
+			case 'field':
+				return this.validateFieldUsage(id, dao);
 		}
 	}
 

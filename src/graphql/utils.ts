@@ -43,3 +43,7 @@ function getPagination(
 
 const isOffsetOutbounds = (pagination: Pagination) =>
 	pagination.page > pagination.totalPages;
+
+export function parseInputDate(date: string): number {
+	return Math.floor(new Date(date).getTime() / 1000);
+}

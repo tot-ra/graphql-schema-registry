@@ -37,6 +37,11 @@ export default gql`
 			startDate: Date!
 			endDate: Date!
 		): [EntityUsageTrack!]!
+		getFieldUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [ClientFieldUsageTrack!]!
 	}
 
 	type Mutation {
@@ -236,28 +241,42 @@ export default gql`
 		total: Int!
 	}
 
-	type OperationExecutions {
+	type ExecutionsByName {
 		name: String!
 		executions: Executions!
 	}
 
 	type VersionOperations {
 		id: String!
-		operations: [OperationExecutions!]!
+		operations: [ExecutionsByName!]!
 	}
 
-	type ClientVersion {
+	type OperationClientVersion {
 		name: String!
 		versions: [VersionOperations!]!
 	}
 
 	type ClientOperationUsageTrack {
-		client: ClientVersion!
+		client: OperationClientVersion!
 	}
 
 	type EntityUsageTrack {
 		id: Int!
 		executions: Executions!
+	}
+
+	type VersionFields {
+		id: String!
+		execution: Executions
+	}
+
+	type FieldClientVersion {
+		name: String!
+		versions: [VersionFields!]!
+	}
+
+	type ClientFieldUsageTrack {
+		client: FieldClientVersion!
 	}
 
 	union TypeInstanceDetailResponse =

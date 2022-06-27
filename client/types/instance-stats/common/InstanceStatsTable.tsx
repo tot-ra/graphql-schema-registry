@@ -8,27 +8,19 @@ import {
 	TableRow,
 	Typography,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import { InnerTable } from '../../../shared/styled';
 import { CommonContainer } from '../shared';
-
-const InnerInstanceStatsTable = React.forwardRef<
-	HTMLTableElement,
-	React.DetailedHTMLProps<
-		React.HTMLAttributes<HTMLTableElement>,
-		HTMLTableElement
-	>
->(function InnerTableFourColumns(props, ref) {
-	return <InnerTable columnsWidth={[55, 15, 15, 15]} {...props} ref={ref} />;
-});
+import { InstanceStatsTableRow } from './InstanceStatsTable.Row';
+import { getInnerInstanceStatsTable } from './util';
 
 type InstanceStatsTableProps = {
 	title?: string;
 	as?: Parameters<ReturnType<typeof styled['html']>>['0']['as'];
 	headerLabel: string;
 	items: {
-		id: React.Key;
+		id: number | string;
+		name: string;
 		label: React.ReactNode;
 		executions?: {
 			success: number;
@@ -36,6 +28,7 @@ type InstanceStatsTableProps = {
 			total: number;
 		};
 	}[];
+	showUsageDetail: boolean;
 };
 
 export const InstanceStatsTable = ({
@@ -43,42 +36,45 @@ export const InstanceStatsTable = ({
 	items,
 	headerLabel,
 	as,
-}: InstanceStatsTableProps) => (
-	<CommonContainer as={as}>
-		{title && (
-			<Typography variant="h6" component="h5">
-				{title}
-			</Typography>
-		)}
-		<TableContainer component={Paper}>
-			<Table component={InnerInstanceStatsTable}>
-				<TableHead>
-					<TableRow>
-						<TableCell>{headerLabel}</TableCell>
-						<TableCell>Total</TableCell>
-						<TableCell>Success</TableCell>
-						<TableCell>Error</TableCell>
-					</TableRow>
-				</TableHead>
-				<TableBody>
-					{items.map(({ id, executions, label }) => (
-						<TableRow key={id}>
-							<TableCell component="th" scope="row">
-								{label}
-							</TableCell>
-							<TableCell component="th" scope="row">
-								{executions?.total ?? 0}
-							</TableCell>
-							<TableCell component="th" scope="row">
-								{executions?.success ?? 0}
-							</TableCell>
-							<TableCell component="th" scope="row">
-								{executions?.error ?? 0}
-							</TableCell>
+	showUsageDetail,
+}: InstanceStatsTableProps) => {
+	const TableComponent = useMemo(
+		() => getInnerInstanceStatsTable(showUsageDetail),
+		[showUsageDetail]
+	);
+
+	return (
+		<CommonContainer as={as}>
+			{title && (
+				<Typography variant="h6" component="h5">
+					{title}
+				</Typography>
+			)}
+			<TableContainer component={Paper}>
+				<Table component={TableComponent}>
+					<TableHead>
+						<TableRow>
+							<TableCell>{headerLabel}</TableCell>
+							<TableCell>Total</TableCell>
+							<TableCell>Success</TableCell>
+							<TableCell>Error</TableCell>
+							{showUsageDetail && <TableCell />}
 						</TableRow>
-					))}
-				</TableBody>
-			</Table>
-		</TableContainer>
-	</CommonContainer>
-);
+					</TableHead>
+					<TableBody>
+						{items.map(({ id, executions, label, name }) => (
+							<InstanceStatsTableRow
+								key={name}
+								id={id}
+								label={label}
+								name={name}
+								executions={executions}
+								showUsageDetail={showUsageDetail}
+							/>
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
+		</CommonContainer>
+	);
+};

@@ -31,23 +31,32 @@ export interface Executions {
 	total: number;
 }
 
-export interface OperationExecutions {
+export interface ExecutionsByName {
 	name: string;
 	executions: Executions;
 }
 
-export interface ClientVersion {
+export interface OperationClientVersion {
 	id: string;
-	operations: OperationExecutions[];
+	operations: ExecutionsByName[];
 }
 
-export interface ClientUsage {
+export interface FieldClientVersion {
+	id: string;
+	execution: Executions;
+}
+
+export interface ClientUsage<T> {
 	name: string;
-	versions: ClientVersion[];
+	versions: T[];
 }
 
 export type OperationUsageResponse = {
-	client: ClientUsage;
+	client: ClientUsage<OperationClientVersion>;
+}[];
+
+export type FieldUsageResponse = {
+	client: ClientUsage<FieldClientVersion>;
 }[];
 
 export interface FieldUsage {

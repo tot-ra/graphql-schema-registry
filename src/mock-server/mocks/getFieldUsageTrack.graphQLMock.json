@@ -1,0 +1,50 @@
+{
+  "getFieldUsageTrack": [
+    {
+      "client": {
+        "name": "Client_1",
+        "versions": [
+          {
+            "id": "0.0.1",
+            "execution": {
+              "success": 4,
+              "error": 3,
+              "total": 10
+            }
+          },
+          {
+            "id": "0.0.3",
+            "execution": {
+              "success": 4,
+              "error": 3,
+              "total": 10
+            }
+          }
+        ]
+      }
+    },
+    {
+      "client": {
+        "name": "Client_2",
+        "versions": [
+          {
+            "id": "0.0.1",
+            "execution": {
+              "success": 4,
+              "error": 3,
+              "total": 10
+            }
+          },
+          {
+            "id": "0.0.3",
+            "execution": {
+              "success": 4,
+              "error": 3,
+              "total": 10
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

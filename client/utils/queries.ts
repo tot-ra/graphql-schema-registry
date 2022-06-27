@@ -473,3 +473,43 @@ export const TYPE_INSTANCE_OBJECT_STATS = gql`
 		}
 	}
 `;
+
+export type TypeInstanceObjectFieldStatsVars = TypeInstanceBaseStatsVars;
+
+export type TypeInstanceObjectFieldStatsOutput = {
+	getFieldUsageTrack: {
+		client: {
+			name: string;
+			versions: {
+				id: string;
+				execution: {
+					success: number;
+					error: number;
+					total: number;
+				};
+			}[];
+		};
+	}[];
+};
+
+export const TYPE_INSTANCE_OBJECT_FIELD_STATS = gql`
+	query GetTypeInstanceObjectFieldStats(
+		$id: Int!
+		$startDate: Date!
+		$endDate: Date!
+	) {
+		getFieldUsageTrack(id: $id, startDate: $startDate, endDate: $endDate) {
+			client {
+				name
+				versions {
+					id
+					execution {
+						success
+						error
+						total
+					}
+				}
+			}
+		}
+	}
+`;

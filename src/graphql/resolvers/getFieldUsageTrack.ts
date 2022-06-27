@@ -1,8 +1,8 @@
 import {
 	ClientOperationsDTO,
-	OperationClientVersion,
 	ExecutionsDAO,
-	OperationUsageResponse,
+	FieldClientVersion,
+	FieldUsageResponse,
 } from '../../model/client_usage';
 import { RedisRepository } from '../../redis/redis';
 import { KeyHandler } from '../../redis/key_handler';
@@ -13,15 +13,15 @@ import {
 } from '../../database/client';
 import { parseInputDate } from '../utils';
 
-export default async function getOperationUsageTrack(
+export default async function getFieldUsageTrack(
 	_parent,
 	{ id, startDate, endDate }
-): Promise<OperationUsageResponse> {
+): Promise<FieldUsageResponse> {
 	const redisRepo = RedisRepository.getInstance();
 	const clientRepo = ClientRepository.getInstance();
 	const keyHandler = new KeyHandler();
 
-	const operations = await redisRepo.getOperationsByUsage(id, 'operation');
+	const operations = await redisRepo.getOperationsByUsage(id, 'field');
 	const executions: Promise<ExecutionsDAO>[] = [];
 	const clientIds = [];
 	operations.forEach((_o, key) => {
@@ -56,7 +56,7 @@ function mapToUsageResponse(
 	operations: ClientOperationsDTO,
 	executions: ExecutionsDAO[],
 	keyHandler: KeyHandler
-): OperationUsageResponse {
+): FieldUsageResponse {
 	return clients.map((c) => {
 		const versions = calculateVersionExecutions(
 			c.versions,
@@ -75,13 +75,13 @@ function mapToUsageResponse(
 	});
 }
 
-function calculateVersionExecutions(
+export function calculateVersionExecutions(
 	clientVersions: ClientVersion[],
 	operations: ClientOperationsDTO,
 	executions: ExecutionsDAO[],
 	keyHandler: KeyHandler
-): OperationClientVersion[] {
-	const versions: OperationClientVersion[] = [];
+): FieldClientVersion[] {
+	const versions: FieldClientVersion[] = [];
 	operations.forEach((operation, key) => {
 		clientVersions.forEach((version) => {
 			const { id, tag } = version;
@@ -89,29 +89,17 @@ function calculateVersionExecutions(
 			if (clientId !== id) {
 				return;
 			}
-			const existingVersionTag = versions.find((v) => v.id === tag);
-			const clientExecutions = executions.find(
+			const execution = executions.find(
 				(e) => e.hash === hash && e.clientId === clientId
 			);
-			if (!clientExecutions) {
+			if (!execution) {
 				return;
 			}
-			if (existingVersionTag) {
-				existingVersionTag.operations.push({
-					name: operation.query.name,
-					executions: clientExecutions,
-				});
-			} else {
-				versions.push({
-					id: tag,
-					operations: [
-						{
-							name: operation.query.name,
-							executions: clientExecutions,
-						},
-					],
-				});
-			}
+
+			versions.push({
+				id: tag,
+				execution,
+			});
 		});
 	});
 	return versions;

@@ -1,6 +1,5 @@
 import { ClientOperationsDTO, ExecutionsDAO } from '../../model/client_usage';
 import { KeyHandler } from '../../redis/key_handler';
-import { parseInputDate } from '../../graphql/resolvers/getOperationUsageTrack';
 import { RedisRepository } from '../../redis/redis';
 import { getTimestamp } from '../../redis/utils';
 import { OperationChange } from './operation';
@@ -11,6 +10,7 @@ import { Change } from '@graphql-inspector/core';
 import { CustomChange } from '../breakingChange';
 import { ArgumentChange } from './argument';
 import { InterfaceChange } from './interface';
+import { parseInputDate } from '../../graphql/utils';
 
 type BreakingChangeType =
 	| OperationChange

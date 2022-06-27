@@ -6,7 +6,7 @@ import { CommonLink } from '../../components/Link';
 import { NormalizedLabel } from '../../shared/styled';
 import { colors } from '../../utils';
 
-const CustomCommonLink = styled(CommonLink)`
+export const CustomCommonLink = styled(CommonLink)`
 	display: inline-flex;
 	align-items: flex-end;
 	column-gap: 0.3rem;

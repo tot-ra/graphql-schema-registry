@@ -44,8 +44,10 @@ export const InstanceStatsClient = ({
 					headerLabel="Operation"
 					key={version.id}
 					title={version.id}
+					showUsageDetail={false}
 					items={version.operations.map((operation) => ({
 						id: operation.name,
+						name: operation.name,
 						label: (
 							<CommonLink
 								to={`/schemas/${operation.name}/${version.id}`}
