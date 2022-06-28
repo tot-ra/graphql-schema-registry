@@ -12,6 +12,7 @@ import * as kafka from '../kafka';
 import { ClientUsageController } from '../controller/clientUsage';
 import { Change } from '@graphql-inspector/core';
 import { BreakingChangeHandler } from '../controller/breakingChange';
+import { logger } from '../logger';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection);
@@ -147,6 +148,7 @@ export async function diff(req, res) {
 }
 
 export async function usage(req, res) {
+	logger.info('STARTING USAGE REGISTRY');
 	const controller = new ClientUsageController();
 	await controller.registerUsage(req.body);
 	return res.json({

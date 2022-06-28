@@ -8,6 +8,7 @@ import crypto from 'crypto';
 import { getClientsFromTrace } from './clientUsage/utils';
 import { ClientPayload } from '../model/client';
 import { QueryResult } from '../model/usage_counter';
+import { logger } from '../logger';
 
 export class ClientUsageController {
 	private clientRepository = ClientRepository.getInstance();
@@ -17,11 +18,16 @@ export class ClientUsageController {
 
 		const queries = Object.keys(decodedReport.tracesPerQuery);
 
+		logger.info(`Total queries: ${queries.length}`);
+
 		const promises = queries.map(async (query) => {
 			if (query.includes('IntrospectionQuery')) return null;
 			const clients = await getClientsFromTrace(
 				decodedReport.tracesPerQuery[query]
 			);
+
+			logger.info(`Total clients: ${clients.length}`);
+
 			const hash = crypto.createHash('md5').update(query).digest('hex');
 
 			const clientPromises = clients.map((client) => {
@@ -49,6 +55,9 @@ export class ClientUsageController {
 			clientPayload.name,
 			clientPayload.version
 		);
+
+		logger.info(`Client: ${client?.id}`);
+
 		const queryResult = traces.reduce(
 			(acc, cur) => {
 				const isError = 'error' in cur.root;
