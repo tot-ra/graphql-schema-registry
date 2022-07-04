@@ -5,7 +5,7 @@
         "name": "client_1",
         "versions": [
           {
-            "id": "0.0.2",
+            "id": "3",
             "operations": [
               {
                 "name": "operation_1",
@@ -26,7 +26,7 @@
             ]
           },
           {
-            "id": "0.0.3",
+            "id": "4",
             "operations": [
               {
                 "name": "operation_1",
@@ -46,7 +46,7 @@
         "name": "client_2",
         "versions": [
           {
-            "id": "0.0.2",
+            "id": "3",
             "operations": [
               {
                 "name": "operation_1",
@@ -59,7 +59,7 @@
             ]
           },
           {
-            "id": "0.0.3",
+            "id": "4",
             "operations": [
               {
                 "name": "operation_1",

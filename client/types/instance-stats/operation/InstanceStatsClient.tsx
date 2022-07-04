@@ -49,9 +49,7 @@ export const InstanceStatsClient = ({
 						id: operation.name,
 						name: operation.name,
 						label: (
-							<CommonLink
-								to={`/schemas/${operation.name}/${version.id}`}
-							>
+							<CommonLink to={`/schema/${operation.name}`}>
 								{operation.name}
 							</CommonLink>
 						),

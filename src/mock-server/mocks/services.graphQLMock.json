@@ -24,6 +24,16 @@
       "id": "10",
       "name": "homepage-b2c",
       "__typename": "Service"
+    },
+    {
+      "id": "11",
+      "name": "operation_1",
+      "__typename": "Service"
+    },
+    {
+      "id": "12",
+      "name": "operation_2",
+      "__typename": "Service"
     }
   ]
 }

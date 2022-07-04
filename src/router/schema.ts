@@ -148,7 +148,6 @@ export async function diff(req, res) {
 }
 
 export async function usage(req, res) {
-	logger.info('STARTING USAGE REGISTRY');
 	const controller = new ClientUsageController();
 	await controller.registerUsage(req.body);
 	return res.json({
