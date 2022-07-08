@@ -5,7 +5,7 @@ import { RegisterUsage } from './clientUsage/notRegisteredClient';
 import { UpdateUsageStrategy } from './clientUsage/registeredClient';
 import redisWrapper from '../redis';
 import crypto from 'crypto';
-import { getClientsFromTrace } from './clientUsage/utils';
+import { getClientsFromTrace, getUsagesForClients } from './clientUsage/utils';
 import { ClientPayload } from '../model/client';
 import { QueryResult } from '../model/usage_counter';
 import { logger } from '../logger';
@@ -27,15 +27,12 @@ export class ClientUsageController {
 			const hash = crypto.createHash('md5').update(query).digest('hex');
 
 			const clientPromises = clients.map((client) => {
-				if (!decodedReport.tracesPerQuery[query].trace) {
-					return;
-				}
-				const traces = decodedReport.tracesPerQuery[query].trace.filter(
-					(trace) =>
-						trace.clientName === client.name &&
-						trace.clientVersion === client.version
+				const queryResult = getUsagesForClients(
+					client,
+					decodedReport.tracesPerQuery[query]
 				);
-				return this.registerClient(query, client, traces, hash);
+
+				return this.registerClient(query, client, queryResult, hash);
 			});
 
 			return Promise.all(clientPromises);
@@ -47,24 +44,12 @@ export class ClientUsageController {
 	private async registerClient(
 		query: string,
 		clientPayload: ClientPayload,
-		traces: any[],
+		queryResult: QueryResult,
 		hash: string
 	): Promise<void> {
 		let client = await this.clientRepository.getClientByUnique(
 			clientPayload.name,
 			clientPayload.version
-		);
-
-		const queryResult = traces.reduce(
-			(acc, cur) => {
-				const isError = 'error' in cur.root;
-				acc[isError ? 'errors' : 'success']++;
-				return acc;
-			},
-			{
-				errors: 0,
-				success: 0,
-			} as QueryResult
 		);
 
 		if (!client || !(await redisWrapper.get(`o_${client.id}_${hash}`))) {

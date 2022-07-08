@@ -1,5 +1,6 @@
 import {
 	ClientOperationsDTO,
+	Executions,
 	ExecutionsDAO,
 	FieldClientVersion,
 	FieldUsageResponse,
@@ -43,8 +44,7 @@ export default async function getFieldUsageTrack(
 	const operationUsage = mapToUsageResponse(
 		clients,
 		operations,
-		resultExecutions,
-		keyHandler
+		resultExecutions
 	);
 	return operationUsage.sort((a, b) => {
 		return a.client.name.localeCompare(b.client.name);
@@ -54,16 +54,10 @@ export default async function getFieldUsageTrack(
 function mapToUsageResponse(
 	clients: ClientDTO[],
 	operations: ClientOperationsDTO,
-	executions: ExecutionsDAO[],
-	keyHandler: KeyHandler
+	executions: ExecutionsDAO[]
 ): FieldUsageResponse {
 	return clients.map((c) => {
-		const versions = calculateVersionExecutions(
-			c.versions,
-			operations,
-			executions,
-			keyHandler
-		);
+		const versions = calculateVersionExecutions(c.versions, executions);
 		return {
 			client: {
 				name: c.name,
@@ -77,30 +71,30 @@ function mapToUsageResponse(
 
 export function calculateVersionExecutions(
 	clientVersions: ClientVersion[],
-	operations: ClientOperationsDTO,
-	executions: ExecutionsDAO[],
-	keyHandler: KeyHandler
+	executions: ExecutionsDAO[]
 ): FieldClientVersion[] {
-	const versions: FieldClientVersion[] = [];
-	operations.forEach((operation, key) => {
-		clientVersions.forEach((version) => {
-			const { id, tag } = version;
-			const { hash, clientId } = keyHandler.parseOperationKey(key);
-			if (clientId !== id) {
-				return;
-			}
-			const execution = executions.find(
-				(e) => e.hash === hash && e.clientId === clientId
-			);
-			if (!execution) {
-				return;
-			}
+	return clientVersions.map((client) => {
+		const { id, tag } = client;
+		const clientExecutions = executions.filter(
+			(exec) => exec.clientId === id
+		);
 
-			versions.push({
-				id: tag,
-				execution,
-			});
-		});
+		const groupExecutions = clientExecutions.reduce(
+			(acc, cur) => {
+				acc.success += cur.success;
+				acc.error += cur.error;
+				acc.total += cur.total;
+				return acc;
+			},
+			{
+				success: 0,
+				error: 0,
+				total: 0,
+			} as Executions
+		);
+		return {
+			id: tag,
+			execution: groupExecutions,
+		};
 	});
-	return versions;
 }

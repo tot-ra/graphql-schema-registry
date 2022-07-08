@@ -10,7 +10,7 @@ export class UpdateUsageStrategy {
 		private hash: string
 	) {}
 
-	async execute(totalQueries: number = 1) {
+	async execute() {
 		const key = `${this.clientId}_${this.hash}_${getTimestamp()}`;
 		if (this.queryResult.errors > 0) {
 			await redisWrapper.incr(`e_${key}`, this.queryResult.errors);

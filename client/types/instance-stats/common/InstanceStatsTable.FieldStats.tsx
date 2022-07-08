@@ -81,6 +81,7 @@ export const InstanceStatsTableFieldStats = ({
 			startDate: from,
 			endDate: to,
 		},
+		fetchPolicy: 'no-cache',
 	});
 
 	const effectiveLoading = useMinimumTime(loading);
