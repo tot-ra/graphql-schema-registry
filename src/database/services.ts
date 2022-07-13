@@ -1,4 +1,4 @@
-import { Knex }  from 'knex';
+import { Knex } from 'knex';
 
 interface ServiceRecord {
 	id: string;
@@ -14,7 +14,10 @@ const servicesModel = {
 			.where('is_active', true);
 	},
 
-	getServicesByIds: async function (trx: Knex<ServiceRecord>, ids = []): Promise<ServiceRecord[]> {
+	getServicesByIds: async function (
+		trx: Knex<ServiceRecord>,
+		ids = []
+	): Promise<ServiceRecord[]> {
 		return trx('services').select('*').whereIn('id', ids);
 	},
 
@@ -31,7 +34,11 @@ const servicesModel = {
 		return service[0];
 	},
 
-	insertService: async function (trx: Knex<ServiceRecord>, name: string, url: string) {
+	insertService: async function (
+		trx: Knex<ServiceRecord>,
+		name: string,
+		url: string
+	) {
 		await trx('services').insert({ name, url });
 
 		const service = await servicesModel.getService(trx, name);

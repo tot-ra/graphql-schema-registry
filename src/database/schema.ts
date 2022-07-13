@@ -306,10 +306,13 @@ const schemaModel = {
 		return result[0];
 	},
 
-	toggleSchema: async function ({ trx, id }: {trx: Knex<SchemaRecord>, id: string}, isActive) {
+	toggleSchema: async function (
+		{ trx, id }: { trx: Knex<SchemaRecord>; id: string },
+		isActive
+	) {
 		return trx('schema')
 			.update({
-				'is_active': isActive,
+				is_active: isActive,
 			})
 			.where({
 				id,
@@ -321,13 +324,13 @@ const schemaModel = {
 		limit = 100,
 		offset = 0,
 		filter = '',
-		trx
+		trx,
 	}: {
-		serviceIds: string[],
-		limit: number,
-		offset: number,
-		filter: string
-		trx: Knex<SchemaRecord>,
+		serviceIds: string[];
+		limit: number;
+		offset: number;
+		filter: string;
+		trx: Knex<SchemaRecord>;
 	}) {
 		const schemas = await trx('schema')
 			.select(
@@ -388,7 +391,7 @@ const schemaModel = {
 			)
 			.where('schema.id', id)
 			.first();
-	}
+	},
 };
 
 async function versionExists(trx, serviceId, version) {

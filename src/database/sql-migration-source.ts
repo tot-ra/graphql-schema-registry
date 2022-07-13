@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Knex } from "knex";
+import { Knex } from 'knex';
 
 class CustomSqlMigrationSource implements Knex.MigrationSource<any> {
 	migrationDirectory: string;
