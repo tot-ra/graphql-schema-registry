@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { unionBy } from 'lodash';
 import { connection } from './index';
 import servicesModel from './services';

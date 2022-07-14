@@ -10,7 +10,10 @@ export default gql`
 		service(id: Int!): Service
 		schema(id: Int!): SchemaDefinition!
 		schemas(since: DateTime): [SchemaDefinition]
-		schemaPropertyHitsByClient(entity: String!, property: String!): [SchemaHitByClient]
+		schemaPropertyHitsByClient(
+			entity: String!
+			property: String!
+		): [SchemaHitByClient]
 
 		persistedQueries(
 			searchFragment: String

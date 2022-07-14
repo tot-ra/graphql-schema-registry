@@ -1,5 +1,5 @@
 import { isUndefined } from 'lodash';
-import graphql from 'graphql';
+import { parse } from 'graphql';
 
 import { deactivateSchema, activateSchema } from '../controller/schema';
 import config from '../config';
@@ -28,7 +28,8 @@ export default {
 			dataloaders.services.load(id),
 		schema: async (parent, { id }) =>
 			await schemaModel.getSchemaById(connection, id),
-		schemaPropertyHitsByClient: async (_, { entity, property }) => await schemaHit.get({ entity, property }),
+		schemaPropertyHitsByClient: async (_, { entity, property }) =>
+			await schemaHit.get({ entity, property }),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
 			return await PersistedQueriesModel.list({
@@ -43,7 +44,8 @@ export default {
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 
 		clients: async () => await clientsModel.getClients(),
-		clientVersions: async (_, { since }) => await clientsModel.getClientVersionsSince({ since }),
+		clientVersions: async (_, { since }) =>
+			await clientsModel.getClientVersionsSince({ since }),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
@@ -68,7 +70,7 @@ export default {
 	SchemaHitByClientVersion: {
 		version: ({ client_id }) => {
 			return clientsModel.getClientVersion({ id: client_id });
-		}
+		},
 	},
 	Service: {
 		schemas: async ({ id }, { limit, offset, filter }, { dataloaders }) => {
@@ -109,7 +111,7 @@ export default {
 			containersModel.getSchemaContainerCount(parent.id),
 		isDev: (parent) => containersModel.isDev(parent.id),
 		fieldsUsage: (parent) => {
-			const sdl = graphql.parse(parent.type_defs);
+			const sdl = parse(parent.type_defs);
 			const result = [];
 
 			for (const row of sdl.definitions) {
@@ -117,22 +119,22 @@ export default {
 					for (const a of row.fields) {
 						result.push({
 							entity: row.name?.value,
-							property: a.name?.value
+							property: a.name?.value,
 						});
 					}
 				}
 			}
 
 			return result;
-		}
+		},
 	},
 	SchemaField: {
 		hitsSum: async (parent) => {
 			return await schemaHit.sum({
 				entity: parent.entity,
-				property: parent.property
+				property: parent.property,
 			});
-		}
+		},
 	},
 	Container: {
 		commitLink: (parent) => {
@@ -150,9 +152,9 @@ export default {
 		addedTime: (parent) => dateTime.format(parent.added_time),
 	},
 	Client: {
-		versions: (parent) => clientsModel.getVersions(parent.name)
+		versions: (parent) => clientsModel.getVersions(parent.name),
 	},
 	ClientVersion: {
-		client: (parent) => ({ name: parent.name })
+		client: (parent) => ({ name: parent.name }),
 	},
 };

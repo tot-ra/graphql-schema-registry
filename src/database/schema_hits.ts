@@ -179,7 +179,7 @@ const schemaHitModel = {
 		}
 
 		await transact(async (trx) => {
-			client = await trx('clients').where({ name, version }).first('id');
+			client = await connection('clients').where({ name, version }).first('id');
 
 			if (name && version && !client) {
 				client = {
@@ -215,8 +215,6 @@ const schemaHitModel = {
 	},
 
 	get: async function ({ entity, property }) {
-		const trx = connection();
-
 		const cachedResults = await redis.get(
 			`schema_hits.${entity}.${property}`
 		);
@@ -226,7 +224,7 @@ const schemaHitModel = {
 		}
 
 		// @ts-ignore
-		const results = await trx.raw(
+		const results = await connection.raw(
 			`SELECT DATE_FORMAT(sh.day, "%Y-%m-%d") as day,
 					SUM(sh.hits)                    as hits,
 					sh.entity,
@@ -251,14 +249,12 @@ const schemaHitModel = {
 	},
 
 	list: async function ({ since, limit = 500 }) {
-		const trx = connection();
-
 		if (typeof since === 'undefined' || !limit) {
 			return [];
 		}
 
 		// @ts-ignore
-		const results = await trx.raw(
+		const results = await connection.raw(
 			`SELECT DATE_FORMAT(day, "%Y-%m-%d") as day,
 					hits,
 					client_id,
@@ -276,10 +272,8 @@ const schemaHitModel = {
 	},
 
 	sum: async function ({ entity, property }) {
-		const trx = connection();
-
 		// @ts-ignore
-		const result = await trx('schema_hit')
+		const result = await connection('schema_hit')
 			.sum({ hit_sum: 'hits' })
 			.where({ entity, property });
 
@@ -287,13 +281,12 @@ const schemaHitModel = {
 	},
 
 	deleteOlderThan: async function (timestampMs) {
-		const trx = connection();
 		const dayFormatted = new Date(timestampMs).toISOString().slice(0, 10);
 
 		logger.info(`Cleaning up schema usage older than ${dayFormatted}`);
 
 		// @ts-ignore
-		await trx.raw(
+		await connection.raw(
 			`DELETE
 			 FROM schema_hit
 			 WHERE day < ?`,
