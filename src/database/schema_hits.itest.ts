@@ -1,5 +1,4 @@
 import schemaHit from './schema_hits';
-import { initRedis, del, set, disconnect } from '../redis';
 import { cleanTables } from '../../test/integration/database';
 
 describe('app/database/schema_hits', () => {
@@ -9,8 +8,6 @@ describe('app/database/schema_hits', () => {
 
 	describe('syncUniqueClientsToDb', () => {
 		it('add + get, no redis entry', async () => {
-			await initRedis();
-			await del('schema_hits.Company.name');
 			await schemaHit.add({
 				name: 'webapp',
 				version: '123',
@@ -19,14 +16,13 @@ describe('app/database/schema_hits', () => {
 				day: '2012-01-01',
 			});
 
-			await schemaHit.syncUniqueClientsToDb('local');
+			await schemaHit.syncUniqueClientsToDb();
 
 			const result = await schemaHit.get({
 				entity: 'Company',
 				property: 'name',
 			});
 
-			disconnect();
 			expect(result[0]).toMatchObject({
 				day: '2012-01-01',
 				entity: 'Company',
@@ -46,10 +42,10 @@ describe('app/database/schema_hits', () => {
 			};
 
 			await schemaHit.add(row);
-			await schemaHit.syncUniqueClientsToDb('eu-central-1');
+			await schemaHit.syncUniqueClientsToDb();
 
 			await schemaHit.add(row);
-			await schemaHit.syncUniqueClientsToDb('eu-central-1');
+			await schemaHit.syncUniqueClientsToDb();
 
 			const result = await schemaHit.get({
 				entity: 'Company',
@@ -67,10 +63,10 @@ describe('app/database/schema_hits', () => {
 			};
 
 			await schemaHit.add(row);
-			await schemaHit.syncUniqueClientsToDb('eu-central-1');
+			await schemaHit.syncUniqueClientsToDb();
 
 			await schemaHit.add(row);
-			await schemaHit.syncUniqueClientsToDb('eu-central-1');
+			await schemaHit.syncUniqueClientsToDb();
 
 			const result = await schemaHit.get({
 				entity: 'Company',
@@ -84,28 +80,12 @@ describe('app/database/schema_hits', () => {
 	describe('get', () => {
 		it('uses redis', async () => {
 			// ARRANGE
-			await initRedis();
-			set(
-				`schema_hits.Company.name`,
-				JSON.stringify([
-					{
-						name: 'webapp',
-						version: '123',
-						entity: 'Company',
-						property: 'name',
-						hits: '50', // !
-						day: '2012-01-01',
-					},
-				])
-			);
-
 			const result = await schemaHit.get({
 				entity: 'Company',
 				property: 'name',
 			});
 
 			// ASSERT
-			disconnect();
 			expect(result).toMatchObject([
 				{
 					day: '2012-01-01',
@@ -128,7 +108,7 @@ describe('app/database/schema_hits', () => {
 			};
 
 			await schemaHit.add(row);
-			await schemaHit.syncUniqueClientsToDb('local');
+			await schemaHit.syncUniqueClientsToDb();
 			const result = await schemaHit.get({
 				entity: 'Company',
 				property: 'name',
@@ -163,7 +143,7 @@ describe('app/database/schema_hits', () => {
 				...row,
 				version: '345',
 			});
-			await schemaHit.syncUniqueClientsToDb('local');
+			await schemaHit.syncUniqueClientsToDb();
 			const result = await schemaHit.get({
 				entity: 'Company',
 				property: 'name',
@@ -184,7 +164,9 @@ describe('app/database/schema_hits', () => {
 
 	describe('list', () => {
 		it('returns empty array if since param was not provided', async () => {
-			const result = await schemaHit.list({});
+			const result = await schemaHit.list({
+				since: 0
+			});
 
 			expect(result).toEqual([]);
 		});
@@ -205,7 +187,7 @@ describe('app/database/schema_hits', () => {
 				...row,
 				version: '345',
 			});
-			await schemaHit.syncUniqueClientsToDb('local');
+			await schemaHit.syncUniqueClientsToDb();
 			const result = await schemaHit.list({ since: 0, limit: 10 });
 
 			// ASSERT
@@ -214,15 +196,13 @@ describe('app/database/schema_hits', () => {
 				day: '2012-01-01',
 				entity: 'Company',
 				hits: 2,
-				property: 'name',
-				region: 'local',
+				property: 'name'
 			});
 			expect(result[1]).toMatchObject({
 				day: '2012-01-01',
 				entity: 'Company',
 				hits: 1,
 				property: 'name',
-				region: 'local',
 			});
 		});
 	});
@@ -248,7 +228,7 @@ describe('app/database/schema_hits', () => {
 			version: '345',
 			day: '2000-01-01',
 		});
-		await schemaHit.syncUniqueClientsToDb('local');
+		await schemaHit.syncUniqueClientsToDb();
 
 		const now = Date.now();
 
@@ -261,8 +241,7 @@ describe('app/database/schema_hits', () => {
 			day: '2100-01-01',
 			entity: 'Company',
 			hits: 2,
-			property: 'name',
-			region: 'local',
+			property: 'name'
 		});
 	});
 
@@ -282,7 +261,7 @@ describe('app/database/schema_hits', () => {
 			...row,
 			version: '345',
 		});
-		await schemaHit.syncUniqueClientsToDb('local');
+		await schemaHit.syncUniqueClientsToDb();
 		const result = await schemaHit.sum({
 			entity: 'Company',
 			property: 'name',

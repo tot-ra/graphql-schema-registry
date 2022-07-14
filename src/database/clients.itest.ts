@@ -11,8 +11,9 @@ describe('app/database/clients', () => {
 			clients.add({
 				name: 'webapp',
 				version: '1',
+				persistedQueryHash: '',
 			});
-			await clients.syncUniqueClientsToDb('local');
+			await clients.syncUniqueClientsToDb();
 
 			const result = await clients.getClients();
 
@@ -25,13 +26,15 @@ describe('app/database/clients', () => {
 			clients.add({
 				name: 'webapp',
 				version: '1',
+				persistedQueryHash: '',
 			});
 
 			clients.add({
 				name: 'webapp',
 				version: '2',
+				persistedQueryHash: '',
 			});
-			await clients.syncUniqueClientsToDb('local');
+			await clients.syncUniqueClientsToDb();
 
 			const result = await clients.getVersions('webapp');
 

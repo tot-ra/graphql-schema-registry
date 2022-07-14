@@ -14,6 +14,7 @@
     "test:watch": "jest --config jest.config.ts --watch",
     "coverage": "./node_modules/.bin/jest --config test/unit/jest.coverage.cjs && coveralls < coverage/lcov.info",
     "test-travis": "npm run test",
+    "test:integration": "jest --config test/integration/jest.config.cjs --color --detectOpenHandles --runInBand --forceExit",
     "test-functional": "./node_modules/.bin/jest --config test/functional/jest.config.cjs",
     "test:performance": "TARGET_URL=localhost:6001 k6 run test/perf/minimum.test.js",
     "test:performance:dockerized": "docker-compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/minimum.test.js",
