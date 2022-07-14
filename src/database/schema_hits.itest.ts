@@ -1,6 +1,6 @@
-const schemaHit = require('./schema_hits');
-const { initRedis, del, set, disconnect } = require('../redis');
-const { cleanTables } = require('../../test/integration/database');
+import schemaHit from './schema_hits';
+import { initRedis, del, set, disconnect } from '../redis';
+import { cleanTables } from '../../test/integration/database';
 
 describe('app/database/schema_hits', () => {
 	beforeEach(async () => {

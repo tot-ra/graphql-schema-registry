@@ -1,5 +1,5 @@
-const clients = require('./clients');
-const { cleanTables } = require('../../test/integration/database');
+import clients from './clients';
+import { cleanTables } from '../../test/integration/database';
 
 describe('app/database/clients', () => {
 	beforeEach(async () => {
