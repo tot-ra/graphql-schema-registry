@@ -4,7 +4,7 @@ import { logger } from '../logger';
 
 const DEFAULT_TTL = 24 * 3600;
 const redisServiceName =
-	process.env.REDIS_SCHEMA_REGISTRY || 'schema-registry-redis';
+	process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis';
 
 const redisWrapper = {
 	redisInstance: null,

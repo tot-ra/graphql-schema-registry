@@ -179,7 +179,9 @@ const schemaHitModel = {
 		}
 
 		await transact(async (trx) => {
-			client = await connection('clients').where({ name, version }).first('id');
+			client = await connection('clients')
+				.where({ name, version })
+				.first('id');
 
 			if (name && version && !client) {
 				client = {
