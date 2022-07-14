@@ -39,6 +39,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - performance tracking (to know what resolvers to optimize)
 - access control - lightweight authentication in case this internal tool is publicly accessible
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
+- clean up schemas from every service except last N
 
 ## Configuration
 
