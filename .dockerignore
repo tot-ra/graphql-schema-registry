@@ -3,4 +3,6 @@
 */examples
 */test
 repository.json
+*/.deploy
+.git
 .deploy
