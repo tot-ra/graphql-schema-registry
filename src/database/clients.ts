@@ -11,7 +11,10 @@ const clientsModel = {
 	SAVE_INTERVAL_MS: 30 * 1000,
 
 	init: () => {
-		clientsModel.timer = setInterval(clientsModel.syncUniqueClientsToDb, clientsModel.SAVE_INTERVAL_MS);
+		clientsModel.timer = setInterval(
+			clientsModel.syncUniqueClientsToDb,
+			clientsModel.SAVE_INTERVAL_MS
+		);
 	},
 
 	add: ({ name, version, persistedQueryHash }) => {
@@ -21,12 +24,18 @@ const clientsModel = {
 
 		if (!get(clientsModel.internalCache, `${name}.${version}`)) {
 			clientsModel.internalCache[name][version] = {
-				persistedQueries: []
+				persistedQueries: [],
 			};
 		}
 
-		if (clientsModel.internalCache[name][version].persistedQueries.indexOf(persistedQueryHash) < 0) {
-			clientsModel.internalCache[name][version].persistedQueries.push(persistedQueryHash);
+		if (
+			clientsModel.internalCache[name][version].persistedQueries.indexOf(
+				persistedQueryHash
+			) < 0
+		) {
+			clientsModel.internalCache[name][version].persistedQueries.push(
+				persistedQueryHash
+			);
 		}
 	},
 
@@ -39,7 +48,7 @@ const clientsModel = {
 				flatClients.push({
 					name,
 					version,
-					persistedQueries: data.persistedQueries
+					persistedQueries: data.persistedQueries,
 				});
 			}
 		}
@@ -49,7 +58,9 @@ const clientsModel = {
 
 	syncUniqueClientsToDb: async () => {
 		const trx = connection();
-		const clientUsageFlat = clientsModel.getFlatClients(clientsModel.internalCache);
+		const clientUsageFlat = clientsModel.getFlatClients(
+			clientsModel.internalCache
+		);
 
 		logger.debug(`saving to db ${clientUsageFlat.length} clients detected`);
 
@@ -60,7 +71,7 @@ const clientsModel = {
 			const clientVersionId = await clientsModel.addClientVersion({
 				trx,
 				name,
-				version
+				version,
 			});
 
 			for (const pqKey of persistedQueries) {
@@ -82,13 +93,18 @@ const clientsModel = {
 		clientsModel.internalCache = {};
 	},
 
-	addClientVersion: async ({ trx = connection(), name, version, addedTime = null }) => {
+	addClientVersion: async ({
+		trx = connection(),
+		name,
+		version,
+		addedTime = null,
+	}) => {
 		// @ts-ignore
 		const sql = await trx('clients')
 			.insert({
 				name,
 				version,
-				added_time: addedTime
+				added_time: addedTime,
 			})
 			.toString()
 			.replace('insert', 'INSERT IGNORE');
@@ -101,7 +117,7 @@ const clientsModel = {
 			.select('id')
 			.where({
 				name,
-				version
+				version,
 			})
 			.first();
 
@@ -110,7 +126,9 @@ const clientsModel = {
 
 	getLatestAddedDate: async () => {
 		// @ts-ignore
-		const latest = await connection()('clients').max('added_time as added_time').first();
+		const latest = await connection()('clients')
+			.max('added_time as added_time')
+			.first();
 
 		return latest.added_time;
 	},
@@ -120,7 +138,7 @@ const clientsModel = {
 		return await trx('clients')
 			.select(['id', 'name', 'version', 'updated_time as updatedTime'])
 			.where({
-				id
+				id,
 			})
 			.limit(1)
 			.first();
@@ -132,7 +150,7 @@ const clientsModel = {
 			.select('id', 'version', 'updated_time as updatedTime')
 			.where({
 				name,
-				version
+				version,
 			})
 			.limit(1)
 			.first();
@@ -142,7 +160,9 @@ const clientsModel = {
 	getClients: async () => connection()('clients').distinct('name'),
 	getVersions: async (name) =>
 		// @ts-ignore
-		connection()('clients').select('id', 'version', 'updated_time as updatedTime').where({ name }),
+		connection()('clients')
+			.select('id', 'version', 'updated_time as updatedTime')
+			.where({ name }),
 
 	getClientVersionsSince: async ({ since }) => {
 		if (isNil(since)) {
@@ -151,12 +171,18 @@ const clientsModel = {
 
 		// @ts-ignore
 		return connection()('clients')
-			.select(['id', 'name', 'version', 'added_time as addedTime', 'updated_time'])
+			.select([
+				'id',
+				'name',
+				'version',
+				'added_time as addedTime',
+				'updated_time',
+			])
 			.where((knex) => {
 				return knex.where('added_time', '>', since);
 			})
 			.limit(100);
-	}
+	},
 };
 
 export default clientsModel;

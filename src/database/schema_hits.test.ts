@@ -4,11 +4,11 @@ const mockLogger = {
 	info: jest.fn(),
 	warn: jest.fn(),
 	error: jest.fn(),
-	debug: jest.fn()
+	debug: jest.fn(),
 };
 
 jest.mock('../logger', () => ({
-	logger: mockLogger
+	logger: mockLogger,
 }));
 
 const objectUnderTest = require('./schema_hits').default;
@@ -25,14 +25,14 @@ describe('app/database/schema_hits.js', () => {
 				version: 'xxx',
 				entity: 'User',
 				property: 'id',
-				day: '2021-01-01'
+				day: '2021-01-01',
 			});
 			await objectUnderTest.add({
 				name: 'xxx',
 				version: 'xxx',
 				entity: 'User',
 				property: 'id',
-				day: '2021-01-01'
+				day: '2021-01-01',
 			});
 
 			assert.deepEqual(objectUnderTest.internalCache[0].hits, 2);
@@ -44,14 +44,14 @@ describe('app/database/schema_hits.js', () => {
 				version: null,
 				entity: 'User',
 				property: 'id',
-				day: '2021-01-01'
+				day: '2021-01-01',
 			});
 			await objectUnderTest.add({
 				name: null,
 				version: null,
 				entity: 'User',
 				property: 'id',
-				day: '2021-01-01'
+				day: '2021-01-01',
 			});
 
 			assert.deepEqual(objectUnderTest.internalCache[0].hits, 2);

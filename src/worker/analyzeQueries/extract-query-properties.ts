@@ -18,10 +18,10 @@ export default async (query, typeInfo) => {
 				if (entity && property) {
 					visitedFields.push({
 						entity,
-						property
+						property,
 					});
 				}
-			}
+			},
 		})
 	);
 

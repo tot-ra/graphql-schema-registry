@@ -17,7 +17,9 @@ Types of changes:
 ## [Unreleased]
 
 ## [3.4.0] - 2022-06-07
+
 ## Updated
+
 - nodejs version 14 -> 16
 
 ## [3.3.0] - 2022-05-25

@@ -22,7 +22,7 @@ const analyzer = {
 		logger.info('Updating schema for query analysis');
 
 		const schemas = await schemaModel.getLastUpdatedForActiveServices({
-			trx: connection()
+			trx: connection(),
 		});
 		const schema = composeAndValidateSchema(schemas);
 
@@ -40,13 +40,15 @@ const analyzer = {
 			schemaHit.init();
 			clientsModel.init();
 
-
 			const consumer = await initConsumer();
 
-			await consumer.subscribe({ topic: 'graphql-queries', fromBeginning: true });
+			await consumer.subscribe({
+				topic: 'graphql-queries',
+				fromBeginning: true,
+			});
 			await consumer.run({
 				partitionsConsumedConcurrently: 3,
-				eachMessage: analyzer.processRequest
+				eachMessage: analyzer.processRequest,
 			});
 		} catch (e) {
 			// kafka is not mandatory
@@ -62,7 +64,10 @@ const analyzer = {
 		let version;
 
 		if (parsedData.headers) {
-			const persistedQueryHash = get(parsedData, 'persistedQueryHash.sha256Hash');
+			const persistedQueryHash = get(
+				parsedData,
+				'persistedQueryHash.sha256Hash'
+			);
 
 			name = parsedData.headers['apollographql-client-name'];
 			version = parsedData.headers['apollographql-client-version'];
@@ -88,15 +93,21 @@ const analyzer = {
 				name,
 				version,
 				query: parsedData.query,
-				msgDate
+				msgDate,
 			});
 		} else {
-			logger.debug('Skipping schema-hit - either no query or old msgDate', msgDate);
+			logger.debug(
+				'Skipping schema-hit - either no query or old msgDate',
+				msgDate
+			);
 		}
 	},
 
 	processSchemaQueryUsage: async ({ name, version, query, msgDate }) => {
-		const visitedFields = await extractQueryFields(query, analyzer.typeInfo);
+		const visitedFields = await extractQueryFields(
+			query,
+			analyzer.typeInfo
+		);
 		const day = msgDate.toISOString().slice(0, 10);
 
 		for await (const { entity, property } of visitedFields) {
@@ -112,10 +123,10 @@ const analyzer = {
 				version,
 				entity,
 				property,
-				day
+				day,
 			});
 		}
-	}
+	},
 };
 
 module.exports = analyzer;

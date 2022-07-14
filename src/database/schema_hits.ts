@@ -15,23 +15,33 @@ const schemaHitModel = {
 	MAX_RETENTION_DAYS: 5,
 
 	init: function () {
-		schemaHitModel.timer = setInterval(schemaHitModel.syncUniqueClientsToDb, schemaHitModel.SAVE_INTERVAL_MS);
+		schemaHitModel.timer = setInterval(
+			schemaHitModel.syncUniqueClientsToDb,
+			schemaHitModel.SAVE_INTERVAL_MS
+		);
 
 		setInterval(async () => {
 			const now = new Date().getTime();
 
-			await schemaHitModel.deleteOlderThan(now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600 * 1000);
+			await schemaHitModel.deleteOlderThan(
+				now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600 * 1000
+			);
 		}, schemaHitModel.DELETE_INTERVAL_MS);
 	},
 
 	allowNewHitWithTime: function (msgDate) {
 		const now = new Date().getTime();
 
-		return msgDate.getTime() > now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600;
+		return (
+			msgDate.getTime() >
+			now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600
+		);
 	},
 
 	syncUniqueClientsToDb: async function () {
-		logger.debug(`Hydrating collected schema usage statistics (${schemaHitModel.internalCache.length}) properties`);
+		logger.debug(
+			`Hydrating collected schema usage statistics (${schemaHitModel.internalCache.length}) properties`
+		);
 		for (const row of schemaHitModel.internalCache) {
 			await schemaHitModel.storeInDb(row);
 		}
@@ -40,13 +50,19 @@ const schemaHitModel = {
 		schemaHitModel.internalCache = [];
 	},
 
-	add: async function ({ name = null, version = null, entity, property, day }) {
+	add: async function ({
+		name = null,
+		version = null,
+		entity,
+		property,
+		day,
+	}) {
 		const row = find(schemaHitModel.internalCache, {
 			name,
 			version,
 			entity,
 			property,
-			day
+			day,
 		});
 
 		if (row) {
@@ -58,19 +74,25 @@ const schemaHitModel = {
 				entity,
 				property,
 				day,
-				hits: 1
+				hits: 1,
 			});
 		}
 	},
 
-	addSchemaHitForNewClient: async function ({ entity, property, day, incrementHits, hits }) {
+	addSchemaHitForNewClient: async function ({
+		entity,
+		property,
+		day,
+		incrementHits,
+		hits,
+	}) {
 		await transact(async (trx) => {
 			const clientHitCount = (
 				await trx('schema_hit').count('entity', { as: 'cnt' }).where({
 					entity,
 					property,
 					day,
-					client_id: null
+					client_id: null,
 				})
 			)[0].cnt;
 
@@ -95,14 +117,21 @@ const schemaHitModel = {
 		});
 	},
 
-	addSchemaHitForExClient: async function ({ entity, property, day, client, incrementHits, hits }) {
+	addSchemaHitForExClient: async function ({
+		entity,
+		property,
+		day,
+		client,
+		incrementHits,
+		hits,
+	}) {
 		await transact(async (trx) => {
 			const clientHitCount = (
 				await trx('schema_hit').count('entity', { as: 'cnt' }).where({
 					entity,
 					property,
 					day,
-					client_id: client.id
+					client_id: client.id,
 				})
 			)[0].cnt;
 
@@ -133,7 +162,7 @@ const schemaHitModel = {
 		entity,
 		property,
 		day,
-		hits
+		hits,
 	}) {
 		let client;
 
@@ -154,7 +183,11 @@ const schemaHitModel = {
 
 			if (name && version && !client) {
 				client = {
-					id: await clientsModel.addClientVersion({ trx, name, version })
+					id: await clientsModel.addClientVersion({
+						trx,
+						name,
+						version,
+					}),
 				};
 			}
 		});
@@ -166,7 +199,7 @@ const schemaHitModel = {
 				day,
 				client,
 				incrementHits,
-				hits
+				hits,
 			});
 		} else {
 			await this.addSchemaHitForNewClient({
@@ -174,7 +207,7 @@ const schemaHitModel = {
 				property,
 				day,
 				incrementHits,
-				hits
+				hits,
 			});
 		}
 
@@ -184,7 +217,9 @@ const schemaHitModel = {
 	get: async function ({ entity, property }) {
 		const trx = connection();
 
-		const cachedResults = await redis.get(`schema_hits.${entity}.${property}`);
+		const cachedResults = await redis.get(
+			`schema_hits.${entity}.${property}`
+		);
 
 		if (cachedResults) {
 			return JSON.parse(cachedResults);
@@ -206,7 +241,11 @@ const schemaHitModel = {
 			[entity, property]
 		);
 
-		await redis.set(`schema_hits.${entity}.${property}`, JSON.stringify(results[0]), 60);
+		await redis.set(
+			`schema_hits.${entity}.${property}`,
+			JSON.stringify(results[0]),
+			60
+		);
 
 		return results[0];
 	},
@@ -240,7 +279,9 @@ const schemaHitModel = {
 		const trx = connection();
 
 		// @ts-ignore
-		const result = await trx('schema_hit').sum({ hit_sum: 'hits' }).where({ entity, property });
+		const result = await trx('schema_hit')
+			.sum({ hit_sum: 'hits' })
+			.where({ entity, property });
 
 		return result[0].hit_sum;
 	},
@@ -266,10 +307,12 @@ const schemaHitModel = {
 		const trx = connection();
 
 		// @ts-ignore
-		const latest = await trx('schema_hit').max('updated_time as updated_time').first();
+		const latest = await trx('schema_hit')
+			.max('updated_time as updated_time')
+			.first();
 
 		return latest.updated_time;
-	}
+	},
 };
 
 export default schemaHitModel;

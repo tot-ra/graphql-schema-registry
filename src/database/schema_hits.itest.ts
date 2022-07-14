@@ -16,12 +16,15 @@ describe('app/database/schema_hits', () => {
 				version: '123',
 				entity: 'Company',
 				property: 'name',
-				day: '2012-01-01'
+				day: '2012-01-01',
 			});
 
 			await schemaHit.syncUniqueClientsToDb('local');
 
-			const result = await schemaHit.get({ entity: 'Company', property: 'name' });
+			const result = await schemaHit.get({
+				entity: 'Company',
+				property: 'name',
+			});
 
 			disconnect();
 			expect(result[0]).toMatchObject({
@@ -29,7 +32,7 @@ describe('app/database/schema_hits', () => {
 				entity: 'Company',
 				hits: '1',
 				clientName: 'webapp',
-				property: 'name'
+				property: 'name',
 			});
 		});
 
@@ -39,7 +42,7 @@ describe('app/database/schema_hits', () => {
 				version: '123',
 				entity: 'Company',
 				property: 'name',
-				day: '2012-01-01'
+				day: '2012-01-01',
 			};
 
 			await schemaHit.add(row);
@@ -48,7 +51,10 @@ describe('app/database/schema_hits', () => {
 			await schemaHit.add(row);
 			await schemaHit.syncUniqueClientsToDb('eu-central-1');
 
-			const result = await schemaHit.get({ entity: 'Company', property: 'name' });
+			const result = await schemaHit.get({
+				entity: 'Company',
+				property: 'name',
+			});
 
 			expect(result[0].hits).toEqual('2');
 		});
@@ -57,7 +63,7 @@ describe('app/database/schema_hits', () => {
 			const row = {
 				entity: 'Company',
 				property: 'name',
-				day: '2012-01-01'
+				day: '2012-01-01',
 			};
 
 			await schemaHit.add(row);
@@ -66,7 +72,10 @@ describe('app/database/schema_hits', () => {
 			await schemaHit.add(row);
 			await schemaHit.syncUniqueClientsToDb('eu-central-1');
 
-			const result = await schemaHit.get({ entity: 'Company', property: 'name' });
+			const result = await schemaHit.get({
+				entity: 'Company',
+				property: 'name',
+			});
 
 			expect(result[0].hits).toEqual('2');
 		});
@@ -85,12 +94,15 @@ describe('app/database/schema_hits', () => {
 						entity: 'Company',
 						property: 'name',
 						hits: '50', // !
-						day: '2012-01-01'
-					}
+						day: '2012-01-01',
+					},
 				])
 			);
 
-			const result = await schemaHit.get({ entity: 'Company', property: 'name' });
+			const result = await schemaHit.get({
+				entity: 'Company',
+				property: 'name',
+			});
 
 			// ASSERT
 			disconnect();
@@ -100,8 +112,8 @@ describe('app/database/schema_hits', () => {
 					entity: 'Company',
 					hits: '50', // !
 					name: 'webapp',
-					property: 'name'
-				}
+					property: 'name',
+				},
 			]);
 		});
 
@@ -112,12 +124,15 @@ describe('app/database/schema_hits', () => {
 				version: '123',
 				entity: 'Company',
 				property: 'name',
-				day: '2012-01-01'
+				day: '2012-01-01',
 			};
 
 			await schemaHit.add(row);
 			await schemaHit.syncUniqueClientsToDb('local');
-			const result = await schemaHit.get({ entity: 'Company', property: 'name' });
+			const result = await schemaHit.get({
+				entity: 'Company',
+				property: 'name',
+			});
 
 			// ASSERT
 			expect(result).toMatchObject([
@@ -126,8 +141,8 @@ describe('app/database/schema_hits', () => {
 					entity: 'Company',
 					hits: '1',
 					clientName: 'webapp',
-					property: 'name'
-				}
+					property: 'name',
+				},
 			]);
 		});
 
@@ -138,18 +153,21 @@ describe('app/database/schema_hits', () => {
 				version: '123',
 				entity: 'Company',
 				property: 'name',
-				day: '2012-01-01'
+				day: '2012-01-01',
 			};
 
 			await schemaHit.add({
-				...row
+				...row,
 			});
 			await schemaHit.add({
 				...row,
-				version: '345'
+				version: '345',
 			});
 			await schemaHit.syncUniqueClientsToDb('local');
-			const result = await schemaHit.get({ entity: 'Company', property: 'name' });
+			const result = await schemaHit.get({
+				entity: 'Company',
+				property: 'name',
+			});
 
 			// ASSERT
 			expect(result).toMatchObject([
@@ -158,8 +176,8 @@ describe('app/database/schema_hits', () => {
 					entity: 'Company',
 					hits: '2', // !
 					clientName: 'webapp',
-					property: 'name'
-				}
+					property: 'name',
+				},
 			]);
 		});
 	});
@@ -178,14 +196,14 @@ describe('app/database/schema_hits', () => {
 				version: '123',
 				entity: 'Company',
 				property: 'name',
-				day: '2012-01-01'
+				day: '2012-01-01',
 			};
 
 			await schemaHit.add(row);
 			await schemaHit.add(row);
 			await schemaHit.add({
 				...row,
-				version: '345'
+				version: '345',
 			});
 			await schemaHit.syncUniqueClientsToDb('local');
 			const result = await schemaHit.list({ since: 0, limit: 10 });
@@ -197,14 +215,14 @@ describe('app/database/schema_hits', () => {
 				entity: 'Company',
 				hits: 2,
 				property: 'name',
-				region: 'local'
+				region: 'local',
 			});
 			expect(result[1]).toMatchObject({
 				day: '2012-01-01',
 				entity: 'Company',
 				hits: 1,
 				property: 'name',
-				region: 'local'
+				region: 'local',
 			});
 		});
 	});
@@ -216,19 +234,19 @@ describe('app/database/schema_hits', () => {
 			version: '123',
 			entity: 'Company',
 			property: 'name',
-			day: '2100-01-01'
+			day: '2100-01-01',
 		};
 
 		await schemaHit.add({
-			...row
+			...row,
 		});
 		await schemaHit.add({
-			...row
+			...row,
 		});
 		await schemaHit.add({
 			...row,
 			version: '345',
-			day: '2000-01-01'
+			day: '2000-01-01',
 		});
 		await schemaHit.syncUniqueClientsToDb('local');
 
@@ -244,7 +262,7 @@ describe('app/database/schema_hits', () => {
 			entity: 'Company',
 			hits: 2,
 			property: 'name',
-			region: 'local'
+			region: 'local',
 		});
 	});
 
@@ -255,19 +273,19 @@ describe('app/database/schema_hits', () => {
 			version: '123',
 			entity: 'Company',
 			property: 'name',
-			day: '2012-01-01'
+			day: '2012-01-01',
 		};
 
 		await schemaHit.add(row);
 		await schemaHit.add(row);
 		await schemaHit.add({
 			...row,
-			version: '345'
+			version: '345',
 		});
 		await schemaHit.syncUniqueClientsToDb('local');
 		const result = await schemaHit.sum({
 			entity: 'Company',
-			property: 'name'
+			property: 'name',
 		});
 
 		// ASSERT

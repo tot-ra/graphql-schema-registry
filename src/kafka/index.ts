@@ -19,7 +19,7 @@ export async function init() {
 	await producer.connect();
 }
 
-export async function initConsumer() : Promise<Consumer> {
+export async function initConsumer(): Promise<Consumer> {
 	const { host, port } = diplomat.getServiceInstance(KAFKA_SCHEMA_REGISTRY);
 
 	const kafka = new Kafka({

@@ -33,15 +33,15 @@ it('should extract field', async () => {
 	expect(result).toStrictEqual([
 		{
 			entity: 'Query',
-			property: 'user'
+			property: 'user',
 		},
 		{
 			entity: 'User',
-			property: 'id'
+			property: 'id',
 		},
 		{
 			entity: 'User',
-			property: 'name'
-		}
+			property: 'name',
+		},
 	]);
 });
