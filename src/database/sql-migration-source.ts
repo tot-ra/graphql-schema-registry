@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import { Knex } from 'knex';
 
-class CustomSqlMigrationSource {
+class CustomSqlMigrationSource implements Knex.MigrationSource<any> {
 	migrationDirectory: string;
 
 	constructor(migrationDirectory: string) {
@@ -32,7 +33,7 @@ class CustomSqlMigrationSource {
 		return migration.file;
 	}
 
-	getMigration(migration: any) {
+	async getMigration(migration: any): Promise<Knex.Migration> {
 		const migrationPath = path.resolve(
 			process.cwd(),
 			this.migrationDirectory,

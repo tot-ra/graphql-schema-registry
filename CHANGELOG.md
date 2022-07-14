@@ -16,8 +16,15 @@ Types of changes:
 
 ## [Unreleased]
 
-## [3.4.0] - 2022-06-07
+## [3.5.0] - 2022-06-07
 ## Updated
+- knex major version bump 0.20.2 -> 2.1.0
+
+
+## [3.4.0] - 2022-06-07
+
+## Updated
+
 - nodejs version 14 -> 16
 
 ## [3.3.0] - 2022-05-25
@@ -292,7 +299,10 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.3...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.5.0...HEAD
+[3.5.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.4.0...v3.5.0
+[3.4.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.3.0...v3.4.0
+[3.3.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.3...v3.3.0
 [3.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.2...v3.2.3
 [3.2.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...v3.2.1

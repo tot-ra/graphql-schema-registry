@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema-registry",
-  "version": "3.4.0",
+  "version": "3.5.0",
   "description": "Graphql schema registry",
   "main": "app/schema-registry.js",
   "engines": {
@@ -19,7 +19,7 @@
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,md,yml,yaml,graphql}'",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md",
     "build": "npm run build-backend && npm run build-frontend",
-    "build-backend": "rimraf app && mkdirp app && tsc",
+    "build-backend": "rimraf app && mkdir app && tsc",
     "build-frontend": "webpack --node-env production --bail --config webpack.config.js",
     "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml",
     "migrate-db": "knex migrate:latest",
@@ -62,7 +62,7 @@
     "graphql": "15.5.3",
     "joi": "17.6.0",
     "kafkajs": "1.15.0",
-    "knex": "0.20.2",
+    "knex": "2.1.0",
     "lodash": "4.17.21",
     "mysql2": "1.7.0",
     "prismjs": "1.28.0",

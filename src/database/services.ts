@@ -1,21 +1,31 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
+
+interface ServiceRecord {
+	id: string;
+	name: string;
+	url: string;
+	is_active: boolean;
+}
 
 const servicesModel = {
-	getActiveServices: async function (trx: Knex) {
+	getActiveServices: async function (trx: Knex<ServiceRecord>) {
 		return trx('services')
 			.select('services.id', 'services.name', 'services.url')
 			.where('is_active', true);
 	},
 
-	getServicesByIds: async function (trx: Knex, ids = []) {
+	getServicesByIds: async function (
+		trx: Knex<ServiceRecord>,
+		ids = []
+	): Promise<ServiceRecord[]> {
 		return trx('services').select('*').whereIn('id', ids);
 	},
 
-	getServices: async (trx: Knex, limit = 100, offset = 0) => {
+	getServices: async (trx: Knex<ServiceRecord>, limit = 100, offset = 0) => {
 		return trx('services').select('*').limit(limit).offset(offset);
 	},
 
-	getService: async function (trx: Knex, name: string) {
+	getService: async function (trx: Knex<ServiceRecord>, name: string) {
 		const service = await trx('services')
 			.select('services.id', 'services.name')
 			.where('services.name', name)
@@ -24,7 +34,11 @@ const servicesModel = {
 		return service[0];
 	},
 
-	insertService: async function (trx: Knex, name: string, url: string) {
+	insertService: async function (
+		trx: Knex<ServiceRecord>,
+		name: string,
+		url: string
+	) {
 		await trx('services').insert({ name, url });
 
 		const service = await servicesModel.getService(trx, name);
@@ -36,7 +50,7 @@ const servicesModel = {
 		return service;
 	},
 
-	deleteService: async function (trx: Knex, name: string) {
+	deleteService: async function (trx: Knex<ServiceRecord>, name: string) {
 		return trx('services').delete().where('name', name);
 	},
 };

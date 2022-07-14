@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { unionBy } from 'lodash';
 import { connection } from './index';
 import servicesModel from './services';
@@ -7,6 +7,12 @@ import { logger } from '../logger';
 
 function isDevVersion(version: string) {
 	return version === 'latest' || !version;
+}
+
+interface SchemaRecord {
+	id: string;
+	type_defs: string;
+	is_active: boolean;
 }
 
 const schemaModel = {
@@ -300,10 +306,13 @@ const schemaModel = {
 		return result[0];
 	},
 
-	toggleSchema: async function ({ trx, id }, isActive) {
+	toggleSchema: async function (
+		{ trx, id }: { trx: Knex<SchemaRecord>; id: string },
+		isActive
+	) {
 		return trx('schema')
 			.update({
-				'schema.is_active': isActive,
+				is_active: isActive,
 			})
 			.where({
 				id,
@@ -315,7 +324,13 @@ const schemaModel = {
 		limit = 100,
 		offset = 0,
 		filter = '',
-		trx = connection,
+		trx,
+	}: {
+		serviceIds: string[];
+		limit: number;
+		offset: number;
+		filter: string;
+		trx: Knex<SchemaRecord>;
 	}) {
 		const schemas = await trx('schema')
 			.select(
@@ -368,7 +383,7 @@ const schemaModel = {
 			.first();
 	},
 
-	getSchemaById: async function (trx: Knex, id) {
+	getSchemaById: async function (trx: Knex<SchemaRecord>, id) {
 		return trx('schema')
 			.select(
 				'schema.*',
@@ -376,24 +391,6 @@ const schemaModel = {
 			)
 			.where('schema.id', id)
 			.first();
-	},
-
-	deleteSchema: async function ({
-		trx,
-		name,
-		version,
-	}: {
-		trx: any;
-		name: string;
-		version: string;
-	}) {
-		return trx('container_schema')
-			.delete()
-			.leftJoin('services', 'container_schema.service_id', 'services.id')
-			.where({
-				'services.name': name,
-				'container_schema.version': version,
-			});
 	},
 };
 
