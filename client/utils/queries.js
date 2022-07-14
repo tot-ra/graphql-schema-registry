@@ -71,3 +71,25 @@ export const SCHEMA_DETAILS = gql`
 		}
 	}
 `;
+
+export const SCHEMA_SDL = gql`
+	query getSchemaSDL($schemaId: Int!) {
+		schema(id: $schemaId) {
+			fieldsUsage {
+				entity
+				property
+				clientVersionId
+				hitsSum
+			}
+		}
+	}
+`;
+export const SCHEMA_USAGE_SDL = gql`
+	query getSchemaUsageSDL($entity: String!, $property: String!) {
+		schemaPropertyHitsByClient(entity: $entity, property: $property) {
+			hits
+			day
+			clientName
+		}
+	}
+`;

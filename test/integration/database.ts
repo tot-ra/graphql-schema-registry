@@ -11,9 +11,9 @@ const knex = require('knex')({
 			user: 'root',
 			password: 'root',
 			database: 'schema_registry',
-			pool: { min: 0, max: 30, acquireTimeoutMillis: 30 * 1000 }
+			pool: { min: 0, max: 30, acquireTimeoutMillis: 30 * 1000 },
 		};
-	}
+	},
 });
 
 export async function cleanTables() {

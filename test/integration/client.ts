@@ -20,7 +20,7 @@ exports.request = async function ({ url = '/', body = {}, method, ...opts }) {
 		resolveWithFullResponse: true,
 		simple: false,
 		timeout: 10000,
-		...opts
+		...opts,
 	});
 };
 
@@ -35,15 +35,18 @@ exports.get = async function ({ url = '/', qs = {}, ...opts }) {
 		resolveWithFullResponse: true,
 		simple: false,
 		timeout: 10000,
-		...opts
+		...opts,
 	});
 };
 
-exports.pushSchema = (body, opts) => exports.request({ url: '/schema/push', body, method: 'POST', ...opts });
+exports.pushSchema = (body, opts) =>
+	exports.request({ url: '/schema/push', body, method: 'POST', ...opts });
 
-exports.validateSchema = (body, opts) => exports.request({ url: '/schema/validate', body, method: 'POST', ...opts });
+exports.validateSchema = (body, opts) =>
+	exports.request({ url: '/schema/validate', body, method: 'POST', ...opts });
 
-exports.composeSchema = (body, opts) => exports.request({ url: '/schema/compose', body, method: 'POST', ...opts });
+exports.composeSchema = (body, opts) =>
+	exports.request({ url: '/schema/compose', body, method: 'POST', ...opts });
 
 // persisted queries
 exports.persistedQueriesGet = (body, opts) =>

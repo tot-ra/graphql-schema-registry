@@ -165,7 +165,7 @@ describe('app/database/schema_hits', () => {
 	describe('list', () => {
 		it('returns empty array if since param was not provided', async () => {
 			const result = await schemaHit.list({
-				since: 0
+				since: 0,
 			});
 
 			expect(result).toEqual([]);
@@ -196,7 +196,7 @@ describe('app/database/schema_hits', () => {
 				day: '2012-01-01',
 				entity: 'Company',
 				hits: 2,
-				property: 'name'
+				property: 'name',
 			});
 			expect(result[1]).toMatchObject({
 				day: '2012-01-01',
@@ -241,7 +241,7 @@ describe('app/database/schema_hits', () => {
 			day: '2100-01-01',
 			entity: 'Company',
 			hits: 2,
-			property: 'name'
+			property: 'name',
 		});
 	});
 

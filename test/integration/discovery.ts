@@ -1,7 +1,7 @@
 const services = {
 	app: 'schema-registry',
 	mysql: 'schema-registry-dbtest',
-	redis: 'schema-registry-api-test-redis'
+	redis: 'schema-registry-api-test-redis',
 };
 
 exports.services = services;
@@ -11,12 +11,12 @@ exports.discovery = async (app) => {
 		case services.app:
 			return {
 				host: 'localhost',
-				port: 3000
+				port: 3000,
 			};
 		case services.mysql:
 			return {
 				host: 'localhost',
-				port: 5005
+				port: 5005,
 			};
 	}
 };

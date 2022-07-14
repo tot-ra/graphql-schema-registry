@@ -9,7 +9,7 @@ async function waitUntilServiceIsReadyOr5Min() {
 				method: 'GET',
 				uri: 'http://localhost:3000/health-schema-registry',
 				resolveWithFullResponse: true,
-				json: true
+				json: true,
 			});
 
 			if (result.statusCode === 200) {
