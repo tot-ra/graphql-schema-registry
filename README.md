@@ -35,6 +35,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
   - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
 - global search (not only service-specific)
+- global changelog
 - webhooks/slack integration (notifify on schema change)
 - performance tracking (to know what resolvers to optimize)
 - access control - lightweight authentication in case this internal tool is publicly accessible
