@@ -13,8 +13,8 @@ function buildPrettyFormat() {
 	return format.combine(
 		format.colorize(),
 		format.timestamp(),
-		format.printf(({ timestamp, level, message }) => {
-			return `[${timestamp}] ${level}: ${message}`;
+		format.printf(({ timestamp, level, message, stack }) => {
+			return `[${timestamp}] ${level}: ${message} ${stack}`;
 		})
 	);
 }

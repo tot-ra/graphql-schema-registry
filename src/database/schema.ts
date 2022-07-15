@@ -105,7 +105,7 @@ const schemaModel = {
 		return Object.values(result);
 	},
 
-	getLastUpdatedForActiveServices: async function ({ trx }) {
+	getLastUpdatedForActiveServices: async function ({ trx } : { trx: Knex}) {
 		return schemaModel.getSchemaLastUpdated({
 			trx,
 			services: await servicesModel.getActiveServices(trx),

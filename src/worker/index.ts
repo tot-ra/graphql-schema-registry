@@ -1,5 +1,5 @@
 const analyzeQueries = require('./analyzeQueries');
 
-export default async function () {
+(async function () {
 	await analyzeQueries.start();
-}
+})();

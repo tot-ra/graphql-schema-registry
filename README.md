@@ -99,7 +99,7 @@ docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000
 
 ```
 git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
-docker-compose up
+docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```
 
 ## Use cases
@@ -161,7 +161,7 @@ Migrations are done using knex
 nvm use
 npm install
 npm run build
-docker-compose -f docker-compose.dev.yml up
+docker-compose  -f docker-compose.base.yml  -f docker-compose.dev.yml up
 ```
 
 ### Running in light mode
@@ -169,8 +169,9 @@ docker-compose -f docker-compose.dev.yml up
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```
-docker-compose -f docker-compose.light.yml up -d
+docker-compose -f docker-compose.base.yml up -d
 npm run develop
+npm run develop-worker
 ```
 
 ### DB migrations

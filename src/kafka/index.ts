@@ -24,10 +24,12 @@ export async function initConsumer(): Promise<Consumer> {
 
 	const kafka = new Kafka({
 		clientId: process.env.KAFKA_CLIENT || 'graphql-schema-registry-server',
-		brokers: [`${host}:${port}`],
+		brokers: [`${host}:${port}`]
 	});
 
-	consumer = kafka.consumer();
+	consumer = kafka.consumer({
+		groupId: 'graphql-schema-registry-worker'
+	});
 	await consumer.connect();
 
 	return consumer;

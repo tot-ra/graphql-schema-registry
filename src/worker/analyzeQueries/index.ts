@@ -1,10 +1,10 @@
 import { get, isNil } from 'lodash';
-import graphql from 'graphql';
-import { logger } from '../../logger';
+import { TypeInfo } from 'graphql';
+import { Knex } from 'knex';
 
+import { logger } from '../../logger';
 import { initConsumer } from '../../kafka';
 import { composeAndValidateSchema } from '../../helpers/federation';
-import { connection } from '../../database';
 
 import schemaModel from '../../database/schema';
 import clientsModel from '../../database/clients';
@@ -12,29 +12,33 @@ import schemaHit from '../../database/schema_hits';
 import persistedQueries from '../../database/persisted_queries';
 
 import extractQueryFields from './extract-query-properties';
+import { connection } from "../../database";
 
 const SCHEMA_UPDATE_PERIOD_MIN = 5;
 
 const analyzer = {
 	typeInfo: null,
 
-	loadSchema: async function () {
+	loadSchema: async function (trx: Knex) {
 		logger.info('Updating schema for query analysis');
 
 		const schemas = await schemaModel.getLastUpdatedForActiveServices({
-			trx: connection(),
+			trx
 		});
 		const schema = composeAndValidateSchema(schemas);
 
-		analyzer.typeInfo = new graphql.TypeInfo(schema);
+		analyzer.typeInfo = new TypeInfo(schema);
 	},
 	start: async function () {
 		try {
-			await analyzer.loadSchema();
+			logger.info('starting query analyzer');
+			logger.info('loading federated schema');
+			await analyzer.loadSchema(connection);
 
 			// update schema periodically
 			setInterval(async () => {
-				await analyzer.loadSchema();
+				logger.info('reloading federated schema');
+				await analyzer.loadSchema(connection);
 			}, SCHEMA_UPDATE_PERIOD_MIN * 60 * 1000);
 
 			schemaHit.init();

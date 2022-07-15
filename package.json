@@ -9,7 +9,7 @@
   },
   "scripts": {
     "develop": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/schema-registry.ts --watch src --inspect",
-    "develop-worker": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/schema-registry.ts --watch src --inspect",
+    "develop-worker": "KAFKA_BROKER_HOST=localhost KAFKA_BROKER_PORT=29092 DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/worker/index.ts --watch src --inspect",
     "test": "jest --config jest.config.ts",
     "test:watch": "jest --config jest.config.ts --watch",
     "coverage": "./node_modules/.bin/jest --config test/unit/jest.coverage.cjs && coveralls < coverage/lcov.info",

@@ -15,11 +15,13 @@ const schemaHitModel = {
 	MAX_RETENTION_DAYS: 5,
 
 	init: function () {
+		logger.info('starting schema hit entity memory-to-mysql synchronizer');
 		schemaHitModel.timer = setInterval(
 			schemaHitModel.syncUniqueClientsToDb,
 			schemaHitModel.SAVE_INTERVAL_MS
 		);
 
+		logger.info('starting schema hit entity periodic cleanup from mysql');
 		setInterval(async () => {
 			const now = new Date().getTime();
 

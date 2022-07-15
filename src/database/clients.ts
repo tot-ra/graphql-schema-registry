@@ -11,6 +11,7 @@ const clientsModel = {
 	SAVE_INTERVAL_MS: 30 * 1000,
 
 	init: () => {
+		logger.info('starting clients entity memory-to-mysql synchronizer');
 		clientsModel.timer = setInterval(
 			clientsModel.syncUniqueClientsToDb,
 			clientsModel.SAVE_INTERVAL_MS

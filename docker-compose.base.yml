@@ -21,38 +21,6 @@ services:
         aliases:
           - 'gql-schema-registry-db'
 
-  gql-schema-registry:
-    build:
-      context: .
-      dockerfile: dev.Dockerfile
-    command: ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect
-    ports:
-      - 6001:3000
-      - 6002:5850
-    environment:
-      - ENV_ID=dev
-      - SERVICE_5850_IGNORE=true
-      - WITH_WEBPACK=${WITH_WEBPACK-1}
-      - SERVICE_NAME=schema-registry
-      - SERVICE_3000_NAME=schema-registry
-      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
-      - ASYNC_SCHEMA_UPDATES=true
-      - KAFKA_CLIENT=graphql-schema-registry-server
-      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
-      - KAFKA_BROKER_PORT=9092
-      - KAFKA_TOPIC=test-topic
-    volumes:
-      - .:/app/
-    restart: always
-    depends_on:
-      - gql-schema-registry-redis
-      - gql-schema-registry-db
-      - gql-schema-registry-kafka
-    networks:
-      gql-schema:
-        aliases:
-          - 'gql-schema-registry'
-
   gql-schema-registry-redis:
     image: redis:6-alpine
     ports:
