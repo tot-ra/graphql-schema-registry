@@ -401,7 +401,7 @@ async function versionExists(trx, serviceId, version) {
 	return (
 		await trx('container_schema').select('id').where({
 			service_id: serviceId,
-			version: version,
+			version,
 		})
 	)[0]?.id;
 }
