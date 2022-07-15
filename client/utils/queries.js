@@ -1,10 +1,16 @@
 import { gql } from '@apollo/client';
 
+export const SERVICE_COUNT = gql`
+	query serviceCount {
+		serviceCount
+	}
+`;
 export const PERSISTED_QUERIES_COUNT = gql`
 	query persistedQueriesCount {
 		persistedQueriesCount
 	}
 `;
+
 export const PERSISTED_QUERIES = gql`
 	query persistedQueries {
 		persistedQueries {

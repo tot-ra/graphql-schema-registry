@@ -26,6 +26,7 @@ export default {
 			servicesModel.getServices(connection, limit, offset),
 		service: async (parent, { id }, { dataloaders }) =>
 			dataloaders.services.load(id),
+		serviceCount: async () => await servicesModel.count(),
 		schema: async (parent, { id }) =>
 			await schemaModel.getSchemaById(connection, id),
 		schemaPropertyHitsByClient: async (_, { entity, property }) =>

@@ -29,7 +29,9 @@ const requestLogger = {
 
 			if (isNil(producer)) {
 				await requestLogger.connectToKafka();
-				console.error('Kafka producer is not connected, cannot log query');
+				console.error(
+					'Kafka producer is not connected, cannot log query'
+				);
 				// Do not return false, because:
 				// "If your plugin doesn't need to respond to any request lifecycle events
 				// requestDidStart should not return a value."
@@ -40,11 +42,16 @@ const requestLogger = {
 				const eventPayload = {
 					query: get(requestContext, 'request.query'),
 					operationName: get(requestContext, 'request.operationName'),
-					persistedQueryHash: get(requestContext, 'request.extensions.persistedQuery'),
+					persistedQueryHash: get(
+						requestContext,
+						'request.extensions.persistedQuery'
+					),
 				};
 
 				if (get(requestContext, 'request.http.headers')) {
-					eventPayload.headers = Object.fromEntries(requestContext.request.http.headers);
+					eventPayload.headers = Object.fromEntries(
+						requestContext.request.http.headers
+					);
 				}
 
 				console.log('Sending message to kafka', eventPayload);

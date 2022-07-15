@@ -4,13 +4,14 @@ import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
 import Schema from '../schema';
-import PersistedQueries, {
-	Tab as PersistedQueriesTab,
-} from '../persisted-queries';
+import PersistedQueries from '../persisted-queries';
+
+import ServicesTab from '../schema/Tab';
+import PersistedQueriesTab from '../persisted-queries/Tab';
 
 const UITabs = [
 	{
-		Title: <span>Schema</span>,
+		Title: <ServicesTab />,
 		href: '/schema',
 		icon: 'dashboard',
 		component: Schema,

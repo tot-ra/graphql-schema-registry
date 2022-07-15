@@ -45,7 +45,7 @@ const apolloServerBase = new ApolloServerBase({
 	gateway,
 	subscriptions: false,
 	debug: true,
-	plugins:[requestLoggerPlugin.register]
+	plugins: [requestLoggerPlugin.register],
 });
 
 const handleGraphqlRequest = async (req, res) => {
