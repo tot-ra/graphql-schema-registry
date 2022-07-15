@@ -33,7 +33,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: ./node_modules/.bin/ts-node-dev --respawn src/worker.ts --watch src --inspect
+    command: ./node_modules/.bin/ts-node-dev --respawn src/worker/index.ts --watch src --inspect
     environment:
       - ENV_ID=dev
       - SERVICE_NAME=gql-schema-registry-worker
