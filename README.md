@@ -49,7 +49,7 @@ You can:
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
 | Variable Name         | Description                                                                   | Default                   |
-|-----------------------|-------------------------------------------------------------------------------|---------------------------|
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
 | DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
 | DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
 | DB_SECRET             | Password used to connect to MySQL                                             | root                      |
