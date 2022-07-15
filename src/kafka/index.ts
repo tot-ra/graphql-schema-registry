@@ -24,11 +24,11 @@ export async function initConsumer(): Promise<Consumer> {
 
 	const kafka = new Kafka({
 		clientId: process.env.KAFKA_CLIENT || 'graphql-schema-registry-server',
-		brokers: [`${host}:${port}`]
+		brokers: [`${host}:${port}`],
 	});
 
 	consumer = kafka.consumer({
-		groupId: 'graphql-schema-registry-worker'
+		groupId: 'graphql-schema-registry-worker',
 	});
 	await consumer.connect();
 
@@ -41,7 +41,7 @@ export function send(data) {
 	}
 
 	producer.send({
-		topic: process.env.KAFKA_TOPIC || 'test-topic',
+		topic: process.env.KAFKA_SCHEMA_TOPIC || 'graphql-schema-updates',
 		messages: [{ value: JSON.stringify(data) }],
 	});
 }

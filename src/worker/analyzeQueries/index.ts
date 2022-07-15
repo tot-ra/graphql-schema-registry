@@ -12,7 +12,7 @@ import schemaHit from '../../database/schema_hits';
 import persistedQueries from '../../database/persisted_queries';
 
 import extractQueryFields from './extract-query-properties';
-import { connection } from "../../database";
+import { connection } from '../../database';
 
 const SCHEMA_UPDATE_PERIOD_MIN = 5;
 
@@ -23,7 +23,7 @@ const analyzer = {
 		logger.info('Updating schema for query analysis');
 
 		const schemas = await schemaModel.getLastUpdatedForActiveServices({
-			trx
+			trx,
 		});
 		const schema = composeAndValidateSchema(schemas);
 
@@ -47,7 +47,7 @@ const analyzer = {
 			const consumer = await initConsumer();
 
 			await consumer.subscribe({
-				topic: 'graphql-queries',
+				topic: process.env.KAFKA_QUERIES_TOPIC || 'graphql-queries',
 				fromBeginning: true,
 			});
 			await consumer.run({

@@ -10,11 +10,38 @@ services:
       - 6002:5850
     environment:
       - ENV_ID=dev
-      - SERVICE_5850_IGNORE=true
       - WITH_WEBPACK=${WITH_WEBPACK-1}
-      - SERVICE_NAME=schema-registry
-      - SERVICE_3000_NAME=schema-registry
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - ASYNC_SCHEMA_UPDATES=true
+      - KAFKA_CLIENT=graphql-schema-registry-server
+      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
+      - KAFKA_BROKER_PORT=9092
+      - KAFKA_SCHEMA_TOPIC=graphql-schema-updates
+    volumes:
+      - .:/app/
+    restart: always
+    depends_on:
+      - gql-schema-registry-redis
+      - gql-schema-registry-db
+      - gql-schema-registry-kafka
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry'
+
+  gql-schema-registry-worker:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: ./node_modules/.bin/ts-node-dev --respawn src/worker.ts --watch src --inspect
+    environment:
+      - ENV_ID=dev
+      - SERVICE_NAME=gql-schema-registry-worker
+      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - KAFKA_CLIENT=graphql-schema-registry-server
+      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
+      - KAFKA_BROKER_PORT=9092
+      - KAFKA_QUERIES_TOPIC=graphql-queries
     volumes:
       - .:/app/
     restart: always

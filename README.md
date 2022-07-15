@@ -49,7 +49,7 @@ You can:
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
 | Variable Name         | Description                                                                   | Default                   |
-| --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
+|-----------------------|-------------------------------------------------------------------------------|---------------------------|
 | DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
 | DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
 | DB_SECRET             | Password used to connect to MySQL                                             | root                      |
@@ -64,6 +64,8 @@ The following are the different environment variables that are looked up that al
 | ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
 | KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
 | KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
+| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
+| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
 | LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
 | LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
 
