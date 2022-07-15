@@ -28,7 +28,7 @@ describe('app/database/sql-migration-source.js', () => {
 		);
 
 		const migrations = await source.getMigrations();
-		const migration = source.getMigration(migrations[0]);
+		const migration = await source.getMigration(migrations[0]);
 
 		assert.isDefined(migration.up, 'migration should have an up function');
 		assert.isFunction(migration.up, 'migration.up should be a function');

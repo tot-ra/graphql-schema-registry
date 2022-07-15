@@ -8,7 +8,7 @@ import Knex from 'knex';
 import { logger } from '../logger';
 
 export async function getAndValidateSchema(
-	trx: Knex,
+	trx,
 	services = false,
 	validate = true
 ) {

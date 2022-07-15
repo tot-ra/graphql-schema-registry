@@ -31,11 +31,16 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
   - registered clients (based on headers, including apollo-\* ones)
   - schema usage breakdown by multiple facets - property, day, query name, client name
   - fixed data retention
+- schema registration examples (node/go/php...)
 - schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
   - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
-- Performance tracking (to know what resolvers to optimize)
+- global search (not only service-specific)
+- global changelog
+- webhooks/slack integration (notifify on schema change)
+- performance tracking (to know what resolvers to optimize)
 - access control - lightweight authentication in case this internal tool is publicly accessible
 - separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
+- clean up schemas from every service except last N
 
 ## Configuration
 
@@ -214,6 +219,9 @@ DB tables are truncated after every test from within `test/functional/bootstrap.
 Jest runs in single worker mode to avoid tests from affecting each other due to same state.
 
 ```
+#docker-compose -f docker-compose.light.yml up -d
+#npm run develop
+
 npm run test-functional
 ```
 

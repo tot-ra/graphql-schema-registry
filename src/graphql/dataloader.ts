@@ -13,6 +13,7 @@ export default () => ({
 				limit: _.get(keys, '[0].limit'),
 				offset: _.get(keys, '[0].offset'),
 				filter: _.get(keys, '[0].filter'),
+				trx: connection,
 			});
 
 			const byIds = new Map(
