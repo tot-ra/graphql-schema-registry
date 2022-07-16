@@ -1,4 +1,4 @@
-name: Unit tests
+name: Integration tests
 on:
   pull_request:
     branches:
@@ -45,8 +45,12 @@ jobs:
       - name: Start containers
         run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d --build
 
-      - run: npm run test:integration
-      - run: npm run report-coverage
+      - run: npm run test:integration:coverage
+      - run: npm run test:coverage:merge
+      - name: Publish coverage to coveralls.io
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ github.token }}
 
       - name: Stop containers
         if: always()

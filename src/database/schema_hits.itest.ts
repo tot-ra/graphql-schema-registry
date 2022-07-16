@@ -57,6 +57,8 @@ describe('app/database/schema_hits', () => {
 
 		it('should add hits if no client/version exist', async () => {
 			const row = {
+				name: null,
+				version: null,
 				entity: 'Company',
 				property: 'name',
 				day: '2012-01-01',

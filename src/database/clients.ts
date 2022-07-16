@@ -140,7 +140,7 @@ const clientsModel = {
 		return latest.added_time;
 	},
 
-	getClientVersion: async ({ id, trx = connection() }) => {
+	getClientVersion: async ({ id, trx = connection }) => {
 		return await trx('clients')
 			.select(['id', 'name', 'version', 'updated_time as updatedTime'])
 			.where({
@@ -150,7 +150,7 @@ const clientsModel = {
 			.first();
 	},
 
-	getClientVersionByName: async ({ name, version, trx = connection() }) => {
+	getClientVersionByName: async ({ name, version, trx = connection }) => {
 		return await trx('clients')
 			.select('id', 'version', 'updated_time as updatedTime')
 			.where({

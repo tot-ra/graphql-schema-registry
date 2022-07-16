@@ -24,7 +24,7 @@ export default {
 	collectCoverageFrom: ['<rootDir>/client/**/*'],
 
 	// The directory where Jest should output its coverage files
-	coverageDirectory: '<rootDir>/coverage/unit-client',
+	coverageDirectory: '<rootDir>/coverage/unit-frontend',
 
 	// An array of regexp pattern strings used to skip coverage collection
 	coveragePathIgnorePatterns: ['__mocks__', '__tests__'],
