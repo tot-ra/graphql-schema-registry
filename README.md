@@ -22,7 +22,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Async schema registration of new schema with events to avoid polling (`schema-registry -> kafka -> gateway`)
 - Async query analyzer for schema usage generation to minimize breaking changes
 
-<img width="1312" alt="Screenshot 2022-02-08 at 00 16 49" src="https://user-images.githubusercontent.com/445122/152881795-535a6990-a318-4e89-afc9-c508ddc840fa.png">
+<img height="300" alt="Screenshot 2022-07-17 at 02 02 53" src="https://user-images.githubusercontent.com/445122/179374475-87879feb-f009-4afd-bb47-3f242b7c27a9.png"> <img height="300" alt="Screenshot 2022-07-17 at 02 02 24" src="https://user-images.githubusercontent.com/445122/179374472-9fdf7ae2-5090-4618-9c17-d238dcf5ffe5.png">
 
 ## Roadmap
 
