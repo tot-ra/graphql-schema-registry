@@ -4,8 +4,6 @@ const mockLogger = {
 	error: jest.fn(),
 };
 
-const mockDiscoverService = jest.fn();
-
 const mockRedlockLock = jest.fn();
 const mockRedlockUnLock = jest.fn().mockImplementation(() => Promise.resolve());
 const mockRedlock = jest.fn().mockImplementation(() => {
@@ -18,7 +16,6 @@ const mockRedlock = jest.fn().mockImplementation(() => {
 jest.mock('ioredis', () => jest.fn());
 jest.mock('redlock', () => mockRedlock);
 jest.mock('../logger', () => mockLogger);
-jest.mock('../discoverService', () => mockDiscoverService);
 
 const actualRedLock = jest.requireActual('redlock');
 

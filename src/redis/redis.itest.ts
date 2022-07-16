@@ -10,7 +10,8 @@ jest.mock('../logger', () => mockLogger);
 describe('redis', () => {
 	describe('get', () => {
 		it('should return null if no data', async () => {
-			const { initRedis, get, disconnect } = (await import('./index')).default;
+			const { initRedis, get, disconnect } = (await import('./index'))
+				.default;
 
 			await initRedis();
 
@@ -24,7 +25,8 @@ describe('redis', () => {
 
 		it('get should return null if redis is not initialized', async () => {
 			// no prior initRedis() here
-			const { initRedis, get, disconnect } = (await import('./index')).default;
+			const { initRedis, get, disconnect } = (await import('./index'))
+				.default;
 			const result = await get('aaa');
 
 			expect(result).toEqual(null);
@@ -34,7 +36,8 @@ describe('redis', () => {
 
 		it('get should return null + log error if redis is disconnected', async () => {
 			// no prior initRedis() here
-			const { initRedis, get, disconnect } = (await import('./index')).default;
+			const { initRedis, get, disconnect } = (await import('./index'))
+				.default;
 
 			await initRedis();
 			disconnect();
@@ -48,7 +51,9 @@ describe('redis', () => {
 
 	describe('set', () => {
 		it('set + get', async () => {
-			const { initRedis, get, set, disconnect } = (await import('./index')).default;
+			const { initRedis, get, set, disconnect } = (
+				await import('./index')
+			).default;
 
 			await initRedis();
 
@@ -63,7 +68,9 @@ describe('redis', () => {
 		});
 
 		it('set with TTL expiration + wait = get should return null', async () => {
-			const { initRedis, get, set, disconnect } = (await import('./index')).default;
+			const { initRedis, get, set, disconnect } = (
+				await import('./index')
+			).default;
 
 			await initRedis();
 
@@ -82,7 +89,9 @@ describe('redis', () => {
 	});
 
 	it('delete', async () => {
-		const { initRedis, get, set, del, disconnect } = (await import('./index')).default;
+		const { initRedis, get, set, del, disconnect } = (
+			await import('./index')
+		).default;
 
 		await initRedis();
 
