@@ -19,6 +19,7 @@ import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighl
 
 import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
+import UsageTab from './UsageTab';
 
 const VersionDetails = () => {
 	const [revealed, setRevealed] = useState(null);
@@ -94,14 +95,12 @@ const VersionDetails = () => {
 					onChange={handleChange}
 					aria-label="simple tabs example"
 				>
-					<Tab label="Diff with previous" />
-					<Tab label="Definition" />
+					<Tab label="SDL" />
+					<Tab label="Diff" />
+					<Tab label="Usage" />
 					<Tab label={`Containers (${data.schema.containerCount})`} />
 				</Tabs>
 				<TabPanel value={value} index={0}>
-					<CodeDiff oldCode={oldCode} newCode={typeDefs} />
-				</TabPanel>
-				<TabPanel value={value} index={1}>
 					<SourceCodeWithHighlightAndCopy
 						revealed={revealed}
 						onClick={onClick}
@@ -109,7 +108,13 @@ const VersionDetails = () => {
 						lines="35"
 					/>
 				</TabPanel>
+				<TabPanel value={value} index={1}>
+					<CodeDiff oldCode={oldCode} newCode={typeDefs} />
+				</TabPanel>
 				<TabPanel value={value} index={2}>
+					<UsageTab schemaId={data.schema.id} />
+				</TabPanel>
+				<TabPanel value={value} index={3}>
 					<table width="100%">
 						<thead>
 							<tr>

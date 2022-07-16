@@ -3,7 +3,6 @@ import { diff } from '@graphql-inspector/core';
 import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
-import Knex from 'knex';
 
 import { logger } from '../logger';
 

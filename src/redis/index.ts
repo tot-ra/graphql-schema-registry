@@ -1,90 +1,169 @@
-import diplomat from '../diplomat';
-import redis from 'async-redis';
+import Redis from 'ioredis';
+import Redlock from 'redlock';
 import { logger } from '../logger';
+import diplomat from '../diplomat';
 
 const DEFAULT_TTL = 24 * 3600;
-const redisServiceName =
-	process.env.REDIS_SCHEMA_REGISTRY || 'schema-registry-redis';
+const GET_TIMEOUT_MS = 30;
+const SET_TIMEOUT_MS = 50;
+const DEFAULT_LOCK_TTL = 60 * 1000;
 
-const redisWrapper = {
-	redisInstance: null,
+let redis, redlockClient;
 
-	getInstance: async () => {
-		if (redisWrapper.redisInstance) {
-			return redisWrapper.redisInstance;
-		}
+async function wait(ms) {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			reject(new Error(`Executed timeout after ${ms} ms`));
+		}, ms);
+	});
+}
 
-		const { host, port, password } = await diplomat.getServiceInstance(
-			redisServiceName
-		);
-
-		const redisOptions = {
+async function resolveInstance(service) {
+	try {
+		const {
 			host,
 			port,
-			password,
+			username,
+			secret: password,
+		} = await diplomat.getServiceInstance(service);
+
+		return { host, port, username, password };
+	} catch (err) {
+		logger.warn(err, 'Redis discovery failed');
+
+		return {};
+	}
+}
+
+async function initRedis(
+	redisServiceName = process.env.REDIS_SCHEMA_REGISTRY ||
+		'gql-schema-registry-redis'
+) {
+	try {
+		// @ts-ignore
+		redis = new Redis({
+			maxRetriesPerRequest: 1,
 			db: 2,
-			retry_strategy: (options) => {
-				if (options.error && options.error.code === 'ECONNREFUSED') {
-					logger.error('Redis server refused the connection', {
-						original_error: options.error,
-					});
-				}
+			dropBufferSupport: true,
+			lazyConnect: true,
+			showFriendlyErrorStack: true,
+		});
 
-				// reconnect after
-				return Math.min(options.attempt * 100, 3000);
-			},
-		};
+		redis.on('reconnecting', async () => {
+			logger.warn('Redis reconnect triggered, re-discovering');
+			Object.assign(
+				redis.options || {},
+				await resolveInstance(redisServiceName)
+			);
+		});
 
-		redisWrapper.redisInstance = redis.createClient(redisOptions);
-
-		redisWrapper.redisInstance.on('ready', redisWrapper.onReady);
-		redisWrapper.redisInstance.on('connect', redisWrapper.onConnect);
-		redisWrapper.redisInstance.on(
-			'reconnecting',
-			redisWrapper.onReconnecting
+		redis.on('ready', () =>
+			logger.info(`Redis connection to ${redisServiceName} ready`)
 		);
-		redisWrapper.redisInstance.on('error', redisWrapper.onError);
-		redisWrapper.redisInstance.on('end', redisWrapper.onEnd);
 
-		return redisWrapper.redisInstance;
+		Object.assign(
+			redis.options || {},
+			await resolveInstance(redisServiceName)
+		);
+
+		await redis.connect();
+
+		return redis;
+	} catch (error) {
+		logger.error('Failed to initialize redis', error);
+	}
+}
+
+const getRedlockClient = () => {
+	if (redlockClient) {
+		return redlockClient;
+	}
+
+	return new Redlock([redis], {
+		retryCount: 0,
+	});
+};
+
+const redisWrap = {
+	initRedis,
+
+	disconnect: () => {
+		redis?.disconnect();
 	},
 
 	get: async (key) => {
-		return await (await redisWrapper.getInstance()).get(key);
+		try {
+			if (redis) {
+				return await Promise.race([
+					redis.get(key),
+					wait(GET_TIMEOUT_MS),
+				]);
+			} else {
+				logger.warn('redis is not initialized');
+
+				return null;
+			}
+		} catch (e) {
+			logger.error('redis.get failed', e);
+
+			return null;
+		}
 	},
 
 	set: async (key, value, ttl = DEFAULT_TTL) => {
-		await (await redisWrapper.getInstance()).set(key, value, 'EX', ttl);
-	},
-
-	delete: async (key) => {
-		return await (await redisWrapper.getInstance()).del(key);
-	},
-
-	onEnd: function () {
-		logger.info('Redis server connection has closed!');
-	},
-
-	onError: function (error) {
-		logger.error(
-			`An error occurred while fetching data from Redis : ${error.message}`,
-			{
-				original_error: error,
+		try {
+			if (redis) {
+				await Promise.race([
+					redis.set(key, value, 'EX', ttl),
+					wait(SET_TIMEOUT_MS),
+				]);
+			} else {
+				logger.warn('redis is not initialized');
 			}
-		);
+		} catch (e) {
+			logger.error('redis.set failed', e);
+		}
 	},
 
-	onReconnecting: function () {
-		logger.info('Redis client is reconnecting to the server!');
+	del: async (key) => {
+		try {
+			if (redis) {
+				await redis.del(key);
+			} else {
+				logger.warn('redis is not initialized');
+			}
+		} catch (e) {
+			logger.error('redis.del failed', e);
+		}
 	},
 
-	onConnect: function () {
-		logger.info(`Redis client is connected`);
-	},
+	lock: async (key, fn, ttl = DEFAULT_LOCK_TTL) => {
+		let lock;
 
-	onReady: function () {
-		logger.info('Redis client is ready!');
+		const lockKey = `locks.${key}`;
+
+		try {
+			lock = await getRedlockClient().lock(lockKey, ttl);
+		} catch (err) {
+			if (err.name === 'LockError') {
+				return;
+			}
+
+			throw err;
+		}
+
+		try {
+			return await fn();
+		} catch (error) {
+			logger.error(error, 'Failed to process lock function');
+
+			lock.unlock().catch((error) =>
+				logger.error(error, 'Redis unlock failed')
+			);
+
+			throw error;
+		}
 	},
 };
 
-export default redisWrapper;
+export default redisWrap;

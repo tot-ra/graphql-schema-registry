@@ -9,9 +9,13 @@ module.exports = {
 	moduleFileExtensions: ['ts', 'js', 'json'],
 	modulePathIgnorePatterns: ['<rootDir>/app/'],
 
+	coverageDirectory: 'coverage/unit',
 	coverageReporters: ['text', 'json', 'lcov', 'clover'],
 	collectCoverage: true,
-	collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+	collectCoverageFrom: [
+		'<rootDir>/src/**/*.ts',
+		'!<rootDir>/src/*/*.test.ts',
+	],
 	coveragePathIgnorePatterns: [
 		'/node_modules/',
 		'/migrations/',

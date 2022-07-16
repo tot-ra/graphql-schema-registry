@@ -5,15 +5,15 @@ import PersistedQuery from './PersistedQuery';
 
 import { PERSISTED_QUERIES } from '../utils/queries';
 
-const PersistedQueries = () => {
+export default function PersistedQueries() {
 	const { loading, data } = useQuery(PERSISTED_QUERIES);
 
 	if (loading) {
 		return <SpinnerCenter />;
 	}
 
-	if (!data || !data.persistedQueries) {
-		return <div>No persisted queries found</div>;
+	if (!data || !data.persistedQueries.length) {
+		return <div style={{ padding: 10 }}>No persisted queries found</div>;
 	}
 
 	return (
@@ -23,8 +23,4 @@ const PersistedQueries = () => {
 			))}
 		</div>
 	);
-};
-
-export { default as Tab } from './Tab';
-
-export default PersistedQueries;
+}

@@ -33,7 +33,7 @@ class CustomGateway extends ApolloGateway {
 		const that = this;
 		consumer.connect().then(async () => {
 			await consumer.subscribe({
-				topic: 'test-topic',
+				topic: 'graphql-schema-updates',
 				fromBeginning: true,
 			});
 			await consumer.run({

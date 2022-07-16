@@ -111,7 +111,7 @@ const schemaModel = {
 		return Object.values(result);
 	},
 
-	getLastUpdatedForActiveServices: async function ({ trx }) {
+	getLastUpdatedForActiveServices: async function ({ trx }: { trx: Knex }) {
 		return schemaModel.getSchemaLastUpdated({
 			trx,
 			services: await servicesModel.getActiveServices(trx),
@@ -192,6 +192,7 @@ const schemaModel = {
 		return schema;
 	},
 
+	// eslint-disable-next-line complexity
 	registerSchema: async function ({ trx, service }) {
 		const addedTime = service.added_time
 			? new Date(service.added_time)
@@ -398,7 +399,7 @@ async function versionExists(trx, serviceId, version) {
 	return (
 		await trx('container_schema').select('id').where({
 			service_id: serviceId,
-			version: version,
+			version,
 		})
 	)[0]?.id;
 }

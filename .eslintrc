@@ -1,17 +1,28 @@
 {
 	"parser": "@babel/eslint-parser",
+	"plugins": [
+		"@typescript-eslint"
+	],
 	"extends": [
 		"eslint:recommended",
 		"pipedrive",
-		"plugin:prettier/recommended"
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:prettier/recommended",
+		"plugin:@typescript-eslint/recommended"
 	],
 	"env": {
 		"browser": true,
 		"jest": true
 	},
+	"rules": {
+		"@typescript-eslint/ban-ts-comment": "warn",
+		"camelcase": "warn",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": ["warn"]
+	},
 	"overrides": [
 		{
-			"files": "**/*.{ts,tsx}",
+			"files": "client/**/*.{ts,tsx}",
 			"parser": "@typescript-eslint/parser",
 			"extends": [
 				"plugin:@typescript-eslint/recommended",

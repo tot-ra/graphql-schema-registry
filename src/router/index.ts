@@ -9,6 +9,13 @@ import { indexHtml, assetRouter } from './assets';
 import * as schema from './schema';
 import * as service from './service';
 import * as persistedQuery from './persisted-queries';
+import { logger } from '../logger';
+import servicesModel from '../database/services';
+
+let terminated = false;
+process.on('SIGTERM', () => {
+	terminated = true;
+});
 
 router.use(
 	json({
@@ -16,6 +23,25 @@ router.use(
 	})
 );
 router.use(asyncWrap(parseMiddleware));
+
+router.get(
+	`/health`,
+	asyncWrap(async (req, res) => {
+		if (terminated) {
+			logger.info('health check failed due to application terminating');
+
+			return res.status(503).send('terminated');
+		}
+
+		try {
+			await servicesModel.count();
+		} catch (e) {
+			return res.status(503).send('db not ready');
+		}
+
+		return res.status(200).send('ok');
+	})
+);
 
 router.get('/', indexHtml());
 assetRouter(router);

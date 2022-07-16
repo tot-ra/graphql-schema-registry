@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { connection } from './index';
 
 interface ServiceRecord {
 	id: string;
@@ -21,7 +22,15 @@ const servicesModel = {
 		return trx('services').select('*').whereIn('id', ids);
 	},
 
-	getServices: async (trx: Knex<ServiceRecord>, limit = 100, offset = 0) => {
+	count: async function () {
+		return (
+			await connection('services')
+				.where('is_active', true)
+				.count('id', { as: 'amount' })
+		)[0].amount;
+	},
+
+	getServices: async (trx: Knex, limit = 100, offset = 0) => {
 		return trx('services').select('*').limit(limit).offset(offset);
 	},
 

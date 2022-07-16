@@ -1,4 +1,4 @@
-name: On Commit
+name: Integration tests
 on:
   pull_request:
     branches:
@@ -30,6 +30,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          cache: 'npm'
 
       - uses: actions/cache@v2
         with:
@@ -38,4 +39,19 @@ jobs:
 
       - run: npm install
       - run: npm run build
-      - run: npm run test
+      - run: npm run test:unit:coverage
+      - run: npm run test:unit:frontend:coverage
+
+      - name: Start containers
+        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d
+
+      - run: npm run test:integration:coverage
+      - run: npm run test:coverage:merge
+      - name: Publish coverage to coveralls.io
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ github.token }}
+
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" down

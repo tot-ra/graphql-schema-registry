@@ -17,9 +17,10 @@ Types of changes:
 ## [Unreleased]
 
 ## [3.5.0] - 2022-06-07
-## Updated
-- knex major version bump 0.20.2 -> 2.1.0
 
+## Updated
+
+- knex major version bump 0.20.2 -> 2.1.0
 
 ## [3.4.0] - 2022-06-07
 

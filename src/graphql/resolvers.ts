@@ -1,4 +1,5 @@
 import { isUndefined } from 'lodash';
+import { parse } from 'graphql';
 
 import { deactivateSchema, activateSchema } from '../controller/schema';
 import config from '../config';
@@ -6,6 +7,10 @@ import { connection } from '../database';
 import schemaModel from '../database/schema';
 import containersModel from '../database/containers';
 import servicesModel from '../database/services';
+
+import schemaHit from '../database/schema_hits';
+import clientsModel from '../database/clients';
+
 import PersistedQueriesModel from '../database/persisted_queries';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
@@ -21,8 +26,11 @@ export default {
 			servicesModel.getServices(connection, limit, offset),
 		service: async (parent, { id }, { dataloaders }) =>
 			dataloaders.services.load(id),
+		serviceCount: async () => await servicesModel.count(),
 		schema: async (parent, { id }) =>
 			await schemaModel.getSchemaById(connection, id),
+		schemaPropertyHitsByClient: async (_, { entity, property }) =>
+			await schemaHit.get({ entity, property }),
 
 		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
 			return await PersistedQueriesModel.list({
@@ -35,6 +43,10 @@ export default {
 			return await PersistedQueriesModel.get(key);
 		},
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
+
+		clients: async () => await clientsModel.getClients(),
+		clientVersions: async (_, { since }) =>
+			await clientsModel.getClientVersionsSince({ since }),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
@@ -54,6 +66,11 @@ export default {
 				...result,
 				isActive: result.is_active,
 			};
+		},
+	},
+	SchemaHitByClientVersion: {
+		version: ({ client_id }) => {
+			return clientsModel.getClientVersion({ id: client_id });
 		},
 	},
 	Service: {
@@ -94,6 +111,31 @@ export default {
 		containerCount: (parent) =>
 			containersModel.getSchemaContainerCount(parent.id),
 		isDev: (parent) => containersModel.isDev(parent.id),
+		fieldsUsage: (parent) => {
+			const sdl = parse(parent.type_defs);
+			const result = [];
+
+			for (const row of sdl.definitions) {
+				if (row.kind === 'ObjectTypeDefinition') {
+					for (const a of row.fields) {
+						result.push({
+							entity: row.name?.value,
+							property: a.name?.value,
+						});
+					}
+				}
+			}
+
+			return result;
+		},
+	},
+	SchemaField: {
+		hitsSum: async (parent) => {
+			return await schemaHit.sum({
+				entity: parent.entity,
+				property: parent.property,
+			});
+		},
 	},
 	Container: {
 		commitLink: (parent) => {
@@ -109,5 +151,11 @@ export default {
 	},
 	PersistedQuery: {
 		addedTime: (parent) => dateTime.format(parent.added_time),
+	},
+	Client: {
+		versions: (parent) => clientsModel.getVersions(parent.name),
+	},
+	ClientVersion: {
+		client: (parent) => ({ name: parent.name }),
 	},
 };

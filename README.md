@@ -69,6 +69,8 @@ The following are the different environment variables that are looked up that al
 | ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
 | KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
 | KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
+| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
+| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
 | LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
 | LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
 
@@ -104,7 +106,7 @@ docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000
 
 ```
 git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
-docker-compose up
+docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```
 
 ## Use cases
@@ -166,7 +168,7 @@ Migrations are done using knex
 nvm use
 npm install
 npm run build
-docker-compose -f docker-compose.dev.yml up
+docker-compose  -f docker-compose.base.yml  -f docker-compose.dev.yml up
 ```
 
 ### Running in light mode
@@ -174,8 +176,9 @@ docker-compose -f docker-compose.dev.yml up
 To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
 
 ```
-docker-compose -f docker-compose.light.yml up -d
+docker-compose -f docker-compose.base.yml up -d
 npm run develop
+npm run develop-worker
 ```
 
 ### DB migrations
@@ -275,6 +278,10 @@ Original internal mission that resulted in this project going live:
 See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federated-graphql-2a6f2eecc6a4)
 
 ## Rest API documentation
+
+### GET /health
+
+returns "ok" when service is up
 
 ### GET /schema/latest
 

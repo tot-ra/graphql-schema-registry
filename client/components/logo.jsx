@@ -1,6 +1,6 @@
 export default function Logo() {
 	return (
-		<div>
+		<div style={{ width: 65, textAlign: 'center' }}>
 			<svg
 				version="1.1"
 				preserveAspectRatio="xMidYMid meet"

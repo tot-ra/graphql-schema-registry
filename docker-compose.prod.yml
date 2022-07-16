@@ -1,0 +1,43 @@
+version: '3'
+services:
+  gql-schema-registry:
+    image: pipedrive/graphql-schema-registry:latest
+    ports:
+      - 6001:3000
+      - 6002:5850
+    environment:
+      - WITH_WEBPACK=${WITH_WEBPACK-1}
+      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+    restart: always
+    depends_on:
+      - gql-schema-registry-redis
+      - gql-schema-registry-db
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry'
+
+  gql-schema-registry-worker:
+    image: pipedrive/graphql-schema-registry:latest
+    command: node app/worker/index.js
+    environment:
+      - SERVICE_NAME=gql-schema-registry-worker
+      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - KAFKA_CLIENT=graphql-schema-registry-server
+      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
+      - KAFKA_BROKER_PORT=9092
+      - KAFKA_QUERIES_TOPIC=graphql-queries
+    restart: always
+    depends_on:
+      - gql-schema-registry-redis
+      - gql-schema-registry-db
+    networks:
+      gql-schema:
+        aliases:
+          - 'gql-schema-registry'
+
+networks:
+  gql-schema:
+
+volumes:
+  gql-schema-registry-db-volume:
