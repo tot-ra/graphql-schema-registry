@@ -2,7 +2,9 @@
 
 exports[`tests for Logo should render and match snapshot 1`] = `
 <div>
-  <div>
+  <div
+    style="width: 65px; text-align: center;"
+  >
     <svg
       height="45"
       preserveAspectRatio="xMidYMid meet"
