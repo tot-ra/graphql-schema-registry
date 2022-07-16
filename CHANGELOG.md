@@ -16,7 +16,25 @@ Types of changes:
 
 ## [Unreleased]
 
-## [3.5.0] - 2022-06-07
+## [4.0.0] - 2022-07-17
+## Added
+- **New Feature - schema usage**
+  - New DB migration adds `clients`, `clients_persisted_queries_rel` and `schema_hit` tables
+  - Async workrer which analyzes graphql queries and maps them onto schemas to generate schema hits (usage), see `src/worker` and also `examples` for more details. As this requires manual setup, released as major version. 
+  - graphql schemas & resolvers to provide schema usage
+  - UI to see schema usage tab (under specific service schema)
+    - Added rumble-charts dependency to draw graphs
+  - UI - renamed schemas -> services in menu & added counter
+- Added redlock dependency - it now locks schema registration for some time in case multiple instances of new service try to register same schema & overload the DB. Now only one instance gets access and others wait
+- Tooling
+  - added integration tests, mostly useful for worker testing as its async
+
+
+## Updated
+- async-redis -> ioredis
+- docker-compose files are not simpler and more composeable
+
+## [3.5.0] - 2022-07-14
 
 ## Updated
 
