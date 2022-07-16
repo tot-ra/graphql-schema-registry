@@ -17,7 +17,6 @@ const knex = require('knex')({
 });
 
 export async function cleanTables() {
-	await knex.raw('DELETE FROM `event_schema`;');
 	await knex.raw('DELETE FROM `schema_hit`;');
 	await knex.raw('DELETE FROM `clients_persisted_queries_rel`;');
 	await knex.raw('DELETE FROM `clients`;');

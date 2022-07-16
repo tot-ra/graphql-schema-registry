@@ -58,7 +58,7 @@ const clientsModel = {
 	},
 
 	syncUniqueClientsToDb: async () => {
-		const trx = connection();
+		const trx = connection;
 		const clientUsageFlat = clientsModel.getFlatClients(
 			clientsModel.internalCache
 		);
@@ -95,7 +95,7 @@ const clientsModel = {
 	},
 
 	addClientVersion: async ({
-		trx = connection(),
+		trx = connection,
 		name,
 		version,
 		addedTime = null,
@@ -127,7 +127,7 @@ const clientsModel = {
 
 	getLatestAddedDate: async () => {
 		// @ts-ignore
-		const latest = await connection()('clients')
+		const latest = await connection('clients')
 			.max('added_time as added_time')
 			.first();
 
@@ -158,10 +158,10 @@ const clientsModel = {
 	},
 
 	// @ts-ignore
-	getClients: async () => connection()('clients').distinct('name'),
+	getClients: async () => connection('clients').distinct('name'),
 	getVersions: async (name) =>
 		// @ts-ignore
-		connection()('clients')
+		connection('clients')
 			.select('id', 'version', 'updated_time as updatedTime')
 			.where({ name }),
 
@@ -171,7 +171,7 @@ const clientsModel = {
 		}
 
 		// @ts-ignore
-		return connection()('clients')
+		return connection('clients')
 			.select([
 				'id',
 				'name',

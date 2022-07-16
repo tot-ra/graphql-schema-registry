@@ -7,8 +7,7 @@ module.exports = {
 	testEnvironment: 'node',
 	testMatch: [
 		'<rootDir>/test/integration/**/*.test.ts',
-		'<rootDir>/app/**/*.itest.ts',
-		'<rootDir>/worker/**/*.itest.ts'
+		'<rootDir>/src/**/*.itest.ts',
 	],
 	moduleFileExtensions: ['ts', 'js', 'json'],
 	modulePathIgnorePatterns: ['<rootDir>/app/'],

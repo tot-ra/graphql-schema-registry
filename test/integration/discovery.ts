@@ -11,12 +11,12 @@ exports.discovery = async (app) => {
 		case services.app:
 			return {
 				host: 'localhost',
-				port: 3000,
+				port: 6001,
 			};
 		case services.mysql:
 			return {
 				host: 'localhost',
-				port: 5005,
+				port: 6000,
 			};
 	}
 };

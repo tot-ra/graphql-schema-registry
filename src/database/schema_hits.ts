@@ -99,14 +99,11 @@ const schemaHitModel = {
 			)[0].cnt;
 
 			if (clientHitCount > 0) {
+				const incrementHitsSQL = incrementHits ? 'hits + ?' : '?'
 				await trx.raw(
 					`UPDATE schema_hit
-					 SET hits = ${incrementHits ? 'hits +' : ''} ?,
-						 updated_time=FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)
-					 WHERE entity = ?
-					   AND property = ?
-					   AND day = ?
-					   AND client_id IS NULL`,
+					 SET hits = ${incrementHitsSQL}, updated_time=FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)
+					 WHERE entity = ? AND property = ? AND day = ? AND client_id IS NULL`,
 					[hits, entity, property, day]
 				);
 			} else {
@@ -138,10 +135,11 @@ const schemaHitModel = {
 			)[0].cnt;
 
 			if (clientHitCount > 0) {
+				const incrementHitsSQL = incrementHits ? 'hits + ?' : '?';
+
 				await trx.raw(
 					`UPDATE schema_hit
-					 SET hits = ${incrementHits ? 'hits +' : ''} ?,
-						 updated_time=FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)
+					 SET hits = ${incrementHitsSQL}, updated_time = FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)
 					 WHERE entity = ?
 					   AND property = ?
 					   AND day = ?
@@ -151,7 +149,7 @@ const schemaHitModel = {
 			} else {
 				await trx.raw(
 					`INSERT IGNORE INTO schema_hit (entity, property, day, hits, client_id, updated_time)
-					 VALUES (?, ?, ?, ?, ?, ?, FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000))`,
+					 VALUES (?, ?, ?, ?, ?, FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000))`,
 					[entity, property, day, hits, client.id]
 				);
 			}

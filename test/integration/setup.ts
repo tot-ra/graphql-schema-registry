@@ -7,7 +7,7 @@ async function waitUntilServiceIsReadyOr5Min() {
 		try {
 			const result = await request({
 				method: 'GET',
-				uri: 'http://localhost:3000/health-schema-registry',
+				uri: 'http://localhost:6001/health',
 				resolveWithFullResponse: true,
 				json: true,
 			});
@@ -17,7 +17,7 @@ async function waitUntilServiceIsReadyOr5Min() {
 			}
 		} catch (e) {
 			console.log(
-				'Waiting for schema-registry to be ready on http://localhost:3000/health-schema-registry. Retrying in 10 sec'
+				'Waiting for schema-registry to be ready on http://localhost:6001/health. Retrying in 10 sec'
 			);
 		}
 

@@ -1,4 +1,4 @@
-name: On Commit
+name: Unit tests
 on:
   pull_request:
     branches:
@@ -39,4 +39,5 @@ jobs:
 
       - run: npm install
       - run: npm run build
-      - run: npm run test
+      - run: npm run test:unit:coverage
+      - run: npm run test:unit:frontend:coverage

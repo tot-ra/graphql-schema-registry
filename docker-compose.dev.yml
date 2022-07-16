@@ -23,7 +23,6 @@ services:
     depends_on:
       - gql-schema-registry-redis
       - gql-schema-registry-db
-      - gql-schema-registry-kafka
     networks:
       gql-schema:
         aliases:
@@ -48,6 +47,7 @@ services:
     depends_on:
       - gql-schema-registry-redis
       - gql-schema-registry-db
+      - gql-schema-registry-kafka
     networks:
       gql-schema:
         aliases:
