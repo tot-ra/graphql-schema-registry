@@ -5,7 +5,7 @@ const mockLogger = {
 	debug: jest.fn(),
 };
 
-jest.mock('../logger', () => mockLogger);
+jest.mock('../logger', () => ({logger:mockLogger}));
 
 describe('redis', () => {
 	describe('get', () => {
