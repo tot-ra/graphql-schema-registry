@@ -11,7 +11,7 @@ async function waitUntilDbIsReadyOr20Sec() {
 	}
 }
 
-async function waitUntilServiceIsReadyOr20Sec() {
+async function waitUntilServiceIsReadyOr40Sec() {
 	for (let i = 0; i < 10; i++) {
 		try {
 			let result = await request({
@@ -28,12 +28,12 @@ async function waitUntilServiceIsReadyOr20Sec() {
 			console.log('Waiting for service to be ready ...');
 		}
 
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 4000));
 	}
 }
 
 module.exports = async function () {
-	await waitUntilServiceIsReadyOr20Sec();
+	await waitUntilServiceIsReadyOr40Sec();
 	// await connect();
 	// await waitUntilDbIsReadyOr20Sec();
 	// await disconnect();

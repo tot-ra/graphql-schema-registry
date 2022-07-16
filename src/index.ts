@@ -9,7 +9,6 @@ import { logger } from './logger';
 const app = express();
 
 let server = null;
-let terminated = false;
 
 function monitorConnections() {
 	if (!server) {
@@ -34,16 +33,6 @@ const setupServer = async () => {
 		const { default: setupDev } = await import('./setupDev');
 		await setupDev(app);
 	}
-
-	app.get(`/health`, (req, res) => {
-		if (terminated) {
-			logger.info('health check failed due to application terminating');
-
-			return res.status(429).send('terminated');
-		}
-
-		return res.status(200).send('ok');
-	});
 
 	app.use(router);
 	initGraphql(app);
@@ -85,8 +74,6 @@ const setupServer = async () => {
 	});
 
 	process.on('SIGTERM', () => {
-		terminated = true;
-
 		if (!server) {
 			return null;
 		}
