@@ -20,7 +20,12 @@ async function wait(ms) {
 
 async function resolveInstance(service) {
 	try {
-		const { host, port, username, secret: password } = await diplomat.getServiceInstance(service);
+		const {
+			host,
+			port,
+			username,
+			secret: password,
+		} = await diplomat.getServiceInstance(service);
 
 		return { host, port, username, password };
 	} catch (err) {
@@ -30,7 +35,10 @@ async function resolveInstance(service) {
 	}
 }
 
-async function initRedis(redisServiceName = process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis') {
+async function initRedis(
+	redisServiceName = process.env.REDIS_SCHEMA_REGISTRY ||
+		'gql-schema-registry-redis'
+) {
 	try {
 		// @ts-ignore
 		redis = new Redis({
@@ -38,17 +46,25 @@ async function initRedis(redisServiceName = process.env.REDIS_SCHEMA_REGISTRY ||
 			db: 2,
 			dropBufferSupport: true,
 			lazyConnect: true,
-			showFriendlyErrorStack: true
+			showFriendlyErrorStack: true,
 		});
 
 		redis.on('reconnecting', async () => {
 			logger.warn('Redis reconnect triggered, re-discovering');
-			Object.assign(redis.options || {}, await resolveInstance(redisServiceName));
+			Object.assign(
+				redis.options || {},
+				await resolveInstance(redisServiceName)
+			);
 		});
 
-		redis.on('ready', () => logger.info(`Redis connection to ${redisServiceName} ready`));
+		redis.on('ready', () =>
+			logger.info(`Redis connection to ${redisServiceName} ready`)
+		);
 
-		Object.assign(redis.options || {}, await resolveInstance(redisServiceName));
+		Object.assign(
+			redis.options || {},
+			await resolveInstance(redisServiceName)
+		);
 
 		await redis.connect();
 
@@ -64,11 +80,11 @@ const getRedlockClient = () => {
 	}
 
 	return new Redlock([redis], {
-		retryCount: 0
+		retryCount: 0,
 	});
 };
 
-export default {
+const redisWrap = {
 	initRedis,
 
 	disconnect: () => {
@@ -78,7 +94,10 @@ export default {
 	get: async (key) => {
 		try {
 			if (redis) {
-				return await Promise.race([redis.get(key), wait(GET_TIMEOUT_MS)]);
+				return await Promise.race([
+					redis.get(key),
+					wait(GET_TIMEOUT_MS),
+				]);
 			} else {
 				logger.warn('redis is not initialized');
 
@@ -94,7 +113,10 @@ export default {
 	set: async (key, value, ttl = DEFAULT_TTL) => {
 		try {
 			if (redis) {
-				await Promise.race([redis.set(key, value, 'EX', ttl), wait(SET_TIMEOUT_MS)]);
+				await Promise.race([
+					redis.set(key, value, 'EX', ttl),
+					wait(SET_TIMEOUT_MS),
+				]);
 			} else {
 				logger.warn('redis is not initialized');
 			}
@@ -135,9 +157,13 @@ export default {
 		} catch (error) {
 			logger.error(error, 'Failed to process lock function');
 
-			lock.unlock().catch((error) => logger.error(error, 'Redis unlock failed'));
+			lock.unlock().catch((error) =>
+				logger.error(error, 'Redis unlock failed')
+			);
 
 			throw error;
 		}
-	}
+	},
 };
+
+export default redisWrap;

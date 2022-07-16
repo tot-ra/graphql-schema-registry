@@ -1,7 +1,7 @@
-const sinon = require('sinon');
+import sinon from 'sinon';
 
 const mockLogger = {
-	error: jest.fn()
+	error: jest.fn(),
 };
 
 const mockDiscoverService = jest.fn();
@@ -11,7 +11,7 @@ const mockRedlockUnLock = jest.fn().mockImplementation(() => Promise.resolve());
 const mockRedlock = jest.fn().mockImplementation(() => {
 	return {
 		LockError: jest.requireActual('redlock').LockError,
-		lock: mockRedlockLock
+		lock: mockRedlockLock,
 	};
 });
 
@@ -37,7 +37,10 @@ describe('app/redis/index.js', () => {
 				return func();
 			});
 
-			expect(mockRedlockLock).toHaveBeenCalledWith('locks.key', 60 * 1000);
+			expect(mockRedlockLock).toHaveBeenCalledWith(
+				'locks.key',
+				60 * 1000
+			);
 			expect(func).toHaveBeenCalled();
 			expect(result).toEqual(true);
 		});
@@ -48,7 +51,9 @@ describe('app/redis/index.js', () => {
 				throw error;
 			});
 
-			mockRedlockLock.mockImplementation(() => ({ unlock: mockRedlockUnLock }));
+			mockRedlockLock.mockImplementation(() => ({
+				unlock: mockRedlockUnLock,
+			}));
 
 			await expect(
 				lock('key', () => {
@@ -56,7 +61,10 @@ describe('app/redis/index.js', () => {
 				})
 			).rejects.toEqual(error);
 
-			expect(mockRedlockLock).toHaveBeenCalledWith('locks.key', 60 * 1000);
+			expect(mockRedlockLock).toHaveBeenCalledWith(
+				'locks.key',
+				60 * 1000
+			);
 			expect(func).toHaveBeenCalled();
 			expect(mockRedlockUnLock).toHaveBeenCalled();
 			expect(mockLogger.error).toHaveBeenCalled();
@@ -65,13 +73,18 @@ describe('app/redis/index.js', () => {
 		it('return if already locked', async () => {
 			const func = jest.fn();
 
-			mockRedlockLock.mockRejectedValue(new actualRedLock.LockError('Failed'));
+			mockRedlockLock.mockRejectedValue(
+				new actualRedLock.LockError('Failed')
+			);
 
 			const result = await lock('key', () => {
 				return func();
 			});
 
-			expect(mockRedlockLock).toHaveBeenCalledWith('locks.key', 60 * 1000);
+			expect(mockRedlockLock).toHaveBeenCalledWith(
+				'locks.key',
+				60 * 1000
+			);
 			expect(func).toHaveBeenCalledTimes(0);
 			// eslint-disable-next-line no-undefined
 			expect(result).toEqual(undefined);
@@ -89,7 +102,10 @@ describe('app/redis/index.js', () => {
 				})
 			).rejects.toEqual(error);
 
-			expect(mockRedlockLock).toHaveBeenCalledWith('locks.key', 60 * 1000);
+			expect(mockRedlockLock).toHaveBeenCalledWith(
+				'locks.key',
+				60 * 1000
+			);
 			expect(func).toHaveBeenCalledTimes(0);
 		});
 	});
