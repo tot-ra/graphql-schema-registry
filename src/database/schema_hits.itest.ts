@@ -80,25 +80,6 @@ describe('app/database/schema_hits', () => {
 	});
 
 	describe('get', () => {
-		it('uses redis', async () => {
-			// ARRANGE
-			const result = await schemaHit.get({
-				entity: 'Company',
-				property: 'name',
-			});
-
-			// ASSERT
-			expect(result).toMatchObject([
-				{
-					day: '2012-01-01',
-					entity: 'Company',
-					hits: '50', // !
-					name: 'webapp',
-					property: 'name',
-				},
-			]);
-		});
-
 		it('should return array with one object', async () => {
 			// ARRANGE
 			const row = {
