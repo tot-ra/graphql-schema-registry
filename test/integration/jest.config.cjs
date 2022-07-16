@@ -3,6 +3,8 @@ module.exports = {
 	resetModules: true,
 	restoreMocks: true,
 	clearMocks: true,
+	maxWorkers: 1,
+	globalSetup: '<rootDir>/test/integration/globalSetup.ts',
 	preset: 'ts-jest',
 	testEnvironment: 'node',
 	testMatch: [
@@ -11,7 +13,6 @@ module.exports = {
 	],
 	moduleFileExtensions: ['ts', 'js', 'json'],
 	modulePathIgnorePatterns: ['<rootDir>/app/'],
-	maxWorkers: 1,
 	verbose: true,
 	resetMocks: true,
 	collectCoverage: false,
