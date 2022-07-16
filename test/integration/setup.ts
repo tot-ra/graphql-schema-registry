@@ -3,7 +3,7 @@ const request = require('request-promise');
 // const database = require('./database');
 
 async function waitUntilServiceIsReadyOr5Min() {
-	for (let i = 0; i < 50; i++) {
+	for (let i = 0; i < 300; i++) {
 		try {
 			const result = await request({
 				method: 'GET',
@@ -13,6 +13,8 @@ async function waitUntilServiceIsReadyOr5Min() {
 			});
 
 			if (result.statusCode === 200) {
+				console.log('Service looks healthy:');
+				console.log(result.body);
 				return true;
 			}
 		} catch (e) {
@@ -21,7 +23,7 @@ async function waitUntilServiceIsReadyOr5Min() {
 			);
 		}
 
-		await new Promise((resolve) => setTimeout(resolve, 10000));
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 	}
 }
 module.exports = async function () {
