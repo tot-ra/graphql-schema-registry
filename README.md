@@ -20,6 +20,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Stores & shows in UI persisted queries passed by the gateway for debugging
 - Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
 - Async schema registration of new schema with events to avoid polling (`schema-registry -> kafka -> gateway`)
+- Async query analyzer for schema usage generation to minimize breaking changes
 
 <img width="1312" alt="Screenshot 2022-02-08 at 00 16 49" src="https://user-images.githubusercontent.com/445122/152881795-535a6990-a318-4e89-afc9-c508ddc840fa.png">
 
@@ -136,11 +137,11 @@ Instead of juggling with schema status flags, we suggest the following scenario:
 
 ### Tech stack
 
-| Frontend (`/client` folder) | Backend (`/app` folder)           |
-| --------------------------- | --------------------------------- |
-| react                       | nodejs 14                         |
-| apollo client               | express, hapi/joi                 |
-| styled-components           | apollo-server-express, dataloader |
+| Frontend (`/client` folder) | Backend (`/src` folder)           | Query analyzer (`/src/worker` folder) |
+| --------------------------- | --------------------------------- | ---- |
+| react                       | nodejs 16                         | nodejs 16 |
+| apollo client               | express, hapi/joi                 | kafka |
+| styled-components           | apollo-server-express, dataloader | 
 |                             | redis 6                           |
 |                             | knex                              |
 |                             | mysql 8                           |
