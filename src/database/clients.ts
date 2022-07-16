@@ -3,7 +3,6 @@ import { get, isNil } from 'lodash';
 import { logger } from '../logger';
 import { connection } from './index';
 
-// @ts-ignore
 const clientsModel = {
 	timer: null,
 	// store in a nested name -> version format for out-of-the-box unique checks
@@ -95,8 +94,7 @@ const clientsModel = {
 			}
 
 			try {
-				// @ts-ignore
-				await trx.raw(
+				await connection.raw(
 					'INSERT IGNORE INTO clients_persisted_queries_rel (version_id, pq_key) VALUES (?, ?)',
 					[clientVersionId, pqKey]
 				);
@@ -112,7 +110,6 @@ const clientsModel = {
 		version,
 		addedTime = null,
 	}) => {
-		// @ts-ignore
 		const sql = await trx('clients')
 			.insert({
 				name,
@@ -122,10 +119,8 @@ const clientsModel = {
 			.toString()
 			.replace('insert', 'INSERT IGNORE');
 
-		// @ts-ignore
 		await trx.raw(sql);
 
-		// @ts-ignore
 		const result = await trx('clients')
 			.select('id')
 			.where({
@@ -138,7 +133,6 @@ const clientsModel = {
 	},
 
 	getLatestAddedDate: async () => {
-		// @ts-ignore
 		const latest = await connection('clients')
 			.max('added_time as added_time')
 			.first();
@@ -147,7 +141,6 @@ const clientsModel = {
 	},
 
 	getClientVersion: async ({ id, trx = connection() }) => {
-		// @ts-ignore
 		return await trx('clients')
 			.select(['id', 'name', 'version', 'updated_time as updatedTime'])
 			.where({
@@ -158,7 +151,6 @@ const clientsModel = {
 	},
 
 	getClientVersionByName: async ({ name, version, trx = connection() }) => {
-		// @ts-ignore
 		return await trx('clients')
 			.select('id', 'version', 'updated_time as updatedTime')
 			.where({
@@ -169,10 +161,8 @@ const clientsModel = {
 			.first();
 	},
 
-	// @ts-ignore
 	getClients: async () => connection('clients').distinct('name'),
 	getVersions: async (name) =>
-		// @ts-ignore
 		connection('clients')
 			.select('id', 'version', 'updated_time as updatedTime')
 			.where({ name }),
@@ -182,7 +172,6 @@ const clientsModel = {
 			return [];
 		}
 
-		// @ts-ignore
 		return connection('clients')
 			.select([
 				'id',
