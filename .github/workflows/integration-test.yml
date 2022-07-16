@@ -41,3 +41,13 @@ jobs:
       - run: npm run build
       - run: npm run test:unit:coverage
       - run: npm run test:unit:frontend:coverage
+
+      - name: Start containers
+        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d --build
+
+      - run: npm run test:integration
+      - run: npm run report-coverage
+
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" down

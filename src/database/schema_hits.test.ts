@@ -11,7 +11,7 @@ jest.mock('../logger', () => ({
 	logger: mockLogger,
 }));
 
-const objectUnderTest = require('./schema_hits').default;
+import objectUnderTest from './schema_hits';
 
 describe('app/database/schema_hits.js', () => {
 	afterEach(() => {

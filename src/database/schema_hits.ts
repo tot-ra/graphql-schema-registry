@@ -58,6 +58,12 @@ const schemaHitModel = {
 		entity,
 		property,
 		day,
+	}: {
+		name: string | null;
+		version: string | null;
+		entity: string;
+		property: string;
+		day: string;
 	}) {
 		const row = find(schemaHitModel.internalCache, {
 			name,
@@ -99,7 +105,7 @@ const schemaHitModel = {
 			)[0].cnt;
 
 			if (clientHitCount > 0) {
-				const incrementHitsSQL = incrementHits ? 'hits + ?' : '?'
+				const incrementHitsSQL = incrementHits ? 'hits + ?' : '?';
 				await trx.raw(
 					`UPDATE schema_hit
 					 SET hits = ${incrementHitsSQL}, updated_time=FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)

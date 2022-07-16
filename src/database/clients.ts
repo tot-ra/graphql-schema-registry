@@ -75,23 +75,35 @@ const clientsModel = {
 				version,
 			});
 
-			for (const pqKey of persistedQueries) {
-				if (pqKey) {
-					try {
-						// @ts-ignore
-						await trx.raw(
-							'INSERT IGNORE INTO clients_persisted_queries_rel (version_id, pq_key) VALUES (?, ?)',
-							[clientVersionId, pqKey]
-						);
-					} catch (e) {
-						logger.warn(e, { version_id: clientVersionId, pqKey });
-					}
-				}
-			}
+			await clientsModel.savePQClientMapping(
+				persistedQueries,
+				clientVersionId
+			);
 		}
 
 		// reset cache
 		clientsModel.internalCache = {};
+	},
+
+	savePQClientMapping: async function savePQClientMapping(
+		persistedQueries,
+		clientVersionId
+	) {
+		for (const pqKey of persistedQueries) {
+			if (!pqKey) {
+				continue;
+			}
+
+			try {
+				// @ts-ignore
+				await trx.raw(
+					'INSERT IGNORE INTO clients_persisted_queries_rel (version_id, pq_key) VALUES (?, ?)',
+					[clientVersionId, pqKey]
+				);
+			} catch (e) {
+				logger.warn(e, { version_id: clientVersionId, pqKey });
+			}
+		}
 	},
 
 	addClientVersion: async ({

@@ -133,4 +133,4 @@ const analyzer = {
 	},
 };
 
-module.exports = analyzer;
+export default analyzer;

@@ -1,0 +1,41 @@
+name: Lint
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: read
+  statuses: write
+  deployments: none
+  issues: none
+  packages: none
+  repository-projects: none
+  security-events: none
+
+jobs:
+  test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          cache: 'npm'
+
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - run: npm install
+      - run: npm run lint

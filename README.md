@@ -280,6 +280,7 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 ## Rest API documentation
 
 ### GET /health
+
 returns "ok" when service is up
 
 ### GET /schema/latest

@@ -1,4 +1,4 @@
-const analyzeQueries = require('./analyzeQueries');
+import analyzeQueries from './analyzeQueries';
 
 (async function () {
 	await analyzeQueries.start();

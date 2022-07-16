@@ -192,6 +192,7 @@ const schemaModel = {
 		return schema;
 	},
 
+	// eslint-disable-next-line complexity
 	registerSchema: async function ({ trx, service }) {
 		const addedTime = service.added_time
 			? new Date(service.added_time)
