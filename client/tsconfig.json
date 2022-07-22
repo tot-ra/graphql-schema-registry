@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "inlineSourceMap": false,
+    "declarationMap": false,
+    "noEmit": true,
+    "incremental": true
+  },
+  "include": ["./**/*"]
+}
