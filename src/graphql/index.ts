@@ -12,6 +12,7 @@ const server = new ApolloServer({
 	}),
 });
 
-export default (app) => {
+export default async (app) => {
+	await server.start();
 	server.applyMiddleware({ app });
 };
