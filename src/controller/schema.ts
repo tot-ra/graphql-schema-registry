@@ -85,7 +85,10 @@ export async function diffSchemas({ service }) {
 					.concat(service)
 			);
 
-			return diff(original, updated);
+			return diff(
+				original.toGraphQLJSSchema(),
+				updated.toGraphQLJSSchema()
+			);
 		}
 	});
 }
