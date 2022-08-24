@@ -10,6 +10,7 @@ const server = new ApolloServer({
 	context: () => ({
 		dataloaders: dataloader(),
 	}),
+	cache: 'bounded',
 });
 
 export default async (app) => {
