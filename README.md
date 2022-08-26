@@ -88,6 +88,7 @@ With default settings, UI should be accessible at [http://localhost:6001](http:/
 ```
 git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
 cp example.env .env && nano .env
+npm install && npm run build
 node app/schema-registry.js
 ```
 
