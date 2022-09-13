@@ -136,26 +136,29 @@ Instead of juggling with schema status flags, we suggest the following scenario:
 
 ## Architecture
 
-### Tech stack
+### Components
+![](https://lucid.app/publicSegments/view/594e3e1d-ef93-41ba-b4a0-c1f2fb8e0495/image.png)
 
-| Frontend (`/client` folder) | Backend (`/src` folder)           | Query analyzer (`/src/worker` folder) |
-| --------------------------- | --------------------------------- | ---- |
-| react                       | nodejs 16                         | nodejs 16 |
-| apollo client               | express, hapi/joi                 | kafka |
+| Name | Role | Description                                                                   |
+| --------------------- | -- | ----------------------------------------------------------------------------- |
+| federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/pipedrive/graphql-query-cost) or fail-safe mechanisms. |
+| schema registry | Required | Main service that we provide |
+| mysql | Required | Main data storage of schemas and other derivative data | 
+| query analyzer | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder |
+| kafka | Optional | Ties schema-registry and federated gateway with async messaging. Required for fast schema updates and for usage tracking |
+| redis | Optional | Caching layer for APQs. Not used much atm |
+
+#### Tech stack
+
+| Frontend (`/client` folder) | Backend (`/src` folder)           |
+| --------------------------- | --------------------------------- |
+| react                       | nodejs 16                         |
+| apollo client               | express, hapi/joi                 |
 | styled-components           | apollo-server-express, dataloader | 
 |                             | redis 6                           |
 |                             | knex                              |
 |                             | mysql 8                           |
 
-### Components
-
-graphql-schema-registry service is one of the components for graphql federation, but it needs tight
-integration with gateway. Check out [examples folder](examples/README.md) on how to implement it. Note however, that
-gateway is very simplified and does not have proper error handling, cost limits or fail-safe mechanisms.
-
-In gateway, you may also find useful our [graphql-query-cost](https://github.com/pipedrive/graphql-query-cost) library too. Check it out
-
-![](https://lucid.app/publicSegments/view/594e3e1d-ef93-41ba-b4a0-c1f2fb8e0495/image.png)
 
 ### DB structure
 
@@ -256,6 +259,13 @@ docker build -t local/graphql-schema-registry .
 # try to run it
 docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 local/graphql-schema-registry
 ```
+
+## Security & compliance
+- There is not strict process on finding or updating vulnerabilitites. The license also states there there is no Liability or Warranty, so be aware of that
+- Github discussions / issues is the only communication channel to notify about vulnerabilities, there is not discord or slack.
+- We use [snyk](https://snyk.io/test/github/pipedrive/graphql-schema-registry) in PR checks. We try to look at `npm audit` reports manually on PR creation to minimize issues.
+- We intentionally use [strict versioning of nodejs dependencies](https://github.com/pipedrive/graphql-schema-registry/blob/master/package.json) which prevents automatic dependabot PRs. Thus version upgrades are manual. Why? Because sometimes we saw external dependencies rolling out breaking changes in minor/patch versions which broke our master. Same thing with hacked libraries.
+
 
 ## Contribution
 
