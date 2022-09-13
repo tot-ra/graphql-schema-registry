@@ -28,15 +28,15 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 (Pull requests are encouraged on these topics)
 
-- Usage tracking (to avoid breaking changes) - needs a separate docker sub-process in golang
-  - registered clients (based on headers, including apollo-\* ones)
-  - schema usage breakdown by multiple facets - property, day, query name, client name
-  - fixed data retention
+- Usage tracking
+  - breaking change detection triggering schema validation failure (ex. if property gets deleted/renamed but usage > 0 for last 2 days)
+  - schema usage breakdown by multiple facets - property, day, operation name, client name - https://github.com/pipedrive/graphql-schema-registry/issues/146
+  - registered clients (based on headers, including apollo-\* ones) visible in UI
+  - configureable data retention (5 days atm) & flexible UI/graphs
 - schema registration examples (node/go/php...)
 - schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
   - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
-- global search (not only service-specific)
-- global changelog
+- global search & changelog view (diffs across all services/subgraphs ordered by time)
 - webhooks/slack integration (notifify on schema change)
 - performance tracking (to know what resolvers to optimize)
 - access control - lightweight authentication in case this internal tool is publicly accessible
