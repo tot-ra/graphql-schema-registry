@@ -1,5 +1,5 @@
 import { parse } from 'graphql';
-import { composeAndValidate } from '@apollo/federation';
+import { composeServices } from '@apollo/composition';
 
 import { PublicError } from './error';
 import { logger } from '../logger';
@@ -19,7 +19,7 @@ export function composeAndValidateSchema(servicesSchemaMap) {
 			};
 		});
 
-		({ schema, errors } = composeAndValidate(serviceList));
+		({ schema, errors } = composeServices(serviceList));
 	} catch (error) {
 		logger.error(error.message);
 

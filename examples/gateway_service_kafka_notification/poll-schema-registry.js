@@ -11,7 +11,7 @@ exports.getServiceListWithTypeDefs = async () => {
 
 		{
 			name: 'service_b',
-			version: 'v1',
+			version: 'v2',
 		},
 	];
 

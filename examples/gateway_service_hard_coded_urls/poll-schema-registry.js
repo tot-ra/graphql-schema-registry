@@ -1,7 +1,7 @@
 const { get } = require('lodash');
 const request = require('request-promise-native');
 
-exports.getServiceListWithTypeDefs = async () => {
+exports.getServiceListWithTypeDefs = async (serviceSdlCache) => {
 	// make this list dynamic to update version on-the-fly depending on containers
 	const services = [
 		{
@@ -11,7 +11,7 @@ exports.getServiceListWithTypeDefs = async () => {
 
 		{
 			name: 'service_b',
-			version: 'v1',
+			version: 'v2',
 		},
 	];
 
@@ -25,7 +25,9 @@ exports.getServiceListWithTypeDefs = async () => {
 		json: true,
 	});
 
-	return get(serviceTypeDefinitions, 'data', []).map((schema) => {
+	let schemaChanged = false;
+
+	const servicesWithSchemas = get(serviceTypeDefinitions, 'data', []).map((schema) => {
 		const service = services.find(
 			(service) => service.name === schema.name
 		);
@@ -39,6 +41,14 @@ exports.getServiceListWithTypeDefs = async () => {
 				`Got ${schema.name} service schema with version ${schema.version}`
 			);
 		}
+
+		const previousDefinition = serviceSdlCache.get(schema.name);
+		if (schema.type_defs !== previousDefinition) {
+			schemaChanged = true;
+		}
+
+		serviceSdlCache.set(schema.name, schema.type_defs);
+
 		return {
 			name: schema.name,
 			// note that URLs are used based on service name, utilizing docker internal network
@@ -49,4 +59,6 @@ exports.getServiceListWithTypeDefs = async () => {
 			...(service ? service : {}),
 		};
 	});
+
+	return { services: servicesWithSchemas, schemaChanged };
 };
