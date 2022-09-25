@@ -1,7 +1,9 @@
 const { ApolloGateway } = require('@apollo/gateway');
 const { ApolloServer } = require('apollo-server');
-const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
-const CustomSupergraphManager = require("./supergraph");
+const {
+	ApolloServerPluginLandingPageGraphQLPlayground,
+} = require('apollo-server-core');
+const CustomSupergraphManager = require('./supergraph');
 const requestLoggerPlugin = require('./request-logger');
 
 const gateway = new ApolloGateway({
@@ -11,7 +13,10 @@ const gateway = new ApolloGateway({
 const server = new ApolloServer({
 	gateway,
 	cache: 'bounded',
-	plugins: [ApolloServerPluginLandingPageGraphQLPlayground(), requestLoggerPlugin.register],
+	plugins: [
+		ApolloServerPluginLandingPageGraphQLPlayground(),
+		requestLoggerPlugin.register,
+	],
 });
 
 server.listen({ port: 6100 }, () => {

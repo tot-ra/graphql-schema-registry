@@ -15,7 +15,6 @@ const defaultService = {
 };
 
 class CustomSupergraphManager {
-
 	constructor(options) {
 		if (options) {
 			if ('pollIntervalInMs' in options) {
@@ -47,7 +46,9 @@ class CustomSupergraphManager {
 	}
 
 	async buildSupergraph() {
-		let { services, schemaChanged } = await getServiceListWithTypeDefs(this.serviceSdlCache);
+		let { services, schemaChanged } = await getServiceListWithTypeDefs(
+			this.serviceSdlCache
+		);
 
 		if (!services || services.length === 0) {
 			services = [defaultService];
@@ -65,7 +66,8 @@ class CustomSupergraphManager {
 		this.timerRef = setTimeout(async () => {
 			if (this.state === State.Polling) {
 				console.info('polling schema registry...');
-				const { supergraphSdl, schemaChanged } = await this.buildSupergraph();
+				const { supergraphSdl, schemaChanged } =
+					await this.buildSupergraph();
 
 				console.info('polling done');
 

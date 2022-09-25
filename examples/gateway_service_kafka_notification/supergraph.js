@@ -17,7 +17,6 @@ const defaultService = {
 };
 
 class CustomSupergraphManager {
-
 	constructor() {
 		this.consumer = null;
 		const that = this;

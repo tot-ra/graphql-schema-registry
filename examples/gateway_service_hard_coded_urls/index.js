@@ -1,16 +1,22 @@
-const { ApolloGateway, RemoteGraphQLDataSource} = require('@apollo/gateway');
+const { ApolloGateway, RemoteGraphQLDataSource } = require('@apollo/gateway');
 const { ApolloServer } = require('apollo-server');
-const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
+const {
+	ApolloServerPluginLandingPageGraphQLPlayground,
+} = require('apollo-server-core');
 const CustomSupergraphManager = require('./supergraph');
 
 const gateway = new ApolloGateway({
 	supergraphSdl: new CustomSupergraphManager({ pollIntervalInMs: 30000 }),
-	buildService({ name}) {
+	buildService({ name }) {
 		switch (name) {
 			case 'service_a':
-				return new RemoteGraphQLDataSource({ url: 'http://localhost:6101' });
+				return new RemoteGraphQLDataSource({
+					url: 'http://localhost:6101',
+				});
 			case 'service_b':
-				return new RemoteGraphQLDataSource({ url: 'http://localhost:6102' });
+				return new RemoteGraphQLDataSource({
+					url: 'http://localhost:6102',
+				});
 		}
 	},
 });

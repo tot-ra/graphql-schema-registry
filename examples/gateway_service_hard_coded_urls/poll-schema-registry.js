@@ -27,38 +27,40 @@ exports.getServiceListWithTypeDefs = async (serviceSdlCache) => {
 
 	let schemaChanged = false;
 
-	const servicesWithSchemas = get(serviceTypeDefinitions, 'data', []).map((schema) => {
-		const service = services.find(
-			(service) => service.name === schema.name
-		);
-
-		if (!service) {
-			console.warn(
-				`Matching service not found for type definition "${schema.name}"`
+	const servicesWithSchemas = get(serviceTypeDefinitions, 'data', []).map(
+		(schema) => {
+			const service = services.find(
+				(service) => service.name === schema.name
 			);
-		} else {
-			console.log(
-				`Got ${schema.name} service schema with version ${schema.version}`
-			);
+
+			if (!service) {
+				console.warn(
+					`Matching service not found for type definition "${schema.name}"`
+				);
+			} else {
+				console.log(
+					`Got ${schema.name} service schema with version ${schema.version}`
+				);
+			}
+
+			const previousDefinition = serviceSdlCache.get(schema.name);
+			if (schema.type_defs !== previousDefinition) {
+				schemaChanged = true;
+			}
+
+			serviceSdlCache.set(schema.name, schema.type_defs);
+
+			return {
+				name: schema.name,
+				// note that URLs are used based on service name, utilizing docker internal network
+				url: `dynamic://${schema.name}`,
+				version: schema.version,
+				typeDefs: schema.type_defs,
+				typeDefsOriginal: schema.type_defs_original,
+				...(service ? service : {}),
+			};
 		}
-
-		const previousDefinition = serviceSdlCache.get(schema.name);
-		if (schema.type_defs !== previousDefinition) {
-			schemaChanged = true;
-		}
-
-		serviceSdlCache.set(schema.name, schema.type_defs);
-
-		return {
-			name: schema.name,
-			// note that URLs are used based on service name, utilizing docker internal network
-			url: `dynamic://${schema.name}`,
-			version: schema.version,
-			typeDefs: schema.type_defs,
-			typeDefsOriginal: schema.type_defs_original,
-			...(service ? service : {}),
-		};
-	});
+	);
 
 	return { services: servicesWithSchemas, schemaChanged };
 };

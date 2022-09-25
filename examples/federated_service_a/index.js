@@ -1,7 +1,9 @@
 const request = require('request-promise-native');
 const { buildSubgraphSchema } = require('@apollo/subgraph');
 const { ApolloServer, gql } = require('apollo-server');
-const { ApolloServerPluginLandingPageGraphQLPlayground } = require('apollo-server-core');
+const {
+	ApolloServerPluginLandingPageGraphQLPlayground,
+} = require('apollo-server-core');
 
 const typeDefs = gql`
 	type Query {
