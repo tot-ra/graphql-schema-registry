@@ -16,20 +16,6 @@ interface SchemaRecord {
 }
 
 const schemaModel = {
-	getSchemasAddedAfter: async function ({ trx, since }) {
-		return trx('container_schema')
-			.select([
-				'container_schema.*',
-				'services.name',
-				connection.raw('CHAR_LENGTH(schema.type_defs) as characters'),
-			])
-			.leftJoin('services', 'container_schema.service_id', 'services.id')
-			.andWhere((knex) => {
-				return knex.where('schema.added_time', '>', since);
-			})
-			.limit(100);
-	},
-
 	getLatestAddedDate: async function () {
 		const latest = await connection('schema')
 			.max('added_time as added_time')
