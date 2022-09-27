@@ -99,7 +99,7 @@ Use exact IP instead of `localhost`.
 Use exact docker image tag to avoid breaking changes.
 
 ```
-docker pull pipedrive/graphql-schema-registry:3.0.1
+docker pull pipedrive/graphql-schema-registry:5.0.0
 docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 pipedrive/graphql-schema-registry
 ```
 
