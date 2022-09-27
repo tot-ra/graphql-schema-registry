@@ -24,6 +24,11 @@ module.exports = {
 		'<rootDir>/src/**/*.ts',
 		'!<rootDir>/src/**/*.test.ts',
 		'!<rootDir>/src/**/*.itest.ts',
+
+		'!<rootDir>/src/setupDev.ts',
+		'!<rootDir>/src/config.ts',
+		'!<rootDir>/src/index.ts',
+		'!<rootDir>/src/schema-registry.ts',
 	],
 	coveragePathIgnorePatterns: [
 		'/node_modules/',
