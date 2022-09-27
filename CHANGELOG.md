@@ -16,11 +16,23 @@ Types of changes:
 
 ## [Unreleased]
 
+## [5.0.0] 2022-09-23
+
+## Breaking Changed
+
+- apollo federation v2 is used within schema validation.
+  You need to follow the [migration guide by apollo](https://www.apollographql.com/docs/federation/federation-2/moving-to-federation-2/), upgrade gateway and may need to change subgraph schemas
+- apollo composition library [migrated from MIT license to ELv2](https://www.apollographql.com/blog/announcement/moving-apollo-federation-2-to-the-elastic-license-v2/), which [adds limitations on how you can use it](https://github.com/apollographql/federation/blob/main/LICENSE#L22), which does not affect graphql-schema-registry source code as we only reference it (and its up to you, client, to install and use the library), but docker image _is affected_ as it bundles/distributes the library.
+
+Basically you cannot use graphql-schema-registry docker image to commercially compete with Apollo Studio, otherwise its fine to use as internal tool. If you feel this is unfair, feel free to create PR with alternative/pluggable schema validation method.
+
 ## [4.0.0] - 2022-07-17
+
 ## Added
+
 - **New Feature - schema usage**
   - New DB migration adds `clients`, `clients_persisted_queries_rel` and `schema_hit` tables
-  - Async workrer which analyzes graphql queries and maps them onto schemas to generate schema hits (usage), see `src/worker` and also `examples` for more details. As this requires manual setup, released as major version. 
+  - Async workrer which analyzes graphql queries and maps them onto schemas to generate schema hits (usage), see `src/worker` and also `examples` for more details. As this requires manual setup, released as major version.
   - graphql schemas & resolvers to provide schema usage
   - UI to see schema usage tab (under specific service schema)
     - Added rumble-charts dependency to draw graphs
@@ -29,8 +41,8 @@ Types of changes:
 - Tooling
   - added integration tests, mostly useful for worker testing as its async
 
-
 ## Updated
+
 - async-redis -> ioredis
 - docker-compose files are not simpler and more composeable
 

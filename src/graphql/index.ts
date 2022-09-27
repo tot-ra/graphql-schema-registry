@@ -10,8 +10,10 @@ const server = new ApolloServer({
 	context: () => ({
 		dataloaders: dataloader(),
 	}),
+	cache: 'bounded',
 });
 
-export default (app) => {
+export default async (app) => {
+	await server.start();
 	server.applyMiddleware({ app });
 };

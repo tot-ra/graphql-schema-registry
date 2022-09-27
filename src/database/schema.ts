@@ -6,7 +6,7 @@ import { PublicError } from '../helpers/error';
 import { logger } from '../logger';
 
 function isDevVersion(version: string) {
-	return version === 'latest' || !version;
+	return version === 'latest';
 }
 
 interface SchemaRecord {
@@ -16,20 +16,6 @@ interface SchemaRecord {
 }
 
 const schemaModel = {
-	getSchemasAddedAfter: async function ({ trx, since }) {
-		return trx('container_schema')
-			.select([
-				'container_schema.*',
-				'services.name',
-				connection.raw('CHAR_LENGTH(schema.type_defs) as characters'),
-			])
-			.leftJoin('services', 'container_schema.service_id', 'services.id')
-			.andWhere((knex) => {
-				return knex.where('schema.added_time', '>', since);
-			})
-			.limit(100);
-	},
-
 	getLatestAddedDate: async function () {
 		const latest = await connection('schema')
 			.max('added_time as added_time')
@@ -226,6 +212,7 @@ const schemaModel = {
 		)[0]?.id;
 
 		if (
+			!isDevVersion(service.version) &&
 			existingService &&
 			!schemaId &&
 			(await versionExists(trx, existingService.id, service.version))

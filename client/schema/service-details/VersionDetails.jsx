@@ -128,9 +128,19 @@ const VersionDetails = () => {
 								if (row.version !== 'latest') {
 									return (
 										<tr key={row.version}>
-											<td>{row.version}</td>
-											<td>{row.addedTime}</td>
-											<td>
+											<td align="center">
+												{row.version}
+											</td>
+											<td align="center">
+												{format(
+													new Date(row.addedTime),
+													'd MMMM yyyy, HH:mm',
+													{
+														timeZone: 'UTC',
+													}
+												)}
+											</td>
+											<td align="center">
 												<a href={row.commitLink}>
 													github
 												</a>

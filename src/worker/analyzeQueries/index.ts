@@ -27,7 +27,7 @@ const analyzer = {
 		});
 		const schema = composeAndValidateSchema(schemas);
 
-		analyzer.typeInfo = new TypeInfo(schema);
+		analyzer.typeInfo = new TypeInfo(schema.toGraphQLJSSchema());
 	},
 	start: async function () {
 		try {

@@ -9,9 +9,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
-    "express-graphql": "^0.11.0",
-    "graphql": "^15.3.0",
+    "@apollo/subgraph": "2.0.5",
+    "apollo-server": "3.10.1",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.9"
   }

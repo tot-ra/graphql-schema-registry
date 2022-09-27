@@ -35,7 +35,7 @@ const setupServer = async () => {
 	}
 
 	app.use(router);
-	initGraphql(app);
+	await initGraphql(app);
 
 	// eslint-disable-next-line
 	app.use((err, req, res, next) => {

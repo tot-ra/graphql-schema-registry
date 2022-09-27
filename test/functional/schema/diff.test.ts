@@ -46,7 +46,7 @@ describe('POST /schema/diff', function () {
 		expect(result.statusCode).toBe(200);
 
 		expect(result.body).toEqual({
-			data: [
+			data: expect.arrayContaining([
 				{
 					criticality: { level: 'NON_BREAKING' },
 					message: "Field 'privet' was added to object type 'Query'",
@@ -63,7 +63,7 @@ describe('POST /schema/diff', function () {
 					path: 'join__Graph.SERVICE_B',
 					type: 'ENUM_VALUE_ADDED',
 				},
-			],
+			]),
 			success: true,
 		});
 	});

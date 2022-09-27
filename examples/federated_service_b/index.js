@@ -1,35 +1,39 @@
-var express = require('express');
-var { graphqlHTTP } = require('express-graphql');
-var { buildSchema, printSchema } = require('graphql');
-var request = require('request-promise-native');
+const request = require('request-promise-native');
+const { buildSubgraphSchema } = require('@apollo/subgraph');
+const { ApolloServer, gql } = require('apollo-server');
+const {
+	ApolloServerPluginLandingPageGraphQLPlayground,
+} = require('apollo-server-core');
 
-// Construct a schema, using GraphQL schema language
-var schema = buildSchema(`
-  type Query {
-    world: String
-	hola: String
-  }
+const typeDefs = gql(`
+  	type Query {
+    	world: String
+		hola: String
+  	}
 `);
 
-// The root provides a resolver function for each API endpoint
-var root = {
-	world: () => {
-		return 'World!';
-	},
-	hola: () => 'Hola!',
+typeDefs.toString = function () {
+	return this.loc.source.body;
 };
 
-var app = express();
-app.use(
-	'/graphql',
-	graphqlHTTP({
-		schema: schema,
-		rootValue: root,
-		graphiql: true,
-	})
-);
-app.listen(6102);
-console.log('Running a GraphQL API server at http://localhost:6102/graphql');
+const resolvers = {
+	Query: {
+		world: () => {
+			return 'World!';
+		},
+		hola: () => 'Hola!',
+	},
+};
+
+const server = new ApolloServer({
+	schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
+	plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+	cache: 'bounded',
+});
+
+server.listen({ port: 6102 }, () => {
+	console.log(`🚀 Server ready at http://localhost:6102`);
+});
 
 (async () => {
 	try {
@@ -42,7 +46,7 @@ console.log('Running a GraphQL API server at http://localhost:6102/graphql');
 			body: {
 				name: 'service_b', // service name
 				version: 'v2', //service version, like docker container hash. Use 'latest' for dev env
-				type_defs: printSchema(schema),
+				type_defs: typeDefs.toString(),
 				url: 'http://localhost:6102',
 			},
 		});
