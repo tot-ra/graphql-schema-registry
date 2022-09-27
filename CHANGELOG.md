@@ -18,7 +18,7 @@ Types of changes:
 
 ## [5.0.0] 2022-09-27
 
-## Breaking Changed
+## Breaking Changes
 
 - apollo federation v2 is used within schema validation.
   You need to follow the [migration guide by apollo](https://www.apollographql.com/docs/federation/federation-2/moving-to-federation-2/), upgrade gateway and may need to change subgraph schemas
