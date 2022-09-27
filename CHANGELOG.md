@@ -16,7 +16,7 @@ Types of changes:
 
 ## [Unreleased]
 
-## [5.0.0] 2022-09-23
+## [5.0.0] 2022-09-27
 
 ## Breaking Changed
 
@@ -330,7 +330,9 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.5.0...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.0.0...HEAD
+[5.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v4.0.0...v5.0.0
+[4.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.5.0...v4.0.0
 [3.5.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.3...v3.3.0
