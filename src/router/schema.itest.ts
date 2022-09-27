@@ -86,6 +86,44 @@ describe('app/controller/schema', () => {
 			});
 		});
 
+		it('re-registers schema without errors if version name is "latest"', async () => {
+			let result = await push(
+				{
+					body: {
+						name: 'service_b',
+						version: 'latest',
+						type_defs: 'type Query { hello: String }',
+						url: '',
+					},
+				},
+				res
+			);
+			expect(result.success).toEqual(true);
+
+			result = await push(
+				{
+					body: {
+						name: 'service_b',
+						version: 'latest', // !
+						type_defs: 'type Query { world: String }',
+						url: '',
+					},
+				},
+				res
+			);
+			expect(result.success).toEqual(true);
+
+			const result2 = await composeLatest({}, res);
+
+			expect(result2.data[0]).toMatchObject({
+				is_active: 1,
+				name: 'service_b',
+				type_defs: 'type Query { world: String }',
+				url: '',
+				version: 'latest',
+			});
+		});
+
 		describe('edge cases', () => {
 			it('requires name', async () => {
 				const req = {

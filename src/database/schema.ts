@@ -6,7 +6,7 @@ import { PublicError } from '../helpers/error';
 import { logger } from '../logger';
 
 function isDevVersion(version: string) {
-	return version === 'latest' || !version;
+	return version === 'latest';
 }
 
 interface SchemaRecord {
@@ -212,6 +212,7 @@ const schemaModel = {
 		)[0]?.id;
 
 		if (
+			!isDevVersion(service.version) &&
 			existingService &&
 			!schemaId &&
 			(await versionExists(trx, existingService.id, service.version))
