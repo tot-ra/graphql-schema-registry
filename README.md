@@ -110,7 +110,11 @@ git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql
 docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```
 
-## Use cases
+## Use cases / FAQ
+
+### How do I register schema that is being developed?
+Usually in production, `POST /schema/push` requires unique `version` that should be unique git or docker hash.
+But, if you are developing a service and you run schema-registry locally, you can set `version: "latest"` to skip this version check.
 
 ### Validating schema on deploy
 
