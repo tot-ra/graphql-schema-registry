@@ -27,6 +27,7 @@ export function composeAndValidateSchema(servicesSchemaMap) {
 	}
 
 	if (errors && errors.length) {
+		logger.error(errors);
 		throw new PublicError('Schema validation failed', {
 			details: errors,
 		});

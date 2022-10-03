@@ -5,6 +5,7 @@ import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
 import Schema from '../schema';
 import PersistedQueries from '../persisted-queries';
+import Clients from '../clients';
 
 import ServicesTab from '../schema/Tab';
 import PersistedQueriesTab from '../persisted-queries/Tab';
@@ -13,12 +14,15 @@ const UITabs = [
 	{
 		Title: <ServicesTab />,
 		href: '/schema',
-		icon: 'dashboard',
 		component: Schema,
 	},
 	{
+		Title: <span>Clients</span>,
+		href: '/clients',
+		component: Clients,
+	},
+	{
 		Title: <PersistedQueriesTab />,
-		icon: 'ac-document',
 		href: '/persisted-queries',
 		component: PersistedQueries,
 	},

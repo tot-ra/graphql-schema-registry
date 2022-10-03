@@ -20,6 +20,7 @@ export default gql`
 			searchFragment: String
 			limit: Int
 			offset: Int
+			clientVersionId: Int
 		): [PersistedQuery]
 		persistedQuery(key: String!): PersistedQuery
 		persistedQueriesCount: Int!
