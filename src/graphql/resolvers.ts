@@ -54,8 +54,6 @@ export default {
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 
 		clients: async () => await clientsModel.getClients(),
-		clientVersions: async (_, { since }) =>
-			await clientsModel.getClientVersionsSince({ since }),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {

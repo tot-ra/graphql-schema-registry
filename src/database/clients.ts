@@ -166,25 +166,6 @@ const clientsModel = {
 		connection('clients')
 			.select('id', 'version', 'updated_time as updatedTime')
 			.where({ name }),
-
-	getClientVersionsSince: async ({ since }) => {
-		if (isNil(since)) {
-			return [];
-		}
-
-		return connection('clients')
-			.select([
-				'id',
-				'name',
-				'version',
-				'added_time as addedTime',
-				'updated_time',
-			])
-			.where((knex) => {
-				return knex.where('added_time', '>', since);
-			})
-			.limit(100);
-	},
 };
 
 export default clientsModel;
