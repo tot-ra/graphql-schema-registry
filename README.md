@@ -188,7 +188,67 @@ flowchart LR
 ### DB structure
 
 Migrations are done using knex
-![](https://app.lucidchart.com/publicSegments/view/74fc86d4-671e-4644-a198-41d7ff681cae/image.png)
+```mermaid
+erDiagram
+    services {
+        id int PK 
+        name varchar
+        is_active int
+        updated_time datetime
+        added_time datetime
+        url varchar
+    }
+    clients {
+        id int PK
+        name varchar
+        version varchar
+        calls bigint
+        updated_time datetime
+        added_time datetime
+    }
+    schema {
+      id int PK
+      service_id int FK
+      is_active tinyint
+      type_defs mediumtext
+      updated_time datetime
+      added_time datetime
+    }
+    container_schema{
+      id int PK
+      service_id int FK
+      schema_id int FK
+      version varchar
+      added_time datetime
+    }
+    persisted_queries{
+      key varchar PK
+      query text
+      is_active int
+      updated_time datetime
+      added_time datetime
+    }
+    clients_persisted_queris_rel{
+      version_id int
+      pq_key varchar
+    }
+    schema_hit{
+      client_id int
+      entity varchar
+      property varchar
+      day date
+      hits bigint
+      updated_time bigint
+    }
+
+    services ||--o{ schema : defines
+    schema ||--|{ container_schema : "is registered by"
+    clients_persisted_queris_rel ||--|{ persisted_queries : use
+    clients_persisted_queris_rel ||--|{ clients : have
+    clients ||--|{ schema_hit : "use schema properties"
+    schema ||..|{ schema_hit : "relates to"
+
+```
 
 ## Development
 
