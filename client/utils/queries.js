@@ -99,3 +99,25 @@ export const SCHEMA_USAGE_SDL = gql`
 		}
 	}
 `;
+
+export const CLIENTS_LIST = gql`
+	query getClients {
+		clients {
+			name
+			versions {
+				id
+				version
+				updatedTime
+			}
+		}
+	}
+`;
+
+export const CLIENT_VERSION_PERSISTED_QUERIES = gql`
+	query gerClientPersistedQueries($clientVersionId: Int!) {
+		persistedQueries(clientVersionId: $clientVersionId) {
+			key
+			query
+		}
+	}
+`;

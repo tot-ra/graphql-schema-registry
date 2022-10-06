@@ -32,7 +32,16 @@ export default {
 		schemaPropertyHitsByClient: async (_, { entity, property }) =>
 			await schemaHit.get({ entity, property }),
 
-		persistedQueries: async (parent, { searchFragment, limit, offset }) => {
+		persistedQueries: async (
+			parent,
+			{ searchFragment, limit, offset, clientVersionId }
+		) => {
+			if (clientVersionId) {
+				return await PersistedQueriesModel.getVersionPersistedQueries({
+					version_id: clientVersionId,
+				});
+			}
+
 			return await PersistedQueriesModel.list({
 				searchFragment,
 				limit,
@@ -45,8 +54,6 @@ export default {
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 
 		clients: async () => await clientsModel.getClients(),
-		clientVersions: async (_, { since }) =>
-			await clientsModel.getClientVersionsSince({ since }),
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
