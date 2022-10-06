@@ -16,9 +16,14 @@ Types of changes:
 
 ## [Unreleased]
 
+## [5.1.0] 2022-10-06
+### Added
+- added "clients" menu in UI part to display clients, versions and related persisted queries
+<img width="1073" alt="Screenshot 2022-10-04 at 01 02 51" src="https://user-images.githubusercontent.com/445122/193694672-c974eaef-e3b7-422b-9140-250e70944db8.png">
+
 ## [5.0.0] 2022-09-27
 
-## Breaking Changes
+### Breaking Changes
 
 - apollo federation v2 is used within schema validation.
   You need to follow the [migration guide by apollo](https://www.apollographql.com/docs/federation/federation-2/moving-to-federation-2/), upgrade gateway and may need to change subgraph schemas
@@ -28,7 +33,7 @@ Basically you cannot use graphql-schema-registry docker image to commercially co
 
 ## [4.0.0] - 2022-07-17
 
-## Added
+### Added
 
 - **New Feature - schema usage**
   - New DB migration adds `clients`, `clients_persisted_queries_rel` and `schema_hit` tables
@@ -41,26 +46,26 @@ Basically you cannot use graphql-schema-registry docker image to commercially co
 - Tooling
   - added integration tests, mostly useful for worker testing as its async
 
-## Updated
+### Updated
 
 - async-redis -> ioredis
 - docker-compose files are not simpler and more composeable
 
 ## [3.5.0] - 2022-07-14
 
-## Updated
+### Updated
 
 - knex major version bump 0.20.2 -> 2.1.0
 
 ## [3.4.0] - 2022-06-07
 
-## Updated
+### Updated
 
 - nodejs version 14 -> 16
 
 ## [3.3.0] - 2022-05-25
 
-## Updated
+### Updated
 
 - /schema/latest now does not have schema validation, because we expect schema to be validated
   during /schema/push. This is performance improvement
@@ -68,14 +73,14 @@ Basically you cannot use graphql-schema-registry docker image to commercially co
 
 ## [3.2.3] - 2022-05-25
 
-## Fixed
+### Fixed
 
 - /schema/push now returns 400 instead of 500 if you attempt to register service schema with same version
 - note, that you can register schema from multiple pods if it is the same (type definitions are matched)
 
 ## [3.2.2] - 2022-05-24
 
-## Updated
+### Updated
 
 - Fonts in diff & definition tabs are now monospace & same size
 - Added support for use `TypeScript` in the client side code. A pair of components were converted to TypeScript to validate the configuration.
