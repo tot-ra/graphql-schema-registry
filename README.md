@@ -142,7 +142,28 @@ Instead of juggling with schema status flags, we suggest the following scenario:
 
 ### Components
 
-![](https://lucid.app/publicSegments/view/594e3e1d-ef93-41ba-b4a0-c1f2fb8e0495/image.png)
+```mermaid
+flowchart LR
+    GW[federated-gateway] == poll schema every 10 sec\n POST /schema/compose ==> SR["schema registry\n(gql-schema-registry)"] -- store schemas --> DB[("mysql 8\n(gql-schema-registry-db)")]
+    SR -- cache persisted queries --> R[("redis 6\n(gql-schema-registry-redis)")]
+    SR -- publish schema change --> KF1("kafka\n(gql-schema-registry-kafka)\ngraphql-schema-updates topic") -- listen schema updates --> GW
+    GW -- publish queries --> KF2("kafka\n(gql-schema-registry-kafka)\ngraphql-queries topic")
+    KF2 --> QA["query analyzer\n(gql-schema-registry-worker)"]
+    QA --update schema hits --> DB
+    GW -- query A --> S1["service A"] -- register schema in runtime --> SR
+    GW -- query B --> S2["service B"] -- register schema in runtime --> SR
+    S2["service B"] -. validate schema \n on commit/cli/CI .-> SR
+
+    style KF1 fill:#0672e6,color:white
+    style KF2 fill:#0672e6,color:white
+    style DB fill:#0672e6,color:white
+    style R fill:#0672e6,color:white
+    style SR fill:#ffe43e
+    style QA fill:#ffe43e
+    style GW fill:#c5f7c9
+    style S1 fill:#c5f7c9
+    style S2 fill:#c5f7c9
+```
 
 | Name              | Role     | Description                                                                                                                                                                                                                                                                                                                    |
 | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
