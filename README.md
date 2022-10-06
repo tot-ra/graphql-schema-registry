@@ -1,3 +1,4 @@
+
 # graphql-schema-registry
 
 <img src="https://user-images.githubusercontent.com/445122/95125574-d7466580-075d-11eb-8a78-b6adf34ad811.png" width=100 height=100 align="right"/>
@@ -111,33 +112,6 @@ git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql
 docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```
 
-## Use cases / FAQ
-
-### How do I register schema that is being developed?
-Usually in production, `POST /schema/push` requires unique `version` that should be unique git or docker hash.
-But, if you are developing a service and you run schema-registry locally, you can set `version: "latest"` to skip this version check.
-
-### Validating schema on deploy
-
-On pre-commit / deploy make a POST /schema/validate to see if its compatible with current schema.
-
-### Schema registration
-
-On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
-Make sure to handle failure.
-
-See [example](examples/schema_registration_client/index.js) for nodejs/ESM.
-
-### Schema migration
-
-If service A contains schema that needs to be migrated to service B, we need to orchestrate schema & traffic change.
-Instead of juggling with schema status flags, we suggest the following scenario:
-
-- service B gets deployed with new schema which includes cycle of attempts to register new schema (for example every 5 sec).
-- schema-registry responds with validation errors
-- service A without conflicting schema gets deployed & updates schema-registry
-- service B manages to register new schema & stops the cycle
-
 ## Architecture
 
 ### Components
@@ -250,6 +224,52 @@ erDiagram
 
 ```
 
+
+## Use cases / FAQ
+
+### When/now do I register schema?
+
+On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
+Make sure to handle failure.
+
+See [example](examples/schema_registration_client/index.js) for nodejs/ESM.
+
+### How do I register schema that is being developed?
+Usually in production, `POST /schema/push` requires unique `version` that should be unique git or docker hash.
+But, if you are developing a service and you run schema-registry locally, you can set `version: "latest"` to skip this version check.
+
+### Do I need to deregister services?
+- if your gateway uses /schema/compose then no, schema is composed based on services you see as healthy
+- if your gateway uses /schema/latest then yes, service has `is_active` flag in DB that you can manually toggle (no API yet)
+
+### When do I need to validate schema?
+On pre-commit / deploy make a POST /schema/validate to see if its compatible with current schema.
+If you have multiple regions or environments (test), makes sense to check all.
+
+### How do I migrate schema between services?
+
+If service A contains schema that needs to be migrated to service B with close to 0 downtime, you will need to orchestrate schema & traffic change.
+Instead of juggling with schema status flags, we suggest the following scenario:
+
+```mermaid
+sequenceDiagram
+    participant service_A
+    participant service_B
+    participant schemaRegistry
+
+    loop Every 5 sec
+       service_B->>+schemaRegistry: register schema B + A1
+       schemaRegistry->>-service_B: validation error, A1 is registered to service A
+    end
+
+    service_A->>+schemaRegistry: remove schema A1
+    schemaRegistry->>-service_A: ok
+
+    service_B->>+schemaRegistry: register schema B + A1
+    schemaRegistry->>-service_B: ok, A1 is registered to service B, stop retries
+
+```
+
 ## Development
 
 ### Dockerized mode
@@ -348,7 +368,7 @@ docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6
 ## Security & compliance
 
 - There is not strict process on finding or updating vulnerabilitites. The license also states there there is no Liability or Warranty, so be aware of that
-- Github discussions / issues is the only communication channel to notify about vulnerabilities, there is not discord or slack.
+- You can use Slack or Github discussions / issues as a communication channel to notify about vulnerabilities.
 - We use [snyk](https://snyk.io/test/github/pipedrive/graphql-schema-registry) in PR checks. We try to look at `npm audit` reports manually on PR creation to minimize issues.
 - We intentionally use [strict versioning of nodejs dependencies](https://github.com/pipedrive/graphql-schema-registry/blob/master/package.json) which prevents automatic dependabot PRs. Thus version upgrades are manual. Why? Because sometimes we saw external dependencies rolling out breaking changes in minor/patch versions which broke our master. Same thing with hacked libraries.
 
