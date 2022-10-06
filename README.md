@@ -396,17 +396,24 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 
 ## Rest API documentation
 
-### GET /health
+<details>
+  <summary><h3>🟢 GET /health</h3></summary>
+  
+  returns "ok" when service is up
+</details>
 
-returns "ok" when service is up
-
-### GET /schema/latest
-
+<details>
+  <summary><h3>🟢 GET /schema/latest</h3></summary>
+  
 Simplified version of /schema/compose where latest versions from different services are composed.
 Some services prefer this to use this natural schema composition, as its natural and time-based.
 
-### POST /schema/compose
+</details>
 
+
+<details>
+  <summary><h3>🟡 POST /schema/compose</h3></summary>
+  
 Advanced version of schema composition, where you need to provide services & their versions.
 Used by graphql gateway to fetch schema based on currently running containers.
 
@@ -428,6 +435,8 @@ in schema-registry, it will not be considered as "latest".
 
 #### Response example
 
+- ❌ 400 "services[0].version" must be a string
+- ❌ 500 Internal error (DB is down)
 - ✅ 200
 
 ```json
@@ -458,16 +467,15 @@ in schema-registry, it will not be considered as "latest".
 }
 ```
 
-- ❌ 400 "services[0].version" must be a string
-- ❌ 500 Internal error (DB is down)
-
 #### Request params
 
 - services{ name, version}
 
 If `services` is not passed, schema-registry tries to find most recent versions. Logic behind the scenes is that schema with _highest_ `added_time` OR `updated_time` is picked as latest. If time is the same, `schema.id` is used.
 
-### POST /schema/push
+</details>
+<details>
+  <summary><h3>🟡 POST /schema/push</h3></summary>
 
 Validates and registers new schema for a service.
 
@@ -493,8 +501,10 @@ URL is optional if you use urls from schema-registry as service discovery
 ```
 
 - ❌ 400 "You should not register different type_defs with same version."
+</details>
 
-#### POST /schema/validate
+<details>
+  <summary><h3>🟡 POST /schema/validate</h3></summary>
 
 Validates schema, without adding to DB
 
@@ -503,8 +513,9 @@ Validates schema, without adding to DB
 - name
 - version
 - type_defs
-
-#### POST /schema/diff
+</details>
+<details>
+  <summary><h3>🟡 POST /schema/diff</h3></summary>
 
 Compares schemas and finds breaking or dangerous changes between provided and latest schemas.
 
@@ -512,7 +523,7 @@ Compares schemas and finds breaking or dangerous changes between provided and la
 - version
 - type_defs
 
-#### DELETE /schema/:schemaId
+</details><details><summary><h3>🔴 DELETE /schema/:schemaId</h3></summary>
 
 Deletes specified schema
 
@@ -522,7 +533,8 @@ Deletes specified schema
 | ---------- | ------ | ------------- |
 | `schemaId` | number | ID of sechema |
 
-#### DELETE /service/:name
+
+</details><details><summary><h3>🔴 DELETE /service/:name</h3></summary>
 
 Deletes specified service including all schemas registered for that service
 
@@ -532,7 +544,7 @@ Deletes specified service including all schemas registered for that service
 | -------- | ------ | --------------- |
 | `name`   | string | name of service |
 
-#### GET /persisted_query
+</details><details><summary><h3>🟢 GET /persisted_query</h3></summary>
 
 Looks up persisted query from DB & caches it in redis if its found
 
@@ -542,7 +554,7 @@ Looks up persisted query from DB & caches it in redis if its found
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 
-#### POST /persisted_query
+</details><details><summary><h3>🟡 POST /persisted_query</h3></summary>
 
 Adds persisted query to DB & redis cache
 
@@ -552,3 +564,4 @@ Adds persisted query to DB & redis cache
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 | `value`  | string | Graphql query                    |
+</details>
