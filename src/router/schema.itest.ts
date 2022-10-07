@@ -85,38 +85,6 @@ describe('app/controller/schema', () => {
 				version: 'v2',
 			});
 		});
-		it('bulk registration', async () => {
-			jest.setTimeout(90 * 1000);
-
-			let result;
-			for (let i = 1; i < 200; i++) {
-				result = await push(
-					{
-						body: {
-							name: `service_${i}`,
-							version: 'v1',
-							type_defs: `type Query { hello${i}: String }`,
-							url: '',
-						},
-					},
-					res
-				);
-				expect(result.success).toEqual(true);
-			}
-
-			const result2 = await composeLatest({}, res);
-
-			// expect(result2.data[0]).toMatchObject({
-			// 	is_active: 1,
-			// 	name: 'service_a',
-			// 	type_defs: 'type Query { world: String }',
-			// 	url: '',
-			// 	version: 'v2',
-			// });
-
-			expect(result2.success).toEqual(true);
-			expect(result2.data.length).toEqual(200);
-		});
 
 		it('re-registers schema without errors if version name is "latest"', async () => {
 			let result = await push(
