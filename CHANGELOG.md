@@ -16,6 +16,11 @@ Types of changes:
 
 ## [Unreleased]
 
+## [5.1.1] 2022-10-07
+
+### Changed
+- fix re-opening pages/navigation on refresh
+
 ## [5.1.0] 2022-10-06
 
 ### Added
