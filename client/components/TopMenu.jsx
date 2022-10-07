@@ -23,7 +23,6 @@ export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 				onChange={handleChange}
 				aria-label="simple tabs example"
 			>
-				{/* <React.Fragment>*/}
 				{UITabs.map((tab, i) => (
 					<Tab
 						key={i}
@@ -31,7 +30,6 @@ export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 						label={tab.Title}
 					/>
 				))}
-				{/* </React.Fragment>*/}
 			</Tabs>
 		</AppBar>
 	);

@@ -4,6 +4,7 @@ import {
 	HttpLink,
 	ApolloProvider,
 } from '@apollo/client';
+import { HashRouter as Router } from 'react-router-dom';
 
 import { GlobalConfigContext, createConfig } from './utils/globalConfig';
 import Main from './components/Main';
@@ -29,7 +30,9 @@ const App = ({ api }: AppProps) => {
 	return (
 		<GlobalConfigContext.Provider value={config}>
 			<ApolloProvider client={client}>
-				<Main />
+				<Router>
+					<Main />
+				</Router>
 			</ApolloProvider>
 		</GlobalConfigContext.Provider>
 	);
