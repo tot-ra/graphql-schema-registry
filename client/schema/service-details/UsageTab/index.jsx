@@ -44,7 +44,7 @@ export default function UsageTab({ schemaId }) {
 								property === row.property;
 
 							return (
-								<tr>
+								<tr key={`${row.entity}.${row.property}`}>
 									<td
 										style={{
 											textDecoration: 'underline',

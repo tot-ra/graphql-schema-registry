@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { connection } from './index';
 
-interface ServiceRecord {
+export interface ServiceRecord {
 	id: string;
 	name: string;
 	url: string;

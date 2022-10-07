@@ -17,9 +17,11 @@ Types of changes:
 ## [Unreleased]
 
 ## [5.1.0] 2022-10-06
+
 ### Added
+
 - added "clients" menu in UI part to display clients, versions and related persisted queries
-<img width="1073" alt="Screenshot 2022-10-04 at 01 02 51" src="https://user-images.githubusercontent.com/445122/193694672-c974eaef-e3b7-422b-9140-250e70944db8.png">
+  <img width="1073" alt="Screenshot 2022-10-04 at 01 02 51" src="https://user-images.githubusercontent.com/445122/193694672-c974eaef-e3b7-422b-9140-250e70944db8.png">
 
 ## [5.0.0] 2022-09-27
 

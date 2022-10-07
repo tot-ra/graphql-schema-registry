@@ -14,7 +14,7 @@ const VersionsList = ({ service }) => {
 	const history = useHistory();
 
 	if (!service) {
-		return;
+		return <div>No service passed</div>;
 	}
 
 	return (
@@ -40,7 +40,9 @@ const VersionsList = ({ service }) => {
 						selected={selectedSchema === schema.id}
 						className={schema.isActive ? '' : 'deleted'}
 						onClick={() =>
-							history.push(`/${serviceName}/${schema.id}`)
+							history.push(
+								`/${serviceName}/${schema.id}/definition`
+							)
 						}
 					>
 						<EntryGrid>

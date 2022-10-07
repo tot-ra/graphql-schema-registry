@@ -161,10 +161,11 @@ flowchart LR
 ### DB structure
 
 Migrations are done using knex
+
 ```mermaid
 erDiagram
     services {
-        id int PK 
+        id int PK
         name varchar
         is_active int
         updated_time datetime
@@ -223,7 +224,6 @@ erDiagram
 
 ```
 
-
 ## Use cases / FAQ
 
 ### When/now do I register schema?
@@ -234,14 +234,17 @@ Make sure to handle failure.
 See [example](examples/schema_registration_client/index.js) for nodejs/ESM.
 
 ### How do I register schema that is being developed?
+
 Usually in production, `POST /schema/push` requires unique `version` that should be unique git or docker hash.
 But, if you are developing a service and you run schema-registry locally, you can set `version: "latest"` to skip this version check.
 
 ### Do I need to deregister services?
+
 - if your gateway uses /schema/compose then no, schema is composed based on services you see as healthy
 - if your gateway uses /schema/latest then yes, service has `is_active` flag in DB that you can manually toggle (no API yet)
 
 ### When do I need to validate schema?
+
 On pre-commit / deploy make a POST /schema/validate to see if its compatible with current schema.
 If you have multiple regions or environments (test), makes sense to check all.
 
@@ -409,7 +412,6 @@ Some services prefer this to use this natural schema composition, as its natural
 
 </details>
 
-
 <details>
   <summary><h3>🟡 POST /schema/compose</h3></summary>
   
@@ -532,7 +534,6 @@ Deletes specified schema
 | ---------- | ------ | ------------- |
 | `schemaId` | number | ID of sechema |
 
-
 </details><details><summary><h3>🔴 DELETE /service/:name</h3></summary>
 
 Deletes specified service including all schemas registered for that service
@@ -563,4 +564,5 @@ Adds persisted query to DB & redis cache
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 | `value`  | string | Graphql query                    |
+
 </details>

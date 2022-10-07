@@ -1,5 +1,4 @@
-import React from 'react';
-import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
+import { Route, useLocation } from 'react-router-dom';
 
 import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
@@ -29,14 +28,21 @@ const UITabs = [
 ];
 
 const Main = () => {
-	const [selectedTab, setValue] = React.useState(0);
+	let selectedTab = 0;
+	const location = useLocation();
+
+	UITabs.forEach((tab, i) => {
+		if (location.pathname === tab.href) {
+			selectedTab = i;
+		}
+	});
 
 	const handleChange = (event, newValue) => {
-		setValue(newValue);
+		selectedTab = newValue;
 	};
 
 	return (
-		<Router>
+		<div>
 			<TopMenu
 				UITabs={UITabs}
 				selectedTab={selectedTab}
@@ -52,8 +58,7 @@ const Main = () => {
 					/>
 				</TabPanel>
 			))}
-			<Redirect to="/schema" />
-		</Router>
+		</div>
 	);
 };
 

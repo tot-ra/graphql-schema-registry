@@ -1,5 +1,7 @@
 import { ApolloServer } from 'apollo-server-express';
 
+import { connection } from '../database';
+
 import typeDefs from './schema';
 import resolvers from './resolvers';
 import dataloader from './dataloader';
@@ -8,7 +10,7 @@ const server = new ApolloServer({
 	typeDefs,
 	resolvers,
 	context: () => ({
-		dataloaders: dataloader(),
+		dataloaders: dataloader(connection),
 	}),
 	cache: 'bounded',
 });
