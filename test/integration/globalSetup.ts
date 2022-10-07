@@ -19,7 +19,7 @@ async function waitUntilServiceIsReadyOr5Min() {
 			}
 		} catch (e) {
 			console.log(
-				'Waiting for schema-registry to be ready on http://localhost:6001/health. Retrying in 10 sec'
+				`${i}/300: Waiting for schema-registry to be ready on http://localhost:6001/health. Retrying in 10 sec`
 			);
 		}
 

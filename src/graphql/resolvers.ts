@@ -22,12 +22,12 @@ const dateTime = new Intl.DateTimeFormat('en-GB', {
 
 export default {
 	Query: {
-		services: async (parent, { limit, offset }) =>
-			servicesModel.getServices(connection, limit, offset),
-		service: async (parent, { id }, { dataloaders }) =>
-			dataloaders.services.load(id),
+		services: async (_, { limit, offset }) =>
+			await servicesModel.getServices(connection, limit, offset),
+		service: async (_, { id }, { dataloaders }) =>
+			await dataloaders.services.load(id),
 		serviceCount: async () => await servicesModel.count(),
-		schema: async (parent, { id }) =>
+		schema: async (_, { id }) =>
 			await schemaModel.getSchemaById(connection, id),
 		schemaPropertyHitsByClient: async (_, { entity, property }) =>
 			await schemaHit.get({ entity, property }),

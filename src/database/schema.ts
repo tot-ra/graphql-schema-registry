@@ -372,13 +372,19 @@ const schemaModel = {
 	},
 
 	getSchemaById: async function (trx: Knex<SchemaRecord>, id) {
-		return trx('schema')
+		const schema = await trx('schema')
 			.select(
 				'schema.*',
 				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
 			.where('schema.id', id)
 			.first();
+
+		if (!schema) {
+			return null;
+		}
+
+		return schema;
 	},
 };
 
