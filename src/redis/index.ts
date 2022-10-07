@@ -35,10 +35,7 @@ async function resolveInstance(service) {
 	}
 }
 
-async function initRedis(
-	redisServiceName = process.env.REDIS_SCHEMA_REGISTRY ||
-		'gql-schema-registry-redis'
-) {
+async function initRedis() {
 	try {
 		// @ts-ignore
 		redis = new Redis({
@@ -53,17 +50,16 @@ async function initRedis(
 			logger.warn('Redis reconnect triggered, re-discovering');
 			Object.assign(
 				redis.options || {},
-				await resolveInstance(redisServiceName)
+				await resolveInstance('gql-schema-registry-redis')
 			);
 		});
 
-		redis.on('ready', () =>
-			logger.info(`Redis connection to ${redisServiceName} ready`)
-		);
+		redis.on('ready', () => logger.info(`Redis connection to redis ready`));
+		redis.on('error', (e) => logger.error(`Redis error`, e));
 
 		Object.assign(
 			redis.options || {},
-			await resolveInstance(redisServiceName)
+			await resolveInstance('gql-schema-registry-redis')
 		);
 
 		await redis.connect();

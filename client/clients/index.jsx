@@ -1,4 +1,4 @@
-//eslint-disable-next-line
+// eslint-disable-next-line
 import React, { useState } from 'react';
 import { HashRouter as Router } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
@@ -10,6 +10,7 @@ import { CLIENTS_LIST } from '../utils/queries';
 import { ColumnPanel } from '../components/styled';
 import ClientVersions from './versions';
 import ClientPersistedQueries from './clientPersistedQueries';
+import Info from '../components/Info';
 
 export default function Clients() {
 	const { loading, data } = useQuery(CLIENTS_LIST);
@@ -22,7 +23,12 @@ export default function Clients() {
 	}
 
 	if (!data || data.clients.length === 0) {
-		return <div style={{ padding: '10px' }}>No clients found</div>;
+		return (
+			<Info>
+				No clients found. Use gql-schema-registry-worker to process
+				queries from KAFKA_QUERIES_TOPIC
+			</Info>
+		);
 	}
 
 	const clients = data.clients.map((client) => {

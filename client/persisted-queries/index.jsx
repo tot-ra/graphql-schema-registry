@@ -1,9 +1,12 @@
+// eslint-disable-next-line no-unused-vars
+import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import SpinnerCenter from '../components/SpinnerCenter';
 import PersistedQuery from './PersistedQuery';
 
 import { PERSISTED_QUERIES } from '../utils/queries';
+import Info from '../components/Info';
 
 export default function PersistedQueries() {
 	const { loading, data } = useQuery(PERSISTED_QUERIES);
@@ -13,7 +16,12 @@ export default function PersistedQueries() {
 	}
 
 	if (!data || !data.persistedQueries.length) {
-		return <div style={{ padding: 10 }}>No persisted queries found</div>;
+		return (
+			<Info>
+				No persisted queries found. Integrate gateway to publish
+				persisted query to schema-registry API
+			</Info>
+		);
 	}
 
 	return (

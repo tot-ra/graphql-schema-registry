@@ -1,6 +1,8 @@
 import { isUndefined } from 'lodash';
 import { parse } from 'graphql';
 
+import { logger } from '../logger';
+
 import { deactivateSchema, activateSchema } from '../controller/schema';
 import config from '../config';
 import { connection } from '../database';
@@ -54,6 +56,31 @@ export default {
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
 
 		clients: async () => await clientsModel.getClients(),
+		logs: async () => {
+			const logs = await new Promise((resolve, reject) =>
+				logger.query(
+					{
+						// @ts-ignore
+						from: new Date() - 24 * 60 * 60 * 1000,
+						until: new Date(),
+						limit: 100,
+						start: 0,
+						order: 'desc',
+						fields: ['message', 'level', 'timestamp'],
+					},
+					function (err, results) {
+						if (err) {
+							reject(err);
+						}
+
+						resolve(results);
+					}
+				)
+			);
+
+			// @ts-ignore
+			return logs?.redis;
+		},
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
