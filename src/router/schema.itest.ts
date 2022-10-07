@@ -1,4 +1,4 @@
-import { composeLatest, compose, push } from '../router/schema';
+import { composeLatest, push } from '../router/schema';
 import { cleanTables } from '../../test/integration/database';
 
 describe('app/controller/schema', () => {
@@ -136,7 +136,7 @@ describe('app/controller/schema', () => {
 				};
 
 				try {
-					const result = await push(req, res);
+					await push(req, res);
 					expect(false).toEqual(true);
 				} catch (e) {
 					expect(e.message).toEqual(
@@ -156,7 +156,7 @@ describe('app/controller/schema', () => {
 				};
 
 				try {
-					const result = await push(req, res);
+					await push(req, res);
 					expect(false).toEqual(true);
 				} catch (e) {
 					expect(e.message).toEqual(
@@ -176,7 +176,7 @@ describe('app/controller/schema', () => {
 				};
 
 				try {
-					const result = await push(req, res);
+					await push(req, res);
 					expect(false).toEqual(true);
 				} catch (e) {
 					expect(e.message).toEqual(
@@ -221,7 +221,7 @@ describe('app/controller/schema', () => {
 
 			it('fails if type B with @extends has no base service', async () => {
 				try {
-					const result = await push(
+					await push(
 						{
 							body: {
 								name: 'service_a',

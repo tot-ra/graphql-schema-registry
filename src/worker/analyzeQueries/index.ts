@@ -1,5 +1,6 @@
 import { get, isNil } from 'lodash';
 import { TypeInfo } from 'graphql';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Knex } from 'knex';
 
 import { logger } from '../../logger';
