@@ -24,61 +24,6 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 
 <img height="250" alt="diff" src="https://user-images.githubusercontent.com/445122/179374475-87879feb-f009-4afd-bb47-3f242b7c27a9.png"><img height="250" alt="schema usage" src="https://user-images.githubusercontent.com/445122/179374472-9fdf7ae2-5090-4618-9c17-d238dcf5ffe5.png">
 
-## Roadmap
-
-(Pull requests are encouraged on these topics)
-
-- Usage tracking
-  - breaking change detection triggering schema validation failure (ex. if property gets deleted/renamed but usage > 0 for last 2 days)
-  - schema usage breakdown by multiple facets - property, day, operation name, client name - https://github.com/pipedrive/graphql-schema-registry/issues/146
-  - registered clients (based on headers, including apollo-\* ones) visible in UI
-  - configureable data retention (5 days atm) & flexible UI/graphs
-- schema registration examples (node/go/php...)
-- schema linting rules (camelCase, mandatory descriptions, too big objects, inconsistent pagination, dates not in DateTime...)
-  - integrate [inspector](https://graphql-inspector.com/docs/essentials/diff)
-- global search & changelog view (diffs across all services/subgraphs ordered by time)
-- webhooks/slack integration (notifify on schema change)
-- performance tracking (to know what resolvers to optimize)
-- access control - lightweight authentication in case this internal tool is publicly accessible
-- separate ephemeral automatic PQs, registered by frontend (use cache only with TTL) from true PQs backend-registered persisted queries (use DB only)
-- clean up schemas from every service except last N
-
-## Configuration
-
-We use environment variables for configuration.
-You can:
-
-- pass them directly
-- add .env file and dotenv will pick them up
-- add them to `docker-compose.yml` or `Dockerfile`
-
-The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
-
-| Variable Name         | Description                                                                   | Default                   |
-| --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
-| DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
-| DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
-| DB_SECRET             | Password used to connect to MySQL                                             | root                      |
-| DB_PORT               | Port used when connecting to MySQL                                            | 3306                      |
-| DB_NAME               | Name of the MySQL database to connect to                                      | schema-registry           |
-| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
-| REDIS_HOST            | Host name of the Redis server                                                 | gql-schema-registry-redis |
-| REDIS_PORT            | Port used when connecting to Redis                                            | 6379                      |
-| REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
-| ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
-| NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
-| ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
-| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
-| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
-| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
-| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
-| LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
-| LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
-
-For development we rely on docker network and use hostnames from `docker-compose.yml`.
-Node service uses to connect to mysql & redis and change it if you install it with own setup.
-For dynamic service discovery (if you need multiple hosts for scaling), override `app/config.js` and `diplomat.js`
-
 ## Installation
 
 With default settings, UI should be accessible at [http://localhost:6001](http://localhost:6001)
@@ -223,6 +168,44 @@ erDiagram
     schema ||..|{ schema_hit : "relates to"
 
 ```
+
+
+## Configuration
+
+We use environment variables for configuration.
+You can:
+
+- pass them directly
+- add .env file and dotenv will pick them up
+- add them to `docker-compose.yml` or `Dockerfile`
+
+The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
+
+| Variable Name         | Description                                                                   | Default                   |
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
+| DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
+| DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
+| DB_SECRET             | Password used to connect to MySQL                                             | root                      |
+| DB_PORT               | Port used when connecting to MySQL                                            | 3306                      |
+| DB_NAME               | Name of the MySQL database to connect to                                      | schema-registry           |
+| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
+| REDIS_HOST            | Host name of the Redis server                                                 | gql-schema-registry-redis |
+| REDIS_PORT            | Port used when connecting to Redis                                            | 6379                      |
+| REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
+| ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
+| NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
+| ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
+| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
+| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
+| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
+| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
+| LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
+| LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
+
+For development we rely on docker network and use hostnames from `docker-compose.yml`.
+Node service uses to connect to mysql & redis and change it if you install it with own setup.
+For dynamic service discovery (if you need multiple hosts for scaling), override `app/config.js` and `diplomat.js`
+
 
 ## Use cases / FAQ
 
