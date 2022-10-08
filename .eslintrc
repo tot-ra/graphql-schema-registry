@@ -5,7 +5,6 @@
 	],
 	"extends": [
 		"eslint:recommended",
-		"pipedrive",
 		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:prettier/recommended",
 		"plugin:@typescript-eslint/recommended"
@@ -16,7 +15,7 @@
 	},
 	"rules": {
 		"@typescript-eslint/ban-ts-comment": "warn",
-		"camelcase": "warn",
+		"camelcase": "off",
 		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": ["warn"]
 	},
@@ -28,7 +27,6 @@
 				"plugin:@typescript-eslint/recommended",
 				"plugin:react/recommended",
 				"plugin:react/jsx-runtime",
-				"pipedrive",
 				"plugin:prettier/recommended"
 			],
 			"env": {
@@ -47,7 +45,6 @@
 				"eslint:recommended",
 				"plugin:react/recommended",
 				"plugin:react/jsx-runtime",
-				"pipedrive",
 				"plugin:prettier/recommended"
 			],
 			"settings": {

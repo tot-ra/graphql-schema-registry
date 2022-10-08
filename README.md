@@ -169,7 +169,6 @@ erDiagram
 
 ```
 
-
 ## Configuration
 
 We use environment variables for configuration.
@@ -205,7 +204,6 @@ The following are the different environment variables that are looked up that al
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 Node service uses to connect to mysql & redis and change it if you install it with own setup.
 For dynamic service discovery (if you need multiple hosts for scaling), override `app/config.js` and `diplomat.js`
-
 
 ## Use cases / FAQ
 

@@ -4,6 +4,7 @@ export default gql`
 	scalar Time
 	scalar Date
 	scalar DateTime
+	scalar JSON
 
 	type Query {
 		services(limit: Int, offset: Int): [Service]
@@ -27,6 +28,7 @@ export default gql`
 
 		clients: [Client]
 		clientVersions(since: DateTime): [ClientVersion]
+		logs: JSON
 	}
 
 	type Mutation {

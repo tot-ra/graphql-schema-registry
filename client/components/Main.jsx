@@ -8,6 +8,7 @@ import Clients from '../clients';
 
 import ServicesTab from '../schema/Tab';
 import PersistedQueriesTab from '../persisted-queries/Tab';
+import Logs from '../logs';
 
 const UITabs = [
 	{
@@ -24,6 +25,11 @@ const UITabs = [
 		Title: <PersistedQueriesTab />,
 		href: '/persisted-queries',
 		component: PersistedQueries,
+	},
+	{
+		Title: <span>Logs</span>,
+		href: '/logs',
+		component: Logs,
 	},
 ];
 

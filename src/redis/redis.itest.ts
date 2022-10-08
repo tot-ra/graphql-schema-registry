@@ -25,8 +25,7 @@ describe('redis', () => {
 
 		it('get should return null if redis is not initialized', async () => {
 			// no prior initRedis() here
-			const { initRedis, get, disconnect } = (await import('./index'))
-				.default;
+			const { get } = (await import('./index')).default;
 			const result = await get('aaa');
 
 			expect(result).toEqual(null);

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Consumer, Kafka } from 'kafkajs';
 import diplomat from '../diplomat';
 

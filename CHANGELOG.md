@@ -16,9 +16,17 @@ Types of changes:
 
 ## [Unreleased]
 
+## [5.2.0] 2022-10-08
+
+### Added
+
+- logs tab added
+- add winston-redis-stream dependency for logs to stream to redis
+
 ## [5.1.1] 2022-10-07
 
 ### Changed
+
 - fix re-opening pages/navigation on refresh
 
 ## [5.1.0] 2022-10-06

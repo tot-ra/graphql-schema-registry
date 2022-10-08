@@ -9,6 +9,7 @@ import { logger } from './logger';
 const app = express();
 
 let server = null;
+let shutdownTry = 0;
 
 function monitorConnections() {
 	if (!server) {
@@ -22,8 +23,9 @@ function monitorConnections() {
 
 		logger.info(`Process shutting down with ${count} open connections\n`);
 
-		if (count > 0) {
-			setTimeout(() => monitorConnections(), 2000);
+		if (count > 0 && shutdownTry < 5) {
+			shutdownTry++;
+			setTimeout(() => monitorConnections(), 1000);
 		}
 	});
 }

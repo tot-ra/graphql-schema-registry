@@ -121,3 +121,9 @@ export const CLIENT_VERSION_PERSISTED_QUERIES = gql`
 		}
 	}
 `;
+
+export const LOGS = gql`
+	query getLogs {
+		logs
+	}
+`;
