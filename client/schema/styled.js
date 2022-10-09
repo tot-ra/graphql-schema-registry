@@ -27,7 +27,7 @@ export const ServiceListColumn = styled.div`
 `;
 
 export const SchemaListColumn = styled.div`
-	min-width: 250px;
+	min-width: 200px;
 	flex-shrink: 0;
 	border-right: 1px solid ${colors.black.hex256};
 `;

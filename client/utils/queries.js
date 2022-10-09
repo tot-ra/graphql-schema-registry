@@ -31,11 +31,11 @@ export const SERVICES_LIST = gql`
 `;
 
 export const SERVICE_SCHEMAS = gql`
-	query getServiceVersions($id: Int!, $filter: String) {
+	query getServiceVersions($id: Int!) {
 		service(id: $id) {
 			id
 
-			schemas(limit: 100, filter: $filter) {
+			schemas(limit: 100) {
 				id
 				isActive
 				addedTime
@@ -125,5 +125,26 @@ export const CLIENT_VERSION_PERSISTED_QUERIES = gql`
 export const LOGS = gql`
 	query getLogs {
 		logs
+	}
+`;
+
+export const SEARCH = gql`
+	query getSearch($query: String!) {
+		search(filter: $query) {
+			__typename
+
+			... on Service {
+				id
+				name
+			}
+			... on SchemaDefinition {
+				id
+				typeDefs
+				service {
+					id
+					name
+				}
+			}
+		}
 	}
 `;

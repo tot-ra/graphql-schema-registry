@@ -7,16 +7,15 @@ import VersionsList from './VersionsList';
 import VersionDetails from './VersionDetails';
 
 import { SERVICE_SCHEMAS } from '../../utils/queries';
-import Filter from '../service-list/Filter';
 
 const ServiceSchemas = ({ service }) => {
-	const [filterValue, setFilterValue] = useState('');
+	const [filterValue] = useState('');
 	const { loading, data, error } = useServiceSchemas(service.id, filterValue);
 
 	const content = loading ? (
 		<SpinnerCenter />
 	) : (
-		<VersionsList service={data.service} filterValue={filterValue} />
+		<VersionsList service={data.service} />
 	);
 
 	if (!service.id || error) {
@@ -25,13 +24,7 @@ const ServiceSchemas = ({ service }) => {
 
 	return (
 		<FlexRow>
-			<SchemaListColumn all="m">
-				<Filter
-					filterValue={filterValue}
-					setFilterValue={setFilterValue}
-				/>
-				{content}
-			</SchemaListColumn>
+			<SchemaListColumn all="m">{content}</SchemaListColumn>
 			<VersionDetails />
 		</FlexRow>
 	);
@@ -39,9 +32,9 @@ const ServiceSchemas = ({ service }) => {
 
 export default ServiceSchemas;
 
-function useServiceSchemas(serviceId, filterValue) {
+function useServiceSchemas(serviceId) {
 	return useQuery(SERVICE_SCHEMAS, {
-		variables: { id: serviceId, filter: filterValue },
+		variables: { id: serviceId },
 		skip: !serviceId,
 	});
 }

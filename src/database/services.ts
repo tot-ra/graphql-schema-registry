@@ -9,6 +9,21 @@ export interface ServiceRecord {
 }
 
 const servicesModel = {
+	search: async function ({ filter = '', limit = 10 }) {
+		const results = await connection('services')
+			.select(['id', 'added_time', 'name'])
+			.where('name', 'like', `%${filter}%`)
+			.orderBy('added_time')
+			.limit(limit);
+
+		return results.map((row) => {
+			return {
+				__typename: 'Service',
+				...row,
+			};
+		});
+	},
+
 	getActiveServices: async function (trx: Knex<ServiceRecord>) {
 		return trx('services')
 			.select('services.id', 'services.name', 'services.url')

@@ -25,11 +25,13 @@ export default gql`
 		): [PersistedQuery]
 		persistedQuery(key: String!): PersistedQuery
 		persistedQueriesCount: Int!
-
 		clients: [Client]
 		clientVersions(since: DateTime): [ClientVersion]
 		logs: JSON
+		search(filter: String!): [SearchResult]
 	}
+
+	union SearchResult = Service | SchemaDefinition
 
 	type Mutation {
 		deactivateSchema(id: Int!): SchemaDefinition!

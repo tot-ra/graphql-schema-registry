@@ -81,6 +81,21 @@ export default {
 			// @ts-ignore
 			return logs?.redis;
 		},
+
+		search: async (_, { filter }) => {
+			if (filter.length < 2) {
+				return null;
+			}
+
+			const [services, schemas] = await Promise.all([
+				servicesModel.search({
+					filter,
+				}),
+				schemaModel.search({ trx: connection, filter, limit: 10 }),
+			]);
+
+			return [...services, ...schemas];
+		},
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {

@@ -1,6 +1,7 @@
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import ReactLogo from './logo';
 import { useHistory } from 'react-router-dom';
+import GlobalSearch from './GlobalSearch';
 
 export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 	const history = useHistory();
@@ -31,6 +32,8 @@ export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 					/>
 				))}
 			</Tabs>
+
+			<GlobalSearch />
 		</AppBar>
 	);
 }
