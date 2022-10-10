@@ -22,7 +22,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 - Publishes schema registration events to minimize supergraph update time
 - Stores & shows in UI automatic persisted queries (passed by the gateway) for better visibility
 
-<img height="250" alt="diff" src="https://user-images.githubusercontent.com/445122/179374475-87879feb-f009-4afd-bb47-3f242b7c27a9.png"><img height="250" alt="schema usage" src="https://user-images.githubusercontent.com/445122/179374472-9fdf7ae2-5090-4618-9c17-d238dcf5ffe5.png">
+https://user-images.githubusercontent.com/445122/194967021-8e5d1750-db39-4809-8485-55d2b1b19429.mp4
 
 ## Installation
 
