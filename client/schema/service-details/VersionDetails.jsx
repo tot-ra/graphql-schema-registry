@@ -138,7 +138,7 @@ export default function VersionDetails() {
 							history.push(`/${serviceName}/${schemaId}/sdl`);
 							setTab('sdl');
 						}}
-						active={activeTab === 'sdl'}
+						selected={activeTab === 'sdl'}
 					/>
 
 					<Tab
@@ -147,7 +147,7 @@ export default function VersionDetails() {
 							history.push(`/${serviceName}/${schemaId}/diff`);
 							setTab('diff');
 						}}
-						active={activeTab === 'diff'}
+						selected={activeTab === 'diff'}
 					/>
 
 					<Tab
@@ -158,7 +158,7 @@ export default function VersionDetails() {
 							);
 							setTab('usage');
 						}}
-						active={activeTab === 'usage'}
+						selected={activeTab === 'usage'}
 					/>
 
 					<Tab
@@ -169,7 +169,7 @@ export default function VersionDetails() {
 							);
 							setTab('containers');
 						}}
-						active={activeTab === 'containers'}
+						selected={activeTab === 'containers'}
 					/>
 				</Tabs>
 				{panelContent}

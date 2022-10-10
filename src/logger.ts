@@ -4,13 +4,16 @@ import RedisTransport from 'winston-redis-stream';
 const logTransports = [new transports.Console()];
 
 if (process.env.REDIS_HOST) {
-	logTransports.push(
-		new RedisTransport({
+	try {
+		const redis = new RedisTransport({
 			host: process.env.REDIS_HOST,
 			port: process.env.REDIS_PORT,
 			channel: 'logs',
-		})
-	);
+		});
+		logTransports.push(redis);
+	} catch (e) {
+		console.error(e);
+	}
 }
 
 export const logger = createLogger({

@@ -54,16 +54,17 @@ const Main = () => {
 				selectedTab={selectedTab}
 				handleChange={handleChange}
 			/>
-
-			{UITabs.map((tab, index) => (
-				<TabPanel key={index} index={index} value={selectedTab}>
-					<Route
-						key={tab.href}
-						path={`${tab.href}*`}
-						component={tab.component}
-					/>
-				</TabPanel>
-			))}
+			<div>
+				{UITabs.map((tab, index) => (
+					<TabPanel key={index} index={index} value={selectedTab}>
+						<Route
+							key={tab.href}
+							path={`${tab.href}*`}
+							component={tab.component}
+						/>
+					</TabPanel>
+				))}
+			</div>
 		</div>
 	);
 };

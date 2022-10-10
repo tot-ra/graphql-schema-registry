@@ -40,9 +40,7 @@ const VersionsList = ({ service }) => {
 						selected={selectedSchema === schema.id}
 						className={schema.isActive ? '' : 'deleted'}
 						onClick={() =>
-							history.push(
-								`/${serviceName}/${schema.id}/definition`
-							)
+							history.push(`/${serviceName}/${schema.id}/sdl`)
 						}
 					>
 						<EntryGrid>

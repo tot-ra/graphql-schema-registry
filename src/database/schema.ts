@@ -16,6 +16,55 @@ interface SchemaRecord {
 }
 
 const schemaModel = {
+	search: async function ({
+		limit = 10,
+		filter = '',
+		trx,
+	}: {
+		limit: number;
+		filter: string;
+		trx: Knex<SchemaRecord>;
+	}) {
+		const results = await trx('schema')
+			.select(
+				'schema.*',
+				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
+			)
+			.leftJoin(
+				'container_schema',
+				'container_schema.schema_id',
+				'schema.id'
+			)
+			.where((builder) => {
+				const result = builder.where(
+					'container_schema.version',
+					'like',
+					`%${filter}%`
+				);
+
+				if (filter[0] === '!') {
+					result.orWhere(
+						'schema.type_defs',
+						'not like',
+						`%${filter.substring(1)}%`
+					);
+				} else {
+					result.orWhere('schema.type_defs', 'like', `%${filter}%`);
+				}
+
+				return result;
+			})
+			.orderBy('schema.added_time', 'desc')
+			.groupBy('schema.id')
+			.limit(limit);
+
+		return results.map((row) => {
+			return {
+				__typename: 'SchemaDefinition',
+				...row,
+			};
+		});
+	},
 	getLatestAddedDate: async function () {
 		const latest = await connection('schema')
 			.max('added_time as added_time')
@@ -33,33 +82,33 @@ const schemaModel = {
 
 		const latestSchemaCandidates = await trx.raw(
 			`SELECT t1.id,
-						t1.service_id,
-						t1.version,
-						t3.name,
-						t3.url,
-						t4.added_time,
-						t4.type_defs,
-						t4.is_active
-				 FROM \`container_schema\` as t1
-						  INNER JOIN (
-					 SELECT MAX(cs1.added_time) as max_added_time,
-							MAX(cs1.id)         as max_id,
-							cs1.service_id
-					 FROM \`container_schema\` cs1
-					 	INNER JOIN \`schema\` s1 on cs1.schema_id = s1.id
-					 WHERE s1.is_active <> 0
-					 GROUP BY cs1.service_id
-				 ) as t2 ON t2.service_id = t1.service_id
-						  INNER JOIN \`services\` t3 ON t3.id = t1.service_id
-						  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
-				 WHERE t3.name IN (?)
-				   AND t3.id = t2.service_id
-				   AND (
+					t1.service_id,
+					t1.version,
+					t3.name,
+					t3.url,
+					t4.added_time,
+					t4.type_defs,
+					t4.is_active
+			 FROM \`container_schema\` as t1
+					  INNER JOIN (
+				 SELECT MAX(cs1.added_time) as max_added_time,
+						MAX(cs1.id)         as max_id,
+						cs1.service_id
+				 FROM \`container_schema\` cs1
+						  INNER JOIN \`schema\` s1 on cs1.schema_id = s1.id
+				 WHERE s1.is_active <> 0
+				 GROUP BY cs1.service_id
+			 ) as t2 ON t2.service_id = t1.service_id
+					  INNER JOIN \`services\` t3 ON t3.id = t1.service_id
+					  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
+			 WHERE t3.name IN (?)
+			   AND t3.id = t2.service_id
+			   AND (
 						 t4.added_time = t2.max_added_time OR
 						 t1.id = t2.max_id
-					 )
-				   AND t4.is_active = TRUE
-				 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
+				 )
+			   AND t4.is_active = TRUE
+			 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
 			[names]
 		);
 
@@ -311,7 +360,6 @@ const schemaModel = {
 		serviceIds,
 		limit = 100,
 		offset = 0,
-		filter = '',
 		trx,
 	}: {
 		serviceIds: string[];
@@ -331,25 +379,6 @@ const schemaModel = {
 				'schema.id'
 			)
 			.whereIn('schema.service_id', serviceIds)
-			.andWhere((builder) => {
-				const result = builder.where(
-					'container_schema.version',
-					'like',
-					`%${filter}%`
-				);
-
-				if (filter[0] === '!') {
-					result.orWhere(
-						'schema.type_defs',
-						'not like',
-						`%${filter.substring(1)}%`
-					);
-				} else {
-					result.orWhere('schema.type_defs', 'like', `%${filter}%`);
-				}
-
-				return result;
-			})
 			.orderBy('schema.added_time', 'desc')
 			.groupBy('schema.id')
 			.offset(offset)
