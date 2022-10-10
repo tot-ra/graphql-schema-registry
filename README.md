@@ -14,13 +14,13 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ## Features
 
 - Stores versioned schema for graphql-federated services
-- Serves schema for graphql gateway based on provided services & their versions
+- Serves supergraph schema for graphql gateway based on provided services & their versions
 - Validates new schema to be compatible with other _running_ services
 - Provides UI for developers to see stored schema & its history diff
-- Stores & shows in UI persisted queries passed by the gateway for debugging
 - Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
-- Async schema registration of new schema with events to avoid polling (`schema-registry -> kafka -> gateway`)
-- Async query analyzer for schema usage generation to minimize breaking changes
+- Does async schema usage analysis to minimize breaking changes from reaching production
+- Publishes schema registration events to minimize supergraph update time
+- Stores & shows in UI automatic persisted queries (passed by the gateway) for better visibility
 
 <img height="250" alt="diff" src="https://user-images.githubusercontent.com/445122/179374475-87879feb-f009-4afd-bb47-3f242b7c27a9.png"><img height="250" alt="schema usage" src="https://user-images.githubusercontent.com/445122/179374472-9fdf7ae2-5090-4618-9c17-d238dcf5ffe5.png">
 
