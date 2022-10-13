@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-export const safeParseInt = (input: string): number | undefined => {
+export const safeParseInt = (input: string | number): number | undefined => {
+	if (typeof input === 'number') {
+		return input;
+	}
 	if (/\d+/.test(input)) {
 		return parseInt(input, 10);
 	}
