@@ -59,7 +59,7 @@ export const InstanceStatsTableRow = ({
 				<TableCell component="th" scope="row">
 					{executions?.error ?? 0}
 				</TableCell>
-				{showUsageDetail && (
+				{showUsageDetail && executions?.total > 0 && (
 					<TableCell component="th" scope="row">
 						<IconButton onClick={handleOnChange}>
 							{isSelected && (
@@ -82,11 +82,7 @@ export const InstanceStatsTableRow = ({
 					>
 						<Collapse in={isSelected} timeout="auto" unmountOnExit>
 							<InstanceStatsTableFieldStats
-								id={
-									typeof id === 'string'
-										? safeParseInt(id) ?? 0
-										: id
-								}
+								id={safeParseInt(id)}
 							/>
 						</Collapse>
 					</TableCell>
