@@ -42,7 +42,9 @@ describe('app/controller/schema', () => {
 			expect(result2.data[0]).toMatchObject({
 				is_active: 1,
 				name: 'service_a',
-				type_defs: 'type Query { hello: String }',
+				type_defs: `type Query {
+  hello: String
+}`,
 				url: '',
 				version: 'v1',
 			});
@@ -67,7 +69,9 @@ describe('app/controller/schema', () => {
 					body: {
 						name: 'service_a',
 						version: 'v2',
-						type_defs: 'type Query { world: String }',
+						type_defs: `type Query {
+  world: String
+}`,
 						url: '',
 					},
 				},
@@ -152,7 +156,9 @@ type Query {
 					body: {
 						name: 'service_b',
 						version: 'latest', // !
-						type_defs: 'type Query { world: String }',
+						type_defs: `type Query {
+  world: String
+}`,
 						url: '',
 					},
 				},

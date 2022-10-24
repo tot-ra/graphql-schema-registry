@@ -125,6 +125,7 @@ describe('app/graphql', () => {
 				// ASSERT
 				expect(Object.keys(result)).toEqual([
 					'id',
+					'UUID',
 					'service_id',
 					'is_active',
 					'type_defs',
