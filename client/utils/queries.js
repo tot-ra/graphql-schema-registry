@@ -37,6 +37,7 @@ export const SERVICE_SCHEMAS = gql`
 
 			schemas(limit: 100) {
 				id
+				UUID
 				isActive
 				addedTime
 				typeDefs
@@ -55,6 +56,7 @@ export const SCHEMA_DETAILS = gql`
 	query getSchema($schemaId: Int!) {
 		schema(id: $schemaId) {
 			id
+			UUID
 			typeDefs
 			isActive
 			addedTime

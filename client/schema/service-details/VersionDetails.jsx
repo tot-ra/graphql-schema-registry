@@ -46,7 +46,8 @@ export default function VersionDetails() {
 		return null;
 	}
 
-	const { id, addedTime, typeDefs, previousSchema, containers } = data.schema;
+	const { UUID, addedTime, typeDefs, previousSchema, containers } =
+		data.schema;
 	const addedTimestamp = new Date(addedTime);
 	const url = data.schema.service.url;
 
@@ -109,7 +110,7 @@ export default function VersionDetails() {
 				<VersionHeader>
 					<div>
 						<VersionHeaderTitle noMargin>
-							Schema #{id}
+							Schema {UUID}
 						</VersionHeaderTitle>
 						<VersionHeaderTime>
 							Added{' '}

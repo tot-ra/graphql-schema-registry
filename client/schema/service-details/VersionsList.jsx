@@ -46,15 +46,15 @@ const VersionsList = ({ service }) => {
 						<EntryGrid>
 							<div>
 								<FlexRow>
-									<VersionTag>#{schema.id}</VersionTag>
-									<VersionCharDelta
-										selected={selectedSchema === schema.id}
-										schema={schema}
-									/>
+									<VersionTag>{schema.UUID}</VersionTag>
 								</FlexRow>
 								<VersionRow
 									selected={selectedSchema === schema.id}
 								>
+									<VersionCharDelta
+										selected={selectedSchema === schema.id}
+										schema={schema}
+									/>
 									<span>
 										added{' '}
 										{formatDistance(date, today, {

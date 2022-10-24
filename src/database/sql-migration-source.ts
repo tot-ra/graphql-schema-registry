@@ -16,7 +16,7 @@ class CustomSqlMigrationSource implements Knex.MigrationSource<any> {
 		);
 		const files = fs
 			.readdirSync(absoluteDir)
-			.filter((f) => f.endsWith('.sql'))
+			.filter((f) => f.endsWith('.sql') || f.endsWith('.js'))
 			.sort();
 
 		// The Knex migrationsLister.js code assumes that migrations are returned as an array of objects each having a 'file'
@@ -39,6 +39,10 @@ class CustomSqlMigrationSource implements Knex.MigrationSource<any> {
 			this.migrationDirectory,
 			this.getMigrationName(migration)
 		);
+
+		if (migrationPath.endsWith('.js')) {
+			return require(migrationPath);
+		}
 
 		return {
 			up: async function up(knex: any) {
