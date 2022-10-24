@@ -15,15 +15,11 @@ describe('app/database/schema', () => {
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA1 { name: String }`,
-			cost_map: '{}',
-			allow_map: '{}',
 		});
 
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA2 { name: String }`,
-			cost_map: '{}',
-			allow_map: '{}',
 			UUID: 'asd',
 		});
 
@@ -45,23 +41,17 @@ describe('app/database/schema', () => {
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA1 { name: String }`,
-			cost_map: '{}',
-			allow_map: '{}',
 		});
 
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA2 { name: String }`,
-			cost_map: '{}',
-			allow_map: '{}',
 			UUID: 'asd',
 		});
 
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA3 { name: String }`,
-			cost_map: '{}',
-			allow_map: '{}',
 		});
 
 		const result = await schemaModel.listMigrateableSchemas(knex);

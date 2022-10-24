@@ -134,7 +134,9 @@ describe('app/graphql', () => {
 					'characters',
 				]);
 				expect(result).toMatchObject({
-					type_defs: 'type Query { default: String }',
+					type_defs: `type Query {
+  default: String
+}`,
 				});
 			});
 		});
