@@ -17,7 +17,9 @@ Types of changes:
 ## [Unreleased]
 
 ## [5.3.0] 2022-10-11
+
 ### Changed
+
 - added global search input in menu
 - removed per-version search as redundant
 
