@@ -1,9 +1,9 @@
 import schemaModel from './schema';
-import knex from '../../test/integration/database';
+import knex, { cleanTables } from '../../test/integration/database';
 
 describe('app/database/schema', () => {
 	beforeEach(async () => {
-		await knex.cleanTables();
+		await cleanTables();
 	});
 
 	it('listMigrateableSchemas - lists only schemas without UUID', async () => {
