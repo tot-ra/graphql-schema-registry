@@ -127,6 +127,7 @@ erDiagram
     }
     schema {
       id int PK
+      UUID varchar
       service_id int FK
       is_active tinyint
       type_defs mediumtext
