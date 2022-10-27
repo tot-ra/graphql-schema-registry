@@ -7,6 +7,7 @@ export default {
 
 	serviceDiscovery: {
 		'gql-schema-registry-db': {
+			client: 'mysql2', // needed for knex migrate:make to not use sqlite3
 			host: process.env.DB_HOST || 'gql-schema-registry-db',
 			port: process.env.DB_PORT || '3306',
 			username: process.env.DB_USERNAME || 'root',

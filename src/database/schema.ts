@@ -1,5 +1,8 @@
 import { Knex } from 'knex';
 import { unionBy } from 'lodash';
+import crypto from 'crypto';
+import { print, parse } from 'graphql';
+
 import { connection } from './index';
 import servicesModel from './services';
 import { PublicError } from '../helpers/error';
@@ -253,12 +256,11 @@ const schemaModel = {
 		logger.info(`Registering schema with serviceId = ${serviceId}`);
 
 		// SCHEMA
-		let schemaId = (
-			await trx('schema').select('id').where({
-				service_id: serviceId,
-				type_defs: service.type_defs,
-			})
-		)[0]?.id;
+		let schemaId = await findExistingSchema(
+			trx,
+			serviceId,
+			service.type_defs
+		);
 
 		if (
 			!isDevVersion(service.version) &&
@@ -277,10 +279,13 @@ const schemaModel = {
 				.where('id', '=', schemaId)
 				.update({ updated_time: addedTime });
 		} else {
+			const type_defs_normalized = normalizeTypeDefs(service.type_defs);
+
 			[schemaId] = await trx('schema').insert(
 				{
 					service_id: serviceId,
-					type_defs: service.type_defs,
+					UUID: generateUUID(type_defs_normalized),
+					type_defs: type_defs_normalized,
 					added_time: addedTime,
 				},
 				['id']
@@ -415,7 +420,65 @@ const schemaModel = {
 
 		return schema;
 	},
+
+	listMigrateableSchemas: async function (knex, limit = 100) {
+		return await knex('schema')
+			.select(['schema.id', 'schema.type_defs', 'schema.is_active'])
+			.whereNull('schema.UUID')
+			.limit(limit);
+	},
+
+	addUUIDToAllSchemas: async function (knex, limit = 100) {
+		let count = null;
+		let offset = 0;
+
+		while (count !== 0) {
+			const schemas = await schemaModel.listMigrateableSchemas(
+				knex,
+				limit
+			);
+
+			offset = offset + limit;
+			count = schemas ? schemas.length : 0;
+
+			for (const row of schemas) {
+				const type_defs = normalizeTypeDefs(row.type_defs);
+
+				await knex('schema')
+					.where('id', '=', row.id)
+					.update({
+						UUID: generateUUID(type_defs),
+						type_defs, // make new type defs pretty
+						updated_time: row.updated_time, // keep old update time
+					});
+			}
+		}
+	},
 };
+
+function normalizeTypeDefs(sdl) {
+	return print(parse(sdl));
+}
+
+function generateUUID(type_defs_normalized) {
+	const schemaPropertiesDefiningUniqueness = [type_defs_normalized].join('.');
+
+	return crypto
+		.createHash('md5')
+		.update(schemaPropertiesDefiningUniqueness)
+		.digest('hex');
+}
+
+async function findExistingSchema(trx, serviceId, type_defs) {
+	return (
+		await trx('schema')
+			.select('id')
+			.where({
+				service_id: serviceId,
+				UUID: generateUUID(normalizeTypeDefs(type_defs)),
+			})
+	)[0]?.id;
+}
 
 async function versionExists(trx, serviceId, version) {
 	return (

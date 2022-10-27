@@ -56,7 +56,9 @@ describe('GET /schema/latest', function () {
 					id: 1,
 					is_active: 1,
 					name: 'service_a',
-					type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
+					type_defs: `type Query {
+  hello: String
+}`,
 					url: null,
 					version: 'ke9j34fuuei',
 				})
@@ -106,7 +108,9 @@ describe('GET /schema/latest', function () {
 					id: 1,
 					is_active: 1,
 					name: 'service_a',
-					type_defs: '\n\ttype Query {\n\t\thello: String\n\t}\n',
+					type_defs: `type Query {
+  hello: String
+}`,
 					url: null,
 					version: 'ke9j34fuuei',
 				})
@@ -116,7 +120,9 @@ describe('GET /schema/latest', function () {
 					id: 2,
 					is_active: 1,
 					name: 'service_b',
-					type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
+					type_defs: `type Query {
+  world: String
+}`,
 					url: null,
 					version: 'jiaj51fu91k',
 				})

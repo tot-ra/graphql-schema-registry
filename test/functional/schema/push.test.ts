@@ -77,7 +77,7 @@ describe('POST /schema/push', function () {
 				expect.objectContaining({
 					success: false,
 					message: expect.stringContaining(
-						'Type of field "Query.hello" is incompatible across subgraphs'
+						'Type of field "Query.hello" is incompatible across subgraphs: it has type "String" in subgraph "service_a" but type "Int" in subgraph "service_b"'
 					),
 					details: [
 						{
@@ -85,11 +85,11 @@ describe('POST /schema/push', function () {
 								code: 'FIELD_TYPE_MISMATCH',
 							},
 							message: expect.stringContaining(
-								'Type of field "Query.hello" is incompatible across subgraphs'
+								'Type of field "Query.hello" is incompatible across subgraphs: it has type "String" in subgraph "service_a" but type "Int" in subgraph "service_b"'
 							),
 							locations: [
-								{ line: 3, column: 3 },
-								{ line: 3, column: 3 },
+								{ line: 2, column: 3 },
+								{ line: 2, column: 3 },
 							],
 						},
 					],

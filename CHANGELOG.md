@@ -16,8 +16,38 @@ Types of changes:
 
 ## [Unreleased]
 
-## [5.3.0] 2022-10-11
+## [5.4.0] 2022-10-27
 ### Changed
+- Add schema normalization (re-formatting) - this should get rid of extra tabbing & spacing when services register their schemas inconsistently
+- Fix knex migration generation from commandline (`npm run new-db-migration my-new-migration`)
+- Improve migration scripts to support JS migrations. Possibly somewhat breaking change for organizations that relied only on .sql files
+- Migrate schemas to now include UUID (js migration). If your organization didn't expect/run js migrations, you will have empty UUIDs, but follow-up schema registrations should have it in new schemas, so not a big deal, just may be a bit confusing in the UI
+- Do not delete duplicate schemas as its a bit dangerous. You may have had duplicate schemas before. We could have deleted them, but its a risky operation.
+
+If you need to clean them up, here is a script:
+```sql
+UPDATE `container_schema` t3
+  INNER JOIN `schema` t1
+  INNER JOIN `schema` t2
+  SET t3.schema_id = t1.id
+  WHERE t1.UUID IS NOT null
+    AND t1.id < t2.id
+    AND t1.UUID = t2.UUID
+    AND t3.schema_id = t2.id;
+
+DELETE t2
+  FROM `schema` t1
+  INNER JOIN `schema` t2
+  WHERE
+    t2.UUID IS NOT null AND
+    t1.id < t2.id AND
+    t1.UUID = t2.UUID;
+```
+
+## [5.3.0] 2022-10-11
+
+### Changed
+
 - added global search input in menu
 - removed per-version search as redundant
 
@@ -355,7 +385,11 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.0.0...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.4.0...HEAD
+[5.4.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.3.0...v5.4.0
+[5.3.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.2.0...v5.3.0
+[5.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.1.0...v5.2.0
+[5.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.5.0...v4.0.0
 [3.5.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.4.0...v3.5.0

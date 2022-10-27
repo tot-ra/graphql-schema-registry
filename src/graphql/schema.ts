@@ -71,6 +71,7 @@ export default gql`
 
 	type SchemaDefinition {
 		id: Int!
+		UUID: String
 		service: Service!
 		isActive: Boolean!
 

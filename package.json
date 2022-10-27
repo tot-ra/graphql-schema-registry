@@ -1,6 +1,6 @@
 {
   "name": "graphql-schema-registry",
-  "version": "5.3.0",
+  "version": "5.4.0",
   "description": "Graphql schema registry",
   "main": "app/schema-registry.js",
   "engines": {
@@ -29,7 +29,7 @@
     "build-frontend": "webpack --node-env production --bail --config webpack.config.js",
     "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml",
     "migrate-db": "knex migrate:latest",
-    "new-db-migration": "knex migrate:make --stub ./migrations/sql.stub rename_me",
+    "new-db-migration": "knex migrate:make --stub ./migrations/sql.stub",
     "list-db-migrations": "knex migrate:list",
     "lint": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx client src",
     "lint:fix": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx client src --fix"

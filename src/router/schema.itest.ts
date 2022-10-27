@@ -42,7 +42,9 @@ describe('app/controller/schema', () => {
 			expect(result2.data[0]).toMatchObject({
 				is_active: 1,
 				name: 'service_a',
-				type_defs: 'type Query { hello: String }',
+				type_defs: `type Query {
+  hello: String
+}`,
 				url: '',
 				version: 'v1',
 			});
@@ -67,7 +69,7 @@ describe('app/controller/schema', () => {
 					body: {
 						name: 'service_a',
 						version: 'v2',
-						type_defs: 'type Query { world: String }',
+						type_defs: `type Query { world: String }`,
 						url: '',
 					},
 				},
@@ -80,7 +82,56 @@ describe('app/controller/schema', () => {
 			expect(result2.data[0]).toMatchObject({
 				is_active: 1,
 				name: 'service_a',
-				type_defs: 'type Query { world: String }',
+				type_defs: `type Query {
+  world: String
+}`,
+				url: '',
+				version: 'v2',
+			});
+		});
+
+		it('schema is case sensitive', async () => {
+			let result = await push(
+				{
+					body: {
+						name: 'service_a',
+						version: 'v1',
+						type_defs:
+							'type MyType { id: String} type Query { my: MyType }',
+						url: '',
+					},
+				},
+				res
+			);
+			expect(result.success).toEqual(true);
+
+			result = await push(
+				{
+					body: {
+						name: 'service_a',
+						version: 'v2',
+						type_defs:
+							'type MyType { Id: String another: String } type Query { my: MyType }',
+						url: '',
+					},
+				},
+				res
+			);
+			expect(result.success).toEqual(true);
+
+			const result2 = await composeLatest({}, res);
+
+			expect(result2.data[0]).toMatchObject({
+				is_active: 1,
+				name: 'service_a',
+				type_defs: `type MyType {
+  Id: String
+  another: String
+}
+
+type Query {
+  my: MyType
+}`,
 				url: '',
 				version: 'v2',
 			});
@@ -105,7 +156,7 @@ describe('app/controller/schema', () => {
 					body: {
 						name: 'service_b',
 						version: 'latest', // !
-						type_defs: 'type Query { world: String }',
+						type_defs: `type Query { world: String }`,
 						url: '',
 					},
 				},
@@ -118,7 +169,9 @@ describe('app/controller/schema', () => {
 			expect(result2.data[0]).toMatchObject({
 				is_active: 1,
 				name: 'service_b',
-				type_defs: 'type Query { world: String }',
+				type_defs: `type Query {
+  world: String
+}`,
 				url: '',
 				version: 'latest',
 			});

@@ -110,7 +110,9 @@ describe('POST /schema/compose', function () {
 					id: 2,
 					is_active: 1,
 					name: 'service_a',
-					type_defs: '\n\ttype Query {\n\t\tprivet: Int\n\t}\n',
+					type_defs: `type Query {
+  privet: Int
+}`,
 					version: 'v2',
 				})
 			);
@@ -120,7 +122,9 @@ describe('POST /schema/compose', function () {
 					id: 3,
 					is_active: 1,
 					name: 'service_b',
-					type_defs: '\n\ttype Query {\n\t\tworld: String\n\t}\n',
+					type_defs: `type Query {
+  world: String
+}`,
 					version: 'v1',
 				})
 			);

@@ -125,6 +125,7 @@ describe('app/graphql', () => {
 				// ASSERT
 				expect(Object.keys(result)).toEqual([
 					'id',
+					'UUID',
 					'service_id',
 					'is_active',
 					'type_defs',
@@ -133,7 +134,9 @@ describe('app/graphql', () => {
 					'characters',
 				]);
 				expect(result).toMatchObject({
-					type_defs: 'type Query { default: String }',
+					type_defs: `type Query {
+  default: String
+}`,
 				});
 			});
 		});
