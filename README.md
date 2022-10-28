@@ -208,7 +208,7 @@ For dynamic service discovery (if you need multiple hosts for scaling), override
 
 ## Use cases / FAQ
 
-### When/now do I register schema?
+### When/how do I register schema?
 
 On service start-up (runtime), make POST to /schema/push to register schema (see API reference for details).
 Make sure to handle failure.
@@ -223,7 +223,7 @@ But, if you are developing a service and you run schema-registry locally, you ca
 ### Do I need to deregister services?
 
 - if your gateway uses /schema/compose then no, schema is composed based on services you see as healthy
-- if your gateway uses /schema/latest then yes, service has `is_active` flag in DB that you can manually toggle (no API yet)
+- if your gateway uses /schema/latest then maybe. Schema-registry will provide last schema that was registered in time. So if you deploy older version of your service, you will still have last schema there that you would need to deregister. Schema has `is_active` flag in DB that you can manually toggle via UI.
 
 ### When do I need to validate schema?
 
