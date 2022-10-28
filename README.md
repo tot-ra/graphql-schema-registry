@@ -313,10 +313,10 @@ DB tables are truncated after every test from within `test/functional/bootstrap.
 Jest runs in single worker mode to avoid tests from affecting each other due to same state.
 
 ```
-#docker-compose -f docker-compose.light.yml up -d
+#docker-compose -f docker-compose.base.yml up -d
 #npm run develop
 
-npm run test-functional
+npm run test:functional
 ```
 
 ### Performance tests
