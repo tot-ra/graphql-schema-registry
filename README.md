@@ -297,14 +297,22 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ## Testing
+Almost all types (except performance) use jest as a test runner
 
 ### Unit tests
 
-use jest, coverage is quite low as most logic is in db or libraries.
+These tests either small functions, or do need mocks. Test coverage is quite low as most logic is in db or libraries.
 
 ```
-npm run test
+npm run test:unit
 ```
+
+### Integration tests
+require docker, but mostly whitebox type - these call specific internal functions that do rely on real mysql/redis connections. Some tests mimic functional tests - main benefit is that we get test coverage reported without extra http calls.
+```
+npm run test:integration
+```
+
 
 ### Functional tests
 
