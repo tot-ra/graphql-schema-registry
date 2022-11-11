@@ -5,6 +5,8 @@ import * as kafka from './kafka';
 import config from './config';
 import router from './router';
 import { logger } from './logger';
+import diplomat from './diplomat';
+import redis from './redis';
 
 const app = express();
 
@@ -98,6 +100,12 @@ export default async function init() {
 
 	if (server) {
 		return server;
+	}
+
+	const redisConfig = diplomat.getServiceInstance('gql-schema-registry-redis');
+
+	if (redisConfig.host) {
+		redis.initRedis();
 	}
 
 	if (config.asyncSchemaUpdates) {

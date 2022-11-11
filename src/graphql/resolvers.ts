@@ -79,7 +79,7 @@ export default {
 			);
 
 			// @ts-ignore
-			return logs?.redis;
+			return process.env.LOG_STREAMING_ENABLED === 'true' ? logs?.redis : '';
 		},
 
 		search: async (_, { filter }) => {

@@ -3,11 +3,14 @@ import RedisTransport from 'winston-redis-stream';
 
 const logTransports = [new transports.Console()];
 
-if (process.env.REDIS_HOST) {
+if (process.env.LOG_STREAMING_ENABLED === 'true' && process.env.REDIS_HOST) {
 	try {
 		const redis = new RedisTransport({
-			host: process.env.REDIS_HOST,
-			port: process.env.REDIS_PORT,
+			redis: {
+				host: process.env.REDIS_HOST,
+				port: process.env.REDIS_PORT,
+				password: process.env.REDIS_SECRET,
+			},
 			channel: 'logs',
 		});
 		logTransports.push(redis);

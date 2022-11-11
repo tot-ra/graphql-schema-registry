@@ -25,6 +25,7 @@ services:
     image: redis:6-alpine
     ports:
       - 6004:6379
+    command: redis-server --requirepass password
     environment:
       SERVICE_NAME: 'gql-schema-registry-redis'
     networks:
