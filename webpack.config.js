@@ -59,7 +59,21 @@ module.exports = {
 	plugins: [
 		new ForkTsCheckerWebpackPlugin({
 			typescript: {
-				configFile: './client/tsconfig.json',
+				configOverwrite: {
+					compilerOptions: {
+						lib: ['ES2020', 'DOM', 'DOM.Iterable'],
+						sourceMap: isEnvProduction
+							? shouldUseSourceMap
+							: isEnvDevelopment,
+						skipLibCheck: true,
+						inlineSourceMap: false,
+						declarationMap: false,
+						noEmit: true,
+						incremental: true,
+						jsx: 'preserve',
+					},
+					include: ['client/**/*'],
+				},
 			},
 		}),
 		new MiniCssExtractPlugin({

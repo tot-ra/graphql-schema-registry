@@ -17,7 +17,7 @@ const VersionsList = ({ service }) => {
 	const selectedSchema = parseInt(schemaId, 10);
 
 	if (!service) {
-		return;
+		return <div>No service passed</div>;
 	}
 
 	return (
@@ -35,48 +35,42 @@ const VersionsList = ({ service }) => {
 						</Tooltip>
 					) : null;
 
-					return (
-						<NavigationListItem
-							button
-							key={schema.id}
-							className={schema.isActive ? '' : 'deleted'}
-							href={`/schema/${serviceName}/${schema.id}`}
-							showNavigationChevron={!schema.isDev}
-							value={
-								<EntryGrid>
-									<div>
-										<FlexRow>
-											<VersionTag>
-												#{schema.id}
-											</VersionTag>
-											<VersionCharDelta
-												selected={
-													selectedSchema === schema.id
-												}
-												schema={schema}
-											/>
-										</FlexRow>
-										<VersionRow
-											selected={
-												selectedSchema === schema.id
-											}
-										>
-											<span>
-												added{' '}
-												{formatDistance(date, today, {
-													addSuffix: true,
-												})}
-											</span>
-										</VersionRow>
-									</div>
-									{icon}
-								</EntryGrid>
-							}
-						/>
-					);
-				})}
-			</NavigationList>
-		</ListContainer>
+				return (
+					<ListItem
+						button
+						key={schema.id}
+						selected={selectedSchema === schema.id}
+						className={schema.isActive ? '' : 'deleted'}
+						onClick={() =>
+							history.push(`/${serviceName}/${schema.id}/sdl`)
+						}
+					>
+						<EntryGrid>
+							<div>
+								<FlexRow>
+									<VersionTag>{schema.UUID}</VersionTag>
+								</FlexRow>
+								<VersionRow
+									selected={selectedSchema === schema.id}
+								>
+									<VersionCharDelta
+										selected={selectedSchema === schema.id}
+										schema={schema}
+									/>
+									<span>
+										added{' '}
+										{formatDistance(date, today, {
+											addSuffix: true,
+										})}
+									</span>
+								</VersionRow>
+							</div>
+							{icon}
+						</EntryGrid>
+					</ListItem>
+				);
+			})}
+		</List>
 	);
 };
 

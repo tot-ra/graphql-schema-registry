@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import { Container, Button } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { colors, elevations } from '../utils';
 
-export const EntryPanel = styled(Container)`
+export const EntryPanel = styled.div`
 	transition: 0.2s ease-in;
 	box-shadow: ${elevations[2]};
 	cursor: ${({ onClick }) => onClick && 'pointer'};
@@ -24,6 +24,7 @@ export const EntryPanel = styled(Container)`
 export const EntryName = styled.h3`
 	font-weight: 400;
 	margin: 0;
+	padding: 10px;
 	& > span {
 		font-weight: normal;
 	}
@@ -35,10 +36,6 @@ export const EntryGrid = styled.div`
 	flex-flow: row nowrap;
 	& > :first-child {
 		flex: 2;
-	}
-
-	.cui4-icon {
-		margin: 0 5px;
 	}
 `;
 
@@ -79,4 +76,17 @@ export const CopyButton = styled(Button)`
 	top: 16px;
 	right: 8px;
 	z-index: 2;
+`;
+
+export const ColumnPanel = styled.div`
+	min-width: 170px;
+	flex-shrink: 0;
+`;
+
+export const FlexRow = styled.div`
+	display: flex;
+	flex-flow: row nowrap;
+	overflow: hidden;
+	height: 100%;
+	justify-content: space-between;
 `;

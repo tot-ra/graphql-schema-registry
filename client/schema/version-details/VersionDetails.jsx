@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Button, ButtonGroup, Tabs, Tab } from '@material-ui/core';
-import TabPanel from '../../components/TabPanel';
 
 import { useQuery } from '@apollo/client';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import {
 	VersionHeader,
 	VersionHeaderTitle,
@@ -18,25 +17,25 @@ import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighl
 
 import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
-import { MainViewContainer } from '../../components/MainViewContainer';
+import UsageTab from './UsageTab';
+import ContainersTab from './ContainersTab';
 
-export function useSchemaParam() {
-	const { schemaId } = useParams();
+// eslint-disable-next-line complexity
+export default function VersionDetails() {
+	const history = useHistory();
+	const { serviceName, schemaId, subtab, selectedEntity, selectedProperty } =
+		useSchemaParam();
 
-	return schemaId ? parseInt(schemaId, 10) : null;
-}
-
-const VersionDetails = () => {
 	const [revealed, setRevealed] = useState(null);
-	const [value, setValue] = useState(0);
+	const [activeTab, setTab] = useState(subtab ? subtab : 'sdl');
+	let selectedTab = 0;
 
 	const handleChange = (event, newValue) => {
-		setValue(newValue);
+		selectedTab = newValue;
 	};
 
 	const onClick = () => setRevealed((revealed) => !revealed);
 
-	const schemaId = useSchemaParam();
 	const { data, loading } = useQuery(SCHEMA_DETAILS, {
 		variables: { schemaId },
 		skip: !schemaId,
@@ -46,7 +45,8 @@ const VersionDetails = () => {
 		return null;
 	}
 
-	const { id, addedTime, typeDefs, previousSchema, containers } = data.schema;
+	const { UUID, addedTime, typeDefs, previousSchema, containers } =
+		data.schema;
 	const addedTimestamp = new Date(addedTime);
 	const url = data.schema.service.url;
 
@@ -54,8 +54,36 @@ const VersionDetails = () => {
 	if (url) {
 		urlInfo = <VersionHeaderUrl>URL: {url}</VersionHeaderUrl>;
 	}
-
+	let panelContent = '';
 	const oldCode = previousSchema ? previousSchema.typeDefs : '';
+
+	switch (activeTab) {
+		case 'diff':
+			selectedTab = 1;
+			panelContent = <CodeDiff oldCode={oldCode} newCode={typeDefs} />;
+			break;
+		case 'sdl':
+			selectedTab = 0;
+			panelContent = (
+				<SourceCodeWithHighlightAndCopy
+					revealed={revealed}
+					onClick={onClick}
+					query={typeDefs}
+					lines="35"
+				/>
+			);
+			break;
+		case 'containers':
+			selectedTab = 3;
+			panelContent = <ContainersTab containers={containers} />;
+			break;
+		case 'usage':
+			selectedTab = 2;
+			panelContent = <UsageTab schemaId={data.schema.id} />;
+			break;
+		default:
+			break;
+	}
 
 	let commitButton;
 
@@ -71,13 +99,17 @@ const VersionDetails = () => {
 		);
 	}
 
+	const selectedEntityUrlPath = selectedEntity
+		? `/${selectedEntity}/${selectedProperty}`
+		: '';
+
 	return (
 		<MainViewContainer>
 			<div>
 				<VersionHeader>
 					<div>
 						<VersionHeaderTitle noMargin>
-							Schema #{id}
+							Schema {UUID}
 						</VersionHeaderTitle>
 						<VersionHeaderTime>
 							Added{' '}
@@ -96,56 +128,72 @@ const VersionDetails = () => {
 				</VersionHeader>
 
 				<Tabs
-					value={value}
+					value={selectedTab}
 					onChange={handleChange}
 					aria-label="simple tabs example"
 				>
-					<Tab label="Diff with previous" />
-					<Tab label="Definition" />
-					<Tab label={`Containers (${data.schema.containerCount})`} />
-				</Tabs>
-				<TabPanel value={value} index={0}>
-					<CodeDiff oldCode={oldCode} newCode={typeDefs} />
-				</TabPanel>
-				<TabPanel value={value} index={1}>
-					<SourceCodeWithHighlightAndCopy
-						revealed={revealed}
-						onClick={onClick}
-						query={typeDefs}
-						lines="35"
+					<Tab
+						label="SDL"
+						onClick={() => {
+							history.push(`/${serviceName}/${schemaId}/sdl`);
+							setTab('sdl');
+						}}
+						selected={activeTab === 'sdl'}
 					/>
-				</TabPanel>
-				<TabPanel value={value} index={2}>
-					<table width="100%">
-						<thead>
-							<tr>
-								<th width="180">Docker container id</th>
-								<th>Time added</th>
-								<th>Link</th>
-							</tr>
-						</thead>
-						<tbody>
-							{containers.map((row) => {
-								if (row.version !== 'latest') {
-									return (
-										<tr key={row.version}>
-											<td>{row.version}</td>
-											<td>{row.addedTime}</td>
-											<td>
-												<a href={row.commitLink}>
-													github
-												</a>
-											</td>
-										</tr>
-									);
-								}
-							})}
-						</tbody>
-					</table>
-				</TabPanel>
+
+					<Tab
+						label="Diff"
+						onClick={() => {
+							history.push(`/${serviceName}/${schemaId}/diff`);
+							setTab('diff');
+						}}
+						selected={activeTab === 'diff'}
+					/>
+
+					<Tab
+						label="Usage"
+						onClick={() => {
+							history.push(
+								`/${serviceName}/${schemaId}/usage${selectedEntityUrlPath}`
+							);
+							setTab('usage');
+						}}
+						selected={activeTab === 'usage'}
+					/>
+
+					<Tab
+						label={`Containers (${data.schema.containerCount})`}
+						onClick={() => {
+							history.push(
+								`/${serviceName}/${schemaId}/containers`
+							);
+							setTab('containers');
+						}}
+						selected={activeTab === 'containers'}
+					/>
+				</Tabs>
+				{panelContent}
 			</div>
 		</MainViewContainer>
 	);
-};
+}
 
-export default VersionDetails;
+function useSchemaParam() {
+	const match = useRouteMatch(
+		'/:serviceName/:schemaId/:subtab/:selectedEntity?/:selectedProperty?'
+	);
+	const schemaId = match?.params?.schemaId;
+	const subtab = match?.params?.subtab;
+	const selectedEntity = match?.params?.selectedEntity;
+	const selectedProperty = match?.params?.selectedProperty;
+
+	const { serviceName } = useParams();
+
+	return {
+		serviceName,
+		subtab,
+		schemaId: schemaId ? parseInt(schemaId, 10) : null,
+		selectedEntity,
+		selectedProperty,
+	};
+}

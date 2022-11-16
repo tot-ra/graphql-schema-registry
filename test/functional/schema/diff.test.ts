@@ -46,7 +46,7 @@ describe('POST /schema/diff', function () {
 		expect(result.statusCode).toBe(200);
 
 		expect(result.body).toEqual({
-			data: [
+			data: expect.arrayContaining([
 				{
 					criticality: { level: 'NON_BREAKING' },
 					message: "Field 'privet' was added to object type 'Query'",
@@ -67,7 +67,7 @@ describe('POST /schema/diff', function () {
 					isBreakingChange: false,
 					totalUsages: 0,
 				},
-			],
+			]),
 			success: true,
 		});
 	});

@@ -15,7 +15,7 @@ import { BreakingChangeHandler } from '../controller/breakingChange';
 import { logger } from '../logger';
 
 export async function composeLatest(req, res) {
-	const schema = await getAndValidateSchema(connection);
+	const schema = await getAndValidateSchema(connection, false, false);
 
 	return res.json({
 		success: true,

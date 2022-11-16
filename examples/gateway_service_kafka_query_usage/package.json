@@ -1,0 +1,21 @@
+{
+  "name": "gateway_service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/composition": "2.0.5",
+    "@apollo/gateway": "2.0.5",
+    "apollo-server": "3.10.1",
+    "graphql": "16.6.0",
+    "kafka": "^0.2.3",
+    "kafkajs": "^1.15.0",
+    "lodash": "^4.17.20",
+    "request-promise-native": "^1.0.9"
+  }
+}

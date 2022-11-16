@@ -9,16 +9,15 @@ describe('app/database/sql-migration-source.js', () => {
 
 		const migrations = await source.getMigrations();
 
-		assert.lengthOf(migrations, 2);
+		assert.lengthOf(migrations, 3);
 		assert.includeDeepOrderedMembers(
 			migrations,
-			[{ file: '00_test_migr1.sql' }, { file: '01_test_migr2.sql' }],
+			[
+				{ file: '00_test_migr1.sql' },
+				{ file: '01_test_migr2.sql' },
+				{ file: '02_test_migr3.js' },
+			],
 			'sql migrations should be sorted'
-		);
-		assert.notIncludeDeepMembers(
-			migrations,
-			[{ file: '02_test_migr3.js' }],
-			'js based migrations should not be returned'
 		);
 	});
 
@@ -28,7 +27,7 @@ describe('app/database/sql-migration-source.js', () => {
 		);
 
 		const migrations = await source.getMigrations();
-		const migration = source.getMigration(migrations[0]);
+		const migration = await source.getMigration(migrations[0]);
 
 		assert.isDefined(migration.up, 'migration should have an up function');
 		assert.isFunction(migration.up, 'migration.up should be a function');

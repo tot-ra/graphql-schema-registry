@@ -1,28 +1,73 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import { unionBy } from 'lodash';
+import crypto from 'crypto';
+import { print, parse } from 'graphql';
+
 import { connection } from './index';
 import servicesModel from './services';
+import { PublicError } from '../helpers/error';
 import { logger } from '../logger';
 
 function isDevVersion(version: string) {
-	return version === 'latest' || !version;
+	return version === 'latest';
+}
+
+interface SchemaRecord {
+	id: string;
+	type_defs: string;
+	is_active: boolean;
 }
 
 const schemaModel = {
-	getSchemasAddedAfter: async function ({ trx, since }) {
-		return trx('container_schema')
-			.select([
-				'container_schema.*',
-				'services.name',
-				connection.raw('CHAR_LENGTH(schema.type_defs) as characters'),
-			])
-			.leftJoin('services', 'container_schema.service_id', 'services.id')
-			.andWhere((knex) => {
-				return knex.where('schema.added_time', '>', since);
-			})
-			.limit(100);
-	},
+	search: async function ({
+		limit = 10,
+		filter = '',
+		trx,
+	}: {
+		limit: number;
+		filter: string;
+		trx: Knex<SchemaRecord>;
+	}) {
+		const results = await trx('schema')
+			.select(
+				'schema.*',
+				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
+			)
+			.leftJoin(
+				'container_schema',
+				'container_schema.schema_id',
+				'schema.id'
+			)
+			.where((builder) => {
+				const result = builder.where(
+					'container_schema.version',
+					'like',
+					`%${filter}%`
+				);
 
+				if (filter[0] === '!') {
+					result.orWhere(
+						'schema.type_defs',
+						'not like',
+						`%${filter.substring(1)}%`
+					);
+				} else {
+					result.orWhere('schema.type_defs', 'like', `%${filter}%`);
+				}
+
+				return result;
+			})
+			.orderBy('schema.added_time', 'desc')
+			.groupBy('schema.id')
+			.limit(limit);
+
+		return results.map((row) => {
+			return {
+				__typename: 'SchemaDefinition',
+				...row,
+			};
+		});
+	},
 	getLatestAddedDate: async function () {
 		const latest = await connection('schema')
 			.max('added_time as added_time')
@@ -40,33 +85,33 @@ const schemaModel = {
 
 		const latestSchemaCandidates = await trx.raw(
 			`SELECT t1.id,
-						t1.service_id,
-						t1.version,
-						t3.name,
-						t3.url,
-						t4.added_time,
-						t4.type_defs,
-						t4.is_active
-				 FROM \`container_schema\` as t1
-						  INNER JOIN (
-					 SELECT MAX(cs1.added_time) as max_added_time,
-							MAX(cs1.id)         as max_id,
-							cs1.service_id
-					 FROM \`container_schema\` cs1
-					 	INNER JOIN \`schema\` s1 on cs1.schema_id = s1.id
-					 WHERE s1.is_active <> 0
-					 GROUP BY cs1.service_id
-				 ) as t2 ON t2.service_id = t1.service_id
-						  INNER JOIN \`services\` t3 ON t3.id = t1.service_id
-						  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
-				 WHERE t3.name IN (?)
-				   AND t3.id = t2.service_id
-				   AND (
+					t1.service_id,
+					t1.version,
+					t3.name,
+					t3.url,
+					t4.added_time,
+					t4.type_defs,
+					t4.is_active
+			 FROM \`container_schema\` as t1
+					  INNER JOIN (
+				 SELECT MAX(cs1.added_time) as max_added_time,
+						MAX(cs1.id)         as max_id,
+						cs1.service_id
+				 FROM \`container_schema\` cs1
+						  INNER JOIN \`schema\` s1 on cs1.schema_id = s1.id
+				 WHERE s1.is_active <> 0
+				 GROUP BY cs1.service_id
+			 ) as t2 ON t2.service_id = t1.service_id
+					  INNER JOIN \`services\` t3 ON t3.id = t1.service_id
+					  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
+			 WHERE t3.name IN (?)
+			   AND t3.id = t2.service_id
+			   AND (
 						 t4.added_time = t2.max_added_time OR
 						 t1.id = t2.max_id
-					 )
-				   AND t4.is_active = TRUE
-				 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
+				 )
+			   AND t4.is_active = TRUE
+			 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
 			[names]
 		);
 
@@ -104,7 +149,7 @@ const schemaModel = {
 		return Object.values(result);
 	},
 
-	getLastUpdatedForActiveServices: async function ({ trx }) {
+	getLastUpdatedForActiveServices: async function ({ trx }: { trx: Knex }) {
 		return schemaModel.getSchemaLastUpdated({
 			trx,
 			services: await servicesModel.getActiveServices(trx),
@@ -185,6 +230,7 @@ const schemaModel = {
 		return schema;
 	},
 
+	// eslint-disable-next-line complexity
 	registerSchema: async function ({ trx, service }) {
 		const addedTime = service.added_time
 			? new Date(service.added_time)
@@ -210,22 +256,36 @@ const schemaModel = {
 		logger.info(`Registering schema with serviceId = ${serviceId}`);
 
 		// SCHEMA
-		let schemaId = (
-			await trx('schema').select('id').where({
-				service_id: serviceId,
-				type_defs: service.type_defs,
-			})
-		)[0]?.id;
+		let schemaId = await findExistingSchema(
+			trx,
+			serviceId,
+			service.type_defs
+		);
+
+		if (
+			!isDevVersion(service.version) &&
+			existingService &&
+			!schemaId &&
+			(await versionExists(trx, existingService.id, service.version))
+		) {
+			const message =
+				`Schema [${existingService.name}] and version [${service.version}] already exist in registry. ` +
+				`You should not register different type_defs with same version.`;
+			throw new PublicError(message, null);
+		}
 
 		if (schemaId) {
 			await trx('schema')
 				.where('id', '=', schemaId)
 				.update({ updated_time: addedTime });
 		} else {
+			const type_defs_normalized = normalizeTypeDefs(service.type_defs);
+
 			[schemaId] = await trx('schema').insert(
 				{
 					service_id: serviceId,
-					type_defs: service.type_defs,
+					UUID: generateUUID(type_defs_normalized),
+					type_defs: type_defs_normalized,
 					added_time: addedTime,
 				},
 				['id']
@@ -292,10 +352,13 @@ const schemaModel = {
 		return schema;
 	},
 
-	toggleSchema: async function ({ trx, id }, isActive) {
+	toggleSchema: async function (
+		{ trx, id }: { trx: Knex<SchemaRecord>; id: string },
+		isActive
+	) {
 		return trx('schema')
 			.update({
-				'schema.is_active': isActive,
+				is_active: isActive,
 			})
 			.where({
 				id,
@@ -306,8 +369,13 @@ const schemaModel = {
 		serviceIds,
 		limit = 100,
 		offset = 0,
-		filter = '',
-		trx = connection,
+		trx,
+	}: {
+		serviceIds: string[];
+		limit: number;
+		offset: number;
+		filter: string;
+		trx: Knex<SchemaRecord>;
 	}) {
 		const schemas = await trx('schema')
 			.select(
@@ -320,25 +388,6 @@ const schemaModel = {
 				'schema.id'
 			)
 			.whereIn('schema.service_id', serviceIds)
-			.andWhere((builder) => {
-				const result = builder.where(
-					'container_schema.version',
-					'like',
-					`%${filter}%`
-				);
-
-				if (filter[0] === '!') {
-					result.orWhere(
-						'schema.type_defs',
-						'not like',
-						`%${filter.substring(1)}%`
-					);
-				} else {
-					result.orWhere('schema.type_defs', 'like', `%${filter}%`);
-				}
-
-				return result;
-			})
 			.orderBy('schema.added_time', 'desc')
 			.groupBy('schema.id')
 			.offset(offset)
@@ -360,33 +409,88 @@ const schemaModel = {
 			.first();
 	},
 
-	getSchemaById: async function (trx: Knex, id) {
-		return trx('schema')
+	getSchemaById: async function (trx: Knex<SchemaRecord>, id) {
+		const schema = await trx('schema')
 			.select(
 				'schema.*',
 				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
 			.where('schema.id', id)
 			.first();
+
+		if (!schema) {
+			return null;
+		}
+
+		return schema;
 	},
 
-	deleteSchema: async function ({
-		trx,
-		name,
-		version,
-	}: {
-		trx: any;
-		name: string;
-		version: string;
-	}) {
-		return trx('container_schema')
-			.delete()
-			.leftJoin('services', 'container_schema.service_id', 'services.id')
-			.where({
-				'services.name': name,
-				'container_schema.version': version,
-			});
+	listMigrateableSchemas: async function (knex, limit = 100) {
+		return await knex('schema')
+			.select(['schema.id', 'schema.type_defs', 'schema.is_active'])
+			.whereNull('schema.UUID')
+			.limit(limit);
+	},
+
+	addUUIDToAllSchemas: async function (knex, limit = 100) {
+		let count = null;
+		let offset = 0;
+
+		while (count !== 0) {
+			const schemas = await schemaModel.listMigrateableSchemas(
+				knex,
+				limit
+			);
+
+			offset = offset + limit;
+			count = schemas ? schemas.length : 0;
+
+			for (const row of schemas) {
+				const type_defs = normalizeTypeDefs(row.type_defs);
+
+				await knex('schema')
+					.where('id', '=', row.id)
+					.update({
+						UUID: generateUUID(type_defs),
+						type_defs, // make new type defs pretty
+						updated_time: row.updated_time, // keep old update time
+					});
+			}
+		}
 	},
 };
+
+function normalizeTypeDefs(sdl) {
+	return print(parse(sdl));
+}
+
+function generateUUID(type_defs_normalized) {
+	const schemaPropertiesDefiningUniqueness = [type_defs_normalized].join('.');
+
+	return crypto
+		.createHash('md5')
+		.update(schemaPropertiesDefiningUniqueness)
+		.digest('hex');
+}
+
+async function findExistingSchema(trx, serviceId, type_defs) {
+	return (
+		await trx('schema')
+			.select('id')
+			.where({
+				service_id: serviceId,
+				UUID: generateUUID(normalizeTypeDefs(type_defs)),
+			})
+	)[0]?.id;
+}
+
+async function versionExists(trx, serviceId, version) {
+	return (
+		await trx('container_schema').select('id').where({
+			service_id: serviceId,
+			version,
+		})
+	)[0]?.id;
+}
 
 export default schemaModel;

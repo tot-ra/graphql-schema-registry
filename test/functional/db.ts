@@ -1,4 +1,4 @@
-import Knex from 'knex';
+import { Knex } from 'knex';
 import knex from 'knex';
 
 export let connection: Knex;

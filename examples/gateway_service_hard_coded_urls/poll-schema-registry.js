@@ -1,7 +1,7 @@
 const { get } = require('lodash');
 const request = require('request-promise-native');
 
-exports.getServiceListWithTypeDefs = async () => {
+exports.getServiceListWithTypeDefs = async (serviceSdlCache) => {
 	// make this list dynamic to update version on-the-fly depending on containers
 	const services = [
 		{
@@ -11,7 +11,7 @@ exports.getServiceListWithTypeDefs = async () => {
 
 		{
 			name: 'service_b',
-			version: 'v1',
+			version: 'v2',
 		},
 	];
 
@@ -25,28 +25,42 @@ exports.getServiceListWithTypeDefs = async () => {
 		json: true,
 	});
 
-	return get(serviceTypeDefinitions, 'data', []).map((schema) => {
-		const service = services.find(
-			(service) => service.name === schema.name
-		);
+	let schemaChanged = false;
 
-		if (!service) {
-			console.warn(
-				`Matching service not found for type definition "${schema.name}"`
+	const servicesWithSchemas = get(serviceTypeDefinitions, 'data', []).map(
+		(schema) => {
+			const service = services.find(
+				(service) => service.name === schema.name
 			);
-		} else {
-			console.log(
-				`Got ${schema.name} service schema with version ${schema.version}`
-			);
+
+			if (!service) {
+				console.warn(
+					`Matching service not found for type definition "${schema.name}"`
+				);
+			} else {
+				console.log(
+					`Got ${schema.name} service schema with version ${schema.version}`
+				);
+			}
+
+			const previousDefinition = serviceSdlCache.get(schema.name);
+			if (schema.type_defs !== previousDefinition) {
+				schemaChanged = true;
+			}
+
+			serviceSdlCache.set(schema.name, schema.type_defs);
+
+			return {
+				name: schema.name,
+				// note that URLs are used based on service name, utilizing docker internal network
+				url: `dynamic://${schema.name}`,
+				version: schema.version,
+				typeDefs: schema.type_defs,
+				typeDefsOriginal: schema.type_defs_original,
+				...(service ? service : {}),
+			};
 		}
-		return {
-			name: schema.name,
-			// note that URLs are used based on service name, utilizing docker internal network
-			url: `dynamic://${schema.name}`,
-			version: schema.version,
-			typeDefs: schema.type_defs,
-			typeDefsOriginal: schema.type_defs_original,
-			...(service ? service : {}),
-		};
-	});
+	);
+
+	return { services: servicesWithSchemas, schemaChanged };
 };

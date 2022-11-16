@@ -1,19 +1,27 @@
+// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import SpinnerCenter from '../components/SpinnerCenter';
 import PersistedQuery from './PersistedQuery';
 
 import { PERSISTED_QUERIES } from '../utils/queries';
+import Info from '../components/Info';
 
-const PersistedQueries = () => {
+export default function PersistedQueries() {
 	const { loading, data } = useQuery(PERSISTED_QUERIES);
 
 	if (loading) {
 		return <SpinnerCenter />;
 	}
 
-	if (!data || !data.persistedQueries) {
-		return <div>No persisted queries found</div>;
+	if (!data || !data.persistedQueries.length) {
+		return (
+			<Info>
+				No persisted queries found. Integrate gateway to publish
+				persisted query to schema-registry API
+			</Info>
+		);
 	}
 
 	return (
@@ -23,8 +31,4 @@ const PersistedQueries = () => {
 			))}
 		</div>
 	);
-};
-
-export { default as Tab } from './Tab';
-
-export default PersistedQueries;
+}

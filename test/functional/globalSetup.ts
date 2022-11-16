@@ -11,8 +11,8 @@ async function waitUntilDbIsReadyOr20Sec() {
 	}
 }
 
-async function waitUntilServiceIsReadyOr20Sec() {
-	for (let i = 0; i < 10; i++) {
+async function waitUntilServiceIsReadyOr5Min() {
+	for (let i = 0; i < 300; i++) {
 		try {
 			let result = await request({
 				method: 'GET',
@@ -22,18 +22,20 @@ async function waitUntilServiceIsReadyOr20Sec() {
 			});
 
 			if (result.statusCode === 200) {
+				console.log('Service looks healthy:');
+				console.log(result.body);
 				return true;
 			}
 		} catch (e) {
 			console.log('Waiting for service to be ready ...');
 		}
 
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 	}
 }
 
 module.exports = async function () {
-	await waitUntilServiceIsReadyOr20Sec();
+	await waitUntilServiceIsReadyOr5Min();
 	// await connect();
 	// await waitUntilDbIsReadyOr20Sec();
 	// await disconnect();
