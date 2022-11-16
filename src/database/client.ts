@@ -1,12 +1,12 @@
 import { Client, ClientPayload } from '../model/client';
 import { connection } from './index';
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { BreakDownRepository } from './schemaBreakdown/breakdown';
 
 interface ClientService {
 	getClientByUnique(name: string, version: string): Promise<Client>;
 	getClientByUniqueTrx(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		name: string,
 		version: string
 	): Promise<Client>;
@@ -58,7 +58,7 @@ export class ClientRepository
 	}
 
 	async getClientByUniqueTrx(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		name: string,
 		version: string
 	) {

@@ -3,6 +3,7 @@ FROM node:16-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
+USER nobody
 COPY git_src/package.json git_src/package-lock.json ./
 RUN npm install
 COPY git_src/webpack.config.js git_src/babel.config.js git_src/tsconfig.json git_src/.eslintrc git_src/.editorconfig ./
@@ -14,9 +15,10 @@ FROM node:16-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
-COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.config.js ./
+USER nobody
+COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.conf.js ./
 RUN npm install
-COPY git_src/src ./src
+ADD git_src/src ./src
 RUN npm run build-backend
 
 # 3. BUILD FINAL IMAGE
@@ -38,8 +40,8 @@ COPY --chown=nobody:nobody git_src/package-lock.json /app/package-lock.json
 
 # 3.2 install production dependencies only. Cleanup cache after that
 RUN mkdir -p /.npm && \
-npm ci && \
-rm -rf /.npm
+  npm ci && \
+  rm -rf /.npm
 
 USER nobody
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]

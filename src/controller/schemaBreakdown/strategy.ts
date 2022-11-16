@@ -1,7 +1,7 @@
 import { DocumentNode, parse } from 'graphql';
 import { DocumentNodeType } from '../../model/enums';
 import { ScalarStrategy } from './scalar';
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { EnumStrategy } from './enum';
 import { InputStrategy } from './input';
 import { DirectiveStrategy } from './directive';
@@ -22,7 +22,7 @@ export interface ITypeDefData {
 	mappedTypes: DocumentMap;
 	dbMap: Map<string, number>;
 	subgraphTypes: number[];
-	trx: Transaction;
+	trx: Knex.Transaction;
 	service_id: number;
 }
 
@@ -32,7 +32,7 @@ export class BreakDownStrategy {
 
 	constructor(
 		private typeDef: string,
-		private trx: Transaction,
+		private trx: Knex.Transaction,
 		private service_id: number
 	) {
 		const schema = parse(typeDef);

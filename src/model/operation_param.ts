@@ -3,8 +3,8 @@ export type OperationParam = {
 	type_id: number;
 	name: string;
 	description: string;
-	is_nullable: Boolean;
-	is_array: Boolean;
-	is_array_nullable: Boolean;
-	is_output: Boolean;
+	is_nullable: boolean;
+	is_array: boolean;
+	is_array_nullable: boolean;
+	is_output: boolean;
 };

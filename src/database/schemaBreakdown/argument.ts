@@ -1,4 +1,4 @@
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { Argument } from '../../model/argument';
 import { BreakDownRepository } from './breakdown';
 
@@ -24,7 +24,7 @@ export class ArgumentTransactionRepository extends BreakDownRepository<
 		return ArgumentTransactionRepository.instance;
 	}
 
-	async insertIgnoreArguments(trx: Transaction, data: Argument[]) {
+	async insertIgnoreArguments(trx: Knex.Transaction, data: Argument[]) {
 		return super.insert(trx, data);
 	}
 }

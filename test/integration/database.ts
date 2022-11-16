@@ -1,6 +1,7 @@
-const { services, discovery } = require('./discovery');
+import { services, discovery } from './discovery';
+import knexRepo from 'knex';
 
-const knex = require('knex')({
+const knex = knexRepo({
 	client: 'mysql2',
 	connection: async () => {
 		const { host, port } = await discovery(services.mysql);

@@ -31,6 +31,28 @@ export default gql`
 		clientVersions(since: DateTime): [ClientVersion]
 		logs: JSON
 		search(filter: String!): [SearchResult]
+		listTypes: ListedTypes!
+		listTypeInstances(
+			type: String!
+			limit: Int!
+			offset: Int!
+		): ListedTypeInstances!
+		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
+		getOperationUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [ClientOperationUsageTrack!]!
+		getEntityUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [EntityUsageTrack!]!
+		getFieldUsageTrack(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [ClientFieldUsageTrack!]!
 	}
 
 	union SearchResult = Service | SchemaDefinition

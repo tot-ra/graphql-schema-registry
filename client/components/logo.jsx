@@ -152,359 +152,361 @@ export default function Logo() {
 				</defs>
 				<g>
 					<g>
-						<use
-							href="#aACFKWqId"
-							opacity="1"
-							fill="green"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#abQRk6fPB"
+								href="#aACFKWqId"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="25"
-								strokeOpacity="1"
+								fill="green"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
+						<g>
+							<g>
+								<use
+									href="#abQRk6fPB"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="25"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#c43cxpRdDt"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="25"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#e1RwQ287qq"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="25"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#aOTTscD3s"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="25"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#a5hX0shUV9"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="30"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#f4aRsobM8F"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="25"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#d4df3gG5KI"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="25"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#a3f1xiOUe"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="30"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#j2kppAtKaC"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="30"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#fmMlTgAod"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="30"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#a4gSTNVKSn"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="30"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
+						<g>
+							<g>
+								<use
+									href="#b3WdzhfVx"
+									opacity="1"
+									fillOpacity="0"
+									stroke="white"
+									strokeWidth="30"
+									strokeOpacity="1"
+								></use>
+							</g>
+						</g>
 						<g>
 							<use
-								href="#c43cxpRdDt"
+								href="#b5rcw9cXTN"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="25"
-								strokeOpacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#e1RwQ287qq"
+								href="#c1R0nOtLXZ"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="25"
-								strokeOpacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#aOTTscD3s"
+								href="#g59tMZda0"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="25"
-								strokeOpacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#a5hX0shUV9"
+								href="#a9tGUK1OE"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="30"
-								strokeOpacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#f4aRsobM8F"
+								href="#c5b12KQzOZ"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="25"
-								strokeOpacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#d4df3gG5KI"
+								href="#baUtSPS7w"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="25"
-								strokeOpacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#a3f1xiOUe"
+								href="#i125F4EsAe"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="30"
-								strokeOpacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#j2kppAtKaC"
+								href="#a1nj584xmL"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="30"
-								strokeOpacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#fmMlTgAod"
+								href="#a6JHlaw3Z7"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="30"
-								strokeOpacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#a4gSTNVKSn"
+								href="#hE0r2Q1TQ"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="30"
-								strokeOpacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
 						<g>
 							<use
-								href="#b3WdzhfVx"
+								href="#iDavGLfO"
 								opacity="1"
-								fillOpacity="0"
-								stroke="white"
-								strokeWidth="30"
-								strokeOpacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
 							></use>
 						</g>
-					</g>
-					<g>
-						<use
-							href="#b5rcw9cXTN"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#c1R0nOtLXZ"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#g59tMZda0"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a9tGUK1OE"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#c5b12KQzOZ"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#baUtSPS7w"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#i125F4EsAe"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a1nj584xmL"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a6JHlaw3Z7"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#hE0r2Q1TQ"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#iDavGLfO"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#jPMSGJE9O"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#b5F6Ihm6"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#b2Hg1A9GwM"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#cqhQeCAhb"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#aalbRYX86"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#am8voaChl"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a14pdItL6b"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#b7JJyZDlAE"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#fuiZXz5Im"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a115Mh34n6"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a4pBNc1nkM"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#d2erpfESzn"
-							opacity="1"
-							fill="#ffffff"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#a2Wf92zTkv"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
-					</g>
-					<g>
-						<use
-							href="#cuV9Yd1bo"
-							opacity="1"
-							fill="#0a8400"
-							fillOpacity="1"
-						></use>
+						<g>
+							<use
+								href="#jPMSGJE9O"
+								opacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#b5F6Ihm6"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#b2Hg1A9GwM"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#cqhQeCAhb"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#aalbRYX86"
+								opacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#am8voaChl"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#a14pdItL6b"
+								opacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#b7JJyZDlAE"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#fuiZXz5Im"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#a115Mh34n6"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#a4pBNc1nkM"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#d2erpfESzn"
+								opacity="1"
+								fill="#ffffff"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#a2Wf92zTkv"
+								opacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
+							></use>
+						</g>
+						<g>
+							<use
+								href="#cuV9Yd1bo"
+								opacity="1"
+								fill="#0a8400"
+								fillOpacity="1"
+							></use>
+						</g>
 					</g>
 				</g>
-			</g>
-		</svg>
+			</svg>
+		</div>
 	);
 }

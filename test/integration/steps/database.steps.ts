@@ -6,7 +6,7 @@ import { sqlDataPath } from '../config/config';
 import Knex from 'knex';
 import { setDefaultTimeout } from '@cucumber/cucumber';
 
-let dbConnection: Knex<any, unknown[]>;
+let dbConnection;
 
 setDefaultTimeout(20 * 1000);
 

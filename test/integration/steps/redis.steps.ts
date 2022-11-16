@@ -4,7 +4,6 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 import { redisDataPath } from '../config/config';
 import { getTimestamp } from '../../../src/redis/utils';
-import { parseInputDate } from '../../../src/graphql/resolvers/getOperationUsageTrack';
 
 let redisWrapper;
 
@@ -27,7 +26,8 @@ Given('the redis contains the keys:', async (dataTable: DataTable) => {
 	const keys = dataTable.rowsHash();
 	const promises = [];
 	for (const key in keys) {
-		promises.push(redisWrapper.set(key, keys[key]));
+		// @ts-ignore
+		promises.push(redisWrapper.set(key, keys[key], 1000));
 	}
 	await Promise.all(promises);
 });
@@ -42,9 +42,9 @@ Given('the redis has usage for file {string}', async (file) => {
 	const subDays = new Date().setDate(now2.getDate() - content.days);
 	const date = getTimestamp(subDays);
 	const redisDate = Math.floor(new Date(date).getTime());
-	await redisWrapper.set('o_999_diff', JSON.stringify(content.object));
-	await redisWrapper.set(`e_999_diff_${redisDate}`, content.errors);
-	await redisWrapper.set(`s_999_diff_${redisDate}`, content.success);
+	await redisWrapper.set('o_999_diff', JSON.stringify(content.object), 1000);
+	await redisWrapper.set(`e_999_diff_${redisDate}`, content.errors, 1000);
+	await redisWrapper.set(`s_999_diff_${redisDate}`, content.success, 1000);
 });
 
 Given(
@@ -53,7 +53,7 @@ Given(
 		const redisWrapper = await getConnection();
 		const fileContent = readFileSync(resolve(redisDataPath, file), 'utf8');
 
-		await redisWrapper.set(key, fileContent);
+		await redisWrapper.set(key, fileContent, 1000);
 	}
 );
 
@@ -62,7 +62,7 @@ Then(
 	async (totalKeys: number, clientId: number) => {
 		const redisWrapper = await getConnection();
 
-		const total = await redisWrapper.keys(`*_${clientId}_*`);
+		const total = await redisWrapper.keys(`*_${clientId}_*`, 1000);
 
 		expect(total.length).toEqual(totalKeys);
 	}
@@ -74,7 +74,7 @@ Then(
 		const redisWrapper = await getConnection();
 
 		const keys = await redisWrapper.keys(`e_${clientId}_*`);
-		const value = await redisWrapper.get(keys[0]);
+		const value = await redisWrapper.get(keys[0], 1000);
 
 		expect(+value).toEqual(totalErrors);
 	}
@@ -86,7 +86,7 @@ Then(
 		const redisWrapper = await getConnection();
 
 		const keys = await redisWrapper.keys(`s_${clientId}_*`);
-		const value = await redisWrapper.get(keys[0]);
+		const value = await redisWrapper.get(keys[0], 1000);
 
 		expect(+value).toEqual(totalErrors);
 	}

@@ -5,6 +5,7 @@ import DateRangeSelector from './DateRangeSelector';
 import { ReactNode, useEffect } from 'react';
 import { colors } from '../utils';
 import { useDateRangeSelector } from './DateRangeSelector.Context';
+import GlobalSearch from './GlobalSearch';
 
 type TopMenuProps = {
 	tabs: {
@@ -61,6 +62,7 @@ export default function TopMenu({ tabs }: TopMenuProps) {
 						<Box sx={{ flexGrow: 1 }} />
 						<DateRangeSelectorHolder />
 					</Route>
+					<GlobalSearch />
 				</Toolbar>
 			</AppBar>
 		</Box>

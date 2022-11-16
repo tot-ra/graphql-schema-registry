@@ -27,8 +27,12 @@ const servicesModel = {
 	},
 
 	getActiveServices: async function (trx: Knex<ServiceRecord>) {
-		return trx('services')
-			.select('services.id', 'services.name', 'services.url')
+		return trx(servicesTable)
+			.select(
+				`${servicesTable}.id`,
+				`${servicesTable}.name`,
+				`${servicesTable}.url`
+			)
 			.where('is_active', true);
 	},
 
@@ -36,12 +40,12 @@ const servicesModel = {
 		trx: Knex<ServiceRecord>,
 		ids = []
 	): Promise<ServiceRecord[]> {
-		return trx('services').select('*').whereIn('id', ids);
+		return trx(servicesTable).select('*').whereIn('id', ids);
 	},
 
 	count: async function () {
 		return (
-			await connection('services')
+			await connection(servicesTable)
 				.where('is_active', true)
 				.count('id', { as: 'amount' })
 		)[0].amount;
@@ -52,9 +56,9 @@ const servicesModel = {
 	},
 
 	getService: async function (trx: Knex<ServiceRecord>, name: string) {
-		const service = await trx('services')
-			.select('services.id', 'services.name')
-			.where('services.name', name)
+		const service = await trx(servicesTable)
+			.select(`${servicesTable}.id`, `${servicesTable}.name`)
+			.where(`${servicesTable}.name`, name)
 			.andWhere('is_active', true);
 
 		return service[0];
@@ -65,7 +69,7 @@ const servicesModel = {
 		name: string,
 		url: string
 	) {
-		await trx('services').insert({ name, url });
+		await trx(servicesTable).insert({ name, url });
 
 		const service = await servicesModel.getService(trx, name);
 
@@ -77,7 +81,7 @@ const servicesModel = {
 	},
 
 	deleteService: async function (trx: Knex<ServiceRecord>, name: string) {
-		return trx('services').delete().where('name', name);
+		return trx(servicesTable).delete().where('name', name);
 	},
 };
 

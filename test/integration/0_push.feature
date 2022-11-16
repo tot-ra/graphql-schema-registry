@@ -25,7 +25,7 @@ Feature: As a customer
 				"version": "latest",
 				"name": "test",
 				"url": "http://127.0.0.1:4000/api/graphql/test",
-				"type_defs": "type Query { fake: Float }",
+				"type_defs": "type Query {\n  fake: Float\n}",
 				"is_active": 1
 			}
 		}
@@ -59,7 +59,7 @@ Feature: As a customer
 				"version": "latest",
 				"name": "test2",
 				"url": "http://127.0.0.1:4000/api/graphql/test2",
-				"type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] } scalar BigInteger",
+				"type_defs": "type Query {\n  hello(world: String): Fake\n}\n\nenum TestEnum {\n  E\n  N\n  U\n  M\n}\n\ntype Fake {\n  integration: Int\n  tests: [String!]\n}\n\nscalar BigInteger",
 				"is_active": 1
 			}
 		}
@@ -93,7 +93,7 @@ Feature: As a customer
 				"version": "latest",
 				"name": "test2",
 				"url": "http://127.0.0.1:4000/api/graphql/test2",
-				"type_defs": "type Query { hello(world: String): Fake } enum TestEnum { E N U M } type Fake { integration: Int, tests: [String!] }",
+				"type_defs": "type Query {\n  hello(world: String): Fake\n}\n\nenum TestEnum {\n  E\n  N\n  U\n  M\n}\n\ntype Fake {\n  integration: Int\n  tests: [String!]\n}",
 				"is_active": 1
 			}
 		}

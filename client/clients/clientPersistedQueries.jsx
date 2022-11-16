@@ -7,13 +7,14 @@ import SpinnerCenter from '../components/SpinnerCenter';
 import { CLIENT_VERSION_PERSISTED_QUERIES } from '../utils/queries';
 
 const ClientPersistedQueries = ({ selectedVersion }) => {
+	const { loading, data } = useQuery(CLIENT_VERSION_PERSISTED_QUERIES, {
+		variables: { clientVersionId: selectedVersion },
+		skip: !selectedVersion,
+	});
+
 	if (!selectedVersion) {
 		return null;
 	}
-
-	const { loading, data } = useQuery(CLIENT_VERSION_PERSISTED_QUERIES, {
-		variables: { clientVersionId: selectedVersion },
-	});
 
 	if (loading) {
 		return <SpinnerCenter />;

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const request = require('request-promise');
+import request from 'request-promise';
 // const database = require('./database');
 
 async function waitUntilServiceIsReadyOr5Min() {
@@ -26,6 +26,6 @@ async function waitUntilServiceIsReadyOr5Min() {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 	}
 }
-module.exports = async function () {
+export default async function () {
 	await waitUntilServiceIsReadyOr5Min();
-};
+}

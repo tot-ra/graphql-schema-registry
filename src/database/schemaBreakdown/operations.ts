@@ -1,4 +1,4 @@
-import Knex, { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { BreakDownRepository } from './breakdown';
 import { connection } from '../index';
 import { Operation, OperationPayload } from '../../model/operation';
@@ -52,7 +52,7 @@ export class OperationTransactionalRepository
 		return OperationTransactionalRepository.instance;
 	}
 
-	async removeOperations(trx: Transaction, data: string[]) {
+	async removeOperations(trx: Knex.Transaction, data: string[]) {
 		return super.remove(trx, data, 'name');
 	}
 
@@ -60,11 +60,14 @@ export class OperationTransactionalRepository
 		return connection(table).select().where('name', name).first();
 	}
 
-	async getOperationsByNames(trx: Transaction, data: string[]) {
+	async getOperationsByNames(trx: Knex.Transaction, data: string[]) {
 		return super.get(trx, data, 'name');
 	}
 
-	async insertIgnoreOperations(trx: Transaction, data: OperationPayload[]) {
+	async insertIgnoreOperations(
+		trx: Knex.Transaction,
+		data: OperationPayload[]
+	) {
 		return super.insert(trx, data);
 	}
 	async insertOperation(trx: Knex, data: OperationPayload) {

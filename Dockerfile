@@ -24,7 +24,7 @@ FROM node:16-alpine
 ARG env=production
 ENV NODE_ENV=${env}
 RUN mkdir -p /app && \
-chown nobody:nobody /app
+  chown nobody:nobody /app
 WORKDIR /app
 COPY --chown=nobody:nobody  --from=builder-frontend /app/dist /app/dist
 COPY --chown=nobody:nobody  --from=builder-backend /app/app /app/app
@@ -38,8 +38,8 @@ COPY --chown=nobody:nobody ./package-lock.json /app/package-lock.json
 
 # 3.2 install production dependencies only. Cleanup cache after that
 RUN mkdir -p /.npm \
-&& npm ci \
-&& rm -rf /.npm
+  && npm ci \
+  && rm -rf /.npm
 
 USER nobody
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]

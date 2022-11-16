@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 import { gql } from '@apollo/client/core';
 import { DefinitionNode, OperationDefinitionNode } from 'graphql';
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
@@ -49,7 +50,7 @@ export class RegisterUsage {
 				return await Promise.all(promises);
 			}
 		);
-		let operationsResult = await Promise.all(outerPromises);
+		const operationsResult = await Promise.all(outerPromises);
 		await this.insertInRedis(operationsResult);
 	}
 
@@ -61,21 +62,24 @@ export class RegisterUsage {
 			},
 			operations: operations[0],
 		};
-		const ttl = 24 * 3600 * 30;
+		const ttl = 24 * 3600 * 7;
 		await redisWrapper.set(
 			`o_${this.client.id}_${this.hash}`,
 			JSON.stringify(payload),
-			ttl
+			ttl,
+			1000
 		);
 		await redisWrapper.set(
 			`s_${this.client.id}_${this.hash}_${getTimestamp()}`,
 			this.queryResult.success,
-			ttl
+			ttl,
+			1000
 		);
 		await redisWrapper.set(
 			`e_${this.client.id}_${this.hash}_${getTimestamp()}`,
 			this.queryResult.errors,
-			ttl
+			ttl,
+			1000
 		);
 	}
 
@@ -154,7 +158,7 @@ export class RegisterUsage {
 		objs: any[],
 		parentId: number
 	): Promise<Map<number, number[]>> {
-		let entities = new Map();
+		const entities = new Map();
 		for (const field of objs) {
 			const fieldName = field.name.value;
 			const f = await this.fieldRepository.getFieldByNameAndParent(

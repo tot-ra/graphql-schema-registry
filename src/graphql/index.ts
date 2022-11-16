@@ -1,23 +1,15 @@
 import { ApolloServer } from 'apollo-server-express';
 import { getServerProps } from './server';
 
-import { connection } from '../database';
+let server;
 
-import typeDefs from './schema';
-import resolvers from './resolvers';
-import dataloader from './dataloader';
+export const initServer = async (app) => {
+	const props = getServerProps();
 
-const server = new ApolloServer({
-	typeDefs,
-	resolvers,
-	context: () => ({
-		dataloaders: dataloader(connection),
-	}),
-	cache: 'bounded',
-});
+	server = new ApolloServer(props);
 
-export default async (app) => {
 	await server.start();
+
 	server.applyMiddleware({ app });
 };
 

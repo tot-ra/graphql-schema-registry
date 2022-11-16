@@ -4,7 +4,7 @@ import { OperationType } from '../../model/enums';
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
 import { FieldTransactionRepository } from '../../database/schemaBreakdown/field';
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
-import { checkUsage, getCustomChanges, validateBreakingChange } from './utils';
+import { getCustomChanges, validateBreakingChange } from './utils';
 import { BreakingChangeService } from '../breakingChange';
 
 export class FieldChange implements BreakingChangeService {
@@ -20,11 +20,7 @@ export class FieldChange implements BreakingChangeService {
 		return validateBreakingChange(this.types, change);
 	}
 
-	async validateUsage(
-		change: Change,
-		usage_days: number = 30,
-		min_usages: number = 0
-	) {
+	async validateUsage(change: Change, usage_days = 30, min_usages = 0) {
 		const redisRepo = RedisRepository.getInstance();
 
 		const split = change.path.split('.');

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, ButtonGroup, Tabs, Tab } from '@material-ui/core';
 
 import { useQuery } from '@apollo/client';
-import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import {
 	VersionHeader,
 	VersionHeaderTitle,
@@ -19,6 +19,7 @@ import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
 import UsageTab from './UsageTab';
 import ContainersTab from './ContainersTab';
+import { MainViewContainer } from '../../components/MainViewContainer';
 
 // eslint-disable-next-line complexity
 export default function VersionDetails() {
@@ -182,12 +183,11 @@ function useSchemaParam() {
 	const match = useRouteMatch(
 		'/:serviceName/:schemaId/:subtab/:selectedEntity?/:selectedProperty?'
 	);
+	const serviceName = match?.params?.serviceName;
 	const schemaId = match?.params?.schemaId;
 	const subtab = match?.params?.subtab;
 	const selectedEntity = match?.params?.selectedEntity;
 	const selectedProperty = match?.params?.selectedProperty;
-
-	const { serviceName } = useParams();
 
 	return {
 		serviceName,

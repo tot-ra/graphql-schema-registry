@@ -1,6 +1,6 @@
 import { ClientRepository } from '../database/client';
 
-const { Report } = require('apollo-reporting-protobuf');
+import { Report } from 'apollo-reporting-protobuf';
 import { RegisterUsage } from './clientUsage/notRegisteredClient';
 import { UpdateUsageStrategy } from './clientUsage/registeredClient';
 import redisWrapper from '../redis';
@@ -8,7 +8,6 @@ import crypto from 'crypto';
 import { getClientsFromTrace, getUsagesForClients } from './clientUsage/utils';
 import { ClientPayload } from '../model/client';
 import { QueryResult } from '../model/usage_counter';
-import { logger } from '../logger';
 
 export class ClientUsageController {
 	private clientRepository = ClientRepository.getInstance();
@@ -52,9 +51,16 @@ export class ClientUsageController {
 			clientPayload.version
 		);
 
-		if (!client || !(await redisWrapper.get(`o_${client.id}_${hash}`))) {
+		if (
+			!client ||
+			!(await redisWrapper.get(`o_${client.id}_${hash}`, 1000))
+		) {
 			if (!client) {
-				await this.clientRepository.insertClient(clientPayload);
+				try {
+					await this.clientRepository.insertClient(clientPayload);
+				} catch {
+					// client already exists
+				}
 				client = await this.clientRepository.getClientByUnique(
 					clientPayload.name,
 					clientPayload.version

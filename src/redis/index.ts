@@ -7,8 +7,11 @@ const DEFAULT_TTL = 24 * 3600;
 const GET_TIMEOUT_MS = 30;
 const SET_TIMEOUT_MS = 50;
 const DEFAULT_LOCK_TTL = 60 * 1000;
+const redisServiceName =
+	process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis';
 
-let redis, redlockClient;
+let redis: Redis;
+let redlockClient;
 
 async function wait(ms) {
 	return new Promise((resolve, reject) => {
@@ -50,7 +53,7 @@ async function initRedis() {
 			logger.warn('Redis reconnect triggered, re-discovering');
 			Object.assign(
 				redis.options || {},
-				await resolveInstance('gql-schema-registry-redis')
+				await resolveInstance(redisServiceName)
 			);
 		});
 
@@ -59,7 +62,7 @@ async function initRedis() {
 
 		Object.assign(
 			redis.options || {},
-			await resolveInstance('gql-schema-registry-redis')
+			await resolveInstance(redisServiceName)
 		);
 
 		await redis.connect();
@@ -80,6 +83,26 @@ const getRedlockClient = () => {
 	});
 };
 
+const doRedisOperationWithTimeout = async (
+	operation,
+	timeout = SET_TIMEOUT_MS
+) => {
+	try {
+		if (redis) {
+			return await Promise.race([operation, wait(timeout)]);
+		} else {
+			logger.warn('redis is not initialized');
+
+			return null;
+		}
+	} catch (err) {
+		const e = new Error();
+		logger.warn('redis operation failed or time out', e);
+
+		return null;
+	}
+};
+
 const redisWrap = {
 	initRedis,
 
@@ -87,46 +110,17 @@ const redisWrap = {
 		redis?.disconnect();
 	},
 
-	get: async (key) => {
-		try {
-			if (redis) {
-				return await Promise.race([
-					redis.get(key),
-					wait(GET_TIMEOUT_MS),
-				]);
-			} else {
-				logger.warn('redis is not initialized');
+	get: (key, timeout = GET_TIMEOUT_MS) =>
+		doRedisOperationWithTimeout(redis.get(key), timeout),
 
-				return null;
-			}
-		} catch (e) {
-			logger.error('redis.get failed', e);
+	multiGet: async <T>(
+		keys: string[],
+		timeout = SET_TIMEOUT_MS
+	): Promise<(T | null)[]> =>
+		doRedisOperationWithTimeout(redis.mget(keys), timeout),
 
-			return null;
-		}
-	},
-
-	multiGet: async <T>(keys: string[]): Promise<(T | null)[]> => {
-		if (keys.length === 0) {
-			return [];
-		}
-		return await (await redisWrapper.getInstance()).mget(keys);
-	},
-
-	set: async (key, value, ttl = DEFAULT_TTL) => {
-		try {
-			if (redis) {
-				await Promise.race([
-					redis.set(key, value, 'EX', ttl),
-					wait(SET_TIMEOUT_MS),
-				]);
-			} else {
-				logger.warn('redis is not initialized');
-			}
-		} catch (e) {
-			logger.error('redis.set failed', e);
-		}
-	},
+	set: (key, value, ttl = DEFAULT_TTL, timeout = SET_TIMEOUT_MS) =>
+		doRedisOperationWithTimeout(redis.set(key, value, 'EX', ttl), timeout),
 
 	del: async (key) => {
 		try {
@@ -139,6 +133,13 @@ const redisWrap = {
 			logger.error('redis.del failed', e);
 		}
 	},
+
+	incr: (key, total, timeout = SET_TIMEOUT_MS) =>
+		doRedisOperationWithTimeout(redis.incrby(key, total), timeout),
+
+	flush: () => redis.flushall(),
+
+	keys: async (pattern) => doRedisOperationWithTimeout(redis.keys(pattern)),
 
 	lock: async (key, fn, ttl = DEFAULT_LOCK_TTL) => {
 		let lock;
@@ -166,6 +167,30 @@ const redisWrap = {
 
 			throw error;
 		}
+	},
+
+	scan: async (
+		pattern: string,
+		timeout = SET_TIMEOUT_MS
+	): Promise<string[]> => {
+		const operation = async () => {
+			const found: string[] = [];
+			const endCursor = '0';
+			let cursor = endCursor;
+
+			do {
+				const [newCursor, foundKeys] = await redis.scan(
+					cursor,
+					'MATCH',
+					pattern
+				);
+				cursor = newCursor;
+				found.push(...foundKeys);
+			} while (cursor !== endCursor);
+
+			return found;
+		};
+		return doRedisOperationWithTimeout(operation(), timeout);
 	},
 };
 

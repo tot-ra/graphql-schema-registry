@@ -1,8 +1,8 @@
 import { ExecutionsInput } from './redis';
 
 export interface KeyHandlerService {
-	createClientUsageKey(clientId: number, query: String): String;
-	createCounterKey(clientId: number, query: String): String;
+	createClientUsageKey(clientId: number, query: string): string;
+	createCounterKey(clientId: number, query: string): string;
 }
 
 export class KeyHandler implements KeyHandlerService {
@@ -12,15 +12,15 @@ export class KeyHandler implements KeyHandlerService {
 		error: 'e_',
 	};
 
-	allClientUsageKey(): String {
+	allClientUsageKey(): string {
 		return '';
 	}
 
-	createClientUsageKey(clientId: number, query: String): String {
+	createClientUsageKey(clientId: number, query: string): string {
 		return 'clientid_hash';
 	}
 
-	createCounterKey(clientId: number, query: String): String {
+	createCounterKey(clientId: number, query: string): string {
 		return '';
 	}
 

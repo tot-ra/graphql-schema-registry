@@ -109,7 +109,7 @@ const GlobalSearch = () => {
 
 	useEffect(() => {
 		inputRef.current?.focus();
-	}, [inputRef.current]);
+	}, []);
 
 	const setTextInputRef = (element) => {
 		inputRef.current = element;

@@ -53,7 +53,7 @@ export const createField = (
 	parentName: string,
 	data: ITypeDefData
 ): FieldPayload => {
-	let name = field.name.value;
+	const name = field.name.value;
 	let is_array = false;
 	let is_nullable = true;
 	let is_array_nullable = true;

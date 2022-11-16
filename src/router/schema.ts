@@ -12,7 +12,6 @@ import * as kafka from '../kafka';
 import { ClientUsageController } from '../controller/clientUsage';
 import { Change } from '@graphql-inspector/core';
 import { BreakingChangeHandler } from '../controller/breakingChange';
-import { logger } from '../logger';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection, false, false);

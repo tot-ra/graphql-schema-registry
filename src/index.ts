@@ -6,6 +6,7 @@ import config from './config';
 import router from './router';
 import { logger } from './logger';
 import process from 'process';
+import redis from './redis';
 
 const app = express();
 
@@ -38,7 +39,7 @@ const setupServer = async () => {
 	}
 
 	app.use(router);
-	await initGraphql(app);
+	await initServer(app);
 
 	// eslint-disable-next-line
 	app.use((err, req, res, next) => {
@@ -103,8 +104,10 @@ export default async function init() {
 		return server;
 	}
 
+	await redis.initRedis();
+
 	if (config.asyncSchemaUpdates) {
-		kafka.init();
+		await kafka.init();
 	}
 
 	server = app.listen(config.port, () => {
@@ -115,8 +118,6 @@ export default async function init() {
 }
 
 export async function stop() {
-	await server.close(() => {
-		logger.info('Server shutdown complete. Exiting process.');
-		process.exit(0);
-	});
+	redis.disconnect();
+	await server.close();
 }

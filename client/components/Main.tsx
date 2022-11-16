@@ -2,9 +2,12 @@ import { Route, Redirect, Switch } from 'react-router-dom';
 
 import TopMenu from './TopMenu';
 import Schema from '../schema';
-import PersistedQueries, {
-	Tab as PersistedQueriesTab,
-} from '../persisted-queries';
+import PersistedQueries from '../persisted-queries';
+import Clients from '../clients';
+
+import ServicesTab from '../schema/Tab';
+import PersistedQueriesTab from '../persisted-queries/Tab';
+import Logs from '../logs';
 import Types from '../types';
 import styled from 'styled-components';
 import { DateRangeSelectorProvider } from './DateRangeSelector.Context';
@@ -17,7 +20,7 @@ const MainContainer = styled.main`
 
 export const tabs = [
 	{
-		title: <span>Schema</span>,
+		title: <ServicesTab />,
 		href: '/schema',
 		component: Schema,
 	},
@@ -30,6 +33,16 @@ export const tabs = [
 		title: <PersistedQueriesTab />,
 		href: '/persisted-queries',
 		component: PersistedQueries,
+	},
+	{
+		title: <span>Clients</span>,
+		href: '/clients',
+		component: Clients,
+	},
+	{
+		title: <span>Logs</span>,
+		href: '/logs',
+		component: Logs,
 	},
 ];
 

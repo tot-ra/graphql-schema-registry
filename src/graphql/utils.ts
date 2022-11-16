@@ -1,4 +1,4 @@
-export const isEnum = (value: String, targetEnum) =>
+export const isEnum = (value: string, targetEnum) =>
 	Object.values(targetEnum).includes(value);
 
 export interface Pagination {

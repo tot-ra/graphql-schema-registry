@@ -1,9 +1,9 @@
 import { Change, diff } from '@graphql-inspector/core';
-import { logger } from '../logger';
 
 import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
+import { BreakDownSchemaCaseUse } from './breakdown';
 
 import { logger } from '../logger';
 

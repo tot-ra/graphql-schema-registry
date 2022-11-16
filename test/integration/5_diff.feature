@@ -2,6 +2,7 @@ Feature: As a customer
 	I would like to be able to diff between schemas
 
 	Scenario: I request to diff the same stored schema
+		Given the database is imported from 'breakdown_schema_db'
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{
@@ -14,12 +15,12 @@ Feature: As a customer
 		And the response should be in JSON and contain:
 		"""
 		{
-		  "success": true,
-		  "data": []
+		  "success": true		  
 		}
 		"""
 
 	Scenario: I request to diff an existing schema with modifications
+		Given the database is imported from 'breakdown_schema_db'
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{
@@ -50,7 +51,8 @@ Feature: As a customer
 		"""
 
 	Scenario: I request to diff an existing schema with modifications and is forbidden because exceeds usages
-		Given the redis has usage for file 'coupons.json'
+		Given the database is imported from 'breakdown_schema_db'
+		And the redis has usage for file 'coupons.json'
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{
@@ -81,7 +83,8 @@ Feature: As a customer
 		"""
 
 	Scenario: I request to diff an existing schema with modifications and is valid because not exceeds min_usages
-		Given the redis has usage for file 'coupons.json'
+		Given the database is imported from 'breakdown_schema_db'
+		And the redis has usage for file 'coupons.json'
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{
@@ -113,7 +116,8 @@ Feature: As a customer
 		"""
 
 	Scenario: I request to diff an existing schema with modifications and is valid because no usages on the days specified
-		Given the redis has usage for file 'coupons.json'
+		Given the database is imported from 'breakdown_schema_db'
+		And the redis has usage for file 'coupons.json'
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{

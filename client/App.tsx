@@ -11,16 +11,43 @@ import Main from './components/Main';
 
 import './style.css';
 import './prism-material-light.css';
+import { createTheme, ThemeProvider } from '@material-ui/core';
+
+const theme = createTheme({
+	overrides: {
+		MuiTableHead: {
+			root: {
+				backgroundColor: '#e4e9e4f7',
+			},
+		},
+		MuiTableCell: {
+			head: {
+				color: '#666666',
+			},
+		},
+	},
+});
 
 type AppProps = {
 	api?: unknown;
 };
 
+const cache = new InMemoryCache({
+	typePolicies: {
+		TypeInstance: {
+			keyFields: ['id', 'type'],
+		},
+		Parent: {
+			keyFields: ['id', 'type'],
+		},
+	},
+});
+
 const App = ({ api }: AppProps) => {
 	const config = createConfig(api);
 
 	const client = new ApolloClient({
-		cache: new InMemoryCache(),
+		cache,
 		link: new HttpLink({
 			uri: config.grapqhlEndpoint,
 			credentials: 'include',
@@ -29,11 +56,13 @@ const App = ({ api }: AppProps) => {
 
 	return (
 		<GlobalConfigContext.Provider value={config}>
-			<ApolloProvider client={client}>
-				<Router>
-					<Main />
-				</Router>
-			</ApolloProvider>
+			<ThemeProvider theme={theme}>
+				<ApolloProvider client={client}>
+					<Router>
+						<Main />
+					</Router>
+				</ApolloProvider>
+			</ThemeProvider>
 		</GlobalConfigContext.Provider>
 	);
 };

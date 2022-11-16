@@ -35,7 +35,7 @@ export type Field = Nullable & {
 	description?: string;
 	parent: Parent;
 	key: string;
-	isDeprecated: Boolean;
+	isDeprecated: boolean;
 	arguments?: Argument[];
 };
 

@@ -75,7 +75,6 @@ export default {
 			return await PersistedQueriesModel.get(key);
 		},
 		persistedQueriesCount: async () => await PersistedQueriesModel.count(),
-
 		clients: async () => await clientsModel.getClients(),
 		logs: async () => {
 			const logs = await new Promise((resolve, reject) =>
@@ -117,6 +116,12 @@ export default {
 
 			return [...services, ...schemas];
 		},
+		listTypes,
+		listTypeInstances,
+		getTypeInstance,
+		getOperationUsageTrack,
+		getEntityUsageTrack,
+		getFieldUsageTrack,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {

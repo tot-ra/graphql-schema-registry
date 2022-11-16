@@ -11,11 +11,7 @@ export class TypeChange implements BreakingChangeService {
 		return validateBreakingChange(this.types, change);
 	}
 
-	async validateUsage(
-		change: Change,
-		usage_days: number = 30,
-		min_usages: number = 0
-	) {
+	async validateUsage(change: Change, usage_days = 30, min_usages = 0) {
 		const redisRepo = RedisRepository.getInstance();
 		const typeRepo = TypeTransactionalRepository.getInstance();
 
