@@ -13,6 +13,7 @@ services:
       - WITH_WEBPACK=${WITH_WEBPACK-1}
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
       - NODE_ENV=production
+      - REDIS_PASSWORD=password
     volumes:
       - .:/app/
     restart: always
