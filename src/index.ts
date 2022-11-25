@@ -102,7 +102,9 @@ export default async function init() {
 		return server;
 	}
 
-	const redisConfig = diplomat.getServiceInstance('gql-schema-registry-redis');
+	const redisConfig = diplomat.getServiceInstance(
+		'gql-schema-registry-redis'
+	);
 
 	if (redisConfig.host) {
 		redis.initRedis();

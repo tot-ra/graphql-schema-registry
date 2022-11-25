@@ -78,8 +78,12 @@ export default {
 				)
 			);
 
-			// @ts-ignore
-			return process.env.LOG_STREAMING_ENABLED === 'true' ? logs?.redis : '';
+			if (process.env.LOG_STREAMING_ENABLED === 'true') {
+				// @ts-ignore
+				return logs?.redis;
+			}
+
+			return '';
 		},
 
 		search: async (_, { filter }) => {
