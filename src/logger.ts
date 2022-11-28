@@ -1,9 +1,10 @@
 import { createLogger, transports, format } from 'winston';
 import RedisTransport from 'winston-redis-stream';
+import config from './config';
 
 const logTransports = [new transports.Console()];
 
-if (process.env.LOG_STREAMING_ENABLED === 'true' && process.env.REDIS_HOST) {
+if (config.logStreamingEnabled) {
 	try {
 		const redis = new RedisTransport({
 			redis: {

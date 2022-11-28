@@ -78,7 +78,7 @@ export default {
 				)
 			);
 
-			if (process.env.LOG_STREAMING_ENABLED === 'true') {
+			if (config.logStreamingEnabled) {
 				// @ts-ignore
 				return logs?.redis;
 			}

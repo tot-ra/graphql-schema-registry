@@ -201,7 +201,7 @@ The following are the different environment variables that are looked up that al
 | KAFKA_QUERIES_TOPIC    | Topic with new schema                                                         | graphql-queries           |
 | LOG_LEVEL              | Minimum level of logs to output                                               | info                      |
 | LOG_TYPE               | Output log type, supports pretty or json.                                     | pretty                    |
-| LOG_STREAMING_ENABLED  | Controls whether logs are streamed over Redis to be presented in UI           | false                     |
+| LOG_STREAMING_ENABLED  | Controls whether logs are streamed over Redis to be presented in UI           | true                      |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 Node service uses to connect to mysql & redis and change it if you install it with own setup.
