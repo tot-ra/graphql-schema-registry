@@ -14,7 +14,7 @@ services:
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
       - NODE_ENV=production
       - REDIS_HOST=gql-schema-registry-redis
-      - REDIS_PASSWORD=password
+      - REDIS_SECRET=password
     volumes:
       - .:/app/
     restart: always
