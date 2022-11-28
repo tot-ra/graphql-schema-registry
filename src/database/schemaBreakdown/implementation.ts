@@ -1,4 +1,4 @@
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { Implementation } from '../../model/implementation';
 import { BreakDownRepository } from './breakdown';
 
@@ -25,13 +25,13 @@ export class ImplementationTransactionRepository extends BreakDownRepository<
 	}
 
 	async insertIgnoreImplementations(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		data: Implementation[]
 	) {
 		return super.insert(trx, data);
 	}
 
-	async removeImplementations(trx: Transaction, data: string[]) {
+	async removeImplementations(trx: Knex.Transaction, data: string[]) {
 		return trx.raw(`
 			DELETE i FROM ${TABLE_NAME} i
 			INNER JOIN type_def_types t on i.implementation_id = t.id

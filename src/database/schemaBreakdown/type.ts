@@ -1,6 +1,6 @@
 import { connection } from '../index';
 import { Type, TypePayload } from '../../model/type';
-import { QueryBuilder, Transaction } from 'knex';
+import { Knex } from 'knex';
 import { EntityType } from '../../model/enums';
 import {
 	Argument,
@@ -19,8 +19,14 @@ import { BreakDownRepository } from './breakdown';
 
 interface TypeService extends TypeInstanceRepository {
 	getTypeByName(name: string): Promise<Type>;
-	getTypesByNames(trx: Transaction, typeNames: string[]): Promise<Type[]>;
-	insertIgnoreTypes(trx: Transaction, data: TypePayload[]): Promise<void>;
+	getTypesByNames(
+		trx: Knex.Transaction,
+		typeNames: string[]
+	): Promise<Type[]>;
+	insertIgnoreTypes(
+		trx: Knex.Transaction,
+		data: TypePayload[]
+	): Promise<void>;
 	countTypesByType(): Promise<TypeCount[]>;
 }
 
@@ -73,22 +79,22 @@ export class TypeTransactionalRepository
 		return connection(TABLE_NAME).select().where('id', id).first();
 	}
 
-	async getTypesByNames(trx: Transaction, data: string[]) {
+	async getTypesByNames(trx: Knex.Transaction, data: string[]) {
 		return super.get(trx, data, 'name');
 	}
 
 	async insertIgnoreTypes(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		data: TypePayload[]
 	): Promise<void> {
 		return super.insert(trx, data);
 	}
 
-	async removeTypes(trx: Transaction, data: string[]) {
+	async removeTypes(trx: Knex.Transaction, data: string[]) {
 		return super.remove(trx, data, 'name');
 	}
 
-	async removeTypesByService(trx: Transaction) {
+	async removeTypesByService(trx: Knex.Transaction) {
 		return trx.raw(`
 				DELETE t
 				FROM type_def_types t
@@ -232,14 +238,14 @@ export class TypeTransactionalRepository
 		return settled.status === 'fulfilled' ? settled.value : null;
 	}
 
-	private getTypeByIdQuery(id: number): QueryBuilder {
+	private getTypeByIdQuery(id: number): Knex.QueryBuilder {
 		return connection(TABLE_NAME)
 			.select()
 			.where(`${TABLE_NAME}.id`, id)
 			.first();
 	}
 
-	private getFieldsQuery(id: number, alias: TableAliases): QueryBuilder {
+	private getFieldsQuery(id: number, alias: TableAliases): Knex.QueryBuilder {
 		return connection(TABLE_NAME)
 			.select()
 			.where(`${TABLE_NAME}.id`, id)
@@ -276,7 +282,10 @@ export class TypeTransactionalRepository
 			.options({ nestTables: true });
 	}
 
-	private getUsedByTypesQuery(id: number, alias: TableAliases): QueryBuilder {
+	private getUsedByTypesQuery(
+		id: number,
+		alias: TableAliases
+	): Knex.QueryBuilder {
 		return connection(TABLE_NAME)
 			.select()
 			.where(`${TABLE_NAME}.id`, id)
@@ -310,7 +319,7 @@ export class TypeTransactionalRepository
 	private getUsedByOperationQuery(
 		id: number,
 		alias: TableAliases
-	): QueryBuilder {
+	): Knex.QueryBuilder {
 		const operationParamsTableName = 'type_def_operation_parameters';
 		return connection(TABLE_NAME)
 			.select()
@@ -339,7 +348,7 @@ export class TypeTransactionalRepository
 	private getImplementationQuery(
 		id: number,
 		alias: TableAliases
-	): QueryBuilder {
+	): Knex.QueryBuilder {
 		const implementationTableName = 'type_def_implementations';
 		const subgraphTableName = 'type_def_subgraphs';
 		return connection(implementationTableName)

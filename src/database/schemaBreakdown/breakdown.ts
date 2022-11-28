@@ -1,9 +1,9 @@
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 
 export class BreakDownRepository<T, K> {
 	constructor(private tableName: string, private columns: string[]) {}
 
-	async insert(trx: Transaction, data: T[]): Promise<any> {
+	async insert(trx: Knex.Transaction, data: T[]): Promise<any> {
 		if (data.length === 0) {
 			return;
 		}
@@ -17,7 +17,7 @@ export class BreakDownRepository<T, K> {
 	}
 
 	async get(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		data: string[] | number[],
 		column: string
 	): Promise<K[]> {
@@ -28,7 +28,7 @@ export class BreakDownRepository<T, K> {
 	}
 
 	async remove(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		data: string[] | number[],
 		column: string
 	): Promise<any> {

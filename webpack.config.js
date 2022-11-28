@@ -60,6 +60,13 @@ module.exports = {
 		new ForkTsCheckerWebpackPlugin({
 			typescript: {
 				configFile: './client/tsconfig.json',
+				configOverwrite: {
+					compilerOptions: {
+						sourceMap: isEnvProduction
+							? shouldUseSourceMap
+							: isEnvDevelopment,
+					},
+				},
 			},
 		}),
 		new MiniCssExtractPlugin({

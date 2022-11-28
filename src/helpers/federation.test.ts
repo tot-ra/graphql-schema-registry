@@ -18,7 +18,7 @@ describe('app/helpers/federation.js', () => {
 		`;
 
 		typeDefs.toString = () => {
-			return typeDefs.loc.source.body.toString();
+			return typeDefs.loc?.source.body.toString() || '';
 		};
 
 		const schema = {
@@ -28,7 +28,6 @@ describe('app/helpers/federation.js', () => {
 
 		try {
 			const validatedSchema = composeAndValidateSchema([schema]);
-
 			assert.isNotNull(validatedSchema);
 		} catch (error) {
 			assert.fail(error.details);

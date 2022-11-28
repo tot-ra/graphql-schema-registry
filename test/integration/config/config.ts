@@ -7,6 +7,7 @@ import { getSeedFile } from './db-config';
 import { extendExpect } from './customMatchers/toContainObject';
 import expect from 'expect';
 import { getServer } from '../../../src/graphql';
+import { logger } from '../../../src/logger';
 
 extendExpect(expect);
 
@@ -19,16 +20,22 @@ export let apolloServer;
 let containers: StartedTestContainer[] = [];
 
 BeforeAll({ timeout: 60000 * 1000 }, async () => {
+	console.log('Starting Tests...');
+
 	setDefaultTimeout(20 * 1000);
 	const dbContainer = await new GenericContainer('mysql:8.0')
 		.withExposedPorts(3306)
-		.withEnv('SERVICE_3306_NAME', 'gql-schema-registry-db')
-		.withEnv('MYSQL_ROOT_PASSWORD', 'root')
-		.withEnv('MYSQL_DATABASE', 'schema_registry')
-		.withCopyContentToContainer(
-			getSeedFile(),
-			'/docker-entrypoint-initdb.d/create_tables.sql'
-		)
+		.withEnvironment({
+			SERVICE_3306_NAME: 'gql-schema-registry-db',
+			MYSQL_ROOT_PASSWORD: 'root',
+			MYSQL_DATABASE: 'schema_registry',
+		})
+		.withCopyContentToContainer([
+			{
+				content: getSeedFile(),
+				target: '/docker-entrypoint-initdb.d/create_tables.sql',
+			},
+		])
 		.start();
 
 	config.serviceDiscovery['gql-schema-registry-db'].port = dbContainer
@@ -63,8 +70,18 @@ function sleep(ms) {
 }
 
 AfterAll(async () => {
-	await Promise.all(containers.map((container) => container.stop()));
 	const { stop } = await import('../../../src');
 	await stop();
-	setTimeout(() => process.exit(0), 500);
+
+	try {
+		logger.info('Stopping containers...');
+		await Promise.all(containers.map((container) => container.stop()));
+	} catch (error) {
+		logger.info('Issues stopping containers');
+	}
+
+	logger.info('Server shutdown complete. Exiting process.');
+	setTimeout(() => {
+		process.exit(0);
+	}, 500);
 });

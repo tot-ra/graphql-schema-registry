@@ -1,6 +1,6 @@
 import { connection } from '../index';
 import { Field, FieldPayload } from '../../model/field';
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { BreakDownRepository } from './breakdown';
 
 const TABLE_NAME = 'type_def_fields';
@@ -35,11 +35,14 @@ export class FieldTransactionRepository extends BreakDownRepository<
 		return FieldTransactionRepository.instance;
 	}
 
-	async insertIgnoreFields(trx: Transaction, data: FieldPayload[]) {
+	async insertIgnoreFields(trx: Knex.Transaction, data: FieldPayload[]) {
 		return super.insert(trx, data);
 	}
 
-	async getFieldsByNames(trx: Transaction, data: string[]): Promise<Field[]> {
+	async getFieldsByNames(
+		trx: Knex.Transaction,
+		data: string[]
+	): Promise<Field[]> {
 		return super.get(trx, data, 'name');
 	}
 
@@ -57,7 +60,7 @@ export class FieldTransactionRepository extends BreakDownRepository<
 			.where('children_type_id', childrenId);
 	}
 
-	async removeFields(trx: Transaction, data: string[]) {
+	async removeFields(trx: Knex.Transaction, data: string[]) {
 		return super.remove(trx, data, 'name');
 	}
 }

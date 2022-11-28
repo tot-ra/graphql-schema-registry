@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - '14'
+  - '16'
 
 notifications:
   email:
@@ -10,7 +10,7 @@ notifications:
     on_success: change
     on_failure: change
 
-script: 'npm run test-travis'
+script: 'npm run test:unit'
 after_success: 'npm run coverage'
 
 after_script: 'cat ./coverage/lcov.info'

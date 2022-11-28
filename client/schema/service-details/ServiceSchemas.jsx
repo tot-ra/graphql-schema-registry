@@ -3,9 +3,8 @@ import { useQuery } from '@apollo/client';
 
 import SpinnerCenter from '../../components/SpinnerCenter';
 import VersionsList from './VersionsList';
-
 import { SERVICE_SCHEMAS } from '../../utils/queries';
-import Filter from '../service-list/Filter';
+import { SchemaListColumn } from '../styled';
 import { ListContainer } from '../../components/List';
 import styled from 'styled-components';
 
@@ -15,13 +14,13 @@ const CustomListcontainer = styled(ListContainer)`
 `;
 
 const ServiceSchemas = ({ service }) => {
-	const [filterValue, setFilterValue] = useState('');
+	const [filterValue] = useState('');
 	const { loading, data, error } = useServiceSchemas(service.id, filterValue);
 
 	const content = loading ? (
 		<SpinnerCenter />
 	) : (
-		<VersionsList service={data.service} filterValue={filterValue} />
+		<VersionsList service={data.service} />
 	);
 
 	if (!service.id || error) {
@@ -30,17 +29,16 @@ const ServiceSchemas = ({ service }) => {
 
 	return (
 		<CustomListcontainer>
-			<Filter filterValue={filterValue} setFilterValue={setFilterValue} />
-			{content}
+			<SchemaListColumn all="m">{content}</SchemaListColumn>
 		</CustomListcontainer>
 	);
 };
 
 export default ServiceSchemas;
 
-function useServiceSchemas(serviceId, filterValue) {
+function useServiceSchemas(serviceId) {
 	return useQuery(SERVICE_SCHEMAS, {
-		variables: { id: serviceId, filter: filterValue },
+		variables: { id: serviceId },
 		skip: !serviceId,
 	});
 }

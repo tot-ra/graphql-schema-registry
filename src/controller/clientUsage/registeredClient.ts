@@ -13,10 +13,10 @@ export class UpdateUsageStrategy {
 	async execute() {
 		const key = `${this.clientId}_${this.hash}_${getTimestamp()}`;
 		if (this.queryResult.errors > 0) {
-			await redisWrapper.incr(`e_${key}`, this.queryResult.errors);
+			await redisWrapper.incr(`e_${key}`, this.queryResult.errors, 1000);
 		}
 		if (this.queryResult.success > 0) {
-			await redisWrapper.incr(`s_${key}`, this.queryResult.success);
+			await redisWrapper.incr(`s_${key}`, this.queryResult.success, 1000);
 		}
 	}
 }

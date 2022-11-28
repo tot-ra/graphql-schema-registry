@@ -34,6 +34,7 @@ When(
 		response = await fetch(`http://localhost:3000${url}`, {
 			method: 'POST',
 			body: body,
+			// @ts-ignore
 			headers: { 'Content-Type': 'application/json', 'Force-Push': true },
 		});
 	}
@@ -94,5 +95,13 @@ Then('the response status code should be {int}', async (status: number) => {
 Then('the response should be in JSON and contain:', async (json) => {
 	const responseBody = await response.json();
 	const subObj = JSON.parse(json);
+	if (responseBody.data?.added_time) {
+		if (!subObj.data?.added_time) {
+			subObj.data = {
+				added_time: responseBody.data?.added_time,
+				...subObj.data,
+			};
+		}
+	}
 	expect(responseBody).toMatchObject(subObj);
 });

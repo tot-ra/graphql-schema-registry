@@ -1,23 +1,21 @@
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { formatDistance } from 'date-fns';
 
 import { EntryGrid } from '../../components/styled';
 import { FlexRow, VersionRow, VersionTag } from '../styled';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
-import { Tooltip } from '@material-ui/core';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { ListItem, Tooltip } from '@material-ui/core';
 import VersionCharDelta from './VersionCharDelta';
-import {
-	ListContainer,
-	NavigationList,
-	NavigationListItem,
-} from '../../components/List';
+import { ListContainer, NavigationList } from '../../components/List';
 
 const VersionsList = ({ service }) => {
 	const { serviceName, schemaId } = useParams();
 	const selectedSchema = parseInt(schemaId, 10);
+	const history = useHistory();
 
 	if (!service) {
-		return;
+		return <div>No service passed</div>;
 	}
 
 	return (
@@ -33,46 +31,45 @@ const VersionsList = ({ service }) => {
 						>
 							<DeveloperModeIcon />
 						</Tooltip>
-					) : null;
+					) : (
+						<ChevronRightIcon />
+					);
 
 					return (
-						<NavigationListItem
+						<ListItem
 							button
 							key={schema.id}
+							selected={selectedSchema === schema.id}
 							className={schema.isActive ? '' : 'deleted'}
-							href={`/schema/${serviceName}/${schema.id}`}
-							showNavigationChevron={!schema.isDev}
-							value={
-								<EntryGrid>
-									<div>
-										<FlexRow>
-											<VersionTag>
-												#{schema.id}
-											</VersionTag>
-											<VersionCharDelta
-												selected={
-													selectedSchema === schema.id
-												}
-												schema={schema}
-											/>
-										</FlexRow>
-										<VersionRow
+							onClick={() =>
+								history.push(`/${serviceName}/${schema.id}/sdl`)
+							}
+						>
+							<EntryGrid>
+								<div>
+									<FlexRow>
+										<VersionTag>{schema.UUID}</VersionTag>
+									</FlexRow>
+									<VersionRow
+										selected={selectedSchema === schema.id}
+									>
+										<VersionCharDelta
 											selected={
 												selectedSchema === schema.id
 											}
-										>
-											<span>
-												added{' '}
-												{formatDistance(date, today, {
-													addSuffix: true,
-												})}
-											</span>
-										</VersionRow>
-									</div>
-									{icon}
-								</EntryGrid>
-							}
-						/>
+											schema={schema}
+										/>
+										<span>
+											added{' '}
+											{formatDistance(date, today, {
+												addSuffix: true,
+											})}
+										</span>
+									</VersionRow>
+								</div>
+								{icon}
+							</EntryGrid>
+						</ListItem>
 					);
 				})}
 			</NavigationList>

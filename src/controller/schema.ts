@@ -1,13 +1,17 @@
 import { Change, diff } from '@graphql-inspector/core';
-import { logger } from '../logger';
 
 import { transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
-import Knex from 'knex';
 import { BreakDownSchemaCaseUse } from './breakdown';
 
-export async function getAndValidateSchema(trx: Knex, services = false) {
+import { logger } from '../logger';
+
+export async function getAndValidateSchema(
+	trx,
+	services = false,
+	validate = true
+) {
 	const schemas = services
 		? await schemaModel.getSchemaByServiceVersions({ trx, services })
 		: await schemaModel.getLastUpdatedForActiveServices({ trx });
@@ -19,7 +23,7 @@ export async function getAndValidateSchema(trx: Knex, services = false) {
 		}
 	);
 
-	if (schemas && schemas.length) {
+	if (validate && schemas && schemas.length) {
 		federationHelper.composeAndValidateSchema(schemas);
 	}
 
@@ -94,7 +98,10 @@ export async function diffSchemas({ service }) {
 					.concat(service)
 			);
 
-			return diff(original, updated);
+			return diff(
+				original.toGraphQLJSSchema(),
+				updated.toGraphQLJSSchema()
+			);
 		}
 	});
 }

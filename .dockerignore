@@ -3,4 +3,10 @@
 */examples
 */test
 repository.json
+*/.deploy
+.git
 .deploy
+*/*.test.ts
+*/*.itest.ts
+!**/.eslint*
+!**/.editorconfig

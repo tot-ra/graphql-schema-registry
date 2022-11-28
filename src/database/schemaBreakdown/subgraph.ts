@@ -1,4 +1,4 @@
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { Subgraph } from '../../model/subgraph';
 import { BreakDownRepository } from './breakdown';
 
@@ -24,7 +24,7 @@ export class SubgraphTransactionalRepository extends BreakDownRepository<
 		return SubgraphTransactionalRepository.instance;
 	}
 
-	async insertIgnoreSubGraphs(trx: Transaction, data: Subgraph[]) {
+	async insertIgnoreSubGraphs(trx: Knex.Transaction, data: Subgraph[]) {
 		return super.insert(trx, data);
 	}
 }

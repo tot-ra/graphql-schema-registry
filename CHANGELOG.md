@@ -5,7 +5,141 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+Types of changes:
+
+- Added for new features.
+- Changed for changes in existing functionality.
+- Deprecated for soon-to-be removed features.
+- Removed for now removed features.
+- Fixed for any bug fixes.
+- Security in case of vulnerabilities.
+
 ## [Unreleased]
+
+## [5.4.0] 2022-10-27
+
+### Changed
+
+- Add schema normalization (re-formatting) - this should get rid of extra tabbing & spacing when services register their schemas inconsistently
+- Fix knex migration generation from commandline (`npm run new-db-migration my-new-migration`)
+- Improve migration scripts to support JS migrations. Possibly somewhat breaking change for organizations that relied only on .sql files
+- Migrate schemas to now include UUID (js migration). If your organization didn't expect/run js migrations, you will have empty UUIDs, but follow-up schema registrations should have it in new schemas, so not a big deal, just may be a bit confusing in the UI
+- Do not delete duplicate schemas as its a bit dangerous. You may have had duplicate schemas before. We could have deleted them, but its a risky operation.
+
+If you need to clean them up, here is a script:
+
+```sql
+UPDATE `container_schema` t3
+  INNER JOIN `schema` t1
+  INNER JOIN `schema` t2
+  SET t3.schema_id = t1.id
+  WHERE t1.UUID IS NOT null
+    AND t1.id < t2.id
+    AND t1.UUID = t2.UUID
+    AND t3.schema_id = t2.id;
+
+DELETE t2
+  FROM `schema` t1
+  INNER JOIN `schema` t2
+  WHERE
+    t2.UUID IS NOT null AND
+    t1.id < t2.id AND
+    t1.UUID = t2.UUID;
+```
+
+## [5.3.0] 2022-10-11
+
+### Changed
+
+- added global search input in menu
+- removed per-version search as redundant
+
+## [5.2.0] 2022-10-08
+
+### Added
+
+- logs tab added
+- add winston-redis-stream dependency for logs to stream to redis
+
+## [5.1.1] 2022-10-07
+
+### Changed
+
+- fix re-opening pages/navigation on refresh
+
+## [5.1.0] 2022-10-06
+
+### Added
+
+- added "clients" menu in UI part to display clients, versions and related persisted queries
+  <img width="1073" alt="Screenshot 2022-10-04 at 01 02 51" src="https://user-images.githubusercontent.com/445122/193694672-c974eaef-e3b7-422b-9140-250e70944db8.png">
+
+## [5.0.0] 2022-09-27
+
+### Breaking Changes
+
+- apollo federation v2 is used within schema validation.
+  You need to follow the [migration guide by apollo](https://www.apollographql.com/docs/federation/federation-2/moving-to-federation-2/), upgrade gateway and may need to change subgraph schemas
+- apollo composition library [migrated from MIT license to ELv2](https://www.apollographql.com/blog/announcement/moving-apollo-federation-2-to-the-elastic-license-v2/), which [adds limitations on how you can use it](https://github.com/apollographql/federation/blob/main/LICENSE#L22), which does not affect graphql-schema-registry source code as we only reference it (and its up to you, client, to install and use the library), but docker image _is affected_ as it bundles/distributes the library.
+
+Basically you cannot use graphql-schema-registry docker image to commercially compete with Apollo Studio, otherwise its fine to use as internal tool. If you feel this is unfair, feel free to create PR with alternative/pluggable schema validation method.
+
+## [4.0.0] - 2022-07-17
+
+### Added
+
+- **New Feature - schema usage**
+  - New DB migration adds `clients`, `clients_persisted_queries_rel` and `schema_hit` tables
+  - Async workrer which analyzes graphql queries and maps them onto schemas to generate schema hits (usage), see `src/worker` and also `examples` for more details. As this requires manual setup, released as major version.
+  - graphql schemas & resolvers to provide schema usage
+  - UI to see schema usage tab (under specific service schema)
+    - Added rumble-charts dependency to draw graphs
+  - UI - renamed schemas -> services in menu & added counter
+- Added redlock dependency - it now locks schema registration for some time in case multiple instances of new service try to register same schema & overload the DB. Now only one instance gets access and others wait
+- Tooling
+  - added integration tests, mostly useful for worker testing as its async
+
+### Updated
+
+- async-redis -> ioredis
+- docker-compose files are not simpler and more composeable
+
+## [3.5.0] - 2022-07-14
+
+### Updated
+
+- knex major version bump 0.20.2 -> 2.1.0
+
+## [3.4.0] - 2022-06-07
+
+### Updated
+
+- nodejs version 14 -> 16
+
+## [3.3.0] - 2022-05-25
+
+### Updated
+
+- /schema/latest now does not have schema validation, because we expect schema to be validated
+  during /schema/push. This is performance improvement
+- added performance tests. Mean duration for simple schema perf test ~ 660 ms (dockerized, your experience may differ)
+
+## [3.2.3] - 2022-05-25
+
+### Fixed
+
+- /schema/push now returns 400 instead of 500 if you attempt to register service schema with same version
+- note, that you can register schema from multiple pods if it is the same (type definitions are matched)
+
+## [3.2.2] - 2022-05-24
+
+### Updated
+
+- Fonts in diff & definition tabs are now monospace & same size
+- Added support for use `TypeScript` in the client side code. A pair of components were converted to TypeScript to validate the configuration.
+- Added the configuration for `testing-library/react` and `testing-library/react-hooks`, so unit tests could be added to the client side code. A pair of tests were added to validate the configuration.
+- `eslint-webpack-plugin` was added to avoid forgetting to fix eslint and prettier issues during development.
+- Some commands on Dockerfiles were rewritten to benefit from caching when executing `npm install`
 
 ## [3.2.1] - 2022-05-14
 
@@ -254,7 +388,18 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.4.0...HEAD
+[5.4.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.3.0...v5.4.0
+[5.3.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.2.0...v5.3.0
+[5.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.1.0...v5.2.0
+[5.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.0.0...v5.1.0
+[5.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v4.0.0...v5.0.0
+[4.0.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.5.0...v4.0.0
+[3.5.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.4.0...v3.5.0
+[3.4.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.3.0...v3.4.0
+[3.3.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.3...v3.3.0
+[3.2.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.2...v3.2.3
+[3.2.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.1...v3.2.2
 [3.2.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.2.0...v3.2.1
 [3.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v3.0.1...v3.1.0

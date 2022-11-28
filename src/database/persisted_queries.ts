@@ -9,6 +9,23 @@ const PersistedQueriesModel = {
 		)[0].amount;
 	},
 
+	getVersionPersistedQueries: async function ({ version_id }) {
+		return await connection('persisted_queries')
+			.innerJoin(
+				'clients_persisted_queries_rel',
+				'persisted_queries.key',
+				'clients_persisted_queries_rel.pq_key'
+			)
+			.select([
+				'query',
+				'key',
+				'clients_persisted_queries_rel.added_time as addedTime',
+			])
+			.where({
+				'clients_persisted_queries_rel.version_id': version_id,
+			});
+	},
+
 	list: async function ({ searchFragment = '', limit = 100, offset = 0 }) {
 		return connection('persisted_queries')
 			.select(['query', 'key', 'added_time'])

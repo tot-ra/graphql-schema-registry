@@ -1,4 +1,4 @@
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { OperationParam } from '../../model/operation_param';
 import { BreakDownRepository } from './breakdown';
 import { connection } from '../index';
@@ -35,7 +35,7 @@ export class OperationParamsTransactionalRepository extends BreakDownRepository<
 	}
 
 	async insertIgnoreOperationParams(
-		trx: Transaction,
+		trx: Knex.Transaction,
 		data: OperationParam[]
 	) {
 		return super.insert(trx, data);

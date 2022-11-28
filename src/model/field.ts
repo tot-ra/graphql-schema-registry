@@ -1,10 +1,10 @@
 export type FieldPayload = {
 	name: string;
 	description: string;
-	is_nullable: Boolean;
-	is_array: Boolean;
-	is_array_nullable: Boolean;
-	is_deprecated: Boolean;
+	is_nullable: boolean;
+	is_array: boolean;
+	is_array_nullable: boolean;
+	is_deprecated: boolean;
 	children_type_id: number;
 	parent_type_id: number;
 };

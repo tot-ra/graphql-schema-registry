@@ -1,6 +1,6 @@
 import { Change, ChangeType } from '@graphql-inspector/core';
 import { FieldChangeStrategy } from './field';
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 import { TypeChangeStrategy } from './type';
 import { ImplementationChangeStrategy } from './implementation';
 
@@ -11,7 +11,7 @@ export interface TypeDefChangeStrategy {
 export interface ITypeDefChangeStrategy {
 	changes: Change[];
 	changesType: any;
-	trx: Transaction;
+	trx: Knex.Transaction;
 }
 
 const changesType = {
@@ -27,7 +27,7 @@ const changesType = {
 
 export class SchemaChangeStrategy {
 	private strategies: Map<string, TypeDefChangeStrategy> = new Map();
-	constructor(private changes: Change[], private trx: Transaction) {}
+	constructor(private changes: Change[], private trx: Knex.Transaction) {}
 
 	public async execute() {
 		const data = {

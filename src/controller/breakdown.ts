@@ -1,4 +1,4 @@
-import { Transaction } from 'knex';
+import { Knex } from 'knex';
 
 import { logger } from '../logger';
 import { Change } from '@graphql-inspector/core';
@@ -12,7 +12,7 @@ interface BreakDownService {
 
 export class BreakDownSchemaCaseUse implements BreakDownService {
 	constructor(
-		private trx: Transaction,
+		private trx: Knex.Transaction,
 		private type_defs: string,
 		private service_id: number
 	) {}

@@ -1,3 +1,4 @@
+import { logger } from '../logger';
 import {
 	ClientOperationDAO,
 	ClientOperationsDTO,
@@ -43,14 +44,22 @@ export class RedisRepository implements RedisService {
 		type: validationType
 	): Promise<ClientOperationsDTO> {
 		const allOperationsPattern = `${this.keyHandler.prefixes.operation}*`;
-		const allOperationKeys = await this.client.scan(allOperationsPattern);
-		const allOperations = await this.client.multiGet<string>(
-			allOperationKeys
+		const allOperationKeys = await this.client.scan(
+			allOperationsPattern,
+			10000
 		);
+
 		const operations: ClientOperationsDTO = new Map<
 			string,
 			ClientOperationDAO
 		>();
+
+		if (!allOperationKeys.length) return operations;
+		const allOperations = await this.client.multiGet<string>(
+			allOperationKeys,
+			10000
+		);
+
 		allOperations.forEach((o, index) => {
 			const operation = JSON.parse(o);
 			if (operation !== null && this.validateUsage(id, operation, type)) {
@@ -65,7 +74,7 @@ export class RedisRepository implements RedisService {
 		type: 'error' | 'success'
 	): Promise<number> {
 		const pattern = this.keyHandler.getExecutionsKeyPattern(input, type);
-		const allKeys = await this.client.scan(pattern);
+		const allKeys = await this.client.scan(pattern, 10000);
 		const keysInDates = allKeys.filter((key) => {
 			const dateSeconds = this.keyHandler.getDateSecondsFromKey(key);
 			return (
@@ -73,8 +82,19 @@ export class RedisRepository implements RedisService {
 				dateSeconds <= input.endSeconds
 			);
 		});
-		const executions = await this.client.multiGet<number>(keysInDates);
-		return executions.reduce((acc, curr) => (acc += Number(curr)), 0);
+		try {
+			const executions = await this.client.multiGet<number>(
+				keysInDates,
+				10000
+			);
+			return executions.reduce((acc, curr) => (acc += Number(curr)), 0);
+		} catch (error) {
+			logger.warn(
+				'Error getting execution between dates',
+				JSON.stringify(allKeys)
+			);
+			return 0;
+		}
 	}
 
 	async getExecutionsFromOperation(

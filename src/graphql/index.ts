@@ -8,6 +8,8 @@ export const initServer = async (app) => {
 
 	server = new ApolloServer(props);
 
+	await server.start();
+
 	server.applyMiddleware({ app });
 };
 

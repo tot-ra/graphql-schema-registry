@@ -1,9 +1,9 @@
-var request = require('request-promise-native');
-const { buildFederatedSchema, printSchema } = require('@apollo/federation');
-const { ApolloServer, gql } = require('apollo-server-express');
-const express = require('express');
-const app = express();
-const { json } = require('body-parser');
+const request = require('request-promise-native');
+const { buildSubgraphSchema } = require('@apollo/subgraph');
+const { ApolloServer, gql } = require('apollo-server');
+const {
+	ApolloServerPluginLandingPageGraphQLPlayground,
+} = require('apollo-server-core');
 
 const typeDefs = gql`
 	type Query {
@@ -22,15 +22,12 @@ const resolvers = {
 };
 
 const server = new ApolloServer({
-	schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+	schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
+	plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+	cache: 'bounded',
 });
 
-const router = express.Router();
-app.use(router);
-router.use(json());
-server.applyMiddleware({ app });
-
-app.listen({ port: 6101 }, () => {
+server.listen({ port: 6101 }, () => {
 	console.log(`🚀 Server ready at http://localhost:6101`);
 });
 

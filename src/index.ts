@@ -6,11 +6,12 @@ import config from './config';
 import router from './router';
 import { logger } from './logger';
 import process from 'process';
+import redis from './redis';
 
 const app = express();
 
 let server = null;
-let terminated = false;
+let shutdownTry = 0;
 
 function monitorConnections() {
 	if (!server) {
@@ -24,8 +25,9 @@ function monitorConnections() {
 
 		logger.info(`Process shutting down with ${count} open connections\n`);
 
-		if (count > 0) {
-			setTimeout(() => monitorConnections(), 2000);
+		if (count > 0 && shutdownTry < 5) {
+			shutdownTry++;
+			setTimeout(() => monitorConnections(), 1000);
 		}
 	});
 }
@@ -36,18 +38,8 @@ const setupServer = async () => {
 		await setupDev(app);
 	}
 
-	app.get(`/health`, (req, res) => {
-		if (terminated) {
-			logger.info('health check failed due to application terminating');
-
-			return res.status(429).send('terminated');
-		}
-
-		return res.status(200).send('ok');
-	});
-
 	app.use(router);
-	initServer(app);
+	await initServer(app);
 
 	// eslint-disable-next-line
 	app.use((err, req, res, next) => {
@@ -88,8 +80,6 @@ const setupServer = async () => {
 	});
 
 	process.on('SIGTERM', () => {
-		terminated = true;
-
 		if (!server) {
 			return null;
 		}
@@ -114,8 +104,10 @@ export default async function init() {
 		return server;
 	}
 
+	await redis.initRedis();
+
 	if (config.asyncSchemaUpdates) {
-		kafka.init();
+		await kafka.init();
 	}
 
 	server = app.listen(config.port, () => {
@@ -126,8 +118,6 @@ export default async function init() {
 }
 
 export async function stop() {
-	await server.close(() => {
-		logger.info('Server shutdown complete. Exiting process.');
-		process.exit(0);
-	});
+	redis.disconnect();
+	await server.close();
 }

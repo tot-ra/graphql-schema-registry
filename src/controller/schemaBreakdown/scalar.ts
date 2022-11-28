@@ -10,6 +10,7 @@ import { DocumentNodeType, EntityType } from '../../model/enums';
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
 import { Type } from '../../model/type';
 import { createTypes, persistEntities } from './utils';
+import { Kind } from 'graphql';
 
 type PotentialScalarTypes =
 	| ObjectTypeDefinitionNode
@@ -91,7 +92,8 @@ export class ScalarStrategy
 									return [
 										this.getInternalScalars(f.type),
 										...('arguments' in f
-											? f.arguments?.map((a) =>
+											? // eslint-disable-next-line no-unsafe-optional-chaining
+											  f.arguments?.map((a) =>
 													this.getInternalScalars(
 														a.type
 													)
@@ -115,7 +117,7 @@ export class ScalarStrategy
 			return null;
 		}
 		return {
-			kind: 'ScalarTypeExtension',
+			kind: Kind.SCALAR_TYPE_EXTENSION,
 			name: field.name,
 		};
 	}

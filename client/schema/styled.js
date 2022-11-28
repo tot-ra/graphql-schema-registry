@@ -26,6 +26,12 @@ export const ServiceListColumn = styled.div`
 	border-right: 1px solid ${colors.black.hex256};
 `;
 
+export const SchemaListColumn = styled.div`
+	min-width: 200px;
+	flex-shrink: 0;
+	border-right: 1px solid ${colors.black.hex256};
+`;
+
 export const Container = styled.section`
 	flex: 100%;
 	overflow: hidden;
