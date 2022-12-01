@@ -54,7 +54,7 @@ export class RedisRepository implements RedisService {
 			ClientOperationDAO
 		>();
 
-		if (!allOperationKeys.length) return operations;
+		if (!allOperationKeys?.length) return operations;
 		const allOperations = await this.client.multiGet<string>(
 			allOperationKeys,
 			10000
@@ -75,13 +75,19 @@ export class RedisRepository implements RedisService {
 	): Promise<number> {
 		const pattern = this.keyHandler.getExecutionsKeyPattern(input, type);
 		const allKeys = await this.client.scan(pattern, 10000);
+		if (!allKeys?.length) return 0;
 		const keysInDates = allKeys.filter((key) => {
-			const dateSeconds = this.keyHandler.getDateSecondsFromKey(key);
-			return (
-				dateSeconds >= input.startSeconds &&
-				dateSeconds <= input.endSeconds
-			);
+			try {
+				const dateSeconds = this.keyHandler.getDateSecondsFromKey(key);
+				return (
+					dateSeconds >= input.startSeconds &&
+					dateSeconds <= input.endSeconds
+				);
+			} catch (error) {
+				return false;
+			}
 		});
+		if (!keysInDates?.length) return 0;
 		try {
 			const executions = await this.client.multiGet<number>(
 				keysInDates,

@@ -172,7 +172,7 @@ const redisWrap = {
 	scan: async (
 		pattern: string,
 		timeout = SET_TIMEOUT_MS
-	): Promise<string[]> => {
+	): Promise<string[] | null> => {
 		const operation = async () => {
 			const found: string[] = [];
 			const endCursor = '0';

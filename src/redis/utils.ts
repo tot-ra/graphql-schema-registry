@@ -3,5 +3,5 @@ export function getTimestamp(date?: string | number): number {
 	now.setMinutes(0);
 	now.setSeconds(0);
 	now.setMilliseconds(0);
-	return now.getTime() / 1000;
+	return Math.round(now.getTime() / 1000);
 }
