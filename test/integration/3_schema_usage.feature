@@ -69,3 +69,15 @@ Feature: As a customer
 		Then the redis must contain 3 entries for client 1
 		And 2 error registered for client 1
 		And 1 success registered for client 1
+
+	Scenario: Recurrent client with an existing query with no name
+        Given a registered client 1 for an "valid" query:
+		"""
+		# IntegrationTest
+		query ($platform: Platform!) {
+			proBrands(platform: $platform) {
+				logo
+			  }
+		}
+		"""
+		Then the redis must contain 1 entries for client 1

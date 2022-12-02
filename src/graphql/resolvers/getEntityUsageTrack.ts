@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import {
 	EntityUsageResponse,
 	Executions,
@@ -27,7 +28,11 @@ export default async function getEntityUsageTrack(
 			})
 		);
 	});
-	const resultExecutions = await Promise.all(executions);
+	const resultExecutions = await Promise.map(
+		executions,
+		(promise) => promise,
+		{ concurrency: 10 }
+	);
 
 	const result: EntityUsageResponse = [];
 	const fields: Map<number, Executions> = new Map();

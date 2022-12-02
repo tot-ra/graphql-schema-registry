@@ -55,9 +55,10 @@ export class RegisterUsage {
 	}
 
 	private async insertInRedis(operations: any) {
+		const operationName = this.op.match(/# (\w+)/);
 		const payload = {
 			query: {
-				name: this.op.match(/# (\w+)/)[1],
+				name: operationName ? operationName[1] : 'no-operation-name',
 				sdl: this.op.replace(/# \w+/, '').trim(),
 			},
 			operations: operations[0],
