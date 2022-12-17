@@ -54,7 +54,7 @@
   "private": false,
   "dependencies": {
     "@apollo/client": "3.5.8",
-    "@apollo/composition": "2.0.5",
+    "@apollo/composition": "2.2.1",
     "@graphql-inspector/core": "3.3.0",
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "4.11.2",
