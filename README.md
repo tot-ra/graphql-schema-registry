@@ -1,14 +1,15 @@
-# graphql-schema-registry
-
+# graphql-schema-registry 
 <img src="https://user-images.githubusercontent.com/445122/95125574-d7466580-075d-11eb-8a78-b6adf34ad811.png" width=100 height=100 align="right"/>
 
 Graphql schema storage as dockerized on-premise service for federated graphql gateway server
 (based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/) and [The Guild's Hive](https://graphql-hive.com)
 
+This is a more maintained / forked version of original [graphql-schema-registry](https://github.com/pipedrive/graphql-schema-registry)
+
 [![slack](https://img.shields.io/badge/slack-brigade-brightgreen.svg?logo=slack)](http://gql-schema-registry.slack.com/)
-![](https://img.shields.io/github/v/release/pipedrive/graphql-schema-registry?sort=semver)
-[![Coverage Status](https://coveralls.io/repos/github/pipedrive/graphql-schema-registry/badge.svg?branch=master&v=2)](https://coveralls.io/github/pipedrive/graphql-schema-registry?branch=master)
-[![](https://snyk.io/test/github/pipedrive/graphql-schema-registry/badge.svg)](https://snyk.io/test/github/pipedrive/graphql-schema-registry)
+![](https://img.shields.io/github/v/release/tot-ra/graphql-schema-registry?sort=semver)
+[![Coverage Status](https://coveralls.io/repos/github/tot-ra/graphql-schema-registry/badge.svg?branch=master&v=2)](https://coveralls.io/github/tot-ra/graphql-schema-registry?branch=master)
+[![](https://snyk.io/test/github/tot-ra/graphql-schema-registry/badge.svg)](https://snyk.io/test/github/tot-ra/graphql-schema-registry)
 [![Code Style](https://img.shields.io/badge/codestyle-prettier-ff69b4.svg)](https://prettier.io/)
 
 ## Features
@@ -31,28 +32,16 @@ With default settings, UI should be accessible at [http://localhost:6001](http:/
 ### On bare host
 
 ```
-git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
+git clone https://github.com/tot-ra/graphql-schema-registry.git && cd graphql-schema-registry
 cp example.env .env && nano .env
 npm install && npm run build
 node app/schema-registry.js
 ```
 
-### Docker image
-
-We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry/tags) for main node service.
-It assumes you have mysql/redis running separately.
-Use exact IP instead of `localhost`.
-Use exact docker image tag to avoid breaking changes.
-
-```
-docker pull pipedrive/graphql-schema-registry:5.0.0
-docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 pipedrive/graphql-schema-registry
-```
-
 ### Docker-compose
 
 ```
-git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
+git clone https://github.com/tot-ra/graphql-schema-registry.git && cd graphql-schema-registry
 docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```
 
@@ -85,7 +74,7 @@ flowchart LR
 
 | Name              | Role     | Description                                                                                                                                                                                                                                                                                                                    |
 | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/pipedrive/graphql-query-cost) or fail-safe mechanisms. |
+| federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/tot-ra/graphql-query-cost) or fail-safe mechanisms. |
 | schema registry   | Required | Main service that we provide                                                                                                                                                                                                                                                                                                   |
 | mysql             | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                         |
 | query analyzer    | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder                                                                                                                                                                                                                                |
