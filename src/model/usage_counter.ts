@@ -1,9 +1,4 @@
-export interface UsageCounter {
-	success: number;
-	errors: number;
-}
-
-export type QueryResult = {
-	errors: number;
+export type UsageStats = {
+	error: number;
 	success: number;
 };

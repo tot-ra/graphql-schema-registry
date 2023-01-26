@@ -22,10 +22,9 @@ type InstanceStatsTableProps = {
 		id: number | string;
 		name: string;
 		label: React.ReactNode;
-		executions?: {
+		usageStats?: {
 			success: number;
 			error: number;
-			total: number;
 		};
 	}[];
 	showUsageDetail: boolean;
@@ -62,14 +61,14 @@ export const InstanceStatsTable = ({
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{items.map(({ id, executions, label, name }) => (
+						{items.map(({ id, label, name, usageStats }) => (
 							<InstanceStatsTableRow
 								key={name}
 								id={id}
 								label={label}
 								name={name}
-								executions={executions}
 								showUsageDetail={showUsageDetail}
+								usageStats={usageStats}
 							/>
 						))}
 					</TableBody>

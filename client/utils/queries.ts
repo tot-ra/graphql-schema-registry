@@ -421,22 +421,19 @@ export const TYPE_INSTANCE = gql`
 	}
 `;
 
-export type TypeInstanceOperationStatsOutput = {
-	getOperationUsageTrack: {
-		client: {
-			name: string;
-			versions: {
-				id: string;
-				operations: {
-					name: string;
-					executions: {
-						success: number;
-						error: number;
-						total: number;
-					};
-				}[];
+export type TypeInstanceRootFieldStatsOutput = {
+	getRootFieldUsageStats: {
+		name: string;
+		versions: {
+			usageStatsByOperationName: {
+				operationName: string;
+				usageStats: {
+					success: number;
+					error: number;
+				};
 			}[];
-		};
+			version: string;
+		}[];
 	}[];
 
 	getTypeInstance: GetTypeInstanceBase;
@@ -448,35 +445,32 @@ type TypeInstanceBaseStatsVars = {
 	endDate: Date;
 };
 
-export type TypeInstanceOperationStatsVars = TypeInstanceBaseStatsVars & {
+export type TypeInstanceRootFieldStatsVars = TypeInstanceBaseStatsVars & {
 	type: string;
 };
 
-export const TYPE_INSTANCE_OPERATION_STATS = gql`
-	query GetTypeInstanceOperationStats(
+export const TYPE_INSTANCE_ROOT_FIELD_STATS = gql`
+	query GetTypeInstanceRootFieldStats(
 		$id: Int!
 		$type: String!
 		$startDate: Date!
 		$endDate: Date!
 	) {
-		getOperationUsageTrack(
+		getRootFieldUsageStats(
 			id: $id
 			startDate: $startDate
 			endDate: $endDate
 		) {
-			client {
-				name
-				versions {
-					id
-					operations {
-						name
-						executions {
-							success
-							error
-							total
-						}
+			name
+			versions {
+				usageStatsByOperationName {
+					operationName
+					usageStats {
+						success
+						error
 					}
 				}
+				version
 			}
 		}
 

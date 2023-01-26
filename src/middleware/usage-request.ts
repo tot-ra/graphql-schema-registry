@@ -1,5 +1,4 @@
 import zlib from 'zlib';
-import { logger } from '../logger';
 
 export default async (req, res, next) => {
 	const data = [];

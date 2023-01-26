@@ -4,8 +4,8 @@ import { logger } from '../logger';
 import diplomat from '../diplomat';
 
 const DEFAULT_TTL = 24 * 3600;
-const GET_TIMEOUT_MS = 30;
-const SET_TIMEOUT_MS = 50;
+const GET_TIMEOUT_MS = 1000;
+const SET_TIMEOUT_MS = 1000;
 const DEFAULT_LOCK_TTL = 60 * 1000;
 const redisServiceName =
 	process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis';
@@ -109,6 +109,9 @@ const redisWrap = {
 	disconnect: () => {
 		redis?.disconnect();
 	},
+
+	exists: (key, timeout = GET_TIMEOUT_MS) =>
+		doRedisOperationWithTimeout(redis.exists(key), timeout),
 
 	get: (key, timeout = GET_TIMEOUT_MS) =>
 		doRedisOperationWithTimeout(redis.get(key), timeout),

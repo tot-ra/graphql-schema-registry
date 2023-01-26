@@ -24,10 +24,9 @@ export type InstanceStatsTableRowProps = {
 	id: number | string;
 	name: string;
 	label: React.ReactNode;
-	executions?: {
+	usageStats?: {
 		success: number;
 		error: number;
-		total: number;
 	};
 	showUsageDetail: boolean;
 };
@@ -35,10 +34,13 @@ export type InstanceStatsTableRowProps = {
 export const InstanceStatsTableRow = ({
 	id,
 	label,
-	executions,
 	showUsageDetail,
+	usageStats,
 }: InstanceStatsTableRowProps) => {
 	const [isSelected, setSelected] = useState(false);
+	const error = usageStats?.error ?? 0;
+	const success = usageStats?.success ?? 0;
+	const total = error + success;
 
 	const handleOnChange = useCallback(() => {
 		setSelected((value) => !value);
@@ -51,15 +53,15 @@ export const InstanceStatsTableRow = ({
 					{label}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{executions?.total ?? 0}
+					{total}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{executions?.success ?? 0}
+					{success}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{executions?.error ?? 0}
+					{error}
 				</TableCell>
-				{showUsageDetail && executions?.total > 0 && (
+				{showUsageDetail && total > 0 && (
 					<TableCell component="th" scope="row">
 						<IconButton onClick={handleOnChange}>
 							{isSelected && (

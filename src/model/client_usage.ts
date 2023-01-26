@@ -1,3 +1,5 @@
+import { UsageStats } from './usage_counter';
+
 interface ClientOperationEntity {
 	objectId: number;
 	fields: number[];
@@ -31,16 +33,6 @@ export interface Executions {
 	total: number;
 }
 
-export interface ExecutionsByName {
-	name: string;
-	executions: Executions;
-}
-
-export interface OperationClientVersion {
-	id: string;
-	operations: ExecutionsByName[];
-}
-
 export interface FieldClientVersion {
 	id: string;
 	execution: Executions;
@@ -50,10 +42,6 @@ export interface ClientUsage<T> {
 	name: string;
 	versions: T[];
 }
-
-export type OperationUsageResponse = {
-	client: ClientUsage<OperationClientVersion>;
-}[];
 
 export type FieldUsageResponse = {
 	client: ClientUsage<FieldClientVersion>;
@@ -65,3 +53,13 @@ export interface FieldUsage {
 }
 
 export type EntityUsageResponse = FieldUsage[];
+
+export interface ClientVersionUsageStats {
+	usageStatsByOperationName: {
+		operationName: string;
+		usageStats: UsageStats;
+	}[];
+	version: string;
+}
+
+export type RootFieldUsageStats = ClientUsage<ClientVersionUsageStats>[];

@@ -8,7 +8,7 @@ import { FieldTransactionRepository } from '../../database/schemaBreakdown/field
 import redisWrapper from '../../redis';
 import { getTimestamp } from '../../redis/utils';
 import { Client } from '../../model/client';
-import { QueryResult } from '../../model/usage_counter';
+import { UsageStats } from '../../model/usage_counter';
 
 export class RegisterUsage {
 	private operationRepository =
@@ -21,7 +21,7 @@ export class RegisterUsage {
 	constructor(
 		private op: string,
 		private client: Client,
-		private queryResult: QueryResult,
+		private queryResult: UsageStats,
 		private hash: string
 	) {}
 
@@ -78,7 +78,7 @@ export class RegisterUsage {
 		);
 		await redisWrapper.set(
 			`e_${this.client.id}_${this.hash}_${getTimestamp()}`,
-			this.queryResult.errors,
+			this.queryResult.error,
 			ttl,
 			1000
 		);

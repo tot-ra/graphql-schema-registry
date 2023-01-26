@@ -30,10 +30,6 @@ export const OPTIONS: Record<
 	string,
 	{ label: string; duration: Duration | 'custom' }
 > = Object.freeze({
-	hour: {
-		label: 'Last hour',
-		duration: { hours: 1 },
-	},
 	day: {
 		label: 'Last day',
 		duration: { days: 1 },
@@ -108,7 +104,7 @@ const DateRangeSelector = ({
 	const [open, setOpen] = useState(false);
 	const [openCustomDialog, setOpenCustomDialog] = useState(false);
 	const anchorRef = useRef<HTMLButtonElement>(null);
-	const [value, setValue] = useState('hour');
+	const [value, setValue] = useState('day');
 
 	const handleToggle = () => {
 		setOpen((prevOpen) => !prevOpen);

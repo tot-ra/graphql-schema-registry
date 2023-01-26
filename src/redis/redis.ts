@@ -1,3 +1,4 @@
+import { getRootFieldKeyGlob } from '../helpers/clientUsage/keyHelper';
 import { logger } from '../logger';
 import {
 	ClientOperationDAO,
@@ -37,6 +38,32 @@ export class RedisRepository implements RedisService {
 		}
 
 		return RedisRepository.instance;
+	}
+
+	async getRootFieldRedisEntries(
+		rootFieldId: number,
+		startTimestamp: number,
+		endTimestamp: number
+	): Promise<[string, string][]> {
+		const rootFieldKeys = await this.client.scan(
+			getRootFieldKeyGlob(rootFieldId, startTimestamp, endTimestamp),
+			10000
+		);
+		const entries: [string, string][] = [];
+
+		if (rootFieldKeys.length === 0) {
+			return entries;
+		}
+
+		const rootFieldValues = await this.client.multiGet<string>(
+			rootFieldKeys,
+			10000
+		);
+
+		rootFieldKeys.forEach((key, index) => {
+			entries.push([key, rootFieldValues[index]]);
+		});
+		return entries;
 	}
 
 	async getOperationsByUsage(

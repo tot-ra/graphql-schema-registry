@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 import { CommonLink } from '../../../components/Link';
-import { TypeInstanceOperationStatsOutput } from '../../../utils/queries';
+import { TypeInstanceRootFieldStatsOutput } from '../../../utils/queries';
 import { InstanceStatsTable } from '../common/InstanceStatsTable';
 import { CommonContainer } from '../shared';
 
@@ -26,35 +26,37 @@ export const List = styled(CommonContainer)`
 	list-style: none;
 `;
 
-type InstanceStatsTableProps = {
-	client: TypeInstanceOperationStatsOutput['getOperationUsageTrack'][0]['client'];
-};
+type InstanceStatsTableProps =
+	TypeInstanceRootFieldStatsOutput['getRootFieldUsageStats'][0];
 
 export const InstanceStatsClient = ({
-	client: { name, versions },
+	name,
+	versions,
 }: InstanceStatsTableProps) => (
 	<Container as="li">
 		<Typography variant="h5" component="h4">
 			{name}
 		</Typography>
 		<List as="ul">
-			{versions.map((version) => (
+			{versions.map(({ usageStatsByOperationName, version }) => (
 				<InstanceStatsTable
 					as="li"
 					headerLabel="Operation"
-					key={version.id}
-					title={version.id}
+					key={version}
+					title={version}
 					showUsageDetail={false}
-					items={version.operations.map((operation) => ({
-						id: operation.name,
-						name: operation.name,
-						label: (
-							<CommonLink to={`/schema/${operation.name}`}>
-								{operation.name}
-							</CommonLink>
-						),
-						executions: operation.executions,
-					}))}
+					items={usageStatsByOperationName.map(
+						({ operationName, usageStats }) => ({
+							id: operationName,
+							name: operationName,
+							label: (
+								<CommonLink to={`/schema/${operationName}`}>
+									{operationName}
+								</CommonLink>
+							),
+							usageStats,
+						})
+					)}
 				/>
 			))}
 		</List>

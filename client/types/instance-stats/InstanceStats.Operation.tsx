@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import useMinimumTime from '../../shared/useMinimumTime';
 import useCommonParams from '../../shared/useCommonParams';
 import {
-	TypeInstanceOperationStatsOutput,
-	TypeInstanceOperationStatsVars,
-	TYPE_INSTANCE_OPERATION_STATS,
+	TYPE_INSTANCE_ROOT_FIELD_STATS,
+	TypeInstanceRootFieldStatsOutput,
+	TypeInstanceRootFieldStatsVars,
 } from '../../utils/queries';
 import { MainViewContainer } from '../../components/MainViewContainer';
 import { useDateRangeSelector } from '../../components/DateRangeSelector.Context';
@@ -31,9 +31,9 @@ export const InstanceStatsOperation = () => {
 	} = useDateRangeSelector();
 
 	const { loading, error, data, refetch } = useQuery<
-		TypeInstanceOperationStatsOutput,
-		TypeInstanceOperationStatsVars
-	>(TYPE_INSTANCE_OPERATION_STATS, {
+		TypeInstanceRootFieldStatsOutput,
+		TypeInstanceRootFieldStatsVars
+	>(TYPE_INSTANCE_ROOT_FIELD_STATS, {
 		variables: {
 			id: instanceId,
 			type: typeName,
@@ -56,7 +56,7 @@ export const InstanceStatsOperation = () => {
 		return <ErrorRetry onRetry={refetch} />;
 	}
 
-	const { getOperationUsageTrack: items, getTypeInstance } = data;
+	const { getRootFieldUsageStats: items, getTypeInstance } = data;
 
 	return (
 		<MainViewContainer>
@@ -64,10 +64,11 @@ export const InstanceStatsOperation = () => {
 				{items.length === 0 && <span>No clients :(</span>}
 				{items.length > 0 && (
 					<ClientsList>
-						{items.map(({ client }) => (
+						{items.map(({ name, versions }) => (
 							<InstanceStatsClient
-								key={client.name}
-								client={client}
+								key={name}
+								name={name}
+								versions={versions}
 							/>
 						))}
 					</ClientsList>

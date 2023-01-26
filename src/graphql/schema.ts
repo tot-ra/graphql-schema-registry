@@ -38,11 +38,6 @@ export default gql`
 			offset: Int!
 		): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
-		getOperationUsageTrack(
-			id: Int!
-			startDate: Date!
-			endDate: Date!
-		): [ClientOperationUsageTrack!]!
 		getEntityUsageTrack(
 			id: Int!
 			startDate: Date!
@@ -53,6 +48,11 @@ export default gql`
 			startDate: Date!
 			endDate: Date!
 		): [ClientFieldUsageTrack!]!
+		getRootFieldUsageStats(
+			id: Int!
+			startDate: Date!
+			endDate: Date!
+		): [RootFieldUsageClientStats!]!
 		routerConfig(
 			ref: String
 			apiKey: String
@@ -317,6 +317,26 @@ export default gql`
 
 	type ClientOperationUsageTrack {
 		client: OperationClientVersion!
+	}
+
+	type UsageStats {
+		error: Int!
+		success: Int!
+	}
+
+	type UsageStatsByOperationName {
+		operationName: String!
+		usageStats: UsageStats!
+	}
+
+	type ClientVersionUsageStats {
+		usageStatsByOperationName: [UsageStatsByOperationName!]!
+		version: String!
+	}
+
+	type RootFieldUsageClientStats {
+		name: String!
+		versions: [ClientVersionUsageStats!]!
 	}
 
 	type EntityUsageTrack {

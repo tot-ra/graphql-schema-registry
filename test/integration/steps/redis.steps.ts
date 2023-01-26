@@ -26,8 +26,16 @@ Given('the redis contains the keys:', async (dataTable: DataTable) => {
 	const keys = dataTable.rowsHash();
 	const promises = [];
 	for (const key in keys) {
-		// @ts-ignore
-		promises.push(redisWrapper.set(key, keys[key], 1000));
+		promises.push(
+			redisWrapper.set(
+				key.replace(
+					'{{DATE_NOW_PLACEHOLDER}}',
+					getTimestamp().toString()
+				),
+				keys[key],
+				1000
+			)
+		);
 	}
 	await Promise.all(promises);
 });
@@ -58,36 +66,40 @@ Given(
 );
 
 Then(
-	'the redis must contain {int} entries for client {int}',
-	async (totalKeys: number, clientId: number) => {
+	'the redis must contain an {string} key for root field {int} with value {int}',
+	async (
+		entryType: 'error' | 'success',
+		rootFieldId: number,
+		expectedValue: number
+	) => {
 		const redisWrapper = await getConnection();
-
-		const total = await redisWrapper.keys(`*_${clientId}_*`, 1000);
-
-		expect(total.length).toEqual(totalKeys);
+		const keys = await redisWrapper.keys(
+			`root_field_${rootFieldId}_*_${entryType}`
+		);
+		try {
+			expect(keys).toHaveLength(1);
+		} catch (error) {
+			throw error;
+		}
+		const value = Number(await redisWrapper.get(keys[0]));
+		expect(value).toEqual(expectedValue);
 	}
 );
 
 Then(
-	'{int} error registered for client {int}',
-	async (totalErrors: number, clientId: number) => {
+	'{int} {string} registered for root field {int}',
+	async (
+		expectedValue: number,
+		entryType: 'error' | 'success',
+		rootFieldId: number
+	) => {
 		const redisWrapper = await getConnection();
 
-		const keys = await redisWrapper.keys(`e_${clientId}_*`);
+		const keys = await redisWrapper.keys(
+			`root_field_${rootFieldId}_*_${entryType}`
+		);
 		const value = await redisWrapper.get(keys[0], 1000);
 
-		expect(+value).toEqual(totalErrors);
-	}
-);
-
-Then(
-	'{int} success registered for client {int}',
-	async (totalErrors: number, clientId: number) => {
-		const redisWrapper = await getConnection();
-
-		const keys = await redisWrapper.keys(`s_${clientId}_*`);
-		const value = await redisWrapper.get(keys[0], 1000);
-
-		expect(+value).toEqual(totalErrors);
+		expect(+value).toEqual(expectedValue);
 	}
 );
