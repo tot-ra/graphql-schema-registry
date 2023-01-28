@@ -38,6 +38,14 @@ npm install && npm run build
 node app/schema-registry.js
 ```
 
+### Docker image
+We have docker image published for main node service. It assumes you have mysql/redis running separately. Use exact IP instead of localhost. Use exact docker image tag to avoid breaking changes.
+
+```
+docker pull artjomkurapov/graphql-schema-registry:5.4.0
+docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 artjomkurapov/graphql-schema-registry
+```
+
 ### Docker-compose
 
 ```
