@@ -353,6 +353,16 @@ docker build -t local/graphql-schema-registry .
 
 # try to run it
 docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 local/graphql-schema-registry
+
+
+# build official image
+docker image build -t artjomkurapov/graphql-schema-registry .
+
+#push tags
+docker push artjomkurapov/graphql-schema-registry:latest
+
+docker image tag artjomkurapov/graphql-schema-registry:latest artjomkurapov/graphql-schema-registry:5.5.0
+docker push artjomkurapov/graphql-schema-registry:5.5.0
 ```
 
 ## Security & compliance
