@@ -15,6 +15,11 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+
+## [5.5.1] 2023-01-29
+### Changed
+Security updates of knex and body-parser dependencies
+
 ## [5.5.0] 2023-01-29
 ### Changed
 Redis dependency is now optional and password-protected
