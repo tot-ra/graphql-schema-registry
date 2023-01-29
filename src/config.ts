@@ -25,8 +25,11 @@ export default {
 		},
 	},
 	asyncSchemaUpdates: booleanFor(process.env.ASYNC_SCHEMA_UPDATES),
+	logStreamingEnabled:
+		booleanFor(process.env.LOG_STREAMING_ENABLED, 'true') &&
+		process.env.REDIS_HOST !== undefined,
 };
 
-function booleanFor(variable) {
-	return (variable || 'false').toLowerCase() === 'true';
+function booleanFor(variable, defaultValue = 'false') {
+	return (variable || defaultValue).toLowerCase() === 'true';
 }

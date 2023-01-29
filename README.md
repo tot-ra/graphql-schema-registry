@@ -178,26 +178,27 @@ You can:
 
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
-| Variable Name         | Description                                                                   | Default                   |
-| --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
-| DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
-| DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
-| DB_SECRET             | Password used to connect to MySQL                                             | root                      |
-| DB_PORT               | Port used when connecting to MySQL                                            | 3306                      |
-| DB_NAME               | Name of the MySQL database to connect to                                      | schema-registry           |
-| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
-| REDIS_HOST            | Host name of the Redis server                                                 | gql-schema-registry-redis |
-| REDIS_PORT            | Port used when connecting to Redis                                            | 6379                      |
-| REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
-| ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
-| NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
-| ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
-| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
-| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
-| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
-| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
-| LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
-| LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
+| Variable Name          | Description                                                                   | Default                   |
+|------------------------|-------------------------------------------------------------------------------|---------------------------|
+| DB_HOST                | Host name of the MySQL server                                                 | gql-schema-registry-db    |
+| DB_USERNAME            | Username to connect to MySQL                                                  | root                      |
+| DB_SECRET              | Password used to connect to MySQL                                             | root                      |
+| DB_PORT                | Port used when connecting to MySQL                                            | 3306                      |
+| DB_NAME                | Name of the MySQL database to connect to                                      | schema-registry           |
+| DB_EXECUTE_MIGRATIONS  | Controls whether DB migrations are executed upon registry startup or not      | true                      |
+| REDIS_HOST             | Host name of the Redis server                                                 | gql-schema-registry-redis |
+| REDIS_PORT             | Port used when connecting to Redis                                            | 6379                      |
+| REDIS_SECRET           | Password used to connect to Redis                                             | Empty                     |
+| ASSETS_URL             | Controls the url that web assets are served from                              | localhost:6001            |
+| NODE_ENV               | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
+| ASYNC_SCHEMA_UPDATES   | Specifies if async achema updates is enabled                                  | false                     |
+| KAFKA_BROKER_HOST      | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
+| KAFKA_BROKER_PORT      | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
+| KAFKA_SCHEMA_TOPIC     | Topic with new schema                                                         | graphql-schema-updates    |
+| KAFKA_QUERIES_TOPIC    | Topic with new schema                                                         | graphql-queries           |
+| LOG_LEVEL              | Minimum level of logs to output                                               | info                      |
+| LOG_TYPE               | Output log type, supports pretty or json.                                     | pretty                    |
+| LOG_STREAMING_ENABLED  | Controls whether logs are streamed over Redis to be presented in UI           | true                      |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 Node service uses to connect to mysql & redis and change it if you install it with own setup.
@@ -387,13 +388,13 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 
 <details>
   <summary><h3>🟢 GET /health</h3></summary>
-  
+
   returns "ok" when service is up
 </details>
 
 <details>
   <summary><h3>🟢 GET /schema/latest</h3></summary>
-  
+
 Simplified version of /schema/compose where latest versions from different services are composed.
 Some services prefer this to use this natural schema composition, as its natural and time-based.
 
@@ -401,7 +402,7 @@ Some services prefer this to use this natural schema composition, as its natural
 
 <details>
   <summary><h3>🟡 POST /schema/compose</h3></summary>
-  
+
 Advanced version of schema composition, where you need to provide services & their versions.
 Used by graphql gateway to fetch schema based on currently running containers.
 

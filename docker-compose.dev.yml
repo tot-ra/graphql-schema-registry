@@ -17,6 +17,8 @@ services:
       - KAFKA_BROKER_HOST=gql-schema-registry-kafka
       - KAFKA_BROKER_PORT=9092
       - KAFKA_SCHEMA_TOPIC=graphql-schema-updates
+      - REDIS_HOST=gql-schema-registry-redis
+      - REDIS_SECRET=password
     volumes:
       - .:/app/
     restart: always
