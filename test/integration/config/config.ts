@@ -6,10 +6,27 @@ import config from '../../../src/config';
 import { getSeedFile } from './db-config';
 import { extendExpect } from './customMatchers/toContainObject';
 import expect from 'expect';
-import { getServer } from '../../../src/graphql';
+import fetch from 'node-fetch';
 import { logger } from '../../../src/logger';
 
 extendExpect(expect);
+
+async function waitUntilServiceIsReadyOr5Min() {
+	for (let i = 0; i < 300; i++) {
+		try {
+			const result = await fetch('http://localhost:3000/health');
+
+			if (result.status === 200) {
+				console.log('Service looks healthy');
+				break;
+			}
+			// eslint-disable-next-line no-empty
+		} catch (e) {}
+
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+	}
+	return true;
+}
 
 const dataPath = resolve(__dirname, '..', 'data');
 export const requestDataPath = resolve(dataPath, 'request');
@@ -17,13 +34,13 @@ export const responseDataPath = resolve(dataPath, 'response');
 export const sqlDataPath = resolve(dataPath, 'sql');
 export const redisDataPath = resolve(dataPath, 'redis');
 export let apolloServer;
-let containers: StartedTestContainer[] = [];
+const containers: StartedTestContainer[] = [];
 
 BeforeAll({ timeout: 60000 * 1000 }, async () => {
 	console.log('Starting Tests...');
 
 	setDefaultTimeout(20 * 1000);
-	const dbContainer = await new GenericContainer('mysql:8.0')
+	const dbContainer = await new GenericContainer('mysql:8')
 		.withExposedPorts(3306)
 		.withEnvironment({
 			SERVICE_3306_NAME: 'gql-schema-registry-db',
@@ -63,6 +80,7 @@ BeforeAll({ timeout: 60000 * 1000 }, async () => {
 	await warmup();
 	const { getServer } = await import('../../../src/graphql/index');
 	apolloServer = getServer();
+	await waitUntilServiceIsReadyOr5Min();
 });
 
 function sleep(ms) {

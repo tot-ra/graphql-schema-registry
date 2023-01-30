@@ -54,3 +54,14 @@ Feature: As a customer
         }
         """
         Then the response contains "BAD_USER_INPUT" error
+    
+    @supergraph
+	Scenario: I request the supergraph
+		Given the database is imported from 'breakdown_schema_db'
+		When I execute the graphQL query in file "getRouterConfig.graphql" with variables:
+        """
+        {            
+        }
+        """
+		Then the response contains no errors
+        And the response contains JSON from file "getRouterConfig.json"

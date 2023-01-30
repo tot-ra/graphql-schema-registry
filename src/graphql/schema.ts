@@ -53,6 +53,11 @@ export default gql`
 			startDate: Date!
 			endDate: Date!
 		): [ClientFieldUsageTrack!]!
+		routerConfig(
+			ref: String
+			apiKey: String
+			ifAfterId: ID
+		): RouterConfigResponse!
 	}
 
 	union SearchResult = Service | SchemaDefinition
@@ -336,4 +341,25 @@ export default gql`
 	union TypeInstanceDetailResponse =
 		  TypeInstanceDetail
 		| OperationInstanceDetail
+
+	union RouterConfigResponse = RouterConfigResult | FetchError
+
+	type RouterConfigResult {
+		id: ID!
+		minDelaySeconds: Int!
+		supergraphSDL: String!
+	}
+
+	type FetchError {
+		code: FetchErrorCode!
+		message: String!
+		minDelaySeconds: Int!
+	}
+
+	enum FetchErrorCode {
+		AUTHENTICATION_FAILED
+		ACCESS_DENIED
+		UNKNOWN_REF
+		RETRY_LATER
+	}
 `;

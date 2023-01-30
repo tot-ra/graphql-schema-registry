@@ -1,6 +1,7 @@
 import { When, Then, Given } from '@cucumber/cucumber';
 import fetch from 'node-fetch';
-let response: any;
+import { Response } from 'node-fetch';
+let response: Response;
 import expect from 'expect';
 import crypto from 'crypto';
 import { UpdateUsageStrategy } from '../../../src/controller/clientUsage/registeredClient';
@@ -104,4 +105,9 @@ Then('the response should be in JSON and contain:', async (json) => {
 		}
 	}
 	expect(responseBody).toMatchObject(subObj);
+});
+
+Then('the response should contains the text:', async (expectedResponse) => {
+	const body = await response.text();
+	expect(body).toContain(expectedResponse);
 });

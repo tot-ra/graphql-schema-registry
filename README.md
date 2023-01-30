@@ -558,3 +558,10 @@ Adds persisted query to DB & redis cache
 | `value`  | string | Graphql query                    |
 
 </details>
+
+<details>
+  <summary><h3>🟢 GET /supergraph</h3></summary>
+  
+Get the supergraph SDL in order to connect the router.
+
+</details>

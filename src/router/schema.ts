@@ -1,3 +1,9 @@
+import {
+	convertNodeHttpToRequest,
+	isHttpQueryError,
+	runHttpQuery,
+} from 'apollo-server-core';
+import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import {
 	getAndValidateSchema,
@@ -12,6 +18,7 @@ import * as kafka from '../kafka';
 import { ClientUsageController } from '../controller/clientUsage';
 import { Change } from '@graphql-inspector/core';
 import { BreakingChangeHandler } from '../controller/breakingChange';
+import { getServer } from '../graphql';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection, false, false);

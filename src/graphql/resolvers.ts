@@ -20,6 +20,7 @@ import getTypeInstance from './resolvers/getTypeInstance';
 import getOperationUsageTrack from './resolvers/getOperationUsageTrack';
 import getEntityUsageTrack from './resolvers/getEntityUsageTrack';
 import getFieldUsageTrack from './resolvers/getFieldUsageTrack';
+import routerConfig from './resolvers/getRouterConfig';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -36,6 +37,17 @@ export const commonResolvers = {
 			}
 			if (obj.fields) {
 				return 'TypeInstanceDetail';
+			}
+			return null;
+		},
+	},
+	RouterConfigResponse: {
+		__resolveType(obj) {
+			if (obj.supergraphSDL) {
+				return 'RouterConfigResult';
+			}
+			if (obj.code) {
+				return 'FetchError';
 			}
 			return null;
 		},
@@ -122,6 +134,7 @@ export default {
 		getOperationUsageTrack,
 		getEntityUsageTrack,
 		getFieldUsageTrack,
+		routerConfig,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {
