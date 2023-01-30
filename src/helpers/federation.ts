@@ -31,10 +31,11 @@ export function composeAndValidateSchema(servicesSchemaMap) {
 	}
 
 	if (errors && errors.length) {
-		logger.error(errors);
-		throw new PublicError('Schema validation failed', {
+		const err = new PublicError('Schema validation failed', {
 			details: errors,
 		});
+		logger.error(err);
+		throw err;
 	}
 
 	return schema;
