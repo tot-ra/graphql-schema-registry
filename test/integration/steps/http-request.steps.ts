@@ -35,8 +35,25 @@ When(
 		response = await fetch(`http://localhost:3000${url}`, {
 			method: 'POST',
 			body: body,
-			// @ts-ignore
-			headers: { 'Content-Type': 'application/json', 'Force-Push': true },
+			headers: {
+				'Content-Type': 'application/json',
+				'Force-Push': 'true',
+			},
+		});
+	}
+);
+
+When(
+	'I send a {string} request to {string} with header {string} set to {string}',
+	async (
+		method: string,
+		url: string,
+		headerName: string,
+		headerValue: string
+	) => {
+		response = await fetch(`http://localhost:3000${url}`, {
+			method,
+			headers: { [headerName]: headerValue },
 		});
 	}
 );

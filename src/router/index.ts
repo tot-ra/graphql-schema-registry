@@ -3,8 +3,8 @@ import express from 'express';
 const router = express.Router();
 import { json } from 'body-parser';
 import { asyncWrap } from '../helpers/middleware';
+import deleteTokenMiddleware from '../middleware/delete-token-middleware';
 import usageMiddleware from '../middleware/usage-request';
-
 import parseMiddleware from '../middleware/parse-request';
 import { indexHtml, assetRouter } from './assets';
 import * as schema from './schema';
@@ -55,10 +55,18 @@ router.post('/schema/compose', asyncWrap(schema.compose));
 router.post('/schema/push', asyncWrap(schema.push));
 router.post('/schema/diff', asyncWrap(schema.diff));
 
-router.delete('/schema/:schemaId', asyncWrap(schema.remove));
+router.delete(
+	'/schema/:schemaId',
+	deleteTokenMiddleware,
+	asyncWrap(schema.remove)
+);
 router.post('/schema/validate', asyncWrap(schema.validate));
 
-router.delete('/service/:name', asyncWrap(service.remove));
+router.delete(
+	'/service/:name',
+	deleteTokenMiddleware,
+	asyncWrap(service.remove)
+);
 
 router.post('/api/ingress/traces', usageMiddleware, asyncWrap(schema.usage));
 

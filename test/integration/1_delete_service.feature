@@ -25,3 +25,21 @@ Feature: As a customer
 			"data": null
 		}
 		"""
+
+	Scenario: I try to delete a service with security enabled but without a auth token
+		Given I set the environment variable "SECURE_DELETE" to "true"
+		Given I set the environment variable "DELETE_TOKEN" to "DELETE_TOKEN"
+		When I send a "DELETE" request to "/service/test"
+		Then the response status code should be 401
+
+	Scenario: I try to delete a service with security enabled but with a wrong auth token
+		Given I set the environment variable "SECURE_DELETE" to "true"
+		Given I set the environment variable "DELETE_TOKEN" to "DELETE_TOKEN"
+		When I send a "DELETE" request to "/service/test" with header "auth" set to "cat"
+		Then the response status code should be 401
+
+	Scenario: I delete a service with security enabled and a valid auth token
+		Given I set the environment variable "SECURE_DELETE" to "true"
+		Given I set the environment variable "DELETE_TOKEN" to "DELETE_TOKEN"
+		When I send a "DELETE" request to "/service/test" with header "auth" set to "DELETE_TOKEN"
+		Then the response status code should be 200
