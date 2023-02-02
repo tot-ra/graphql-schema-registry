@@ -17,8 +17,7 @@ import PersistedQueriesModel from '../database/persisted_queries';
 import listTypeInstances from './resolvers/listTypeInstances';
 import listTypes from './resolvers/listTypes';
 import getTypeInstance from './resolvers/getTypeInstance';
-import getEntityUsageTrack from './resolvers/getEntityUsageTrack';
-import getFieldUsageTrack from './resolvers/getFieldUsageTrack';
+import getFieldsUsageStats from './resolvers/getFieldsUsageStats';
 import getRootFieldUsageStats from './resolvers/getRootFieldUsageStats';
 import routerConfig from './resolvers/getRouterConfig';
 
@@ -131,8 +130,7 @@ export default {
 		listTypes,
 		listTypeInstances,
 		getTypeInstance,
-		getEntityUsageTrack,
-		getFieldUsageTrack,
+		getFieldsUsageStats,
 		getRootFieldUsageStats,
 		routerConfig,
 	},

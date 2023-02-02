@@ -1,15 +1,23 @@
-query getRootFieldUsageStats($id: Int!, $startDate: Date!, $endDate: Date!) {
-	getRootFieldUsageStats(id: $id, startDate: $startDate, endDate: $endDate) {
-		name
-		versions {
+query getRootFieldUsageStats(
+	$rootFieldId: Int!
+	$startDate: Date!
+	$endDate: Date!
+) {
+	getRootFieldUsageStats(
+		rootFieldId: $rootFieldId
+		startDate: $startDate
+		endDate: $endDate
+	) {
+		clientName
+		clientVersions {
+			clientVersion
 			usageStatsByOperationName {
 				operationName
 				usageStats {
-					success
 					error
+					success
 				}
 			}
-			version
 		}
 	}
 }

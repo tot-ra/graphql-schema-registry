@@ -1,10 +1,49 @@
+import { gql } from '@apollo/client/core';
 import {
 	IContextualizedStats,
 	ITrace,
 	ITracesAndStats,
 } from 'apollo-reporting-protobuf';
+import {
+	FieldNode,
+	FragmentDefinitionNode,
+	FragmentSpreadNode,
+	InlineFragmentNode,
+	Kind,
+	OperationDefinitionNode,
+	SelectionNode,
+} from 'graphql';
 import { ClientPayload } from '../../model/client';
 import { UsageStats } from '../../model/usage_counter';
+
+export interface ParsedOperationSdl {
+	fragmentDefinitionNodes: FragmentDefinitionNode[];
+	operationDefinitionNode: OperationDefinitionNode;
+	rootFieldNodes: FieldNode[];
+}
+
+export function getChildFieldNodes(
+	fragmentDefinitionNodes: FragmentDefinitionNode[],
+	parentNode:
+		| FieldNode
+		| FragmentDefinitionNode
+		| InlineFragmentNode
+		| OperationDefinitionNode
+): FieldNode[] {
+	return (
+		parentNode.selectionSet?.selections
+			.map((selectionNode) =>
+				selectionNode.kind === Kind.FRAGMENT_SPREAD
+					? getFragmentSelections(
+							fragmentDefinitionNodes,
+							selectionNode
+					  )
+					: selectionNode
+			)
+			.flat()
+			.filter(isNonMetaField) ?? []
+	);
+}
 
 export async function getOperationClients(
 	usageData: ITracesAndStats
@@ -86,4 +125,50 @@ export function getOperationClientStats(
 	});
 
 	return queryClientStats;
+}
+
+export function isNonMetaField(
+	selectionNode: SelectionNode
+): selectionNode is FieldNode {
+	return (
+		selectionNode.kind === Kind.FIELD &&
+		!selectionNode.name.value.startsWith('__')
+	);
+}
+
+export function parseOperationSdl(operationSdl: string): ParsedOperationSdl {
+	const { definitions } = gql`
+		${operationSdl}
+	`;
+	const operationDefinitionNode = definitions.find(
+		({ kind }) => kind === 'OperationDefinition'
+	) as OperationDefinitionNode | undefined;
+
+	if (operationDefinitionNode === undefined) {
+		throw new Error('No operation found in query SDL.');
+	}
+
+	const fragmentDefinitionNodes = definitions.filter(
+		({ kind }) => kind === 'FragmentDefinition'
+	) as FragmentDefinitionNode[];
+
+	const rootFieldNodes = getChildFieldNodes(
+		fragmentDefinitionNodes,
+		operationDefinitionNode
+	);
+
+	return { fragmentDefinitionNodes, operationDefinitionNode, rootFieldNodes };
+}
+
+function getFragmentSelections(
+	fragmentDefinitionNodes: FragmentDefinitionNode[],
+	fragmentSpreadNode: FragmentSpreadNode
+): readonly SelectionNode[] {
+	return (
+		fragmentDefinitionNodes.find(
+			(fragmentDefinitionNode) =>
+				fragmentDefinitionNode.name.value ===
+				fragmentSpreadNode.name.value
+		)?.selectionSet.selections ?? []
+	);
 }

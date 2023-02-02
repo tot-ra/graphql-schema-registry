@@ -1,3 +1,5 @@
+import { parseRootFieldKey } from '../helpers/clientUsage/keyHelpers';
+
 export const isEnum = (value: string, targetEnum) =>
 	Object.values(targetEnum).includes(value);
 
@@ -5,6 +7,10 @@ export interface Pagination {
 	limit: number;
 	page: number;
 	totalPages: number;
+}
+
+export function deduplicate<T>(input: T[]): T[] {
+	return [...new Set(input)];
 }
 
 export async function getPaginatedResult<T>(

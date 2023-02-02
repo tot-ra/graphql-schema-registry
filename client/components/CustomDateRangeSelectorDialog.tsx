@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 
-const formatDateTimeInput = format("yyyy-MM-dd'T'HH:mm");
+const formatDateTimeInput = format('yyyy-MM-dd');
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -68,9 +68,9 @@ const CustomDateRangeSelectorDialog = ({
 				<form className={classes.container}>
 					<FormControl className={classes.formControl}>
 						<TextField
-							id="datetime-from"
+							id="date-from"
 							label="From"
-							type="datetime-local"
+							type="date"
 							defaultValue={formatDateTimeInput(range.from)}
 							value={customRange.from}
 							onChange={handleChangeFrom}
@@ -81,9 +81,9 @@ const CustomDateRangeSelectorDialog = ({
 					</FormControl>
 					<FormControl className={classes.formControl}>
 						<TextField
-							id="datetime-to"
+							id="date-to"
 							label="To"
-							type="datetime-local"
+							type="date"
 							defaultValue={formatDateTimeInput(range.to)}
 							value={customRange.to}
 							onChange={handleChangeTo}

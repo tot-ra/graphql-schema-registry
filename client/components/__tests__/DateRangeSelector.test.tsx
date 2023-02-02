@@ -61,7 +61,7 @@ describe('DateRangeSelector tests', () => {
 
 		test.each(Object.values(OPTIONS))(
 			'the button label should reflect the current selected option %o',
-			async ({ label, duration }) => {
+			async ({ label, range }) => {
 				const mockedCustomDialog = jest.spyOn(
 					CustomDateRangeSelectorDialogBundle,
 					'default'
@@ -78,7 +78,7 @@ describe('DateRangeSelector tests', () => {
 
 				expect(button.textContent).toBe(label);
 
-				if (duration === 'custom') {
+				if (range === 'custom') {
 					expect(mockedCustomDialog).toHaveBeenCalled();
 				}
 			}

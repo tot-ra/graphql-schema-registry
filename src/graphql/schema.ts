@@ -38,21 +38,16 @@ export default gql`
 			offset: Int!
 		): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
-		getEntityUsageTrack(
-			id: Int!
+		getFieldsUsageStats(
+			parentTypeId: Int!
 			startDate: Date!
 			endDate: Date!
-		): [EntityUsageTrack!]!
-		getFieldUsageTrack(
-			id: Int!
-			startDate: Date!
-			endDate: Date!
-		): [ClientFieldUsageTrack!]!
+		): [FieldsUsageStats!]!
 		getRootFieldUsageStats(
-			id: Int!
+			rootFieldId: Int!
 			startDate: Date!
 			endDate: Date!
-		): [RootFieldUsageClientStats!]!
+		): [RootFieldUsageStats!]!
 		routerConfig(
 			ref: String
 			apiKey: String
@@ -294,31 +289,6 @@ export default gql`
 		outputParams: [OutputParam!]
 	}
 
-	type Executions {
-		success: Int!
-		error: Int!
-		total: Int!
-	}
-
-	type ExecutionsByName {
-		name: String!
-		executions: Executions!
-	}
-
-	type VersionOperations {
-		id: String!
-		operations: [ExecutionsByName!]!
-	}
-
-	type OperationClientVersion {
-		name: String!
-		versions: [VersionOperations!]!
-	}
-
-	type ClientOperationUsageTrack {
-		client: OperationClientVersion!
-	}
-
 	type UsageStats {
 		error: Int!
 		success: Int!
@@ -329,33 +299,29 @@ export default gql`
 		usageStats: UsageStats!
 	}
 
-	type ClientVersionUsageStats {
+	type FieldsClientUsageStats {
+		clientVersion: String!
+		usageStats: UsageStats!
+	}
+
+	type FieldsClient {
+		clientName: String!
+		clientVersions: [FieldsClientUsageStats!]!
+	}
+
+	type FieldsUsageStats {
+		fieldId: Int!
+		clients: [FieldsClient!]!
+	}
+
+	type RootFieldClientUsageStats {
+		clientVersion: String!
 		usageStatsByOperationName: [UsageStatsByOperationName!]!
-		version: String!
 	}
 
-	type RootFieldUsageClientStats {
-		name: String!
-		versions: [ClientVersionUsageStats!]!
-	}
-
-	type EntityUsageTrack {
-		id: Int!
-		executions: Executions!
-	}
-
-	type VersionFields {
-		id: String!
-		execution: Executions
-	}
-
-	type FieldClientVersion {
-		name: String!
-		versions: [VersionFields!]!
-	}
-
-	type ClientFieldUsageTrack {
-		client: FieldClientVersion!
+	type RootFieldUsageStats {
+		clientName: String!
+		clientVersions: [RootFieldClientUsageStats!]!
 	}
 
 	union TypeInstanceDetailResponse =

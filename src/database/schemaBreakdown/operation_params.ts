@@ -41,7 +41,9 @@ export class OperationParamsTransactionalRepository extends BreakDownRepository<
 		return super.insert(trx, data);
 	}
 
-	async getOperationParamOutputByParent(parentId: number) {
+	async getOperationParamOutputByParent(
+		parentId: number
+	): Promise<OperationParam | undefined> {
 		return connection(TABLE_NAME)
 			.where('operation_id', parentId)
 			.andWhere('is_output', 1)

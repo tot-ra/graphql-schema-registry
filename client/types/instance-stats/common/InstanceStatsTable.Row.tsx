@@ -1,10 +1,8 @@
 import { Collapse, IconButton, TableCell, TableRow } from '@material-ui/core';
-import React, { useCallback, useState } from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { InstanceStatsTableFieldStats } from './InstanceStatsTable.FieldStats';
-import { safeParseInt } from '../../../shared/useCommonParams';
 
 type CustomTableRowProps = {
 	removeBorderBottom: boolean;
@@ -21,20 +19,18 @@ const CustomTableRow = styled(TableRow)<CustomTableRowProps>`
 `;
 
 export type InstanceStatsTableRowProps = {
-	id: number | string;
 	name: string;
 	label: React.ReactNode;
 	usageStats?: {
 		success: number;
 		error: number;
 	};
-	showUsageDetail: boolean;
+	details?: React.ReactNode;
 };
 
 export const InstanceStatsTableRow = ({
-	id,
+	details,
 	label,
-	showUsageDetail,
 	usageStats,
 }: InstanceStatsTableRowProps) => {
 	const [isSelected, setSelected] = useState(false);
@@ -48,7 +44,7 @@ export const InstanceStatsTableRow = ({
 
 	return (
 		<>
-			<CustomTableRow removeBorderBottom={showUsageDetail}>
+			<CustomTableRow removeBorderBottom={!!details}>
 				<TableCell component="th" scope="row">
 					{label}
 				</TableCell>
@@ -61,7 +57,7 @@ export const InstanceStatsTableRow = ({
 				<TableCell component="th" scope="row">
 					{error}
 				</TableCell>
-				{showUsageDetail && total > 0 && (
+				{!!details && total > 0 && (
 					<TableCell component="th" scope="row">
 						<IconButton onClick={handleOnChange}>
 							{isSelected && (
@@ -74,18 +70,11 @@ export const InstanceStatsTableRow = ({
 					</TableCell>
 				)}
 			</CustomTableRow>
-			{showUsageDetail && (
+			{!!details && (
 				<TableRow>
-					<TableCell
-						style={{
-							padding: 0,
-						}}
-						colSpan={5}
-					>
+					<TableCell style={{ padding: 0 }} colSpan={5}>
 						<Collapse in={isSelected} timeout="auto" unmountOnExit>
-							<InstanceStatsTableFieldStats
-								id={safeParseInt(id)}
-							/>
+							{details}
 						</Collapse>
 					</TableCell>
 				</TableRow>

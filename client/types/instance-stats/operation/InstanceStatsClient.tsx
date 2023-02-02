@@ -30,35 +30,36 @@ type InstanceStatsTableProps =
 	TypeInstanceRootFieldStatsOutput['getRootFieldUsageStats'][0];
 
 export const InstanceStatsClient = ({
-	name,
-	versions,
+	clientName,
+	clientVersions,
 }: InstanceStatsTableProps) => (
 	<Container as="li">
 		<Typography variant="h5" component="h4">
-			{name}
+			{clientName}
 		</Typography>
 		<List as="ul">
-			{versions.map(({ usageStatsByOperationName, version }) => (
-				<InstanceStatsTable
-					as="li"
-					headerLabel="Operation"
-					key={version}
-					title={version}
-					showUsageDetail={false}
-					items={usageStatsByOperationName.map(
-						({ operationName, usageStats }) => ({
-							id: operationName,
-							name: operationName,
-							label: (
-								<CommonLink to={`/schema/${operationName}`}>
-									{operationName}
-								</CommonLink>
-							),
-							usageStats,
-						})
-					)}
-				/>
-			))}
+			{clientVersions.map(
+				({ clientVersion, usageStatsByOperationName }) => (
+					<InstanceStatsTable
+						as="li"
+						headerLabel="Operation"
+						key={clientVersion}
+						title={clientVersion}
+						items={usageStatsByOperationName.map(
+							({ operationName, usageStats }) => ({
+								id: operationName,
+								name: operationName,
+								label: (
+									<CommonLink to={`/schema/${operationName}`}>
+										{operationName}
+									</CommonLink>
+								),
+								usageStats,
+							})
+						)}
+					/>
+				)
+			)}
 		</List>
 	</Container>
 );

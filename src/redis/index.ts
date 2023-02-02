@@ -83,25 +83,23 @@ const getRedlockClient = () => {
 	});
 };
 
-const doRedisOperationWithTimeout = async (
-	operation,
+export async function doRedisOperationWithTimeout<PromiseOutput>(
+	operation: Promise<PromiseOutput>,
 	timeout = SET_TIMEOUT_MS
-) => {
+): Promise<PromiseOutput | null> {
 	try {
 		if (redis) {
-			return await Promise.race([operation, wait(timeout)]);
-		} else {
-			logger.warn('redis is not initialized');
-
-			return null;
+			return (await Promise.race([
+				operation,
+				wait(timeout),
+			])) as PromiseOutput;
 		}
+		logger.warn('redis is not initialized');
 	} catch (err) {
-		const e = new Error();
-		logger.warn('redis operation failed or time out', e);
-
-		return null;
+		logger.warn('redis operation failed or time out', err);
 	}
-};
+	return null;
+}
 
 const redisWrap = {
 	initRedis,
@@ -116,10 +114,10 @@ const redisWrap = {
 	get: (key, timeout = GET_TIMEOUT_MS) =>
 		doRedisOperationWithTimeout(redis.get(key), timeout),
 
-	multiGet: async <T>(
+	multiGet: async (
 		keys: string[],
 		timeout = SET_TIMEOUT_MS
-	): Promise<(T | null)[]> =>
+	): Promise<(string | null)[] | null> =>
 		doRedisOperationWithTimeout(redis.mget(keys), timeout),
 
 	set: (key, value, ttl = DEFAULT_TTL, timeout = SET_TIMEOUT_MS) =>
@@ -139,6 +137,20 @@ const redisWrap = {
 
 	incr: (key, total, timeout = SET_TIMEOUT_MS) =>
 		doRedisOperationWithTimeout(redis.incrby(key, total), timeout),
+
+	incrOrSet: (key, value, ttl = DEFAULT_TTL, timeout = SET_TIMEOUT_MS * 2) =>
+		doRedisOperationWithTimeout(
+			(async () => {
+				const exists = await redis.exists(key);
+
+				if (exists) {
+					await redis.incrby(key, value);
+				} else {
+					await redis.set(key, value, 'EX', ttl);
+				}
+			})(),
+			timeout
+		),
 
 	flush: () => redis.flushall(),
 

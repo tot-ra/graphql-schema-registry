@@ -1,54 +1,46 @@
 import { ClientRepository } from '../../database/client';
-import { parseRootFieldKey } from '../../helpers/clientUsage/keyHelper';
+import { getAndParseRootFieldRedisEntries } from '../../helpers/clientUsage/redisHelpers';
 import { RootFieldUsageStats } from '../../model/client_usage';
 import { UsageStats } from '../../model/usage_counter';
-import { RedisRepository } from '../../redis/redis';
-import { getTimestamp } from '../../redis/utils';
+import { deduplicate } from '../utils';
+
+export interface RootFieldUsageStatsInputs {
+	rootFieldId: number;
+	startDate: string;
+	endDate: string;
+}
 
 export default async function getRootFieldUsageStats(
 	_parent,
-	{ id, startDate, endDate }
+	{ rootFieldId, startDate, endDate }: RootFieldUsageStatsInputs
 ): Promise<RootFieldUsageStats> {
-	const redisRepos = RedisRepository.getInstance();
 	const clientRepos = ClientRepository.getInstance();
-	const startTimestamp = getTimestamp(startDate);
-	const endTimestamp = getTimestamp(endDate);
-	const rootFieldEntries = await redisRepos.getRootFieldRedisEntries(
-		id,
-		startTimestamp,
-		endTimestamp
+	const parsedRootFieldEntries = await getAndParseRootFieldRedisEntries(
+		rootFieldId,
+		new Date(startDate),
+		new Date(endDate)
 	);
 
-	const clientIds = [
-		...new Set(
-			rootFieldEntries.map(
-				([redisKey]) => parseRootFieldKey(redisKey).clientId
-			)
-		),
-	];
+	const clientIds = deduplicate(
+		parsedRootFieldEntries.map(({ clientId }) => clientId)
+	);
 	const clients = (await clientRepos.getClientsByIds(clientIds)).sort(
 		(a, b) => a.name.localeCompare(b.name)
 	);
 
 	return clients
-		.map(({ name, versions }) => {
-			return {
-				name,
-				versions: versions.map(({ id, tag }) => {
+		.map(({ name: clientName, versions }) => ({
+			clientName,
+			clientVersions: versions.map(
+				({ id: clientId, tag: clientVersion }) => {
 					const usageStatsByOperationName: Record<
 						string,
 						UsageStats
 					> = {};
 
-					rootFieldEntries.forEach(([redisKey, rawCount]) => {
-						const { clientId, operationName, timestamp, type } =
-							parseRootFieldKey(redisKey);
-
-						if (
-							clientId === id &&
-							timestamp >= startTimestamp &&
-							timestamp <= endTimestamp
-						) {
+					parsedRootFieldEntries
+						.filter((entry) => entry.clientId === clientId)
+						.forEach(({ operationName, type, usageCount }) => {
 							if (
 								usageStatsByOperationName[operationName] ===
 								undefined
@@ -62,27 +54,26 @@ export default async function getRootFieldUsageStats(
 								usageStatsByOperationName[operationName];
 
 							if (type === 'success') {
-								operationStats.success += Number(rawCount);
+								operationStats.success += usageCount;
 							} else {
-								operationStats.error += Number(rawCount);
+								operationStats.error += usageCount;
 							}
-						}
-					});
+						});
 
 					return {
+						clientVersion,
 						usageStatsByOperationName: Object.entries(
 							usageStatsByOperationName
 						).map(([operationName, usageStats]) => ({
 							operationName,
 							usageStats,
 						})),
-						version: tag,
 					};
-				}),
-			};
-		})
+				}
+			),
+		}))
 		.filter((client) =>
-			client.versions.some((version) =>
+			client.clientVersions.some((version) =>
 				version.usageStatsByOperationName.some(
 					({ usageStats }) =>
 						usageStats.error > 0 || usageStats.success > 0

@@ -71,11 +71,11 @@ export class TypeTransactionalRepository
 		return TypeTransactionalRepository.instance;
 	}
 
-	async getTypeByName(name: string) {
+	async getTypeByName(name: string): Promise<Type | undefined> {
 		return connection(TABLE_NAME).select().where('name', name).first();
 	}
 
-	async getTypeById(id: number) {
+	async getTypeById(id: number): Promise<Type | undefined> {
 		return connection(TABLE_NAME).select().where('id', id).first();
 	}
 

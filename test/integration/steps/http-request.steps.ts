@@ -1,14 +1,11 @@
-import { When, Then, Given } from '@cucumber/cucumber';
-import util from 'util';
-import zlib from 'zlib';
-import fetch from 'node-fetch';
-import { Response } from 'node-fetch';
-let response: Response;
-import expect from 'expect';
-import crypto from 'crypto';
-import { UpdateUsageStrategy } from '../../../src/controller/clientUsage/registeredClient';
-import { setDefaultTimeout } from '@cucumber/cucumber';
+import util from 'node:util';
+import zlib from 'node:zlib';
+import { setDefaultTimeout, When, Then, Given } from '@cucumber/cucumber';
 import { Report } from 'apollo-reporting-protobuf';
+import expect from 'expect';
+import fetch, { type Response } from 'node-fetch';
+
+let response: Response;
 
 setDefaultTimeout(20 * 1000);
 

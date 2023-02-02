@@ -24,7 +24,7 @@ const ClientsList = styled.ul`
 	list-style: none;
 `;
 
-export const InstanceStatsOperation = () => {
+export const InstanceStatsRootField = () => {
 	const { typeName = '', instanceId = 0 } = useCommonParams();
 	const {
 		range: { from, to },
@@ -35,10 +35,10 @@ export const InstanceStatsOperation = () => {
 		TypeInstanceRootFieldStatsVars
 	>(TYPE_INSTANCE_ROOT_FIELD_STATS, {
 		variables: {
-			id: instanceId,
+			rootFieldId: instanceId,
 			type: typeName,
-			startDate: from,
-			endDate: to,
+			startDate: from.toISOString(),
+			endDate: to.toISOString(),
 		},
 	});
 
@@ -64,11 +64,11 @@ export const InstanceStatsOperation = () => {
 				{items.length === 0 && <span>No clients :(</span>}
 				{items.length > 0 && (
 					<ClientsList>
-						{items.map(({ name, versions }) => (
+						{items.map(({ clientName, clientVersions }) => (
 							<InstanceStatsClient
-								key={name}
-								name={name}
-								versions={versions}
+								key={clientName}
+								clientName={clientName}
+								clientVersions={clientVersions}
 							/>
 						))}
 					</ClientsList>

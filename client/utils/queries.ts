@@ -421,48 +421,47 @@ export const TYPE_INSTANCE = gql`
 	}
 `;
 
+export type UsageStats = {
+	error: number;
+	success: number;
+};
+
 export type TypeInstanceRootFieldStatsOutput = {
 	getRootFieldUsageStats: {
-		name: string;
-		versions: {
+		clientName: string;
+		clientVersions: {
+			clientVersion: string;
 			usageStatsByOperationName: {
 				operationName: string;
-				usageStats: {
-					success: number;
-					error: number;
-				};
+				usageStats: UsageStats;
 			}[];
-			version: string;
 		}[];
 	}[];
-
 	getTypeInstance: GetTypeInstanceBase;
 };
 
-type TypeInstanceBaseStatsVars = {
-	id: number;
-	startDate: Date;
-	endDate: Date;
-};
-
-export type TypeInstanceRootFieldStatsVars = TypeInstanceBaseStatsVars & {
+export type TypeInstanceRootFieldStatsVars = {
+	endDate: string;
+	rootFieldId: number;
+	startDate: string;
 	type: string;
 };
 
 export const TYPE_INSTANCE_ROOT_FIELD_STATS = gql`
 	query GetTypeInstanceRootFieldStats(
-		$id: Int!
+		$rootFieldId: Int!
 		$type: String!
 		$startDate: Date!
 		$endDate: Date!
 	) {
 		getRootFieldUsageStats(
-			id: $id
+			rootFieldId: $rootFieldId
 			startDate: $startDate
 			endDate: $endDate
 		) {
-			name
-			versions {
+			clientName
+			clientVersions {
+				clientVersion
 				usageStatsByOperationName {
 					operationName
 					usageStats {
@@ -470,11 +469,10 @@ export const TYPE_INSTANCE_ROOT_FIELD_STATS = gql`
 						error
 					}
 				}
-				version
 			}
 		}
 
-		getTypeInstance(type: $type, id: $id) {
+		getTypeInstance(type: $type, id: $rootFieldId) {
 			__typename
 			... on TypeInstanceDetail {
 				id
@@ -492,35 +490,52 @@ export const TYPE_INSTANCE_ROOT_FIELD_STATS = gql`
 	}
 `;
 
-export type TypeInstanceObjectStatsVars = TypeInstanceBaseStatsVars;
+export type TypeInstanceObjectStatsVars = {
+	endDate: string;
+	objectId: number;
+	startDate: string;
+};
+
+export type FieldClient = {
+	clientName: string;
+	clientVersions: {
+		clientVersion: string;
+		usageStats: UsageStats;
+	}[];
+};
 
 export type TypeInstanceObjectStatsOutput = TypeInstanceOutput & {
-	getEntityUsageTrack: {
-		id: number;
-		executions: {
-			success: number;
-			error: number;
-			total: number;
-		};
+	getFieldsUsageStats: {
+		fieldId: number;
+		clients: FieldClient[];
 	}[];
 };
 
 export const TYPE_INSTANCE_OBJECT_STATS = gql`
 	query GetTypeInstanceObjectStats(
-		$id: Int!
+		$objectId: Int!
 		$startDate: Date!
 		$endDate: Date!
 	) {
-		getEntityUsageTrack(id: $id, startDate: $startDate, endDate: $endDate) {
-			id
-			executions {
-				success
-				error
-				total
+		getFieldsUsageStats(
+			parentTypeId: $objectId
+			startDate: $startDate
+			endDate: $endDate
+		) {
+			fieldId
+			clients {
+				clientName
+				clientVersions {
+					clientVersion
+					usageStats {
+						error
+						success
+					}
+				}
 			}
 		}
 
-		getTypeInstance(type: "object", id: $id) {
+		getTypeInstance(type: "object", id: $objectId) {
 			__typename
 			... on TypeInstanceDetail {
 				id
@@ -539,46 +554,6 @@ export const TYPE_INSTANCE_OBJECT_STATS = gql`
 						id
 						name
 						type
-					}
-				}
-			}
-		}
-	}
-`;
-
-export type TypeInstanceObjectFieldStatsVars = TypeInstanceBaseStatsVars;
-
-export type TypeInstanceObjectFieldStatsOutput = {
-	getFieldUsageTrack: {
-		client: {
-			name: string;
-			versions: {
-				id: string;
-				execution: {
-					success: number;
-					error: number;
-					total: number;
-				};
-			}[];
-		};
-	}[];
-};
-
-export const TYPE_INSTANCE_OBJECT_FIELD_STATS = gql`
-	query GetTypeInstanceObjectFieldStats(
-		$id: Int!
-		$startDate: Date!
-		$endDate: Date!
-	) {
-		getFieldUsageTrack(id: $id, startDate: $startDate, endDate: $endDate) {
-			client {
-				name
-				versions {
-					id
-					execution {
-						success
-						error
-						total
 					}
 				}
 			}

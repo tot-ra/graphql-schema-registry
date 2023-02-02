@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import {
 	Table,
 	TableBody,
@@ -7,15 +6,7 @@ import {
 	Typography,
 } from '@material-ui/core';
 import styled, { css } from 'styled-components';
-import { useDateRangeSelector } from '../../../components/DateRangeSelector.Context';
-import { ErrorRetry } from '../../../components/ErrorRetry';
-import useMinimumTime from '../../../shared/useMinimumTime';
-import {
-	TypeInstanceObjectFieldStatsOutput,
-	TypeInstanceObjectFieldStatsVars,
-	TYPE_INSTANCE_OBJECT_FIELD_STATS,
-} from '../../../utils/queries';
-import { InstanceStatsTableFieldStatsSkeleton } from './InstanceStatsTable.FieldStats.Skeleton';
+import { type FieldClient } from '../../../utils/queries';
 import { getInnerInstanceStatsTable } from './util';
 
 type ContainerProps = {
@@ -33,7 +24,7 @@ export const Container = styled.div<ContainerProps>`
 			  `}
 `;
 
-export const UL = styled.ul`
+export const Ul = styled.ul`
 	margin: 0;
 	padding: 0;
 	list-style: none;
@@ -42,7 +33,7 @@ export const UL = styled.ul`
 	row-gap: 2rem;
 `;
 
-export const LI = styled.li`
+export const Li = styled.li`
 	&:last-child {
 		table {
 			tr:last-child {
@@ -60,80 +51,71 @@ export const CommonPadding = styled.div`
 `;
 
 type InstanceStatsTableFieldStatsProps = {
-	id: number;
+	clients: FieldClient[];
 };
 
 const TableComponent = getInnerInstanceStatsTable(true);
 
 export const InstanceStatsTableFieldStats = ({
-	id,
+	clients,
 }: InstanceStatsTableFieldStatsProps) => {
-	const {
-		range: { from, to },
-	} = useDateRangeSelector();
-
-	const { loading, error, data, refetch } = useQuery<
-		TypeInstanceObjectFieldStatsOutput,
-		TypeInstanceObjectFieldStatsVars
-	>(TYPE_INSTANCE_OBJECT_FIELD_STATS, {
-		variables: {
-			id,
-			startDate: from,
-			endDate: to,
-		},
-		fetchPolicy: 'no-cache',
-	});
-
-	const effectiveLoading = useMinimumTime(loading);
-
-	if (effectiveLoading) {
-		return <InstanceStatsTableFieldStatsSkeleton />;
-	}
-
-	if (error || !data) {
-		return (
-			<Container withPadding>
-				<ErrorRetry onRetry={refetch} />
-			</Container>
-		);
-	}
-
-	const { getFieldUsageTrack = [] } = data;
-
 	return (
 		<Container>
-			<UL>
-				{getFieldUsageTrack.map(({ client: { name, versions } }) => (
-					<LI key={name}>
+			<Ul>
+				{clients.map(({ clientName, clientVersions }) => (
+					<Li key={clientName}>
 						<CommonPadding>
 							<Typography variant="caption" component="h5">
-								{name}
+								{clientName}
 							</Typography>
 						</CommonPadding>
 						<Table component={TableComponent}>
 							<TableBody>
-								{versions.map(({ id, execution }) => (
-									<TableRow key={id}>
-										<TableCell component="td" scope="row">
-											<CommonPadding>{id}</CommonPadding>
-										</TableCell>
-										<TableCell component="td" scope="row">
-											{execution?.total ?? 0}
-										</TableCell>
-										<TableCell component="td" scope="row">
-											{execution?.success ?? 0}
-										</TableCell>
-										<TableCell component="td" scope="row">
-											{execution?.error ?? 0}
-										</TableCell>
-										<TableCell />
-									</TableRow>
-								))}
+								{clientVersions.map(
+									({ clientVersion, usageStats }) => {
+										const error = usageStats?.error ?? 0;
+										const success =
+											usageStats?.success ?? 0;
+										const total = error + success;
+
+										return (
+											<TableRow key={clientVersion}>
+												<TableCell
+													component="td"
+													scope="row"
+												>
+													<CommonPadding>
+														{clientVersion}
+													</CommonPadding>
+												</TableCell>
+												<TableCell
+													component="td"
+													scope="row"
+												>
+													{total}
+												</TableCell>
+												<TableCell
+													component="td"
+													scope="row"
+												>
+													{success}
+												</TableCell>
+												<TableCell
+													component="td"
+													scope="row"
+												>
+													{error}
+												</TableCell>
+												<TableCell />
+											</TableRow>
+										);
+									}
+								)}
 							</TableBody>
 						</Table>
-					</LI>
+					</Li>
 				))}
-			</UL>
+			</Ul>
 		</Container>
 	);
 };

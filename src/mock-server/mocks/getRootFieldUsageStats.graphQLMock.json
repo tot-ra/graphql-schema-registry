@@ -1,26 +1,26 @@
 {
   "getRootFieldUsageStats": [
     {
-      "operationName": "client_1",
-      "versions": [
+      "clientName": "client_1",
+      "clientVersions": [
         {
+          "clientVersion": "3",
           "usageStatsByOperationName": [
             {
               "operationName": "operation_1",
               "usageStats": {
-                "success": 10,
-                "error": 2
+                "error": 2,
+                "success": 10
               }
             },
             {
               "operationName": "operation_2",
               "usageStats": {
-                "success": 10,
-                "error": 2
+                "error": 2,
+                "success": 10
               }
             }
-          ],
-          "version": "3"
+          ]
         },
         {
           "usageStatsByOperationName": [
@@ -38,31 +38,31 @@
       ]
     },
     {
-      "operationName": "client_2",
-      "versions": [
+      "clientName": "client_2",
+      "clientVersions": [
         {
+          "clientVersion": "3",
           "usageStatsByOperationName": [
             {
               "operationName": "operation_1",
               "usageStats": {
-                "success": 10,
-                "error": 2
+                "error": 2,
+                "success": 10
               }
             }
-          ],
-          "version": "3"
+          ]
         },
         {
+          "clientVersion": "4",
           "usageStatsByOperationName": [
             {
               "operationName": "operation_1",
               "usageStats": {
-                "success": 10,
-                "error": 2
+                "error": 2,
+                "success": 10
               }
             }
-          ],
-          "version": "4"
+          ]
         }
       ]
     }

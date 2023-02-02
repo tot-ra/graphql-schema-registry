@@ -46,7 +46,10 @@ export class FieldTransactionRepository extends BreakDownRepository<
 		return super.get(trx, data, 'name');
 	}
 
-	async getFieldByNameAndParent(name: string, parentId: number) {
+	async getFieldByNameAndParent(
+		name: string,
+		parentId: number
+	): Promise<Field | undefined> {
 		return connection(TABLE_NAME)
 			.select()
 			.where('name', name)

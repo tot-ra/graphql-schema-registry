@@ -1,10 +1,12 @@
 import { Report, IReport } from 'apollo-reporting-protobuf';
 import { ClientRepository } from '../database/client';
 import { Client, ClientPayload } from '../model/client';
+import { registerFieldsUsage } from './clientUsage/registerFieldsUsage';
 import { registerRootFieldsUsage } from './clientUsage/registerRootFieldsUsage';
 import {
 	getOperationClients,
 	getOperationClientStats,
+	parseOperationSdl,
 } from './clientUsage/utils';
 
 export class ClientUsageController {
@@ -22,6 +24,7 @@ export class ClientUsageController {
 				)
 				.map(async ([operationSdl, usageData]) => {
 					const clients = await getOperationClients(usageData);
+					const parsedOperationSdl = parseOperationSdl(operationSdl);
 
 					await Promise.all(
 						clients.map(async (client) => {
@@ -33,7 +36,12 @@ export class ClientUsageController {
 							);
 
 							await registerRootFieldsUsage(
-								operationSdl,
+								parsedOperationSdl,
+								registeredClient,
+								operationClientStats
+							);
+							await registerFieldsUsage(
+								parsedOperationSdl,
 								registeredClient,
 								operationClientStats
 							);
