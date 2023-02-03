@@ -13,7 +13,7 @@ Versions that are currently supported with security updates.
 
 To report a vulnerability (in order of discretion)
 
-- Contact via email artjom.kurapov@pipedrive.com
+- Contact via email artkurapov@gmail.com.com
 - Contact via [slack](http://gql-schema-registry.slack.com/)
 - Report github issue
 
