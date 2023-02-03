@@ -1,14 +1,13 @@
-# graphql-schema-registry
-
+# graphql-schema-registry 
 <img src="https://user-images.githubusercontent.com/445122/95125574-d7466580-075d-11eb-8a78-b6adf34ad811.png" width=100 height=100 align="right"/>
 
 Graphql schema storage as dockerized on-premise service for federated graphql gateway server
-(based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/) and [The Guild's Hive](https://graphql-hive.com)
+(based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/) and [The Guild's Hive](https://graphql-hive.com).
 
 [![slack](https://img.shields.io/badge/slack-brigade-brightgreen.svg?logo=slack)](http://gql-schema-registry.slack.com/)
-![](https://img.shields.io/github/v/release/pipedrive/graphql-schema-registry?sort=semver)
-[![Coverage Status](https://coveralls.io/repos/github/pipedrive/graphql-schema-registry/badge.svg?branch=master&v=2)](https://coveralls.io/github/pipedrive/graphql-schema-registry?branch=master)
-[![](https://snyk.io/test/github/pipedrive/graphql-schema-registry/badge.svg)](https://snyk.io/test/github/pipedrive/graphql-schema-registry)
+![](https://img.shields.io/github/v/release/tot-ra/graphql-schema-registry?sort=semver)
+[![Coverage Status](https://coveralls.io/repos/github/tot-ra/graphql-schema-registry/badge.svg?branch=master&v=2)](https://coveralls.io/github/tot-ra/graphql-schema-registry?branch=master)
+[![](https://snyk.io/test/github/tot-ra/graphql-schema-registry/badge.svg)](https://snyk.io/test/github/tot-ra/graphql-schema-registry)
 [![Code Style](https://img.shields.io/badge/codestyle-prettier-ff69b4.svg)](https://prettier.io/)
 
 ## Features
@@ -31,28 +30,24 @@ With default settings, UI should be accessible at [http://localhost:6001](http:/
 ### On bare host
 
 ```
-git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
+git clone https://github.com/tot-ra/graphql-schema-registry.git && cd graphql-schema-registry
 cp example.env .env && nano .env
 npm install && npm run build
 node app/schema-registry.js
 ```
 
 ### Docker image
-
-We have [docker image published](https://hub.docker.com/r/pipedrive/graphql-schema-registry/tags) for main node service.
-It assumes you have mysql/redis running separately.
-Use exact IP instead of `localhost`.
-Use exact docker image tag to avoid breaking changes.
+We have [docker image published](https://hub.docker.com/repository/docker/artjomkurapov/graphql-schema-registry/general) for main node service. It assumes you have mysql/redis running separately. Use exact IP instead of localhost. Use exact docker image tag to avoid breaking changes.
 
 ```
-docker pull pipedrive/graphql-schema-registry:5.0.0
-docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 pipedrive/graphql-schema-registry
+docker pull artjomkurapov/graphql-schema-registry:5.4.0
+docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 artjomkurapov/graphql-schema-registry
 ```
 
 ### Docker-compose
 
 ```
-git clone https://github.com/pipedrive/graphql-schema-registry.git && cd graphql-schema-registry
+git clone https://github.com/tot-ra/graphql-schema-registry.git && cd graphql-schema-registry
 docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```
 
@@ -85,7 +80,7 @@ flowchart LR
 
 | Name              | Role     | Description                                                                                                                                                                                                                                                                                                                    |
 | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/pipedrive/graphql-query-cost) or fail-safe mechanisms. |
+| federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/tot-ra/graphql-query-cost) or fail-safe mechanisms. |
 | schema registry   | Required | Main service that we provide                                                                                                                                                                                                                                                                                                   |
 | mysql             | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                         |
 | query analyzer    | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder                                                                                                                                                                                                                                |
@@ -189,9 +184,6 @@ The following are the different environment variables that are looked up that al
 | DB_PORT                | Port used when connecting to MySQL                                            | 3306                      |
 | DB_NAME                | Name of the MySQL database to connect to                                      | schema-registry           |
 | DB_EXECUTE_MIGRATIONS  | Controls whether DB migrations are executed upon registry startup or not      | true                      |
-| REDIS_HOST             | Host name of the Redis server                                                 | gql-schema-registry-redis |
-| REDIS_PORT             | Port used when connecting to Redis                                            | 6379                      |
-| REDIS_SECRET           | Password used to connect to Redis                                             | Empty                     |
 | ASSETS_URL             | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV               | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
 | ASYNC_SCHEMA_UPDATES   | Specifies if async achema updates is enabled                                  | false                     |
@@ -202,6 +194,11 @@ The following are the different environment variables that are looked up that al
 | LOG_LEVEL              | Minimum level of logs to output                                               | info                      |
 | LOG_TYPE               | Output log type, supports pretty or json.                                     | pretty                    |
 | LOG_STREAMING_ENABLED  | Controls whether logs are streamed over Redis to be presented in UI           | true                      |
+
+| REDIS_HOST             | Host name of the Redis server                                                 | gql-schema-registry-redis |
+| REDIS_PORT             | Port used when connecting to Redis                                            | 6379                      |
+| REDIS_SECRET           | Password used to connect to Redis                                             | Empty                     |
+=======
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 Node service uses to connect to mysql & redis and change it if you install it with own setup.
@@ -356,6 +353,16 @@ docker build -t local/graphql-schema-registry .
 
 # try to run it
 docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 local/graphql-schema-registry
+
+
+# build official image
+docker image build -t artjomkurapov/graphql-schema-registry .
+
+#push tags
+docker push artjomkurapov/graphql-schema-registry:latest
+
+docker image tag artjomkurapov/graphql-schema-registry:latest artjomkurapov/graphql-schema-registry:5.5.0
+docker push artjomkurapov/graphql-schema-registry:5.5.0
 ```
 
 ## Security & compliance
@@ -376,6 +383,7 @@ docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6
 - To avoid vulnerabilities, please use fixed versions in package.json
 
 ### Authors and acknowledgment
+Prior to 5.5.1, this repo was under @pipedrive namespace.
 
 Current maintainer - [@tot-ra](https://github.com/tot-ra). Mention in PR, if it is stuck
 
