@@ -78,8 +78,12 @@ export default {
 				)
 			);
 
-			// @ts-ignore
-			return logs?.redis;
+			if (config.logStreamingEnabled) {
+				// @ts-ignore
+				return logs?.redis;
+			}
+
+			return '';
 		},
 
 		search: async (_, { filter }) => {
