@@ -46,8 +46,8 @@ jobs:
       - name: Start service + stub services
         run: docker compose -f "docker-compose.perf-tests.yml" up -d --build
 
-      - name: Sleep for 20 seconds until everything is up
-        run: sleep 20s
+      - name: Sleep for 30 seconds until everything is up
+        run: sleep 30s
         shell: bash
 
       - run: docker compose -f docker-compose.perf-tests.yml run --rm k6 run /scripts/schema-latest.test.js
