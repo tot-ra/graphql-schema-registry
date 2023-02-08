@@ -102,7 +102,7 @@ export function getOperationClientStats(
 	};
 
 	traces.forEach((trace) => {
-		if ('error' in trace.root) {
+		if (trace.root?.error !== undefined) {
 			queryClientStats.error += 1;
 		} else {
 			queryClientStats.success += 1;
