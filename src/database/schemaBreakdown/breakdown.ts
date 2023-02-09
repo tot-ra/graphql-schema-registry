@@ -50,7 +50,8 @@ export class BreakDownRepository<T, K> {
 			const fields = columns.map((column) => {
 				const value = i[column];
 				if (value === undefined) return 'null';
-				else if (typeof value === 'string') return `'${value}'`;
+				else if (typeof value === 'string')
+					return `'${value.replace(/'/g, "\\'")}'`;
 				else return value;
 			});
 			return `(${fields.join(',')})`;
