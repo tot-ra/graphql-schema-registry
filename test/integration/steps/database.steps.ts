@@ -3,7 +3,6 @@ import fs from 'fs';
 import { Given, Then } from '@cucumber/cucumber';
 import expect from 'expect';
 import { sqlDataPath } from '../config/config';
-import Knex from 'knex';
 import { setDefaultTimeout } from '@cucumber/cucumber';
 
 let dbConnection;
@@ -31,13 +30,15 @@ async function deleteAllBreakdownTables() {
 	];
 
 	const connection = await getConnection();
-	breakdownSchemaTables.reduce(async (p, table) => {
-		try {
-			p.then(await connection(table).delete());
-		} catch (e) {
-			// ignore non-handled rejection logs
-		}
-	}, Promise.resolve());
+	await Promise.all(
+		breakdownSchemaTables.map(async (table) => {
+			try {
+				await connection(table).delete();
+			} catch {
+				// ignore non-handled rejection logs
+			}
+		})
+	);
 }
 
 Given(
