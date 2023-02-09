@@ -342,12 +342,17 @@ export default gql`
 		  TypeInstanceDetail
 		| OperationInstanceDetail
 
-	union RouterConfigResponse = RouterConfigResult | FetchError
+	union RouterConfigResponse = RouterConfigResult | Unchanged | FetchError
 
 	type RouterConfigResult {
 		id: ID!
 		minDelaySeconds: Int!
 		supergraphSDL: String!
+	}
+
+	type Unchanged {
+		id: ID!
+		minDelaySeconds: Int!
 	}
 
 	type FetchError {

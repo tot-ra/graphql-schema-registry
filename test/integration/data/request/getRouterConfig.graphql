@@ -1,14 +1,19 @@
-query reportConfigQuery {
-	routerConfig {
+query reportConfigQuery($ifAfterId: ID) {
+	routerConfig(ifAfterId: $ifAfterId) {
 		__typename
 		... on RouterConfigResult {
 			id
+			minDelaySeconds
 			supergraphSDL
+		}
+		... on Unchanged {
+			id
+			minDelaySeconds
 		}
 		... on FetchError {
 			code
 			message
-			minDelaySeconds
+
 		}
 	}
 }
