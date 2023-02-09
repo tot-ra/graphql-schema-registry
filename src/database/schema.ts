@@ -1,7 +1,7 @@
 import { Knex } from 'knex';
 import { unionBy } from 'lodash';
 import crypto from 'crypto';
-import { print, parse } from 'graphql';
+import { print, parse, GraphQLError, DocumentNode } from 'graphql';
 
 import { connection } from './index';
 import servicesModel from './services';
@@ -256,10 +256,12 @@ const schemaModel = {
 		logger.info(`Registering schema with serviceId = ${serviceId}`);
 
 		// SCHEMA
+		const normalizedTypeDefs = normalizeTypeDefs(service.type_defs);
+		const normalizedTypeDefsUUID = generateUUID(normalizedTypeDefs);
 		let schemaId = await findExistingSchema(
 			trx,
 			serviceId,
-			service.type_defs
+			normalizedTypeDefsUUID
 		);
 
 		if (
@@ -279,13 +281,11 @@ const schemaModel = {
 				.where('id', '=', schemaId)
 				.update({ updated_time: addedTime });
 		} else {
-			const type_defs_normalized = normalizeTypeDefs(service.type_defs);
-
 			[schemaId] = await trx('schema').insert(
 				{
 					service_id: serviceId,
-					UUID: generateUUID(type_defs_normalized),
-					type_defs: type_defs_normalized,
+					UUID: normalizedTypeDefsUUID,
+					type_defs: normalizedTypeDefs,
 					added_time: addedTime,
 				},
 				['id']
@@ -461,7 +461,17 @@ const schemaModel = {
 };
 
 function normalizeTypeDefs(sdl) {
-	return print(parse(sdl));
+	let parsedTypeDefs: DocumentNode;
+
+	try {
+		parsedTypeDefs = parse(sdl);
+	} catch (error) {
+		throw new PublicError(
+			'Unable to parse type definitions',
+			error instanceof GraphQLError ? { details: error.toJSON() } : null
+		);
+	}
+	return print(parsedTypeDefs);
 }
 
 function generateUUID(type_defs_normalized) {
@@ -473,14 +483,12 @@ function generateUUID(type_defs_normalized) {
 		.digest('hex');
 }
 
-async function findExistingSchema(trx, serviceId, type_defs) {
+async function findExistingSchema(trx, serviceId, normalizedTypeDefsUUID) {
 	return (
-		await trx('schema')
-			.select('id')
-			.where({
-				service_id: serviceId,
-				UUID: generateUUID(normalizeTypeDefs(type_defs)),
-			})
+		await trx('schema').select('id').where({
+			service_id: serviceId,
+			UUID: normalizedTypeDefsUUID,
+		})
 	)[0]?.id;
 }
 
