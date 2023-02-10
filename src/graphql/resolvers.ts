@@ -42,9 +42,12 @@ export const commonResolvers = {
 		},
 	},
 	RouterConfigResponse: {
-		__resolveType(obj) {
+		__resolveType(obj): 'RouterConfigResult' | 'Unchanged' | 'FetchError' {
 			if (obj.supergraphSDL) {
 				return 'RouterConfigResult';
+			}
+			if (!obj.supergraphSDL) {
+				return 'Unchanged';
 			}
 			if (obj.code) {
 				return 'FetchError';
