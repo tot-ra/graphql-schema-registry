@@ -49,7 +49,10 @@ export class ClientRepository
 		return ClientRepository.instance;
 	}
 
-	async getClientByUnique(name: string, version: string) {
+	async getClientByUnique(
+		name: string,
+		version: string
+	): Promise<Client | undefined> {
 		return connection(TABLE_NAME)
 			.select()
 			.where('name', name)
@@ -61,7 +64,7 @@ export class ClientRepository
 		trx: Knex.Transaction,
 		name: string,
 		version: string
-	) {
+	): Promise<Client | undefined> {
 		return trx(TABLE_NAME)
 			.select()
 			.where('name', name)
@@ -69,7 +72,7 @@ export class ClientRepository
 			.first();
 	}
 
-	async getClientById(id: number) {
+	async getClientById(id: number): Promise<Client | undefined> {
 		return connection(TABLE_NAME).select().where('id', id).first();
 	}
 

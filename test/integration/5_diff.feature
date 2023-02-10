@@ -1,3 +1,4 @@
+@chat
 Feature: As a customer
 	I would like to be able to diff between schemas
 
@@ -15,7 +16,7 @@ Feature: As a customer
 		And the response should be in JSON and contain:
 		"""
 		{
-		  "success": true		  
+		  "success": true
 		}
 		"""
 
@@ -52,7 +53,22 @@ Feature: As a customer
 
 	Scenario: I request to diff an existing schema with modifications and is forbidden because exceeds usages
 		Given the database is imported from 'breakdown_schema_db'
-		And the redis has usage for file 'coupons.json'
+		And a client named "local-test-microservice" with version "1.3.0" makes 9 "valid" queries:
+			"""
+			query SofianeTest($platform: Platform!) {
+			   loyaltyCoupons(platform: $platform) {
+			     expirationDate
+			   }
+			}
+			"""
+		And a client named "local-test-microservice" with version "1.3.0" makes 2 "invalid" queries:
+			"""
+			query SofianeTest($platform: Platform!) {
+			   loyaltyCoupons(platform: $platform) {
+			     expirationDate
+			   }
+			}
+			"""
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{
@@ -84,7 +100,22 @@ Feature: As a customer
 
 	Scenario: I request to diff an existing schema with modifications and is valid because not exceeds min_usages
 		Given the database is imported from 'breakdown_schema_db'
-		And the redis has usage for file 'coupons.json'
+		And a client named "local-test-microservice" with version "1.3.0" makes 9 "valid" queries:
+			"""
+			query SofianeTest($platform: Platform!) {
+			   loyaltyCoupons(platform: $platform) {
+			     expirationDate
+			   }
+			}
+			"""
+		And a client named "local-test-microservice" with version "1.3.0" makes 2 "invalid" queries:
+			"""
+			query SofianeTest($platform: Platform!) {
+			   loyaltyCoupons(platform: $platform) {
+			     expirationDate
+			   }
+			}
+			"""
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{
@@ -115,9 +146,12 @@ Feature: As a customer
 		}
 		"""
 
+	@chien
 	Scenario: I request to diff an existing schema with modifications and is valid because no usages on the days specified
 		Given the database is imported from 'breakdown_schema_db'
-		And the redis has usage for file 'coupons.json'
+		And the redis contains the keys:
+			| field_62_0000000000_f106_12_success | 400 |
+			| field_62_0000000000_f106_12_error   | 100 |
 		When I send a "POST" request to "/schema/diff" with body:
 		"""
 		{

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TypeInstanceOperationStatsOutput } from '../../../utils/queries';
+import { TypeInstanceRootFieldStatsOutput } from '../../../utils/queries';
 import { InstanceDescriptionTitle } from '../../instance-description/InstanceDescriptionTitle';
 
 export const Container = styled.section`
@@ -10,7 +10,7 @@ export const Container = styled.section`
 `;
 
 type InstanceStatsListingProps = Omit<
-	TypeInstanceOperationStatsOutput['getTypeInstance'],
+	TypeInstanceRootFieldStatsOutput['getTypeInstance'],
 	'id'
 > & {
 	children: React.ReactNode;

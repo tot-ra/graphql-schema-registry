@@ -1,10 +1,4 @@
-import React, {
-	useRef,
-	useState,
-	useEffect,
-	useMemo,
-	useCallback,
-} from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import sub from 'date-fns/sub';
 import {
 	createStyles,
@@ -28,41 +22,41 @@ import zIndex from '@material-ui/core/styles/zIndex';
 
 export const OPTIONS: Record<
 	string,
-	{ label: string; duration: Duration | 'custom' }
+	{ label: string; range: Range | 'custom' }
 > = Object.freeze({
-	hour: {
-		label: 'Last hour',
-		duration: { hours: 1 },
-	},
 	day: {
-		label: 'Last day',
-		duration: { days: 1 },
+		label: 'Today',
+		range: {
+			from: getDayBeginningUTCDate(),
+			to: getDayBeginningUTCDate(),
+		},
 	},
 	'3days': {
 		label: 'Last three days',
-		duration: { days: 3 },
+		range: {
+			from: getDayBeginningUTCDate(sub(new Date(), { days: 2 })),
+			to: getDayBeginningUTCDate(),
+		},
 	},
 	week: {
 		label: 'Last week',
-		duration: { weeks: 1 },
+		range: {
+			from: getDayBeginningUTCDate(sub(new Date(), { days: 6 })),
+			to: getDayBeginningUTCDate(),
+		},
 	},
 	month: {
 		label: 'Last month',
-		duration: { months: 1 },
+		range: {
+			from: getDayBeginningUTCDate(sub(new Date(), { days: 30 })),
+			to: getDayBeginningUTCDate(),
+		},
 	},
 	custom: {
 		label: 'Custom...',
-		duration: 'custom',
+		range: 'custom',
 	},
 });
-
-const parseRangeFromDuration = (duration: Duration) => {
-	const now = new Date();
-	return {
-		from: sub(now, duration),
-		to: now,
-	};
-};
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -97,7 +91,9 @@ export interface DateRangeSelectorProps {
 	onRangeChange?: (range: Range) => void;
 }
 
-export const getDefaultRange = () => parseRangeFromDuration({ hours: 1 });
+const defaultOption = 'day';
+
+export const getDefaultRange = () => OPTIONS[defaultOption].range as Range;
 
 const DateRangeSelector = ({
 	range,
@@ -108,7 +104,7 @@ const DateRangeSelector = ({
 	const [open, setOpen] = useState(false);
 	const [openCustomDialog, setOpenCustomDialog] = useState(false);
 	const anchorRef = useRef<HTMLButtonElement>(null);
-	const [value, setValue] = useState('hour');
+	const [value, setValue] = useState('day');
 
 	const handleToggle = () => {
 		setOpen((prevOpen) => !prevOpen);
@@ -139,30 +135,21 @@ const DateRangeSelector = ({
 		setOpenCustomDialog(false);
 	};
 
-	const setRangeFromDuration = useCallback(
-		(duration: Duration) => {
-			onRangeChange(parseRangeFromDuration(duration));
-		},
-		[onRangeChange]
-	);
-
 	const rangeOptions = useMemo(
 		() =>
 			Object.fromEntries(
-				Object.entries(OPTIONS).map(([key, { label, duration }]) => [
+				Object.entries(OPTIONS).map(([key, { label, range }]) => [
 					key,
 					{
 						label,
 						fn:
-							duration === 'custom'
-								? () => {
-										setOpenCustomDialog(true);
-								  }
-								: () => setRangeFromDuration(duration),
+							range === 'custom'
+								? () => setOpenCustomDialog(true)
+								: () => onRangeChange(range),
 					},
 				])
 			),
-		[setRangeFromDuration]
+		[onRangeChange]
 	);
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -241,5 +228,14 @@ const DateRangeSelector = ({
 		</div>
 	);
 };
+
+function getDayBeginningUTCDate(date = new Date()): Date {
+	const dateClone = new Date(date);
+	dateClone.setUTCHours(0);
+	dateClone.setUTCMinutes(0);
+	dateClone.setUTCSeconds(0);
+	dateClone.setUTCMilliseconds(0);
+	return dateClone;
+}
 
 export default DateRangeSelector;

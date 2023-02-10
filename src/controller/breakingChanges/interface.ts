@@ -1,27 +1,25 @@
 import { Change, ChangeType } from '@graphql-inspector/core';
-import { RedisRepository } from '../../redis/redis';
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
-import { getCustomChanges, validateBreakingChange } from './utils';
+import { getTypeFieldsUsageCount } from '../../helpers/clientUsage/redisHelpers';
 import { BreakingChangeService } from '../breakingChange';
+import { addUsageToChange, getDateRangeLimits } from './utils';
 
 export class InterfaceChange implements BreakingChangeService {
 	private types = [ChangeType.ObjectTypeInterfaceRemoved];
 
-	validate(change: Change) {
-		return validateBreakingChange(this.types, change);
+	validate(change: Change): boolean {
+		return this.types.includes(change.type);
 	}
 
-	async validateUsage(change: Change, usage_days = 30, min_usages = 0) {
-		const redisRepo = RedisRepository.getInstance();
-
+	async validateUsage(change: Change, usageDays = 30, minUsages = 0) {
 		const typeRepo = TypeTransactionalRepository.getInstance();
 		const type = await typeRepo.getTypeByName(change.path);
-
-		const operations = await redisRepo.getOperationsByUsage(
+		const { endDate, startDate } = getDateRangeLimits(usageDays);
+		const usageCount = await getTypeFieldsUsageCount(
 			type.id,
-			'entity'
+			startDate,
+			endDate
 		);
-
-		return getCustomChanges(operations, change, usage_days, min_usages);
+		return addUsageToChange(change, usageCount, minUsages);
 	}
 }

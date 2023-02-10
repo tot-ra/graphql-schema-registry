@@ -2,7 +2,7 @@ import { Typography } from '@material-ui/core';
 import React from 'react';
 import styled from 'styled-components';
 import { CommonLink } from '../../../components/Link';
-import { TypeInstanceOperationStatsOutput } from '../../../utils/queries';
+import { TypeInstanceRootFieldStatsOutput } from '../../../utils/queries';
 import { InstanceStatsTable } from '../common/InstanceStatsTable';
 import { CommonContainer } from '../shared';
 
@@ -26,37 +26,40 @@ export const List = styled(CommonContainer)`
 	list-style: none;
 `;
 
-type InstanceStatsTableProps = {
-	client: TypeInstanceOperationStatsOutput['getOperationUsageTrack'][0]['client'];
-};
+type InstanceStatsTableProps =
+	TypeInstanceRootFieldStatsOutput['getRootFieldUsageStats'][0];
 
 export const InstanceStatsClient = ({
-	client: { name, versions },
+	clientName,
+	clientVersions,
 }: InstanceStatsTableProps) => (
 	<Container as="li">
 		<Typography variant="h5" component="h4">
-			{name}
+			{clientName}
 		</Typography>
 		<List as="ul">
-			{versions.map((version) => (
-				<InstanceStatsTable
-					as="li"
-					headerLabel="Operation"
-					key={version.id}
-					title={version.id}
-					showUsageDetail={false}
-					items={version.operations.map((operation) => ({
-						id: operation.name,
-						name: operation.name,
-						label: (
-							<CommonLink to={`/schema/${operation.name}`}>
-								{operation.name}
-							</CommonLink>
-						),
-						executions: operation.executions,
-					}))}
-				/>
-			))}
+			{clientVersions.map(
+				({ clientVersion, usageStatsByOperationName }) => (
+					<InstanceStatsTable
+						as="li"
+						headerLabel="Operation"
+						key={clientVersion}
+						title={clientVersion}
+						items={usageStatsByOperationName.map(
+							({ operationName, usageStats }) => ({
+								id: operationName,
+								name: operationName,
+								label: (
+									<CommonLink to={`/schema/${operationName}`}>
+										{operationName}
+									</CommonLink>
+								),
+								usageStats,
+							})
+						)}
+					/>
+				)
+			)}
 		</List>
 	</Container>
 );

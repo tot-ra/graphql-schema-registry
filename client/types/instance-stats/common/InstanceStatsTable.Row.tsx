@@ -1,10 +1,8 @@
 import { Collapse, IconButton, TableCell, TableRow } from '@material-ui/core';
-import React, { useCallback, useState } from 'react';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
+import React, { useCallback, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { InstanceStatsTableFieldStats } from './InstanceStatsTable.FieldStats';
-import { safeParseInt } from '../../../shared/useCommonParams';
 
 type CustomTableRowProps = {
 	removeBorderBottom: boolean;
@@ -21,24 +19,24 @@ const CustomTableRow = styled(TableRow)<CustomTableRowProps>`
 `;
 
 export type InstanceStatsTableRowProps = {
-	id: number | string;
 	name: string;
 	label: React.ReactNode;
-	executions?: {
+	usageStats?: {
 		success: number;
 		error: number;
-		total: number;
 	};
-	showUsageDetail: boolean;
+	details?: React.ReactNode;
 };
 
 export const InstanceStatsTableRow = ({
-	id,
+	details,
 	label,
-	executions,
-	showUsageDetail,
+	usageStats,
 }: InstanceStatsTableRowProps) => {
 	const [isSelected, setSelected] = useState(false);
+	const error = usageStats?.error ?? 0;
+	const success = usageStats?.success ?? 0;
+	const total = error + success;
 
 	const handleOnChange = useCallback(() => {
 		setSelected((value) => !value);
@@ -46,20 +44,20 @@ export const InstanceStatsTableRow = ({
 
 	return (
 		<>
-			<CustomTableRow removeBorderBottom={showUsageDetail}>
+			<CustomTableRow removeBorderBottom={!!details}>
 				<TableCell component="th" scope="row">
 					{label}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{executions?.total ?? 0}
+					{total}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{executions?.success ?? 0}
+					{success}
 				</TableCell>
 				<TableCell component="th" scope="row">
-					{executions?.error ?? 0}
+					{error}
 				</TableCell>
-				{showUsageDetail && executions?.total > 0 && (
+				{!!details && total > 0 && (
 					<TableCell component="th" scope="row">
 						<IconButton onClick={handleOnChange}>
 							{isSelected && (
@@ -72,18 +70,11 @@ export const InstanceStatsTableRow = ({
 					</TableCell>
 				)}
 			</CustomTableRow>
-			{showUsageDetail && (
+			{!!details && (
 				<TableRow>
-					<TableCell
-						style={{
-							padding: 0,
-						}}
-						colSpan={5}
-					>
+					<TableCell style={{ padding: 0 }} colSpan={5}>
 						<Collapse in={isSelected} timeout="auto" unmountOnExit>
-							<InstanceStatsTableFieldStats
-								id={safeParseInt(id)}
-							/>
+							{details}
 						</Collapse>
 					</TableCell>
 				</TableRow>

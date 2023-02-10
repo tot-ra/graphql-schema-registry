@@ -38,21 +38,16 @@ export default gql`
 			offset: Int!
 		): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
-		getOperationUsageTrack(
-			id: Int!
+		getFieldsUsageStats(
+			parentTypeId: Int!
 			startDate: Date!
 			endDate: Date!
-		): [ClientOperationUsageTrack!]!
-		getEntityUsageTrack(
-			id: Int!
+		): [FieldsUsageStats!]!
+		getRootFieldUsageStats(
+			rootFieldId: Int!
 			startDate: Date!
 			endDate: Date!
-		): [EntityUsageTrack!]!
-		getFieldUsageTrack(
-			id: Int!
-			startDate: Date!
-			endDate: Date!
-		): [ClientFieldUsageTrack!]!
+		): [RootFieldUsageStats!]!
 		routerConfig(
 			ref: String
 			apiKey: String
@@ -294,48 +289,39 @@ export default gql`
 		outputParams: [OutputParam!]
 	}
 
-	type Executions {
-		success: Int!
+	type UsageStats {
 		error: Int!
-		total: Int!
+		success: Int!
 	}
 
-	type ExecutionsByName {
-		name: String!
-		executions: Executions!
+	type UsageStatsByOperationName {
+		operationName: String!
+		usageStats: UsageStats!
 	}
 
-	type VersionOperations {
-		id: String!
-		operations: [ExecutionsByName!]!
+	type FieldsClientUsageStats {
+		clientVersion: String!
+		usageStats: UsageStats!
 	}
 
-	type OperationClientVersion {
-		name: String!
-		versions: [VersionOperations!]!
+	type FieldsClient {
+		clientName: String!
+		clientVersions: [FieldsClientUsageStats!]!
 	}
 
-	type ClientOperationUsageTrack {
-		client: OperationClientVersion!
+	type FieldsUsageStats {
+		fieldId: Int!
+		clients: [FieldsClient!]!
 	}
 
-	type EntityUsageTrack {
-		id: Int!
-		executions: Executions!
+	type RootFieldClientUsageStats {
+		clientVersion: String!
+		usageStatsByOperationName: [UsageStatsByOperationName!]!
 	}
 
-	type VersionFields {
-		id: String!
-		execution: Executions
-	}
-
-	type FieldClientVersion {
-		name: String!
-		versions: [VersionFields!]!
-	}
-
-	type ClientFieldUsageTrack {
-		client: FieldClientVersion!
+	type RootFieldUsageStats {
+		clientName: String!
+		clientVersions: [RootFieldClientUsageStats!]!
 	}
 
 	union TypeInstanceDetailResponse =

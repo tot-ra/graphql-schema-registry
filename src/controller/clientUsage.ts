@@ -1,83 +1,76 @@
+import { Report, IReport } from 'apollo-reporting-protobuf';
 import { ClientRepository } from '../database/client';
-
-import { Report } from 'apollo-reporting-protobuf';
-import { RegisterUsage } from './clientUsage/notRegisteredClient';
-import { UpdateUsageStrategy } from './clientUsage/registeredClient';
-import redisWrapper from '../redis';
-import crypto from 'crypto';
-import { getClientsFromTrace, getUsagesForClients } from './clientUsage/utils';
-import { ClientPayload } from '../model/client';
-import { QueryResult } from '../model/usage_counter';
+import { Client, ClientPayload } from '../model/client';
+import { registerFieldsUsage } from './clientUsage/registerFieldsUsage';
+import { registerRootFieldsUsage } from './clientUsage/registerRootFieldsUsage';
+import {
+	getOperationClients,
+	getOperationClientStats,
+	parseOperationSdl,
+} from './clientUsage/utils';
 
 export class ClientUsageController {
 	private clientRepository = ClientRepository.getInstance();
 
-	async registerUsage(buffer: Buffer) {
-		const decodedReport = Report.decode(buffer).toJSON();
+	async registerUsage(buffer: Buffer): Promise<void> {
+		const { tracesPerQuery } = Report.decode(buffer).toJSON() as IReport;
+		const usageDataPerQueryEntries = Object.entries(tracesPerQuery);
 
-		const queries = Object.keys(decodedReport.tracesPerQuery);
+		await Promise.all(
+			usageDataPerQueryEntries
+				.filter(
+					([operationSdl]) =>
+						!operationSdl.includes('IntrospectionQuery')
+				)
+				.map(async ([operationSdl, usageData]) => {
+					const clients = await getOperationClients(usageData);
+					const parsedOperationSdl = parseOperationSdl(operationSdl);
 
-		const promises = queries.map(async (query) => {
-			if (query.includes('IntrospectionQuery')) return null;
-			const clients = await getClientsFromTrace(
-				decodedReport.tracesPerQuery[query]
-			);
+					await Promise.all(
+						clients.map(async (client) => {
+							const operationClientStats =
+								getOperationClientStats(client, usageData);
 
-			const hash = crypto.createHash('md5').update(query).digest('hex');
+							const registeredClient = await this.registerClient(
+								client
+							);
 
-			const clientPromises = clients.map((client) => {
-				const queryResult = getUsagesForClients(
-					client,
-					decodedReport.tracesPerQuery[query]
-				);
-
-				return this.registerClient(query, client, queryResult, hash);
-			});
-
-			return Promise.all(clientPromises);
-		});
-
-		return Promise.all(promises);
+							await registerRootFieldsUsage(
+								parsedOperationSdl,
+								registeredClient,
+								operationClientStats
+							);
+							await registerFieldsUsage(
+								parsedOperationSdl,
+								registeredClient,
+								operationClientStats
+							);
+						})
+					);
+				})
+		);
 	}
 
-	private async registerClient(
-		query: string,
-		clientPayload: ClientPayload,
-		queryResult: QueryResult,
-		hash: string
-	): Promise<void> {
-		let client = await this.clientRepository.getClientByUnique(
-			clientPayload.name,
-			clientPayload.version
+	private async registerClient(client: ClientPayload): Promise<Client> {
+		let registeredClient = await this.clientRepository.getClientByUnique(
+			client.name,
+			client.version
 		);
 
-		if (
-			!client ||
-			!(await redisWrapper.get(`o_${client.id}_${hash}`, 1000))
-		) {
-			if (!client) {
-				try {
-					await this.clientRepository.insertClient(clientPayload);
-				} catch {
-					// client already exists
+		if (!registeredClient) {
+			try {
+				await this.clientRepository.insertClient(client);
+			} catch (error) {
+				// Does not log error in case of race condition
+				if (!error?.message?.includes('Duplicate entry')) {
+					throw error;
 				}
-				client = await this.clientRepository.getClientByUnique(
-					clientPayload.name,
-					clientPayload.version
-				);
 			}
-			return new RegisterUsage(
-				query,
-				client,
-				queryResult,
-				hash
-			).execute();
-		} else {
-			return new UpdateUsageStrategy(
-				queryResult,
-				client.id,
-				hash
-			).execute();
+			registeredClient = await this.clientRepository.getClientByUnique(
+				client.name,
+				client.version
+			);
 		}
+		return registeredClient;
 	}
 }

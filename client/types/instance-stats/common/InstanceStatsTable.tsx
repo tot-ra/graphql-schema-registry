@@ -8,39 +8,40 @@ import {
 	TableRow,
 	Typography,
 } from '@material-ui/core';
-import React, { useMemo } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import styled from 'styled-components';
 import { CommonContainer } from '../shared';
 import { InstanceStatsTableRow } from './InstanceStatsTable.Row';
 import { getInnerInstanceStatsTable } from './util';
 
+export type InstanceStatsItem = {
+	id: number | string;
+	name: string;
+	label: React.ReactNode;
+	usageStats?: {
+		success: number;
+		error: number;
+	};
+};
+
 type InstanceStatsTableProps = {
+	details?: (item: InstanceStatsItem) => ReactNode;
 	title?: string;
 	as?: Parameters<ReturnType<typeof styled['html']>>['0']['as'];
 	headerLabel: string;
-	items: {
-		id: number | string;
-		name: string;
-		label: React.ReactNode;
-		executions?: {
-			success: number;
-			error: number;
-			total: number;
-		};
-	}[];
-	showUsageDetail: boolean;
+	items: InstanceStatsItem[];
 };
 
 export const InstanceStatsTable = ({
+	details,
 	title,
 	items,
 	headerLabel,
 	as,
-	showUsageDetail,
 }: InstanceStatsTableProps) => {
 	const TableComponent = useMemo(
-		() => getInnerInstanceStatsTable(showUsageDetail),
-		[showUsageDetail]
+		() => getInnerInstanceStatsTable(!!details),
+		[details]
 	);
 
 	return (
@@ -58,20 +59,22 @@ export const InstanceStatsTable = ({
 							<TableCell>Total</TableCell>
 							<TableCell>Success</TableCell>
 							<TableCell>Error</TableCell>
-							{showUsageDetail && <TableCell />}
+							{!!details && <TableCell />}
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{items.map(({ id, executions, label, name }) => (
-							<InstanceStatsTableRow
-								key={name}
-								id={id}
-								label={label}
-								name={name}
-								executions={executions}
-								showUsageDetail={showUsageDetail}
-							/>
-						))}
+						{items.map((item) => {
+							const { label, name, usageStats } = item;
+							return (
+								<InstanceStatsTableRow
+									details={details?.(item)}
+									key={name}
+									label={label}
+									name={name}
+									usageStats={usageStats}
+								/>
+							);
+						})}
 					</TableBody>
 				</Table>
 			</TableContainer>

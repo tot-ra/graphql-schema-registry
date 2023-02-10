@@ -56,7 +56,7 @@ export class OperationTransactionalRepository
 		return super.remove(trx, data, 'name');
 	}
 
-	async getOperationByName(name: string) {
+	async getOperationByName(name: string): Promise<Operation | undefined> {
 		return connection(table).select().where('name', name).first();
 	}
 

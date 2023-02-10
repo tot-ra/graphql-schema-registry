@@ -1,5 +1,9 @@
-import { Change, ChangeType, CriticalityLevel } from '@graphql-inspector/core';
-import { getBreakingChangesTypes } from './breakingChanges/utils';
+import { Change, CriticalityLevel } from '@graphql-inspector/core';
+import { FieldChange } from './breakingChanges/field';
+import { TypeChange } from './breakingChanges/type';
+import { EnumChange } from './breakingChanges/enum';
+import { ArgumentChange } from './breakingChanges/argument';
+import { InterfaceChange } from './breakingChanges/interface';
 
 export type CustomChange = Change & {
 	isBreakingChange: boolean;
@@ -62,30 +66,36 @@ export class BreakingChangeHandler {
 	}
 
 	private async validateBreakingChangesUsages(
-		changes: Change[]
+		breakingChanges: Change[]
 	): Promise<CustomChange[]> {
-		const breakingChanges = getBreakingChangesTypes();
-		const result = changes
-			.map((change) => {
-				const strategies = breakingChanges.filter((bc) =>
-					bc.validate(change)
+		const breakingChangeServices: BreakingChangeService[] = [
+			new FieldChange(),
+			new TypeChange(),
+			new EnumChange(),
+			new ArgumentChange(),
+			new InterfaceChange(),
+		];
+
+		return Promise.all(
+			breakingChanges.map(async (breakingChange) => {
+				const breakingChangeService = breakingChangeServices.find(
+					(service) => service.validate(breakingChange)
 				);
 
-				if (strategies.length === 0) {
+				if (breakingChangeService === undefined) {
 					return {
-						...change,
+						...breakingChange,
 						isBreakingChange: false,
 						totalUsages: 0,
-					} as CustomChange;
+					};
 				}
 
-				return strategies[0].validateUsage(
-					change,
+				return breakingChangeService.validateUsage(
+					breakingChange,
 					this.limits.usage_days,
 					this.limits.min_usages
 				);
 			})
-			.flat(1);
-		return await Promise.all(result);
+		);
 	}
 }

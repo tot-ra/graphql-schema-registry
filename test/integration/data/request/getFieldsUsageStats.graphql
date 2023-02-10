@@ -1,0 +1,23 @@
+query getFieldsUsageStats(
+	$parentTypeId: Int!
+	$startDate: Date!
+	$endDate: Date!
+) {
+	getFieldsUsageStats(
+		parentTypeId: $parentTypeId
+		startDate: $startDate
+		endDate: $endDate
+	) {
+		fieldId
+		clients {
+			clientName
+			clientVersions {
+				clientVersion
+				usageStats {
+					error
+					success
+				}
+			}
+		}
+	}
+}

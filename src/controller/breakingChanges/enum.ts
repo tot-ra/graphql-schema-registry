@@ -1,53 +1,31 @@
 import { Change, ChangeType } from '@graphql-inspector/core';
-import { RedisRepository } from '../../redis/redis';
-import { FieldTransactionRepository } from '../../database/schemaBreakdown/field';
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
-import { checkUsage, validateBreakingChange } from './utils';
+import { getTypeFieldsUsageCount } from '../../helpers/clientUsage/redisHelpers';
 import { BreakingChangeService } from '../breakingChange';
+import { addUsageToChange, getDateRangeLimits } from './utils';
 
 export class EnumChange implements BreakingChangeService {
 	private types = [ChangeType.EnumValueRemoved];
 
-	validate(change: Change) {
-		return validateBreakingChange(this.types, change);
+	validate(change: Change): boolean {
+		return this.types.includes(change.type);
 	}
 
-	async validateUsage(change: Change, usage_days = 30, min_usages = 0) {
-		const redisRepo = RedisRepository.getInstance();
-
+	async validateUsage(change: Change, usageDays = 30, minUsages = 0) {
 		const split = change.path.split('.');
 		const enumName = split[split.length - 2];
 
-		const fieldRepo = FieldTransactionRepository.getInstance();
 		const typeRepo = TypeTransactionalRepository.getInstance();
 
 		const type = await typeRepo.getTypeByName(enumName);
-		const fields = await fieldRepo.getFieldByChildren(type.id);
 
-		const resultOperations = await Promise.all(
-			fields.map((f) => redisRepo.getOperationsByUsage(f.id, 'field'))
+		const { endDate, startDate } = getDateRangeLimits(usageDays);
+		const usageCount = await getTypeFieldsUsageCount(
+			type.id,
+			startDate,
+			endDate
 		);
 
-		if (resultOperations.length === 0) {
-			return {
-				...change,
-				isBreakingChange: false,
-				totalUsages: 0,
-			};
-		}
-
-		const resultUsages = await Promise.all(
-			resultOperations.map((ro) => checkUsage(ro, usage_days))
-		);
-
-		const totalUsages = resultUsages.reduce((acc, cur) => {
-			return (acc += cur);
-		}, 0);
-
-		return {
-			...change,
-			isBreakingChange: totalUsages >= min_usages && totalUsages !== 0,
-			totalUsages,
-		} as any;
+		return addUsageToChange(change, usageCount, minUsages);
 	}
 }

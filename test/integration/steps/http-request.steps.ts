@@ -1,11 +1,11 @@
-import { When, Then, Given } from '@cucumber/cucumber';
-import fetch from 'node-fetch';
-import { Response } from 'node-fetch';
-let response: Response;
+import util from 'node:util';
+import zlib from 'node:zlib';
+import { setDefaultTimeout, When, Then, Given } from '@cucumber/cucumber';
+import { Report } from 'apollo-reporting-protobuf';
 import expect from 'expect';
-import crypto from 'crypto';
-import { UpdateUsageStrategy } from '../../../src/controller/clientUsage/registeredClient';
-import { setDefaultTimeout } from '@cucumber/cucumber';
+import fetch, { type Response } from 'node-fetch';
+
+let response: Response;
 
 setDefaultTimeout(20 * 1000);
 
@@ -59,50 +59,64 @@ When(
 );
 
 Given(
-	'a not registered client {string} and version {string} for an {string} query:',
+	'a client named {string} with version {string} makes {int} {string} queries:',
 	async (
 		clientName: string,
 		clientVersion: string,
-		isError: string,
+		requestCount: number,
+		queryStatus: 'valid' | 'invalid',
 		query: string
 	) => {
-		const { RegisterUsage } = await import(
-			'../../../src/controller/clientUsage/notRegisteredClient'
-		);
-		const hash = crypto.createHash('md5').update(query).digest('hex');
-		const strategy = new RegisterUsage(
-			query,
-			{
-				id: 1,
-				name: clientName,
-				version: clientVersion,
+		const requestBody = {
+			tracesPerQuery: {
+				[query]: {
+					trace: [
+						{
+							clientName,
+							clientVersion,
+							root:
+								queryStatus === 'invalid'
+									? { error: ['error'] }
+									: {},
+						},
+					],
+					statsWithContext: [
+						{
+							context: {
+								clientName,
+								clientVersion,
+							},
+							queryLatencyStats: {
+								requestCount: `${requestCount - 1}`,
+								rootErrorStats: {
+									requestsWithErrorsCount: `${
+										queryStatus === 'invalid'
+											? requestCount - 1
+											: 0
+									}`,
+								},
+							},
+						},
+					],
+				},
 			},
-			{
-				errors: Number(isError === 'invalid'),
-				success: Number(isError !== 'invalid'),
-			},
-			hash
-		);
-		await strategy.execute();
-	}
-);
+			operationCount: '5',
+		};
 
-Given(
-	'a registered client {int} for an {string} query:',
-	async (clientId: number, isError: string, query: string) => {
-		const { UpdateUsageStrategy } = await import(
-			'../../../src/controller/clientUsage/registeredClient'
+		const gzip = util.promisify(zlib.gzip);
+		const gzippedBodyBuffer = await gzip(
+			Report.encode(requestBody as any).finish()
 		);
-		const hash = crypto.createHash('md5').update(query).digest('hex');
-		const strategy = new UpdateUsageStrategy(
-			{
-				errors: Number(isError === 'invalid'),
-				success: Number(isError !== 'invalid'),
+
+		response = await fetch(`http://localhost:3000/api/ingress/traces`, {
+			method: 'POST',
+			body: gzippedBodyBuffer,
+			headers: {
+				'Content-Encoding': 'gzip',
 			},
-			clientId,
-			hash
-		);
-		await strategy.execute();
+		});
+
+		expect(response.status).toEqual(200);
 	}
 );
 

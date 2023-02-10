@@ -1,0 +1,47 @@
+{
+  "getFieldsUsageStats": [
+    {
+      "fieldId": 123,
+      "clients": [
+        {
+          "clientName": "Client_1",
+          "clientVersions": [
+            {
+              "clientVersion": "0.0.1",
+              "execution": {
+                "success": 4,
+                "error": 3
+              }
+            },
+            {
+              "id": "0.0.3",
+              "usageStats": {
+                "success": 2,
+                "error": 6
+              }
+            }
+          ]
+        },
+        {
+          "clientName": "Client_2",
+          "clientVersions": [
+            {
+              "clientVersion": "0.0.1",
+              "usageStats": {
+                "success": 9,
+                "error": 1
+              }
+            },
+            {
+              "clientVersion": "0.0.3",
+              "usageStats": {
+                "success": 7,
+                "error": 8
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

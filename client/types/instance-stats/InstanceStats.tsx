@@ -1,16 +1,16 @@
 import useCommonParams from '../../shared/useCommonParams';
-import { InstanceStatsOperation } from './InstanceStats.Operation';
-import { InstanceStatsEntity } from './InstanceStats.Entity';
+import { InstanceStatsRootField } from './InstanceStats.RootField';
+import { InstanceStatsObject } from './InstanceStats.Object';
 
 export const InstanceStats = () => {
 	const { typeName } = useCommonParams();
 
 	if (typeName === 'query' || typeName === 'mutation') {
-		return <InstanceStatsOperation />;
+		return <InstanceStatsRootField />;
 	}
 
 	if (typeName === 'object') {
-		return <InstanceStatsEntity />;
+		return <InstanceStatsObject />;
 	}
 
 	return null;

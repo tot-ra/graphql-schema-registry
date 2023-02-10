@@ -1,0 +1,23 @@
+{
+  "data": {
+    "getRootFieldUsageStats": [
+      {
+        "clientName": "local-test-microservice",
+        "clientVersions": [
+          {
+            "clientVersion": "1.3.0",
+            "usageStatsByOperationName": [
+              {
+                "operationName": "SofianeTest",
+                "usageStats": {
+                  "error": 50,
+                  "success": 100
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
