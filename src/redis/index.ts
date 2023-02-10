@@ -7,6 +7,7 @@ const DEFAULT_TTL = 24 * 3600;
 const GET_TIMEOUT_MS = 1000;
 const SET_TIMEOUT_MS = 1000;
 const DEFAULT_LOCK_TTL = 60 * 1000;
+const SCAN_COUNT = 10000;
 const redisServiceName =
 	process.env.REDIS_SCHEMA_REGISTRY || 'gql-schema-registry-redis';
 
@@ -188,24 +189,20 @@ const redisWrap = {
 		pattern: string,
 		timeout = SET_TIMEOUT_MS
 	): Promise<string[] | null> => {
-		const operation = async () => {
-			const found: string[] = [];
-			const endCursor = '0';
-			let cursor = endCursor;
+		return doRedisOperationWithTimeout(
+			new Promise((resolve, reject) => {
+				const stream = redis.scanStream({
+					count: SCAN_COUNT,
+					match: pattern,
+				});
+				const keyPackets: string[][] = [];
 
-			do {
-				const [newCursor, foundKeys] = await redis.scan(
-					cursor,
-					'MATCH',
-					pattern
-				);
-				cursor = newCursor;
-				found.push(...foundKeys);
-			} while (cursor !== endCursor);
-
-			return found;
-		};
-		return doRedisOperationWithTimeout(operation(), timeout);
+				stream.on('data', (keys: string[]) => keyPackets.push(keys));
+				stream.on('end', () => resolve(keyPackets.flat()));
+				stream.on('error', reject);
+			}),
+			timeout
+		);
 	},
 };
 
