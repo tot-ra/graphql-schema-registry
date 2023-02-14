@@ -30,7 +30,11 @@ export async function getAndValidateSchema(
 	return schemas;
 }
 
-export async function pushAndValidateSchema({ service }) {
+export async function pushAndValidateSchema({
+	service,
+}: {
+	service: { name: string; version: string; type_defs: string };
+}) {
 	return await transact(async (trx) => {
 		const schema = await schemaModel.registerSchema({ trx, service });
 

@@ -14,6 +14,7 @@ export class FieldChange implements BreakingChangeService {
 	private types = [
 		ChangeType.FieldRemoved,
 		ChangeType.FieldTypeChanged,
+		ChangeType.FieldArgumentAdded,
 		ChangeType.InputFieldTypeChanged,
 		ChangeType.InputFieldRemoved,
 	];
@@ -27,12 +28,13 @@ export class FieldChange implements BreakingChangeService {
 
 	async validateUsage(change: Change, usageDays = 30, minUsages = 0) {
 		const split = change.path.split('.');
-		const typeName = split[split.length - 2];
-		const fieldName = split[split.length - 1];
+		const typeName = split.at(0);
+		const fieldName = split.at(1);
 		const { endDate, startDate } = getDateRangeLimits(usageDays);
 		let usageCount: number;
 
 		// ex: Query.homepageB2cBrands
+		// Query.homepageB2cBrands.platform => working
 		if (
 			typeName.toLowerCase() === OperationType.QUERY ||
 			typeName.toLowerCase() === OperationType.MUTATION
@@ -49,7 +51,6 @@ export class FieldChange implements BreakingChangeService {
 			);
 		} else {
 			// Brand.siuyghdfgiysdgf => working
-			// Query.homepageB2cBrands.platform => not working, argument considered as field
 			const fieldRepo = FieldTransactionRepository.getInstance();
 			const typeRepo = TypeTransactionalRepository.getInstance();
 
