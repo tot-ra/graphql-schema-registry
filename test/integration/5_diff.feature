@@ -183,3 +183,50 @@ Feature: As a customer
 		}
 		"""
 
+	Scenario: I request to diff an existing schema with query type modifications with breaking changes
+		Given the database is imported from 'breakdown_schema_db'
+		And a client named "local-test-microservice" with version "1.3.0" makes 9 "valid" queries:
+			"""
+			query hello($platform: Platform!) {
+			   loyaltyCoupons(platform: $platform) {
+			     expirationDate
+			   }
+			}
+			"""
+		And a client named "local-test-microservice" with version "1.3.0" makes 2 "invalid" queries:
+			"""
+			query hello($platform: Platform!) {
+			   loyaltyCoupons(platform: $platform) {
+			     expirationDate
+			   }
+			}
+			"""
+		When I send a "POST" request to "/schema/diff" with body:
+		"""
+		{
+		  "name": "coupons",
+		  "version": "newest",
+		  "type_defs": "type Query { loyaltyCoupons(platform: String!): [Coupon] } type Coupon { code: ID!, value: Float!, creationDate: String!, expirationDate: String! } enum Platform { FR ES IT DE GB }"
+		}
+		"""
+		Then the response status code should be 200
+		And the response should be in JSON and contain:
+		"""
+		{
+			"success": false,
+			"data": [
+				{
+					"criticality": {
+						"level": "BREAKING",
+						"reason": "Changing the type of a field's argument can cause existing queries that use this argument to error."
+					},
+					"type": "FIELD_ARGUMENT_TYPE_CHANGED",
+					"message": "Type for argument 'platform' on field 'Query.loyaltyCoupons' changed from 'Platform!' to 'String!'",
+					"path": "Query.loyaltyCoupons.platform",
+					"isBreakingChange": true,
+					"totalUsages": 11
+				}
+			]
+		}
+		"""
+

@@ -1,9 +1,3 @@
-import {
-	convertNodeHttpToRequest,
-	isHttpQueryError,
-	runHttpQuery,
-} from 'apollo-server-core';
-import { NextFunction, Request, Response } from 'express';
 import Joi from 'joi';
 import {
 	getAndValidateSchema,
@@ -18,7 +12,9 @@ import * as kafka from '../kafka';
 import { ClientUsageController } from '../controller/clientUsage';
 import { Change } from '@graphql-inspector/core';
 import { BreakingChangeHandler } from '../controller/breakingChange';
-import { getServer } from '../graphql';
+
+const MIN_DAYS = 30;
+const MIN_USAGES = 1;
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection, false, false);
@@ -120,8 +116,8 @@ export async function diff(req, res) {
 			name: Joi.string().min(3).max(200).required(),
 			version: Joi.string().min(1).max(100).required(),
 			type_defs: Joi.string().required(),
-			usage_days: Joi.number().max(30).optional().default(30),
-			min_usages: Joi.number().min(1).optional(),
+			usage_days: Joi.number().max(MIN_DAYS).optional().default(MIN_DAYS),
+			min_usages: Joi.number().min(MIN_USAGES).optional(),
 		})
 	);
 
