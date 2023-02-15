@@ -16,6 +16,19 @@ Types of changes:
 
 ## [Unreleased]
 
+## [5.5.1] 2023-01-29
+### Changed
+Security updates of knex and body-parser dependencies
+
+## [5.5.0] 2023-01-29
+### Changed
+Redis dependency is now optional and password-protected
+
+- Passing the Redis password to the RedisTransport constructor in src/logger.ts.
+- Initializing Redis in the init() function in src/index.ts. With this change the warnings in the logs disappear.
+- In order to cover the Redis/password cases, the docker-compose.base.yml now makes sure to launch Redis with password protection.
+- Adding an environment variable called LOG_STREAMING_ENABLED to further control if log streaming over Redis should be enabled or not.
+
 ## [5.4.0] 2022-10-27
 
 ### Changed

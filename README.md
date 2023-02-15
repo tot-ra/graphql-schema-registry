@@ -392,13 +392,13 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 
 <details>
   <summary><h3>🟢 GET /health</h3></summary>
-  
+
   returns "ok" when service is up
 </details>
 
 <details>
   <summary><h3>🟢 GET /schema/latest</h3></summary>
-  
+
 Simplified version of /schema/compose where latest versions from different services are composed.
 Some services prefer this to use this natural schema composition, as its natural and time-based.
 
@@ -406,7 +406,7 @@ Some services prefer this to use this natural schema composition, as its natural
 
 <details>
   <summary><h3>🟡 POST /schema/compose</h3></summary>
-  
+
 Advanced version of schema composition, where you need to provide services & their versions.
 Used by graphql gateway to fetch schema based on currently running containers.
 
@@ -561,7 +561,7 @@ Adds persisted query to DB & redis cache
 
 <details>
   <summary><h3>🟢 GET /supergraph</h3></summary>
-  
+
 Get the supergraph SDL in order to connect the router.
 
 </details>
