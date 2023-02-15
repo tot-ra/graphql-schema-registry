@@ -1,11 +1,21 @@
 import { Knex } from 'knex';
 import { connection } from './index';
+import { Service } from '../model/service';
+import { Order, SortField } from '../model/repository';
 
 export interface ServiceRecord {
 	id: string;
 	name: string;
 	url: string;
 	is_active: boolean;
+}
+
+interface GetServiceParams {
+	trx: Knex;
+	limit?: number;
+	offset?: number;
+	sortField?: SortField;
+	order?: Order;
 }
 
 export const servicesTable = 'services';
@@ -51,8 +61,18 @@ const servicesModel = {
 		)[0].amount;
 	},
 
-	getServices: async (trx: Knex, limit = 100, offset = 0) => {
-		return trx(servicesTable).select('*').limit(limit).offset(offset);
+	getServices: async ({
+		trx,
+		limit = 100,
+		offset = 0,
+		sortField = SortField.NAME,
+		order = Order.ASC,
+	}: GetServiceParams): Promise<Service[]> => {
+		return trx(servicesTable)
+			.select('*')
+			.limit(limit)
+			.offset(offset)
+			.orderBy(sortField.valueOf(), order.valueOf());
 	},
 
 	getService: async function (trx: Knex<ServiceRecord>, name: string) {

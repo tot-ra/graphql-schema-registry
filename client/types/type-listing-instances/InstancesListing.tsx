@@ -1,3 +1,4 @@
+import React from 'react';
 import {
 	Link,
 	Paper,
@@ -9,9 +10,11 @@ import {
 	TableHead,
 	TablePagination,
 	TableRow,
+	TableSortLabel,
 } from '@material-ui/core';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import styled from 'styled-components';
+
 import { CommonLink } from '../../components/Link';
 import { InstancesListingTitle } from './InstancesListingTitle';
 import SchemasListing from '../schemas-listing';
@@ -32,6 +35,8 @@ interface InstancesListingProps extends ListTypeInstances {
 	typeName: string;
 	onPageChange: (newPage: number) => void;
 	onRowsPerPageChange: (rowsPerPage: number) => void;
+	onOrderChange: () => void;
+	order: 'asc' | 'desc';
 }
 
 export const InstancesListing = ({
@@ -40,6 +45,8 @@ export const InstancesListing = ({
 	pagination,
 	onPageChange,
 	onRowsPerPageChange,
+	onOrderChange,
+	order,
 }: InstancesListingProps) => {
 	const handleChangePage = (
 		event: React.MouseEvent<HTMLButtonElement> | null,
@@ -69,7 +76,15 @@ export const InstancesListing = ({
 				>
 					<TableHead>
 						<TableRow>
-							<TableCell>Types</TableCell>
+							<TableCell>
+								<TableSortLabel
+									active
+									direction={order}
+									onClick={onOrderChange}
+								>
+									{'Types'}
+								</TableSortLabel>
+							</TableCell>
 							<TableCell />
 							<TableCell>Schemas</TableCell>
 							{hasStats && <TableCell />}

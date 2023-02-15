@@ -1,0 +1,16 @@
+query getServices(
+	$limit: Int
+	$offset: Int
+	$order: Order
+	$sortField: SortField
+) {
+	services(
+		limit: $limit
+		offset: $offset
+		sortField: $sortField
+		order: $order
+	) {
+		id
+		name
+	}
+}

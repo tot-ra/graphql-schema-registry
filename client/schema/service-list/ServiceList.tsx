@@ -1,21 +1,23 @@
-import { useQuery } from '@apollo/client';
+import React from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
 import { ServiceListColumnEmpty } from '../styled';
 
-import { SERVICES_LIST } from '../../utils/queries';
-import { useRouteMatch, useHistory } from 'react-router-dom';
-
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { ListContainer, NavigationList } from '../../components/List';
 import Info from '../../components/Info';
+import { Service } from '../types';
 
-const ServiceList = () => {
-	const { data } = useQuery(SERVICES_LIST);
-	const match = useRouteMatch('/:serviceName');
+interface ServiceListProps {
+	services: Service[];
+}
+
+export const ServiceList: React.FC<ServiceListProps> = ({ services }) => {
+	const match = useRouteMatch<{ serviceName: string }>('/:serviceName');
 	const history = useHistory();
 
-	if (!data || !data.services || data.services.length === 0) {
+	if (!services.length) {
 		return (
 			<ServiceListColumnEmpty>
 				<Info>
@@ -38,7 +40,7 @@ const ServiceList = () => {
 	return (
 		<ListContainer>
 			<NavigationList component="nav">
-				{data.services.map((service) => (
+				{services.map((service) => (
 					<ListItem
 						key={service.name}
 						button
@@ -55,5 +57,3 @@ const ServiceList = () => {
 		</ListContainer>
 	);
 };
-
-export default ServiceList;

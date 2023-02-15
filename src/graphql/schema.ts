@@ -9,7 +9,12 @@ export default gql`
 	scalar JSON
 
 	type Query {
-		services(limit: Int, offset: Int): [Service]
+		services(
+			limit: Int
+			offset: Int
+			sortField: SortField
+			order: Order
+		): [Service]
 		service(id: Int!): Service
 		serviceCount: Int!
 		schema(id: Int!): SchemaDefinition!
@@ -36,6 +41,7 @@ export default gql`
 			type: String!
 			limit: Int!
 			offset: Int!
+			order: Order
 		): ListedTypeInstances!
 		getTypeInstance(type: String!, id: Int!): TypeInstanceDetailResponse!
 		getFieldsUsageStats(
@@ -352,5 +358,15 @@ export default gql`
 		ACCESS_DENIED
 		UNKNOWN_REF
 		RETRY_LATER
+	}
+
+	enum SortField {
+		NAME
+		ADDEDD_TIME
+	}
+
+	enum Order {
+		ASC
+		DESC
 	}
 `;

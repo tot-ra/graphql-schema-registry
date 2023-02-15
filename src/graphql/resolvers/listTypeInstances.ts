@@ -1,7 +1,11 @@
 import { TypeTransactionalRepository } from '../../database/schemaBreakdown/type';
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
 import { EntityType, OperationType } from '../../model/enums';
-import { TypeInstance, TypeInstanceRepository } from '../../model/repository';
+import {
+	Order,
+	TypeInstance,
+	TypeInstanceRepository,
+} from '../../model/repository';
 import { getPaginatedResult, isEnum, Pagination } from '../utils';
 import { UserInputError } from 'apollo-server-express';
 
@@ -14,7 +18,8 @@ async function listPaginatedInstances(
 	repository: TypeInstanceRepository,
 	evaluatedType: string,
 	limit: number,
-	offset: number
+	offset: number,
+	order: Order
 ) {
 	const totalItems = await repository.countByType(evaluatedType);
 
@@ -26,7 +31,8 @@ async function listPaginatedInstances(
 			items: await repository.listByType(
 				evaluatedType,
 				limit,
-				safeOffset
+				safeOffset,
+				order
 			),
 		})
 	);
@@ -34,7 +40,7 @@ async function listPaginatedInstances(
 
 export default async function listTypeInstances(
 	_parent,
-	{ type, limit, offset }
+	{ type, limit, offset, order = Order.ASC }
 ): Promise<ListedTypeInstances> {
 	const evaluatedType = type.toLowerCase();
 	let repository: TypeInstanceRepository;
@@ -47,5 +53,11 @@ export default async function listTypeInstances(
 		throw new UserInputError(`Unknown type: ${type}`);
 	}
 
-	return listPaginatedInstances(repository, evaluatedType, limit, offset);
+	return listPaginatedInstances(
+		repository,
+		evaluatedType,
+		limit,
+		offset,
+		order
+	);
 }

@@ -20,12 +20,6 @@ export const ServiceListColumnEmpty = styled.div`
 	}
 `;
 
-export const ServiceListColumn = styled.div`
-	min-width: 150px;
-	flex-shrink: 0;
-	border-right: 1px solid ${colors.black.hex256};
-`;
-
 export const SchemaListColumn = styled.div`
 	min-width: 200px;
 	flex-shrink: 0;
@@ -39,7 +33,8 @@ export const Container = styled.section`
 
 export const VersionHeaderTitle = styled.h2`
 	font-weight: 400;
-	margin: ${({ noMargin }) => (noMargin ? 0 : '0 16px')};
+	margin: ${({ noMargin }: { noMargin: boolean }) =>
+		noMargin ? 0 : '0 16px'};
 `;
 
 export const VersionHeaderTime = styled.div`
@@ -84,8 +79,14 @@ export const VersionChars = styled.div`
 	font-weight: 300;
 `;
 export const VersionCharsPositive = styled.div`
-	color: ${({ selected }) => (selected ? 'green' : 'green')};
+	color: ${({ selected }: { selected: boolean }) =>
+		selected ? 'green' : 'green'};
 `;
 export const VersionCharsNegative = styled.div`
-	color: ${({ selected }) => (selected ? 'red' : 'red')};
+	color: ${({ selected }: { selected: boolean }) =>
+		selected ? 'red' : 'red'};
+`;
+
+export const StyledListSection = styled.section`
+	overflow: auto;
 `;

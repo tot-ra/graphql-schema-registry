@@ -5,6 +5,7 @@ import { EntityType } from '../../model/enums';
 import {
 	Argument,
 	Field,
+	Order,
 	ParamProvidedBy,
 	TypeInstance,
 	TypeInstanceDetail,
@@ -110,13 +111,18 @@ export class TypeTransactionalRepository
 			.groupBy('type')) as TypeCount[];
 	}
 
-	async listByType(type: string, limit: number, offset: number) {
+	async listByType(
+		type: string,
+		limit: number,
+		offset: number,
+		order: Order
+	) {
 		const servicesRelationTable = 'type_def_subgraphs';
 		const paginatedTypesAlias = 't';
 		const typesData = connection(TABLE_NAME)
 			.select()
 			.where('type', type)
-			.orderBy(`${TABLE_NAME}.name`)
+			.orderBy(`${TABLE_NAME}.name`, order.valueOf())
 			.limit(limit)
 			.offset(offset)
 			.as(paginatedTypesAlias);

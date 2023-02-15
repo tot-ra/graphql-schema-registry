@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
+
 import { DEFAULT_OFFSET, usePaginationValues } from '../../shared/pagination';
 import useMinimumTime from '../../shared/useMinimumTime';
 import {
@@ -13,11 +14,13 @@ import { TypeListingInstancesSkeleton } from './TypeListingInstances.Skeleton';
 import { ErrorRetry } from '../../components/ErrorRetry';
 import useCommonParams from '../../shared/useCommonParams';
 import { MainViewContainer } from '../../components/MainViewContainer';
+import { Order } from '../../schema/types';
 
 export const TypeListingInstances = () => {
 	const history = useHistory();
 	const [pagination, createPaginationSearchParams] = usePaginationValues();
 	const { typeName } = useCommonParams();
+	const [order, setOrder] = useState<Order>(Order.ASC);
 
 	const { loading, data, error, refetch } = useQuery<
 		TypeInstancesOutput,
@@ -27,6 +30,7 @@ export const TypeListingInstances = () => {
 			type: typeName,
 			limit: pagination.limit,
 			offset: pagination.offset,
+			order,
 		},
 	});
 
@@ -52,6 +56,10 @@ export const TypeListingInstances = () => {
 		},
 		[createPaginationSearchParams, history]
 	);
+
+	const handleOrderChange = useCallback(() => {
+		setOrder((prev) => (prev === Order.ASC ? Order.DESC : Order.ASC));
+	}, [setOrder]);
 
 	const efectiveLoading = useMinimumTime(loading);
 
@@ -79,6 +87,8 @@ export const TypeListingInstances = () => {
 				pagination={data?.listTypeInstances?.pagination}
 				onPageChange={handleChangePage}
 				onRowsPerPageChange={handleChangeRowsPerPage}
+				order={order.toLowerCase() as 'asc' | 'desc'}
+				onOrderChange={handleOrderChange}
 			/>
 		</MainViewContainer>
 	);
