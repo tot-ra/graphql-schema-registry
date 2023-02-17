@@ -6,6 +6,16 @@ export type TypeInstance = (Type | Operation) & {
 	providedBy: Service[];
 };
 
+export enum SortField {
+	NAME = 'name',
+	ADDEDD_TIME = 'added_time',
+}
+
+export enum Order {
+	ASC = 'asc',
+	DESC = 'desc',
+}
+
 export interface Parent {
 	id: number;
 	name: string;
@@ -80,7 +90,8 @@ export interface TypeInstanceRepository {
 	listByType(
 		type: string,
 		limit: number,
-		offset: number
+		offset: number,
+		order: Order
 	): Promise<TypeInstance[]>;
 	countByType(type: string): Promise<number>;
 	getDetails(

@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+
 import * as useStatsBundle from '../../../shared/useStats';
 import { InstancesListing } from '../InstancesListing';
 
@@ -34,6 +35,8 @@ describe('InstancesListing tests', () => {
 				items={items}
 				onPageChange={onPageChange}
 				onRowsPerPageChange={onRowsPerPageChange}
+				order={'desc'}
+				onOrderChange={() => undefined}
 			/>,
 			{
 				wrapper: MemoryRouter,
@@ -74,6 +77,8 @@ describe('InstancesListing tests', () => {
 				items={items}
 				onPageChange={onPageChange}
 				onRowsPerPageChange={onRowsPerPageChange}
+				order={'desc'}
+				onOrderChange={() => undefined}
 			/>,
 			{
 				wrapper: MemoryRouter,

@@ -1,0 +1,127 @@
+{
+  "data": {
+    "listTypeInstances": {
+      "items": [
+        {
+          "description": null,
+          "id": 56,
+          "name": "ModelAttributes",
+          "providedBy": [
+            {
+              "name": "enrichment-product"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 72,
+          "name": "ProBanner",
+          "providedBy": [
+            {
+              "name": "cockpit-b2b"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 73,
+          "name": "ProOffer",
+          "providedBy": [
+            {
+              "name": "cockpit-b2b"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 82,
+          "name": "RelatedCategory",
+          "providedBy": [
+            {
+              "name": "categories"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 98,
+          "name": "PromotionCampaign",
+          "providedBy": [
+            {
+              "name": "campaigns"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 116,
+          "name": "Product",
+          "providedBy": [
+            {
+              "name": "products"
+            },
+            {
+              "name": "recommendation"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 119,
+          "name": "Offer",
+          "providedBy": [
+            {
+              "name": "products"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 128,
+          "name": "Rating",
+          "providedBy": [
+            {
+              "name": "products"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 132,
+          "name": "Price",
+          "providedBy": [
+            {
+              "name": "products"
+            }
+          ],
+          "type": "OBJECT"
+        },
+        {
+          "description": null,
+          "id": 133,
+          "name": "PriceDetail",
+          "providedBy": [
+            {
+              "name": "products"
+            }
+          ],
+          "type": "OBJECT"
+        }
+      ],
+      "pagination": {
+        "limit": 10,
+        "page": 2,
+        "total": 41,
+        "totalPages": 5
+      }
+    }
+  }
+}

@@ -1,5 +1,15 @@
-query getListTypeInstances($type: String!, $limit: Int!, $offset: Int!) {
-	listTypeInstances(type: $type, limit: $limit, offset: $offset) {
+query getListTypeInstances(
+	$type: String!
+	$limit: Int!
+	$offset: Int!
+	$order: Order
+) {
+	listTypeInstances(
+		type: $type
+		limit: $limit
+		offset: $offset
+		order: $order
+	) {
 		items {
 			id
 			name

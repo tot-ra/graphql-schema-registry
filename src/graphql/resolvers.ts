@@ -20,6 +20,14 @@ import getTypeInstance from './resolvers/getTypeInstance';
 import getFieldsUsageStats from './resolvers/getFieldsUsageStats';
 import getRootFieldUsageStats from './resolvers/getRootFieldUsageStats';
 import routerConfig from './resolvers/getRouterConfig';
+import { Order, SortField } from '../model/repository';
+
+interface ServicesQueryParams {
+	limit?: number;
+	offset?: number;
+	sortField?: SortField;
+	order?: Order;
+}
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -59,8 +67,17 @@ export const commonResolvers = {
 export default {
 	...commonResolvers,
 	Query: {
-		services: async (_, { limit, offset }) =>
-			await servicesModel.getServices(connection, limit, offset),
+		services: async (
+			_,
+			{ limit, offset, sortField, order }: ServicesQueryParams
+		) =>
+			await servicesModel.getServices({
+				trx: connection,
+				limit,
+				offset,
+				sortField: SortField[sortField],
+				order: Order[order],
+			}),
 		service: async (_, { id }, { dataloaders }) =>
 			await dataloaders.services.load(id),
 		serviceCount: async () => await servicesModel.count(),

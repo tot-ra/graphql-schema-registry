@@ -77,3 +77,34 @@ Feature: As a customer
         """
 		Then the response contains no errors
 		And the response contains JSON from file "getRouterConfigUnchanged.json"
+
+
+	@supergraph
+	Scenario: I request the supergraph
+		Given the database is imported from 'breakdown_schema_db'
+		When I execute the graphQL query in file "getServices.graphql" with variables:
+        """
+        {
+        	"limit": 10,
+        	"offset": 0,
+        	"order" : "DESC",
+        	"sortField" : "NAME"
+
+        }
+        """
+		Then the response contains no errors
+		And the response contains JSON from file "getServices.json"
+
+	Scenario: I request a paginated list of object instances in the supergraph
+		Given the database is imported from 'breakdown_schema_db'
+		When I execute the graphQL query in file "getListTypeInstances.graphql" with variables:
+        """
+        {
+            "type": "Object",
+            "limit": 10,
+            "offset": 10,
+            "order" : "DESC"
+        }
+        """
+		Then the response contains no errors
+		And the response contains JSON from file "getListTypeInstancesSorted.json"

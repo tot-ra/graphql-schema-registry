@@ -6,6 +6,7 @@ import { OperationType } from '../../model/enums';
 import {
 	InputParam,
 	OperationInstanceDetail,
+	Order,
 	OutputParam,
 	TypeInstance,
 	TypeInstanceRepository,
@@ -24,7 +25,8 @@ interface OperationService extends TypeInstanceRepository {
 	listByType(
 		type: string,
 		limit: number,
-		offset: number
+		offset: number,
+		order: Order
 	): Promise<TypeInstance[]>;
 }
 
@@ -86,7 +88,12 @@ export class OperationTransactionalRepository
 			.groupBy('type')) as OperationCount[];
 	}
 
-	async listByType(type: string, limit: number, offset: number) {
+	async listByType(
+		type: string,
+		limit: number,
+		offset: number,
+		order: Order
+	) {
 		const servicesTable = 'services';
 		const res = await connection(table)
 			.select()
@@ -97,7 +104,7 @@ export class OperationTransactionalRepository
 				`${table}.service_id`
 			)
 			.where('type', type)
-			.orderBy(`${table}.name`)
+			.orderBy(`${table}.name`, order.valueOf())
 			.limit(limit)
 			.offset(offset)
 			.options({ nestTables: true });

@@ -1,7 +1,7 @@
 import { Route, Redirect, Switch } from 'react-router-dom';
 
 import TopMenu from './TopMenu';
-import Schema from '../schema';
+import { Schema } from '../schema/Schema';
 import PersistedQueries from '../persisted-queries';
 import Clients from '../clients';
 

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { Order } from '../schema/types';
 
 export const SERVICE_COUNT = gql`
 	query serviceCount {
@@ -21,8 +22,18 @@ export const PERSISTED_QUERIES = gql`
 `;
 
 export const SERVICES_LIST = gql`
-	query getServices {
-		services {
+	query getServices(
+		$limit: Int
+		$offset: Int
+		$order: Order
+		$sortField: SortField
+	) {
+		services(
+			limit: $limit
+			offset: $offset
+			sortField: $sortField
+			order: $order
+		) {
 			id
 			name
 		}
@@ -184,6 +195,7 @@ type BaseTypeInstancesVars = {
 
 export type TypeInstancesVars = BaseTypeInstancesVars & {
 	offset: number;
+	order?: Order;
 };
 
 export type Pagination = {
@@ -219,8 +231,18 @@ export type TypeInstancesOutput = {
 };
 
 export const TYPE_INSTANCES = gql`
-	query GetListTypeInstances($type: String!, $limit: Int!, $offset: Int!) {
-		listTypeInstances(type: $type, limit: $limit, offset: $offset) {
+	query GetListTypeInstances(
+		$type: String!
+		$limit: Int!
+		$offset: Int!
+		$order: Order
+	) {
+		listTypeInstances(
+			type: $type
+			limit: $limit
+			offset: $offset
+			order: $order
+		) {
 			items {
 				id
 				name

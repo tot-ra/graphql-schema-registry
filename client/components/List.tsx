@@ -88,14 +88,15 @@ export const NavigationListItem = React.forwardRef<
 
 type NavigationListProps = {
 	children: ReactNode | ReactNode[];
+	component?: React.ElementType;
 };
 
 export const NavigationList = React.forwardRef<
 	HTMLElement,
 	NavigationListProps
->(function NavigationList({ children }, ref) {
+>(function NavigationList({ children, component = 'nav' }, ref) {
 	return (
-		<List component="nav" disablePadding ref={ref}>
+		<List component={component} disablePadding ref={ref}>
 			{children}
 		</List>
 	);

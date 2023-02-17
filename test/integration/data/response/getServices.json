@@ -1,0 +1,46 @@
+{
+  "data": {
+    "services": [
+      {
+        "id": 4,
+        "name": "tipsheets"
+      },
+      {
+        "id": 14,
+        "name": "recommendation"
+      },
+      {
+        "id": 13,
+        "name": "products"
+      },
+      {
+        "id": 7,
+        "name": "loyalty-program"
+      },
+      {
+        "id": 5,
+        "name": "homepage-b2c"
+      },
+      {
+        "id": 8,
+        "name": "enrichment-product"
+      },
+      {
+        "id": 6,
+        "name": "customer-segment"
+      },
+      {
+        "id": 9,
+        "name": "coupons"
+      },
+      {
+        "id": 10,
+        "name": "cockpit-b2b"
+      },
+      {
+        "id": 11,
+        "name": "categories"
+      }
+    ]
+  }
+}
