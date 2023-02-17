@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
 import React from 'react';
 import { useQuery } from '@apollo/client';
 
@@ -8,15 +7,16 @@ import { LOGS } from '../utils/queries';
 import Info from '../components/Info';
 
 import { format } from 'date-fns';
+import { Log } from './types';
 
-export default function PersistedQueries() {
-	const { loading, data } = useQuery(LOGS);
+export const Logs: React.FC = () => {
+	const { loading, data } = useQuery<{ logs: Log[] | null }>(LOGS);
 
 	if (loading) {
 		return <SpinnerCenter />;
 	}
 
-	if (!data || !data.logs.length) {
+	if (!data || !data.logs?.length) {
 		return <Info>No Logs yet</Info>;
 	}
 
@@ -36,9 +36,7 @@ export default function PersistedQueries() {
 								padding: '0 10px',
 							}}
 						>
-							{format(new Date(row.timestamp), 'd MMMM / HH:mm', {
-								timeZone: 'UTC',
-							})}
+							{format(new Date(row.timestamp), 'd MMMM / HH:mm')}
 						</td>
 						<td>{row.level.indexOf('error') > 0 ? '🔴' : 'ℹ️'} </td>
 						<td>
@@ -57,4 +55,4 @@ export default function PersistedQueries() {
 			</table>
 		</div>
 	);
-}
+};

@@ -7,7 +7,7 @@ import Clients from '../clients';
 
 import ServicesTab from '../schema/Tab';
 import PersistedQueriesTab from '../persisted-queries/Tab';
-import Logs from '../logs';
+import { Logs } from '../logs/Logs';
 import Types from '../types';
 import styled from 'styled-components';
 import { DateRangeSelectorProvider } from './DateRangeSelector.Context';
