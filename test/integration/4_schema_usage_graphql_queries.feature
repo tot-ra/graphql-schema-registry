@@ -153,3 +153,16 @@ Feature: As a customer
 			"""
 		Then the response contains no errors
 		And the response contains JSON from file "getFieldsUsageStatsTimePeriod.json"
+	
+	Scenario: I request the usage of an object without client name
+		Given the database is imported from 'schema_usage'
+		When I execute the graphQL query in file "getUsageWithoutClientName.graphql" with variables:
+			"""
+			{
+				"parentTypeId": 16,
+				"startDate": "2022-05-01T00:00:00Z",
+				"endDate": "2030-05-31T23:59:59Z"
+			}
+			"""
+		Then the response contains no errors
+		And the response contains JSON from file "getFieldsUsageStatsEmpty.json"

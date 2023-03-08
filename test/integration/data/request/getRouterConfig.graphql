@@ -13,7 +13,6 @@ query reportConfigQuery($ifAfterId: ID) {
 		... on FetchError {
 			code
 			message
-
 		}
 	}
 }
