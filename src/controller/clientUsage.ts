@@ -14,9 +14,17 @@ export class ClientUsageController {
 
 	async registerUsage(buffer: Buffer): Promise<void> {
 		const { tracesPerQuery } = Report.decode(buffer).toJSON() as IReport;
+
 		if (!tracesPerQuery) {
 			return;
 		}
+		const isGraphQlFailure = Object.keys(tracesPerQuery).filter((trace) =>
+			trace.startsWith('## GraphQLValidationFailure')
+		);
+		if (isGraphQlFailure.length >= 1) {
+			return;
+		}
+
 		const usageDataPerQueryEntries = Object.entries(tracesPerQuery);
 
 		await Promise.all(
