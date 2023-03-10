@@ -55,7 +55,11 @@ export default async function getFieldsUsageStats(
 							};
 
 							parsedFieldEntries
-								.filter((entry) => entry.clientId === clientId)
+								.filter(
+									(entry) =>
+										entry.clientId === clientId &&
+										entry.usageCount > 0
+								)
 								.forEach(({ type, usageCount }) => {
 									if (type === 'success') {
 										usageStats.success += usageCount;
