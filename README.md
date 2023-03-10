@@ -393,7 +393,8 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 <details>
   <summary><h3>🟢 GET /health</h3></summary>
 
-  returns "ok" when service is up
+returns "ok" when service is up
+
 </details>
 
 <details>
