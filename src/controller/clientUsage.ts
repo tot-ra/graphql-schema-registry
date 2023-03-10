@@ -18,8 +18,10 @@ export class ClientUsageController {
 		if (!tracesPerQuery) {
 			return;
 		}
-		const isGraphQlFailure = Object.keys(tracesPerQuery).filter((trace) =>
-			trace.startsWith('## GraphQLValidationFailure')
+		const isGraphQlFailure = Object.keys(tracesPerQuery).filter(
+			(trace) =>
+				trace.startsWith('## GraphQLValidationFailure') ||
+				trace.startsWith('## GraphQLParseFailure')
 		);
 		if (isGraphQlFailure.length >= 1) {
 			return;
