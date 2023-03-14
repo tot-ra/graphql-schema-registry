@@ -62,59 +62,69 @@ export const InstanceStatsTableFieldStats = ({
 	return (
 		<Container>
 			<Ul>
-				{clients.map(({ clientName, clientVersions }) => (
-					<Li key={clientName}>
-						<CommonPadding>
-							<Typography variant="caption" component="h5">
-								{clientName}
-							</Typography>
-						</CommonPadding>
-						<Table component={TableComponent}>
-							<TableBody>
-								{clientVersions.map(
-									({ clientVersion, usageStats }) => {
-										const error = usageStats?.error ?? 0;
-										const success =
-											usageStats?.success ?? 0;
-										const total = error + success;
+				{clients.map(({ clientName, clientVersions }) => {
+					const clientVersionsWithoutEmptyValues =
+						clientVersions.filter(({ usageStats }) =>
+							usageStats?.error === 0 && usageStats?.success === 0
+								? false
+								: true
+						);
 
-										return (
-											<TableRow key={clientVersion}>
-												<TableCell
-													component="td"
-													scope="row"
-												>
-													<CommonPadding>
-														{clientVersion}
-													</CommonPadding>
-												</TableCell>
-												<TableCell
-													component="td"
-													scope="row"
-												>
-													{total}
-												</TableCell>
-												<TableCell
-													component="td"
-													scope="row"
-												>
-													{success}
-												</TableCell>
-												<TableCell
-													component="td"
-													scope="row"
-												>
-													{error}
-												</TableCell>
-												<TableCell />
-											</TableRow>
-										);
-									}
-								)}
-							</TableBody>
-						</Table>
-					</Li>
-				))}
+					return (
+						<Li key={clientName}>
+							<CommonPadding>
+								<Typography variant="caption" component="h5">
+									{clientName}
+								</Typography>
+							</CommonPadding>
+							<Table component={TableComponent}>
+								<TableBody>
+									{clientVersionsWithoutEmptyValues.map(
+										({ clientVersion, usageStats }) => {
+											const error =
+												usageStats?.error ?? 0;
+											const success =
+												usageStats?.success ?? 0;
+											const total = error + success;
+
+											return (
+												<TableRow key={clientVersion}>
+													<TableCell
+														component="td"
+														scope="row"
+													>
+														<CommonPadding>
+															{clientVersion}
+														</CommonPadding>
+													</TableCell>
+													<TableCell
+														component="td"
+														scope="row"
+													>
+														{total}
+													</TableCell>
+													<TableCell
+														component="td"
+														scope="row"
+													>
+														{success}
+													</TableCell>
+													<TableCell
+														component="td"
+														scope="row"
+													>
+														{error}
+													</TableCell>
+													<TableCell />
+												</TableRow>
+											);
+										}
+									)}
+								</TableBody>
+							</Table>
+						</Li>
+					);
+				})}
 			</Ul>
 		</Container>
 	);
