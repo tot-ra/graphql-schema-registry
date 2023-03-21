@@ -15,6 +15,9 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
+### Added
+
+- Add `REDIS_DB` environment variable to customise the logical Redis database to use.
 
 ## [5.5.1] 2023-01-29
 ### Changed

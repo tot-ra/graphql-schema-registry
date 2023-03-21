@@ -18,6 +18,7 @@ export default {
 			host: process.env.REDIS_HOST || 'gql-schema-registry-redis',
 			port: process.env.REDIS_PORT || '6379',
 			secret: process.env.REDIS_SECRET || '',
+			db: intFor(process.env.REDIS_DB, '2'),
 		},
 		'gql-schema-registry-kafka': {
 			host: process.env.KAFKA_BROKER_HOST || 'gql-schema-registry-kafka',
@@ -32,4 +33,12 @@ export default {
 
 function booleanFor(variable, defaultValue = 'false') {
 	return (variable || defaultValue).toLowerCase() === 'true';
+}
+
+function intFor(variable, defaultValue = '0') {
+	const parsed = parseInt(variable || defaultValue);
+	if (isNaN(parsed)) {
+		return parseInt(defaultValue);
+	}
+	return parsed;
 }
