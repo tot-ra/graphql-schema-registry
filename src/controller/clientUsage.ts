@@ -18,23 +18,27 @@ export class ClientUsageController {
 		if (!tracesPerQuery) {
 			return;
 		}
-		const isGraphQlFailure = Object.keys(tracesPerQuery).filter(
-			(trace) =>
-				trace.startsWith('## GraphQLValidationFailure') ||
-				trace.startsWith('## GraphQLParseFailure')
-		);
-		if (isGraphQlFailure.length >= 1) {
-			return;
-		}
 
 		const usageDataPerQueryEntries = Object.entries(tracesPerQuery);
 
 		await Promise.all(
 			usageDataPerQueryEntries
-				.filter(
-					([operationSdl]) =>
-						!operationSdl.includes('IntrospectionQuery')
-				)
+				.filter(([operationSdl]) => {
+					const notSupportedOperations = [
+						'IntrospectionQuery',
+						'GraphQLValidationFailure',
+						'GraphQLParseFailure',
+					];
+
+					const arrayNotSupportedOperations =
+						notSupportedOperations.map((nSO) =>
+							operationSdl.includes(nSO)
+						);
+
+					return !arrayNotSupportedOperations.find(
+						(identity) => identity
+					);
+				})
 				.map(async ([operationSdl, usageData]) => {
 					const clients = await getOperationClients(usageData);
 					const parsedOperationSdl = parseOperationSdl(operationSdl);
