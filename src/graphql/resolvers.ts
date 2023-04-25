@@ -20,6 +20,7 @@ import getTypeInstance from './resolvers/getTypeInstance';
 import getFieldsUsageStats from './resolvers/getFieldsUsageStats';
 import getRootFieldUsageStats from './resolvers/getRootFieldUsageStats';
 import routerConfig from './resolvers/getRouterConfig';
+import routerEntitlements from './resolvers/getRouterEntitlements';
 import { Order, SortField } from '../model/repository';
 
 interface ServicesQueryParams {
@@ -59,6 +60,23 @@ export const commonResolvers = {
 			if (obj.code) {
 				return 'FetchError';
 			}
+			return null;
+		},
+	},
+	RouterEntitlementsResponse: {
+		__resolveType(
+			obj
+		): 'RouterEntitlementsResult' | 'Unchanged' | 'FetchError' {
+			if (obj.id === 'new') {
+				return 'RouterEntitlementsResult';
+			}
+			if (obj.id !== 'new') {
+				return 'Unchanged';
+			}
+			if (obj.code) {
+				return 'FetchError';
+			}
+			return 'RouterEntitlementsResult';
 			return null;
 		},
 	},
@@ -153,6 +171,7 @@ export default {
 		getFieldsUsageStats,
 		getRootFieldUsageStats,
 		routerConfig,
+		routerEntitlements,
 	},
 	Mutation: {
 		deactivateSchema: async (parent, { id }) => {

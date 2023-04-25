@@ -4,7 +4,7 @@ import schemaModel from '../../database/schema';
 import { getSuperGraph } from '../../helpers/federation';
 import { FetchError } from 'node-fetch';
 
-const DEFAULT_SUPER_GRAPH_MIN_DELAY_SECONDS = 30;
+export const DEFAULT_SUPER_GRAPH_MIN_DELAY_SECONDS = 30;
 const SUPER_GRAPH_ID_SIZE = 6;
 
 interface RouterConfigParams {

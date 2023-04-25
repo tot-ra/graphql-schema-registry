@@ -1,0 +1,10 @@
+{
+  "data": {
+    "routerEntitlements": {
+      "id": "new",
+      "minDelaySeconds": 30,
+      "entitlement": null,
+      "__typename": "RouterEntitlementsResult"
+    }
+  }
+}

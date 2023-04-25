@@ -108,3 +108,30 @@ Feature: As a customer
         """
 		Then the response contains no errors
 		And the response contains JSON from file "getListTypeInstancesSorted.json"
+
+    @supergraph
+	Scenario: I request the entitlements
+		Given the database is imported from 'breakdown_schema_db'
+		When I execute the graphQL query in file "getEntitlement.graphql" with variables:
+        """
+        {
+            "apiKey": "1",
+            "graph_ref": "1"
+        }
+        """
+		Then the response contains no errors
+        And the response contains JSON from file "getEntitlement.json"
+
+    @supergraph
+	Scenario: I request the entitlements with no change
+		Given the database is imported from 'breakdown_schema_db'
+		When I execute the graphQL query in file "getEntitlement.graphql" with variables:
+        """
+        {
+            "apiKey": "1",
+            "graph_ref": "1",
+            "ifAfterId": "new"
+        }
+        """
+		Then the response contains no errors
+        And the response contains JSON from file "getEntitlementNotChanged.json"

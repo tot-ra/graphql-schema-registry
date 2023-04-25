@@ -1,0 +1,9 @@
+{
+  "data": {
+    "routerEntitlements": {
+      "id": "not-changed",
+      "minDelaySeconds": 30,
+      "__typename": "Unchanged"
+    }
+  }
+}

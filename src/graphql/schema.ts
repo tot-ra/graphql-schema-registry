@@ -7,6 +7,7 @@ export default gql`
 	scalar Date
 	scalar DateTime
 	scalar JSON
+	scalar Timestamp
 
 	type Query {
 		services(
@@ -59,6 +60,12 @@ export default gql`
 			apiKey: String
 			ifAfterId: ID
 		): RouterConfigResponse!
+		routerEntitlements(
+			apiKey: String!
+			unlessId: ID
+			ifAfterId: ID
+			ref: String!
+		): RouterEntitlementsResponse!
 	}
 
 	union SearchResult = Service | SchemaDefinition
@@ -336,21 +343,26 @@ export default gql`
 
 	union RouterConfigResponse = RouterConfigResult | Unchanged | FetchError
 
+	union RouterEntitlementsResponse =
+		  RouterEntitlementsResult
+		| Unchanged
+		| FetchError
+
 	type RouterConfigResult {
 		id: ID!
-		minDelaySeconds: Int!
+		minDelaySeconds: Float!
 		supergraphSDL: String!
 	}
 
 	type Unchanged {
 		id: ID!
-		minDelaySeconds: Int!
+		minDelaySeconds: Float!
 	}
 
 	type FetchError {
 		code: FetchErrorCode!
 		message: String!
-		minDelaySeconds: Int!
+		minDelaySeconds: Float!
 	}
 
 	enum FetchErrorCode {
@@ -358,6 +370,25 @@ export default gql`
 		ACCESS_DENIED
 		UNKNOWN_REF
 		RETRY_LATER
+	}
+
+	type RouterEntitlement {
+		jwt: String!
+		subject: String!
+		audience: [RouterEntitlementAudience!]!
+		haltAt: Timestamp
+		warnAt: Timestamp
+	}
+
+	type RouterEntitlementsResult {
+		id: ID!
+		entitlement: RouterEntitlement
+		minDelaySeconds: Float!
+	}
+
+	enum RouterEntitlementAudience {
+		SELF_HOSTED
+		CLOUD
 	}
 
 	enum SortField {
