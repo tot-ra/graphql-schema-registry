@@ -110,9 +110,10 @@ export function getOperationClientStats(
 	});
 
 	statsWithContext.forEach((stats) => {
-		const requestCount = stats.queryLatencyStats?.requestCount;
+		const requestCount = stats.queryLatencyStats?.requestCount || '0';
 		const requestsWithErrorsCount =
-			stats.queryLatencyStats?.rootErrorStats?.requestsWithErrorsCount;
+			stats.queryLatencyStats?.rootErrorStats?.requestsWithErrorsCount ||
+			'0';
 
 		if (
 			requestsWithErrorsCount !== undefined &&
