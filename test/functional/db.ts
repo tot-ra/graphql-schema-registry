@@ -20,7 +20,6 @@ export async function connect() {
 				password: 'root',
 				database: 'schema_registry',
 				connectTimeout: 2000,
-				expirationChecker: () => true,
 				multipleStatements: true,
 			};
 		},

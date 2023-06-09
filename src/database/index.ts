@@ -42,7 +42,6 @@ export const connection = knex({
 			password: secret,
 			database: name,
 			connectTimeout: 5000,
-			expirationChecker: () => true,
 			multipleStatements: true,
 		};
 	},

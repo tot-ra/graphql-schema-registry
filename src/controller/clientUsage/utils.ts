@@ -20,8 +20,8 @@ export interface ParsedOperationSdl {
 	fragmentDefinitionNodes: FragmentDefinitionNode[];
 	operationDefinitionNode: OperationDefinitionNode;
 	rootFieldNodes: FieldNode[];
+	operationSdl: string;
 }
-
 export function getChildFieldNodes(
 	fragmentDefinitionNodes: FragmentDefinitionNode[],
 	parentNode:
@@ -42,6 +42,19 @@ export function getChildFieldNodes(
 			)
 			.flat()
 			.filter(isNonMetaField) ?? []
+	);
+}
+
+export function getFragmentSelections(
+	fragmentDefinitionNodes: FragmentDefinitionNode[],
+	fragmentSpreadNode: FragmentSpreadNode
+): readonly SelectionNode[] {
+	return (
+		fragmentDefinitionNodes.find(
+			(fragmentDefinitionNode) =>
+				fragmentDefinitionNode.name.value ===
+				fragmentSpreadNode.name.value
+		)?.selectionSet.selections ?? []
 	);
 }
 
@@ -129,7 +142,7 @@ export function getOperationClientStats(
 }
 
 export function isNonMetaField(
-	selectionNode: SelectionNode
+	selectionNode: SelectionNode | InlineFragmentNode
 ): selectionNode is FieldNode {
 	return (
 		selectionNode.kind === Kind.FIELD &&
@@ -158,18 +171,10 @@ export function parseOperationSdl(operationSdl: string): ParsedOperationSdl {
 		operationDefinitionNode
 	);
 
-	return { fragmentDefinitionNodes, operationDefinitionNode, rootFieldNodes };
-}
-
-function getFragmentSelections(
-	fragmentDefinitionNodes: FragmentDefinitionNode[],
-	fragmentSpreadNode: FragmentSpreadNode
-): readonly SelectionNode[] {
-	return (
-		fragmentDefinitionNodes.find(
-			(fragmentDefinitionNode) =>
-				fragmentDefinitionNode.name.value ===
-				fragmentSpreadNode.name.value
-		)?.selectionSet.selections ?? []
-	);
+	return {
+		fragmentDefinitionNodes,
+		operationDefinitionNode,
+		rootFieldNodes,
+		operationSdl,
+	};
 }

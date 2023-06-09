@@ -1,4 +1,4 @@
-import { FieldNode } from 'graphql';
+import { FieldNode, FragmentDefinitionNode, Kind } from 'graphql';
 import { FieldTransactionRepository } from '../../database/schemaBreakdown/field';
 import { OperationParamsTransactionalRepository } from '../../database/schemaBreakdown/operation_params';
 import { OperationTransactionalRepository } from '../../database/schemaBreakdown/operations';
@@ -8,36 +8,73 @@ import { createFieldKey } from '../../helpers/clientUsage/keyHelpers';
 import redisWrapper from '../../redis';
 import {
 	getChildFieldNodes,
+	getFragmentSelections,
 	isNonMetaField,
 	type ParsedOperationSdl,
 } from './utils';
+import TTLCache from '@isaacs/ttlcache';
+import { createHash } from 'crypto';
+
+const TWO_HOURS = 2 * 3600 * 1000;
+
+const cache = new TTLCache({ max: 500, ttl: TWO_HOURS });
 
 const REDIS_ENTRIES_TTL_SECONDS = 30 * 24 * 60 * 60;
 
+type PartialNodeArray = { fieldId: number; typeId: number }[];
+
+async function getAllFieldsInvolved(
+	{ fragmentDefinitionNodes, operationSdl }: ParsedOperationSdl,
+	rootFieldNode: FieldNode,
+	operationParamRepository: OperationParamsTransactionalRepository,
+	operationRepository: OperationTransactionalRepository
+): Promise<PartialNodeArray> {
+	const hash =
+		createHash('md5').update(operationSdl).digest('hex') +
+		rootFieldNode.name.value;
+
+	const cachedSelections = cache.get(hash);
+	if (cachedSelections) {
+		return cachedSelections as PartialNodeArray;
+	}
+
+	const { id: rootFieldId } = await operationRepository.getOperationByName(
+		rootFieldNode.name.value
+	);
+
+	const { type_id } =
+		await operationParamRepository.getOperationParamOutputByParent(
+			rootFieldId
+		);
+
+	const typeFieldPairs = await getTypeFieldPairsInDepth(
+		getChildFieldNodes(fragmentDefinitionNodes, rootFieldNode),
+		type_id,
+		fragmentDefinitionNodes
+	);
+
+	cache.set(hash, typeFieldPairs);
+
+	return typeFieldPairs;
+}
+
 export async function registerFieldsUsage(
-	{ fragmentDefinitionNodes, rootFieldNodes }: ParsedOperationSdl,
+	parseOperationSdl: ParsedOperationSdl,
 	registeredClient: Client,
 	operationClientStats: UsageStats
 ): Promise<void> {
+	const { rootFieldNodes } = parseOperationSdl;
 	const operationParamRepository =
 		OperationParamsTransactionalRepository.getInstance();
 	const operationRepository = OperationTransactionalRepository.getInstance();
 
 	await Promise.all(
 		rootFieldNodes.map(async (rootFieldNode) => {
-			const { id: rootFieldId } =
-				await operationRepository.getOperationByName(
-					rootFieldNode.name.value
-				);
-
-			const { type_id } =
-				await operationParamRepository.getOperationParamOutputByParent(
-					rootFieldId
-				);
-
-			const typeFieldPairs = await getTypeFieldPairsInDepth(
-				getChildFieldNodes(fragmentDefinitionNodes, rootFieldNode),
-				type_id
+			const typeFieldPairs = await getAllFieldsInvolved(
+				parseOperationSdl,
+				rootFieldNode,
+				operationParamRepository,
+				operationRepository
 			);
 
 			await Promise.all(
@@ -86,7 +123,8 @@ export async function registerFieldsUsage(
 
 async function getTypeFieldPairsInDepth(
 	fields: FieldNode[],
-	parentTypeId: number
+	parentTypeId: number,
+	fragmentDefinitionNodes: FragmentDefinitionNode[]
 ): Promise<{ fieldId: number; typeId: number }[]> {
 	const fieldRepository = FieldTransactionRepository.getInstance();
 	const typeFieldPairs: { fieldId: number; typeId: number }[] = [];
@@ -115,10 +153,22 @@ async function getTypeFieldPairsInDepth(
 			}
 
 			if (selectionSet) {
+				const selections = selectionSet.selections
+					.map((selectionNode) =>
+						selectionNode.kind === Kind.FRAGMENT_SPREAD
+							? getFragmentSelections(
+									fragmentDefinitionNodes,
+									selectionNode
+							  )
+							: selectionNode
+					)
+					.flat()
+					.filter(isNonMetaField);
 				typeFieldPairs.push(
 					...(await getTypeFieldPairsInDepth(
-						selectionSet.selections.filter(isNonMetaField),
-						registeredField.children_type_id
+						selections,
+						registeredField.children_type_id,
+						fragmentDefinitionNodes
 					))
 				);
 			}
