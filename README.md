@@ -40,7 +40,7 @@ node app/schema-registry.js
 We have [docker image published](https://hub.docker.com/r/artjomkurapov/graphql-schema-registry) for main node service. It assumes you have mysql/redis running separately. Use exact IP instead of localhost. Use exact docker image tag to avoid breaking changes.
 
 ```
-docker pull artjomkurapov/graphql-schema-registry:5.4.0
+docker pull artjomkurapov/graphql-schema-registry:5.5.1
 docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 artjomkurapov/graphql-schema-registry
 ```
 
