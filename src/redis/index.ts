@@ -25,9 +25,10 @@ async function resolveInstance(service) {
 			port,
 			username,
 			secret: password,
+			db,
 		} = await diplomat.getServiceInstance(service);
 
-		return { host, port, username, password };
+		return { host, port, username, password, db };
 	} catch (err) {
 		logger.warn(err, 'Redis discovery failed');
 
