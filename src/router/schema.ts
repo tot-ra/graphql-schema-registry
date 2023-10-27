@@ -5,6 +5,7 @@ import {
 	pushAndValidateSchema,
 	deactivateSchema,
 	diffSchemas,
+	composeSupergraph,
 } from '../controller/schema';
 import { connection } from '../database';
 import config from '../config';
@@ -17,6 +18,12 @@ export async function composeLatest(req, res) {
 		success: true,
 		data: schema,
 	});
+}
+
+export async function supergraph(req, res) {
+	const sdl = await composeSupergraph(connection);
+
+	return res.set('Content-Type', 'text/plain').send(sdl);
 }
 
 export async function compose(req, res) {
