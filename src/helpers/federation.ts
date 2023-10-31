@@ -60,7 +60,7 @@ export function composeSupergraph(servicesSchemaMap) {
 
 	if (errors && errors.length) {
 		logger.error(errors);
-		throw new PublicError('Schema validation failed', {
+		throw new PublicError('Schema composition failed', {
 			details: errors,
 		});
 	}
