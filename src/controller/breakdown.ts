@@ -41,6 +41,7 @@ export class BreakDownSchemaCaseUse implements BreakDownService {
 			return;
 		} catch (err) {
 			logger.error('Error breaking down the schema', err.message ?? err);
+			throw err;
 		}
 	}
 }

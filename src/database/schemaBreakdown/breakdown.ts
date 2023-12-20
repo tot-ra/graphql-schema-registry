@@ -7,6 +7,7 @@ export class BreakDownRepository<T, K> {
 		if (data.length === 0) {
 			return;
 		}
+
 		return trx.raw(`INSERT INTO ${this.tableName} (${this.columns.join(
 			','
 		)})
@@ -50,9 +51,18 @@ export class BreakDownRepository<T, K> {
 			const fields = columns.map((column) => {
 				const value = i[column];
 				if (value === undefined) return 'null';
-				else if (typeof value === 'string')
-					return `'${value.replace(/'/g, "\\'")}'`;
-				else return value;
+				else if (typeof value === 'string') {
+					let sanitized = value;
+					if (value.endsWith('\\')) {
+						sanitized = `${value} `;
+					}
+
+					const trailingSlashesSanitized = sanitized.replace(
+						/'/g,
+						"\\'"
+					);
+					return `'${trailingSlashesSanitized}'`;
+				} else return value;
 			});
 			return `(${fields.join(',')})`;
 		});
