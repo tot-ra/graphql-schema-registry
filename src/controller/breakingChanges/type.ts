@@ -16,7 +16,11 @@ export class TypeChange implements BreakingChangeService {
 		const split = change.path.split('.');
 		const typeName = split[0];
 
-		if (typeName === 'Mutation' || typeName === 'Query') {
+		if (
+			typeName === 'Mutation' ||
+			typeName === 'Query' ||
+			typeName === '@inaccessible'
+		) {
 			return {
 				...change,
 				isBreakingChange: false,
