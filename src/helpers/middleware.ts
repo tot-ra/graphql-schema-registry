@@ -40,8 +40,13 @@ export function invalidate(key) {
 			return next();
 		}
 
-		logger.info(`Invalidating: ${key}`);
-		delete locals.cache[key];
+		res.__end = res.end;
+		res.end = (data, encoding, callback) => {
+			logger.info(`Invalidating: ${key}`);
+			delete locals.cache[key];
+
+			res.__end(data, encoding, callback);
+		};
 
 		return next();
 	};

@@ -58,20 +58,20 @@ router.get(
 	asyncWrap(schema.supergraph)
 );
 router.post('/schema/compose', asyncWrap(schema.compose));
-router.post('/schema/push', asyncWrap(schema.push), invalidate(supergraphKey));
+router.post('/schema/push', invalidate(supergraphKey), asyncWrap(schema.push));
 router.post('/schema/diff', asyncWrap(schema.diff));
 
 router.delete(
 	'/schema/:schemaId',
-	asyncWrap(schema.remove),
-	invalidate(supergraphKey)
+	invalidate(supergraphKey),
+	asyncWrap(schema.remove)
 );
 router.post('/schema/validate', asyncWrap(schema.validate));
 
 router.delete(
 	'/service/:name',
-	asyncWrap(service.remove),
-	invalidate(supergraphKey)
+	invalidate(supergraphKey),
+	asyncWrap(service.remove)
 );
 
 export default router;
