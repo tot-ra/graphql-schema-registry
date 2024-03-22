@@ -31,10 +31,14 @@ export const logger = createLogger({
 
 function buildPrettyFormat() {
 	return format.combine(
+		format.errors({ stack: true }),
 		format.colorize(),
 		format.timestamp(),
 		format.printf(({ timestamp, level, message, stack }) => {
-			return `[${timestamp}] ${level}: ${message} ${stack}`;
+			if (stack) {
+				return `[${timestamp}] ${level}: ${message} ${stack}`;
+			}
+			return `[${timestamp}] ${level}: ${message}`;
 		})
 	);
 }

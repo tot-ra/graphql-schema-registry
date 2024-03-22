@@ -1,0 +1,31 @@
+version: '3'
+services:
+  apollo-router:
+    image: ghcr.io/apollographql/router:v1.42.0
+    command: --dev --hot-reload --supergraph /tmp/supergraph.graphql --log trace
+    ports:
+      - 4000:4000
+    volumes:
+      - gql-supergraph-schema:/tmp
+      - ./examples/apollo-router/router.yaml:/router.yaml
+    restart: always
+    depends_on:
+      - gql-supergraph-updater
+    networks:
+      - gql-schema
+
+  gql-supergraph-updater:
+    image: quay.io/curl/curl:8.6.0
+    command: watch -n 10 curl --show-error --silent http://gql-schema-registry:3000/schema/supergraph -o /tmp/supergraph.graphql
+    volumes:
+      - gql-supergraph-schema:/tmp
+    depends_on:
+      - gql-schema-registry
+    networks:
+      - gql-schema
+
+volumes:
+  gql-supergraph-schema:
+
+networks:
+  gql-schema:
