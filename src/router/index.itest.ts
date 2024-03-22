@@ -43,6 +43,49 @@ describe('app/router/supergraph', function () {
 		expect(pre.text).not.toBe(post.text);
 	});
 
+	it('rollback returns same supergraph', async () => {
+		let old_schema = {
+			name: 'service_a',
+			version: 'v1',
+			type_defs: 'type Query { hello: String }',
+			url: '',
+		};
+		let res = await request(app)
+			.post('/schema/push')
+			.send(old_schema)
+			.set('Accept', 'application/json');
+		expect(res.statusCode).toBe(200);
+
+		let pre = await request(app).get('/schema/supergraph');
+		expect(res.statusCode).toBe(200);
+
+		res = await request(app)
+			.post('/schema/push')
+			.send({
+				name: 'service_a',
+				version: 'v2',
+				type_defs: 'type Query { world: String }',
+				url: '',
+			})
+			.set('Accept', 'application/json');
+		expect(res.statusCode).toBe(200);
+
+		res = await request(app).get('/schema/supergraph');
+		expect(res.statusCode).toBe(200);
+
+		old_schema.version = 'v3';
+		res = await request(app)
+			.post('/schema/push')
+			.send(old_schema)
+			.set('Accept', 'application/json');
+		expect(res.statusCode).toBe(200);
+
+		let post = await request(app).get('/schema/supergraph');
+		expect(res.statusCode).toBe(200);
+
+		expect(pre.text).toBe(post.text);
+	});
+
 	it('invalid push returns same supergraph ', async () => {
 		let res = await request(app)
 			.post('/schema/push')
