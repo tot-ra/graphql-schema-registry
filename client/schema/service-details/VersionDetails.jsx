@@ -23,6 +23,7 @@ import { MainViewContainer } from '../../components/MainViewContainer';
 
 // eslint-disable-next-line complexity
 export default function VersionDetails() {
+	const displayDeleteButton = Boolean(false);
 	const history = useHistory();
 	const { serviceName, schemaId, subtab, selectedEntity, selectedProperty } =
 		useSchemaParam();
@@ -120,12 +121,14 @@ export default function VersionDetails() {
 						</VersionHeaderTime>
 						{urlInfo}
 					</div>
-					<div>
-						<ButtonGroup>
-							<DeactivateButton schema={data.schema} />
-							{commitButton}
-						</ButtonGroup>
-					</div>
+					{displayDeleteButton && (
+						<div>
+							<ButtonGroup>
+								<DeactivateButton schema={data.schema} />
+								{commitButton}
+							</ButtonGroup>
+						</div>
+					)}
 				</VersionHeader>
 
 				<Tabs
