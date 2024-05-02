@@ -29,6 +29,20 @@ export async function getAndValidateSchema(
 	return schemas;
 }
 
+export async function composeSupergraph(trx) {
+	const schemas = await schemaModel.getLastUpdatedForActiveServices({ trx });
+
+	logger.info('Composing graph. Got services schemas from DB transaction..', {
+		schemas,
+	});
+
+	if (schemas && schemas.length) {
+		return federationHelper.composeSupergraph(schemas);
+	}
+
+	return '';
+}
+
 export async function pushAndValidateSchema({ service }) {
 	return await transact(async (trx) => {
 		const schema = await schemaModel.registerSchema({ trx, service });
