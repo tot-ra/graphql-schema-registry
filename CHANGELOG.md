@@ -15,8 +15,9 @@ Types of changes:
 - Security in case of vulnerabilities.
 
 ## [Unreleased]
-### Added
 
+### [5.5.2] 2024-05-02
+### Added
 - Add `REDIS_DB` environment variable to customise the logical Redis database to use.
 
 ## [5.5.1] 2023-01-29
@@ -402,6 +403,9 @@ DELETE /schema/:schemaId
 - Examples of gateway + 2 federated services
 
 [unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.4.0...HEAD
+[5.5.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.5.1...v5.5.2
+[5.5.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.5.0...v5.5.1
+[5.5.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.4.0...v5.5.0
 [5.4.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.3.0...v5.4.0
 [5.3.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.2.0...v5.3.0
 [5.2.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.1.0...v5.2.0
