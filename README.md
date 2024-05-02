@@ -197,6 +197,7 @@ The following are the different environment variables that are looked up that al
 | REDIS_HOST             | Host name of the Redis server                                                 | gql-schema-registry-redis |
 | REDIS_PORT             | Port used when connecting to Redis                                            | 6379                      |
 | REDIS_SECRET           | Password used to connect to Redis                                             | Empty                     |
+| REDIS_DB               | Index of the logical redis database | 2            |
 
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
