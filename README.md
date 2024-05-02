@@ -1,4 +1,5 @@
-# graphql-schema-registry 
+# graphql-schema-registry
+
 <img src="https://user-images.githubusercontent.com/445122/95125574-d7466580-075d-11eb-8a78-b6adf34ad811.png" width=100 height=100 align="right"/>
 
 Graphql schema storage as dockerized on-premise service for federated graphql gateway server
@@ -37,6 +38,7 @@ node app/schema-registry.js
 ```
 
 ### Docker image
+
 We have [docker image published](https://hub.docker.com/r/artjomkurapov/graphql-schema-registry) for main node service. It assumes you have mysql/redis running separately. Use exact IP instead of localhost. Use exact docker image tag to avoid breaking changes.
 
 ```
@@ -78,14 +80,14 @@ flowchart LR
     style S2 fill:#c5f7c9
 ```
 
-| Name              | Role     | Description                                                                                                                                                                                                                                                                                                                    |
-| ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Name              | Role     | Description                                                                                                                                                                                                                                                                                                                 |
+| ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/tot-ra/graphql-query-cost) or fail-safe mechanisms. |
-| schema registry   | Required | Main service that we provide                                                                                                                                                                                                                                                                                                   |
-| mysql             | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                         |
-| query analyzer    | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder                                                                                                                                                                                                                                |
-| kafka             | Optional | Ties schema-registry and federated gateway with async messaging. Required for fast schema updates and for usage tracking                                                                                                                                                                                                       |
-| redis             | Optional | Caching layer for APQs. Not used much atm                                                                                                                                                                                                                                                                                      |
+| schema registry   | Required | Main service that we provide                                                                                                                                                                                                                                                                                                |
+| mysql             | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                      |
+| query analyzer    | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder                                                                                                                                                                                                                             |
+| kafka             | Optional | Ties schema-registry and federated gateway with async messaging. Required for fast schema updates and for usage tracking                                                                                                                                                                                                    |
+| redis             | Optional | Caching layer for APQs. Not used much atm                                                                                                                                                                                                                                                                                   |
 
 #### Tech stack
 
@@ -176,29 +178,28 @@ You can:
 
 The following are the different environment variables that are looked up that allow configuring the schema registry in different ways.
 
-| Variable Name          | Description                                                                   | Default                   |
-|------------------------|-------------------------------------------------------------------------------|---------------------------|
-| DB_HOST                | Host name of the MySQL server                                                 | gql-schema-registry-db    |
-| DB_USERNAME            | Username to connect to MySQL                                                  | root                      |
-| DB_SECRET              | Password used to connect to MySQL                                             | root                      |
-| DB_PORT                | Port used when connecting to MySQL                                            | 3306                      |
-| DB_NAME                | Name of the MySQL database to connect to                                      | schema-registry           |
-| DB_EXECUTE_MIGRATIONS  | Controls whether DB migrations are executed upon registry startup or not      | true                      |
-| ASSETS_URL             | Controls the url that web assets are served from                              | localhost:6001            |
-| NODE_ENV               | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
-| ASYNC_SCHEMA_UPDATES   | Specifies if async achema updates is enabled                                  | false                     |
-| KAFKA_BROKER_HOST      | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
-| KAFKA_BROKER_PORT      | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
-| KAFKA_SCHEMA_TOPIC     | Topic with new schema                                                         | graphql-schema-updates    |
-| KAFKA_QUERIES_TOPIC    | Topic with new schema                                                         | graphql-queries           |
-| LOG_LEVEL              | Minimum level of logs to output                                               | info                      |
-| LOG_TYPE               | Output log type, supports pretty or json.                                     | pretty                    |
-| LOG_STREAMING_ENABLED  | Controls whether logs are streamed over Redis to be presented in UI           | true                      |
-| REDIS_HOST             | Host name of the Redis server                                                 | gql-schema-registry-redis |
-| REDIS_PORT             | Port used when connecting to Redis                                            | 6379                      |
-| REDIS_SECRET           | Password used to connect to Redis                                             | Empty                     |
-| REDIS_DB               | Index of the logical redis database | 2            |
-
+| Variable Name         | Description                                                                   | Default                   |
+| --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
+| DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
+| DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
+| DB_SECRET             | Password used to connect to MySQL                                             | root                      |
+| DB_PORT               | Port used when connecting to MySQL                                            | 3306                      |
+| DB_NAME               | Name of the MySQL database to connect to                                      | schema-registry           |
+| DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
+| ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
+| NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
+| ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
+| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
+| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
+| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
+| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
+| LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
+| LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
+| LOG_STREAMING_ENABLED | Controls whether logs are streamed over Redis to be presented in UI           | true                      |
+| REDIS_HOST            | Host name of the Redis server                                                 | gql-schema-registry-redis |
+| REDIS_PORT            | Port used when connecting to Redis                                            | 6379                      |
+| REDIS_SECRET          | Password used to connect to Redis                                             | Empty                     |
+| REDIS_DB              | Index of the logical redis database                                           | 2                         |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
 Node service uses to connect to mysql & redis and change it if you install it with own setup.
@@ -295,6 +296,7 @@ DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
 ```
 
 ## Testing
+
 Almost all types (except performance) use jest as a test runner
 
 ### Unit tests
@@ -306,11 +308,12 @@ npm run test:unit
 ```
 
 ### Integration tests
+
 require docker, but mostly whitebox type - these call specific internal functions that do rely on real mysql/redis connections. Some tests mimic functional tests - main benefit is that we get test coverage reported without extra http calls.
+
 ```
 npm run test:integration
 ```
-
 
 ### Functional tests
 
@@ -383,6 +386,7 @@ docker push artjomkurapov/graphql-schema-registry:5.5.0
 - To avoid vulnerabilities, please use fixed versions in package.json
 
 ### Authors and acknowledgment
+
 Prior to 5.5.1, this repo was under @pipedrive namespace.
 
 Current maintainer - [@tot-ra](https://github.com/tot-ra). Mention in PR, if it is stuck
@@ -400,7 +404,8 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 <details>
   <summary><h3>🟢 GET /health</h3></summary>
 
-  returns "ok" when service is up
+returns "ok" when service is up
+
 </details>
 
 <details>

@@ -17,15 +17,21 @@ Types of changes:
 ## [Unreleased]
 
 ### [5.5.2] 2024-05-02
+
 ### Added
+
 - Add `REDIS_DB` environment variable to customise the logical Redis database to use.
 
 ## [5.5.1] 2023-01-29
+
 ### Changed
+
 Security updates of knex and body-parser dependencies
 
 ## [5.5.0] 2023-01-29
+
 ### Changed
+
 Redis dependency is now optional and password-protected
 
 - Passing the Redis password to the RedisTransport constructor in src/logger.ts.
@@ -34,7 +40,9 @@ Redis dependency is now optional and password-protected
 - Adding an environment variable called LOG_STREAMING_ENABLED to further control if log streaming over Redis should be enabled or not.
 
 ## [5.4.0] 2022-10-27
+
 ### Changed
+
 - Add schema normalization (re-formatting) - this should get rid of extra tabbing & spacing when services register their schemas inconsistently
 - Fix knex migration generation from commandline (`npm run new-db-migration my-new-migration`)
 - Improve migration scripts to support JS migrations. Possibly somewhat breaking change for organizations that relied only on .sql files
@@ -42,6 +50,7 @@ Redis dependency is now optional and password-protected
 - Do not delete duplicate schemas as its a bit dangerous. You may have had duplicate schemas before. We could have deleted them, but its a risky operation.
 
 If you need to clean them up, here is a script:
+
 ```sql
 UPDATE `container_schema` t3
   INNER JOIN `schema` t1
