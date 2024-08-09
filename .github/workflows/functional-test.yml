@@ -44,11 +44,11 @@ jobs:
         run: npm run build
 
       - name: Start containers
-        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d
+        run: docker compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d
 
       - name: Run tests
         run: npm run test:functional
 
       - name: Stop containers
         if: always()
-        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" down
+        run: docker compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" down

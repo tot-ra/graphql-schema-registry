@@ -1,10 +1,9 @@
 version: '3'
 services:
   gql-schema-registry-db:
-    image: mysql:8
-    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    image: mysql:8.4
+    container_name: gql-schema-registry-db
     environment:
-      SERVICE_3306_NAME: gql-schema-registry-db
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: schema_registry
     ports:

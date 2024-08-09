@@ -8,6 +8,7 @@ import { extendExpect } from './customMatchers/toContainObject';
 import expect from 'expect';
 import fetch from 'node-fetch';
 import { logger } from '../../../src/logger';
+import { MySqlContainer } from '@testcontainers/mysql';
 
 extendExpect(expect);
 
@@ -40,19 +41,16 @@ BeforeAll({ timeout: 60000 * 1000 }, async () => {
 	console.log('Starting Tests...');
 
 	setDefaultTimeout(20 * 1000);
-	const dbContainer = await new GenericContainer('mysql:8')
-		.withExposedPorts(3306)
-		.withEnvironment({
-			SERVICE_3306_NAME: 'gql-schema-registry-db',
-			MYSQL_ROOT_PASSWORD: 'root',
-			MYSQL_DATABASE: 'schema_registry',
-		})
+	const dbContainer = await new MySqlContainer()
+		.withUsername('gql-schema-registry-db')
+		.withDatabase('schema_registry')
 		.withCopyContentToContainer([
 			{
 				content: getSeedFile(),
 				target: '/docker-entrypoint-initdb.d/create_tables.sql',
 			},
 		])
+		.withExposedPorts(3306)
 		.start();
 
 	config.serviceDiscovery['gql-schema-registry-db'].port = dbContainer

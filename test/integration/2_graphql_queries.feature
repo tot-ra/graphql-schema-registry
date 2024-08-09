@@ -72,7 +72,7 @@ Feature: As a customer
 		When I execute the graphQL query in file "getRouterConfig.graphql" with variables:
         """
         {
-        	"ifAfterId": "84c003"
+        	"ifAfterId": "c37915"
         }
         """
 		Then the response contains no errors
