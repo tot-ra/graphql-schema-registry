@@ -46,7 +46,7 @@ jobs:
       - run: npm run test:unit:frontend:coverage
 
       - name: Start containers
-        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d
+        run: docker compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" up -d
 
       - run: npm run test:integration:coverage
       - run: npm run test:coverage:merge
@@ -57,4 +57,4 @@ jobs:
 
       - name: Stop containers
         if: always()
-        run: docker-compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" down
+        run: docker compose -f "docker-compose.base.yml" -f "docker-compose.functional.yml" down
