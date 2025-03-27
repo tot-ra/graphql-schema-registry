@@ -3,7 +3,7 @@
 <img src="https://user-images.githubusercontent.com/445122/95125574-d7466580-075d-11eb-8a78-b6adf34ad811.png" width=100 height=100 align="right"/>
 
 Graphql schema storage as dockerized on-premise service for federated graphql gateway server
-(based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/) and [The Guild's Hive](https://graphql-hive.com).
+(based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/), [The Guild's Hive](https://graphql-hive.com), [WunderGraph](https://wundergraph.com/)
 
 [![slack](https://img.shields.io/badge/slack-brigade-brightgreen.svg?logo=slack)](http://gql-schema-registry.slack.com/)
 ![](https://img.shields.io/github/v/release/tot-ra/graphql-schema-registry?sort=semver)
