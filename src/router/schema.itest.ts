@@ -1,4 +1,4 @@
-import { composeLatest, push } from '../router/schema';
+import { composeLatest, push, supergraph } from '../router/schema';
 import { cleanTables } from '../../test/integration/database';
 
 describe('app/controller/schema', () => {
@@ -8,6 +8,12 @@ describe('app/controller/schema', () => {
 
 	const res = {
 		json: (x) => x,
+		send: (x) => x,
+		headers: {},
+		set: function (key, value) {
+			this.headers[key] = value;
+			return this;
+		},
 	};
 
 	describe('GET /schema/latest', () => {
@@ -292,6 +298,48 @@ type Query {
 					expect(e.message).toEqual('Schema validation failed');
 				}
 			});
+		});
+	});
+
+	describe('GET /schema/supergraph', () => {
+		it('register 2 schemas and returns composition', async () => {
+			let result = await push(
+				{
+					body: {
+						name: 'service_a',
+						version: 'v1',
+						type_defs: 'type Query { hello: String }',
+						url: '',
+					},
+				},
+				res
+			);
+			expect(result.success).toEqual(true);
+
+			result = await push(
+				{
+					body: {
+						name: 'service_b',
+						version: 'v1',
+						type_defs: 'type Query { world: String }',
+						url: '',
+					},
+				},
+				res
+			);
+			expect(result.success).toEqual(true);
+
+			result = await supergraph({}, res);
+
+			expect(result).toEqual(
+				expect.stringContaining(`type Query
+  @join__type(graph: SERVICE_A)
+  @join__type(graph: SERVICE_B)
+{
+  hello: String @join__field(graph: SERVICE_A)
+  world: String @join__field(graph: SERVICE_B)
+}`)
+			);
 		});
 	});
 });
