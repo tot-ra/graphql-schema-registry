@@ -1,4 +1,4 @@
-import { Route, useLocation } from 'react-router-dom';
+import { Route, useLocation, Switch, Redirect } from 'react-router-dom';
 
 import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
@@ -55,15 +55,24 @@ const Main = () => {
 				handleChange={handleChange}
 			/>
 			<div>
-				{UITabs.map((tab, index) => (
-					<TabPanel key={index} index={index} value={selectedTab}>
+				<Switch>
+					<Redirect exact from="/" to="/schema" />
+					{UITabs.map((tab, index) => (
 						<Route
 							key={tab.href}
 							path={`${tab.href}*`}
-							component={tab.component}
+							render={() => (
+								<TabPanel
+									key={index}
+									index={index}
+									value={selectedTab}
+								>
+									<tab.component />
+								</TabPanel>
+							)}
 						/>
-					</TabPanel>
-				))}
+					))}
+				</Switch>
 			</div>
 		</div>
 	);

@@ -41,6 +41,14 @@
 		{
 			"files": "**/*.jsx",
 			"parser": "@babel/eslint-parser",
+			"parserOptions": {
+				"requireConfigFile": false,
+				"babelOptions": {
+					"parserOpts": {
+						"plugins": ["jsx"]
+					}
+				}
+			},
 			"extends": [
 				"eslint:recommended",
 				"plugin:react/recommended",
