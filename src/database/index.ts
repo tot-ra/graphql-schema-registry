@@ -34,7 +34,6 @@ export const connection = knex({
 		debug: logger.debug,
 	},
 	connection: async () => {
-
 		return {
 			host,
 			port,
