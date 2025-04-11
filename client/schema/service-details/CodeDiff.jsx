@@ -55,6 +55,27 @@ const newStyles = {
 		width: '10px',
 		padding: '0',
 	},
+	// Attempt to style the container of the "Expand..." link
+	codeFold: {
+		// Target the TD element directly if possible (might need browser inspection)
+		// Assuming the TD is the direct child or styled element
+		'& > td': {
+			// Or just apply directly if 'codeFold' targets the TD
+			display: 'block', // Force it out of table cell flow
+			width: '100%', // Span full width
+			textAlign: 'center',
+			padding: '5px 0',
+			border: 'none', // Remove cell borders if needed
+			background: newStyles?.variables?.dark?.codeFoldBackground, // Match background
+		},
+		// Fallback styles if the above doesn't work or targets the wrong element
+		display: 'block',
+		width: '100%',
+		textAlign: 'center',
+		padding: '5px 0',
+		border: 'none',
+		background: newStyles?.variables?.dark?.codeFoldBackground,
+	},
 };
 
 const CodeDiff = (props) => {
