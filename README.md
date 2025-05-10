@@ -13,7 +13,7 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ## Features
 
 - Stores versioned schema for graphql-federated services
-- Serves supergraph schema for graphql gateway based on provided services & their versions. 
+- Serves supergraph schema for graphql gateway based on provided services & their versions.
   - Apollo federation v1 & v2 is supported
 - Validates new schema to be compatible with other _running_ services
 - Provides UI for developers to see stored schema & its history diff
@@ -573,6 +573,7 @@ Adds persisted query to DB & redis cache
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 | `value`  | string | Graphql query                    |
+
 </details>
 
 <details><summary><h3>🟢 GET /schema/supergraph (or configured supergraph.path)</h3></summary>
@@ -588,6 +589,7 @@ supergraph:
 ```
 
 This configuration would:
+
 - Serve GraphQL at `/graphql`
 - Allow schema introspection via standard GraphQL queries
 

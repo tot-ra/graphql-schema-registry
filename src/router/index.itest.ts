@@ -44,7 +44,7 @@ describe('app/router/supergraph', function () {
 	});
 
 	it('rollback returns same supergraph', async () => {
-		let old_schema = {
+		const old_schema = {
 			name: 'service_a',
 			version: 'v1',
 			type_defs: 'type Query { hello: String }',
@@ -56,7 +56,7 @@ describe('app/router/supergraph', function () {
 			.set('Accept', 'application/json');
 		expect(res.statusCode).toBe(200);
 
-		let pre = await request(app).get('/schema/supergraph');
+		const pre = await request(app).get('/schema/supergraph');
 		expect(res.statusCode).toBe(200);
 
 		res = await request(app)
@@ -80,7 +80,7 @@ describe('app/router/supergraph', function () {
 			.set('Accept', 'application/json');
 		expect(res.statusCode).toBe(200);
 
-		let post = await request(app).get('/schema/supergraph');
+		const post = await request(app).get('/schema/supergraph');
 		expect(res.statusCode).toBe(200);
 
 		expect(pre.text).toBe(post.text);
