@@ -48,3 +48,22 @@ Directories:
 - **gateway_service_managed_federation**
 - federated_service_a
 - federated_service_b
+
+## Schema registry, with Apollo Router for federation
+
+Mostly same setup as above but instead of using the example gateway we'll be using [Apollo Router](https://www.apollographql.com/docs/router).
+
+- Start graphql-schema-registry with apollo-router. Wait until DB & UI work at http://localhost:6001/
+
+```
+docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml -f docker-compose.apollo.yml up
+```
+
+- The Apollo Router will not be available until we register our first service, so (in separate terminals) start federated services
+
+```
+cd federated_service_a && npm install && node index.js
+cd federated_service_b && npm install && node index.js
+```
+
+- Check Apollo Router playground UI in the browser at http://localhost:4000/
