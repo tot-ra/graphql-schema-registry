@@ -20,10 +20,10 @@ Types of changes:
 - Apollo v2 federation support
 
 ### [5.5.3] 2025-05-10
+
 - Update node version to 22 https://github.com/tot-ra/graphql-schema-registry/pull/195
 - Upgrade apollo/client and apollo/composition dependencies https://github.com/tot-ra/graphql-schema-registry/pull/194
 - fix UI bug in diff view https://github.com/tot-ra/graphql-schema-registry/pull/192
-
 
 ### [5.5.2] 2024-05-02
 
