@@ -13,7 +13,8 @@ Graphql schema storage as dockerized on-premise service for federated graphql ga
 ## Features
 
 - Stores versioned schema for graphql-federated services
-- Serves supergraph schema for graphql gateway based on provided services & their versions
+- Serves supergraph schema for graphql gateway based on provided services & their versions.
+  - Apollo federation v1 & v2 is supported
 - Validates new schema to be compatible with other _running_ services
 - Provides UI for developers to see stored schema & its history diff
 - Stores service urls emulating managed federation: you no longer need to hardcode the services in your gateway's constructor, or rely on an additonal service (etcd, consul) for service discovery
@@ -400,8 +401,7 @@ See main [blog post](https://medium.com/pipedrive-engineering/journey-to-federat
 
 ## Rest API documentation
 
-<details>
-  <summary><h3>🟢 GET /health</h3></summary>
+<details><summary><h3>🟢 GET /health</h3></summary>
 
 returns "ok" when service is up
 
@@ -527,7 +527,9 @@ Compares schemas and finds breaking or dangerous changes between provided and la
 - version
 - type_defs
 
-</details><details><summary><h3>🔴 DELETE /schema/:schemaId</h3></summary>
+</details>
+
+<details><summary><h3>🔴 DELETE /schema/:schemaId</h3></summary>
 
 Deletes specified schema
 
@@ -547,7 +549,9 @@ Deletes specified service including all schemas registered for that service
 | -------- | ------ | --------------- |
 | `name`   | string | name of service |
 
-</details><details><summary><h3>🟢 GET /persisted_query</h3></summary>
+</details>
+
+<details><summary><h3>🟢 GET /persisted_query</h3></summary>
 
 Looks up persisted query from DB & caches it in redis if its found
 
@@ -557,7 +561,9 @@ Looks up persisted query from DB & caches it in redis if its found
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 
-</details><details><summary><h3>🟡 POST /persisted_query</h3></summary>
+</details>
+
+<details><summary><h3>🟡 POST /persisted_query</h3></summary>
 
 Adds persisted query to DB & redis cache
 
@@ -567,5 +573,26 @@ Adds persisted query to DB & redis cache
 | -------- | ------ | -------------------------------- |
 | `key`    | string | hash of APQ (with `apq:` prefix) |
 | `value`  | string | Graphql query                    |
+
+</details>
+
+<details><summary><h3>🟢 GET /schema/supergraph (or configured supergraph.path)</h3></summary>
+
+Apollo Federation 2 uses the `supergraph.path` configuration in `router.yaml` to define the endpoint for the GraphQL API. The supergraph schema can be accessed through this endpoint when introspection is enabled.
+
+#### Example Configuration
+
+```yaml
+supergraph:
+  path: /graphql
+  introspection: true
+```
+
+This configuration would:
+
+- Serve GraphQL at `/graphql`
+- Allow schema introspection via standard GraphQL queries
+
+It's important to note that integration tests and examples are available to demonstrate the usage of this endpoint.
 
 </details>
