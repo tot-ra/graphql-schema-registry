@@ -5,7 +5,6 @@
 Graphql schema storage as dockerized on-premise service for federated graphql gateway server
 (based on [apollo server](https://www.apollographql.com/docs/apollo-server/federation/introduction/)) as alternative to [Apollo studio](https://studio.apollographql.com/), [The Guild's Hive](https://graphql-hive.com), [WunderGraph](https://wundergraph.com/)
 
-[![slack](https://img.shields.io/badge/slack-brigade-brightgreen.svg?logo=slack)](http://gql-schema-registry.slack.com/)
 ![](https://img.shields.io/github/v/release/tot-ra/graphql-schema-registry?sort=semver)
 [![Coverage Status](https://coveralls.io/repos/github/tot-ra/graphql-schema-registry/badge.svg?branch=master&v=2)](https://coveralls.io/github/tot-ra/graphql-schema-registry?branch=master)
 [![](https://snyk.io/test/github/tot-ra/graphql-schema-registry/badge.svg)](https://snyk.io/test/github/tot-ra/graphql-schema-registry)

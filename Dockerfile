@@ -1,5 +1,5 @@
 # 1. BUILD FRONTEND source with webpack
-FROM node:16-alpine as builder-frontend
+FROM node:22-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY client ./client
 RUN npm run build-frontend
 
 # 2. BUILD BACKEND source from .ts, uses dev-dependencies
-FROM node:16-alpine as builder-backend
+FROM node:22-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
@@ -20,7 +20,7 @@ COPY src ./src
 RUN npm run build-backend
 
 # 3. BUILD FINAL IMAGE
-FROM node:16-alpine
+FROM node:22-alpine
 ARG env=production
 ENV NODE_ENV=${env}
 RUN mkdir -p /app && \
