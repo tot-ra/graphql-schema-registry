@@ -16,6 +16,12 @@ Types of changes:
 
 ## [Unreleased]
 
+### [5.5.3] 2025-05-10
+- Update node version to 22 https://github.com/tot-ra/graphql-schema-registry/pull/195
+- Upgrade apollo/client and apollo/composition dependencies https://github.com/tot-ra/graphql-schema-registry/pull/194
+- fix UI bug in diff view https://github.com/tot-ra/graphql-schema-registry/pull/192
+
+
 ### [5.5.2] 2024-05-02
 
 ### Added
@@ -411,7 +417,8 @@ DELETE /schema/:schemaId
 - Frontend app
 - Examples of gateway + 2 federated services
 
-[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.4.0...HEAD
+[unreleased]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.5.3...HEAD
+[5.5.3]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.5.2...v5.5.3
 [5.5.2]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.5.1...v5.5.2
 [5.5.1]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/pipedrive/graphql-schema-registry/compare/v5.4.0...v5.5.0
