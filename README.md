@@ -92,7 +92,7 @@ flowchart LR
 
 | Frontend (`/client` folder) | Backend (`/src` folder)           |
 | --------------------------- | --------------------------------- |
-| react                       | nodejs 16                         |
+| react                       | nodejs 22                         |
 | apollo client               | express, hapi/joi                 |
 | styled-components           | apollo-server-express, dataloader |
 |                             | redis 6                           |
