@@ -17,6 +17,7 @@ Types of changes:
 ## [Unreleased]
 
 ### [5.5.4] 2025-05-11
+
 - Apollo v2 federation support
 
 ### [5.5.3] 2025-05-10
