@@ -17,12 +17,10 @@ export class FieldChange implements BreakingChangeService {
 		ChangeType.FieldArgumentAdded,
 		ChangeType.InputFieldTypeChanged,
 		ChangeType.InputFieldRemoved,
+		ChangeType.FieldArgumentRemoved,
 	];
 
 	validate(change: Change): boolean {
-		if (change.type === ChangeType.FieldArgumentRemoved) {
-			throw new Error(`Change type ${change.type} not managed yet`);
-		}
 		return this.types.includes(change.type);
 	}
 
