@@ -1,4 +1,3 @@
-@test
 Feature: As a customer
 	I would like to know the usage for the schemas in the supergraph
 

@@ -1,6 +1,6 @@
 import { Change, diff } from '@graphql-inspector/core';
 
-import { transact } from '../database';
+import { getDatabaseConnection, transact } from '../database';
 import * as federationHelper from '../helpers/federation';
 import schemaModel from '../database/schema';
 import { BreakDownSchemaCaseUse } from './breakdown';
@@ -108,4 +108,18 @@ export async function diffSchemas({ service }) {
 			);
 		}
 	});
+}
+
+export async function validateKeys(service): Promise<Change[]> {
+	const connection = await getDatabaseConnection();
+
+	const schemas = await schemaModel.getLastUpdatedForActiveServices({
+		trx: connection,
+	});
+
+	const restOfSchemas = schemas.filter(
+		(schema: any) => schema.name !== service.name
+	);
+
+	return federationHelper.checkKeySanity(restOfSchemas, service);
 }

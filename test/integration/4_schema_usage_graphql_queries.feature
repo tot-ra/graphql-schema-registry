@@ -1,4 +1,3 @@
-@test
 Feature: As a customer
 	I would like to get usage data from the supergraph
 

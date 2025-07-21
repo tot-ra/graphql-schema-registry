@@ -52,6 +52,10 @@ if (process.env.NODE_ENV !== 'production') {
 }
 connection.on('query-error', logQueryError);
 
+export async function getDatabaseConnection() {
+	return connection;
+}
+
 export async function transact(fn) {
 	const trx = await connection.transaction();
 

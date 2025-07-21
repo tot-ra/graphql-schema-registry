@@ -5,6 +5,7 @@ import {
 	pushAndValidateSchema,
 	deactivateSchema,
 	diffSchemas,
+	validateKeys,
 } from '../controller/schema';
 import { connection } from '../database';
 import config from '../config';
@@ -130,6 +131,14 @@ export async function diff(req, res) {
 		usage_days,
 		min_usages,
 	}))(body);
+
+	const keyChanges = await validateKeys(service);
+	if (keyChanges.length > 0) {
+		return res.json({
+			success: false,
+			data: keyChanges,
+		});
+	}
 
 	const diff: Change[] = await diffSchemas({ service });
 

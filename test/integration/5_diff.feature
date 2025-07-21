@@ -229,4 +229,42 @@ Feature: As a customer
 			]
 		}
 		"""
+	
+	Scenario: Checking keys with different schemas
+		Given the database is imported from 'breakdown_schema_db'
+		And I send a "POST" request to "/schema/push" with body:
+		"""
+		{
+		  "name": "User",
+		  "version": "newest",
+		  "type_defs": "type Query { getUser: User } type User @key(fields: \"id\") { id: ID! name: String }"
+		}
+		"""
+		Then I send a "POST" request to "/schema/diff" with body:
+		"""
+		{
+		  "name": "Reviews",
+		  "version": "newest",
+		  "type_defs": "type User @key(fields: \"email\") { email: String! reviews: [Review] } type Review { id: ID! body: String }"
+		}
+		"""
+		Then the response status code should be 200
+		And the response should be in JSON and contain:
+		"""
+		{
+		  "success": false,
+		  "data": [{
+			"criticality": {
+				"level": "BREAKING",
+				"reason": "Key not found in supergraph. Please check owner graph to sync keys declaration"
+			},
+			"message": "Key email for type User in service Reviews not found in supergraph keys.",
+			"meta": {
+				"availableKeys": ["id"]
+			},
+			"path": "User",
+			"type": "DIRECTIVE_ARGUMENT_ADDED"
+		  }]
+		}
+		"""
 
