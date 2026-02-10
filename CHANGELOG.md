@@ -16,6 +16,20 @@ Types of changes:
 
 ## [Unreleased]
 
+### Changed
+
+- Migrated frontend build from Webpack 5 to Vite for faster development startup and build times
+  - Replaced webpack, babel-loader, and related plugins with Vite and @vitejs/plugin-react
+  - Added vite.config.ts with UMD library build configuration
+  - Added tsconfig.client.json for frontend TypeScript configuration
+  - Updated build-frontend script to use vite build
+  - Added develop-frontend script for Vite dev server
+  - Updated setupDev.ts to use Vite middleware instead of webpack-dev-middleware
+  - Fixed circular reference in CodeDiff.jsx
+  - Renamed usePrism.js to usePrism.jsx for proper JSX handling
+  - Updated @types/node to v20 for Vite compatibility
+  - Removed 14 webpack-related dev dependencies
+
 ### Fixed
 
 - Remove `USER nobody` from dev.Dockerfile to fix webpack permission errors in development

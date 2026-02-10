@@ -66,7 +66,7 @@ const newStyles = {
 			textAlign: 'center',
 			padding: '5px 0',
 			border: 'none', // Remove cell borders if needed
-			background: newStyles?.variables?.dark?.codeFoldBackground, // Match background
+			background: '#262831', // Match codeFoldBackground
 		},
 		// Fallback styles if the above doesn't work or targets the wrong element
 		display: 'block',
@@ -74,7 +74,7 @@ const newStyles = {
 		textAlign: 'center',
 		padding: '5px 0',
 		border: 'none',
-		background: newStyles?.variables?.dark?.codeFoldBackground,
+		background: '#262831', // codeFoldBackground
 	},
 };
 
