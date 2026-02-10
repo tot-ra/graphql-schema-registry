@@ -15,12 +15,9 @@ export async function getAndValidateSchema(
 		? await schemaModel.getSchemaByServiceVersions({ trx, services })
 		: await schemaModel.getLastUpdatedForActiveServices({ trx });
 
-	logger.info(
-		'Validating schema. Got services schemas from DB transaction..',
-		{
-			schemas,
-		}
-	);
+	logger.info('Validating schema. Got services schemas from DB transaction..', {
+		schemas,
+	});
 
 	if (validate && schemas && schemas.length) {
 		federationHelper.composeAndValidateSchema(schemas);
@@ -99,10 +96,7 @@ export async function diffSchemas({ service }) {
 					.concat(service)
 			);
 
-			return diff(
-				original.toGraphQLJSSchema(),
-				updated.toGraphQLJSSchema()
-			);
+			return diff(original.toGraphQLJSSchema(), updated.toGraphQLJSSchema());
 		}
 	});
 }

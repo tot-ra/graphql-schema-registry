@@ -23,8 +23,8 @@ export default function PersistedQueries() {
 	return (
 		<div>
 			<Info>
-				You can see last schema-registry logs. Useful in case of
-				validation errors
+				You can see last schema-registry logs. Useful in case of validation
+				errors
 			</Info>
 
 			<table>

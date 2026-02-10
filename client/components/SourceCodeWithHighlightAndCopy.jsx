@@ -22,11 +22,7 @@ const SourceCodeWithHighlightAndCopy = ({
 	return (
 		<RelativeWrapper onClick={revealed ? null : onClick}>
 			{copied ? (
-				<CopyButton
-					startIcon={<CheckIcon />}
-					size="small"
-					variant="contained"
-				>
+				<CopyButton startIcon={<CheckIcon />} size="small" variant="contained">
 					Copied
 				</CopyButton>
 			) : (

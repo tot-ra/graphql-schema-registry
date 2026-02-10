@@ -25,8 +25,8 @@ export default function Clients() {
 	if (!data || data.clients.length === 0) {
 		return (
 			<Info>
-				No clients found. Use gql-schema-registry-worker to process
-				queries from KAFKA_QUERIES_TOPIC
+				No clients found. Use gql-schema-registry-worker to process queries from
+				KAFKA_QUERIES_TOPIC
 			</Info>
 		);
 	}
@@ -51,17 +51,11 @@ export default function Clients() {
 	return (
 		<Router basename="/clients">
 			<div style={{ display: 'flex' }}>
-				<List
-					component="nav"
-					style={{ borderRight: '1px solid #eeeeee' }}
-				>
+				<List component="nav" style={{ borderRight: '1px solid #eeeeee' }}>
 					{clients}
 				</List>
 
-				<ColumnPanel
-					all="m"
-					style={{ borderRight: '1px solid #eeeeee' }}
-				>
+				<ColumnPanel all="m" style={{ borderRight: '1px solid #eeeeee' }}>
 					<ClientVersions
 						clients={data.clients}
 						selectedClient={selectedClient}

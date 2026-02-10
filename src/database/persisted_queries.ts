@@ -66,11 +66,7 @@ const PersistedQueriesModel = {
 		);
 
 		// no need to wait until it finishes
-		await redis.set(
-			persistedQuery.key,
-			JSON.stringify(persistedQuery),
-			ttl
-		);
+		await redis.set(persistedQuery.key, JSON.stringify(persistedQuery), ttl);
 	},
 
 	getSince: async function ({ since = 0 }) {

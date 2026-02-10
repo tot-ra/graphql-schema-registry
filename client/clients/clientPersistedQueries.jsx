@@ -25,9 +25,7 @@ const ClientPersistedQueries = ({ selectedVersion }) => {
 
 	return (
 		<div style={{ padding: 10 }}>
-			{data?.persistedQueries.length > 0 && (
-				<strong>Persisted Queries</strong>
-			)}
+			{data?.persistedQueries.length > 0 && <strong>Persisted Queries</strong>}
 			{data?.persistedQueries.map((pq) => {
 				return (
 					<div key={pq.key}>

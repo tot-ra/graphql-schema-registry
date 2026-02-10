@@ -18,8 +18,8 @@ export default function PersistedQueries() {
 	if (!data || !data.persistedQueries.length) {
 		return (
 			<Info>
-				No persisted queries found. Integrate gateway to publish
-				persisted query to schema-registry API
+				No persisted queries found. Integrate gateway to publish persisted query
+				to schema-registry API
 			</Info>
 		);
 	}

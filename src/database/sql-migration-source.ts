@@ -10,10 +10,7 @@ class CustomSqlMigrationSource implements Knex.MigrationSource<any> {
 	}
 
 	getMigrations() {
-		const absoluteDir = path.resolve(
-			process.cwd(),
-			this.migrationDirectory
-		);
+		const absoluteDir = path.resolve(process.cwd(), this.migrationDirectory);
 		const files = fs
 			.readdirSync(absoluteDir)
 			.filter((f) => f.endsWith('.sql') || f.endsWith('.js'))

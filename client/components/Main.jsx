@@ -62,11 +62,7 @@ const Main = () => {
 							key={tab.href}
 							path={`${tab.href}*`}
 							render={() => (
-								<TabPanel
-									key={index}
-									index={index}
-									value={selectedTab}
-								>
+								<TabPanel key={index} index={index} value={selectedTab}>
 									<tab.component />
 								</TabPanel>
 							)}

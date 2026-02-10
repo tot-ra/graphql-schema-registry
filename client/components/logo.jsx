@@ -9,44 +9,17 @@ export default function Logo() {
 				height="45"
 			>
 				<defs>
-					<path
-						d="M0 0L640 0L640 640L0 640L0 0Z"
-						id="aACFKWqId"
-					></path>
+					<path d="M0 0L640 0L640 640L0 640L0 0Z" id="aACFKWqId"></path>
 					<path d="M90.39 455.37L309.93 68.35" id="abQRk6fPB"></path>
-					<path
-						d="M312.15 593.54L539.33 180.06"
-						id="c43cxpRdDt"
-					></path>
-					<path
-						d="M315.05 324.61L90.39 174.35"
-						id="e1RwQ287qq"
-					></path>
-					<path
-						d="M537.24 450.83L312.15 321.52"
-						id="aOTTscD3s"
-					></path>
-					<path
-						d="M539.33 173.42L312.15 66.26"
-						id="a5hX0shUV9"
-					></path>
-					<path
-						d="M312.15 596.86L312.15 328.8"
-						id="f4aRsobM8F"
-					></path>
-					<path
-						d="M312.15 324.61L91.71 450.83"
-						id="d4df3gG5KI"
-					></path>
+					<path d="M312.15 593.54L539.33 180.06" id="c43cxpRdDt"></path>
+					<path d="M315.05 324.61L90.39 174.35" id="e1RwQ287qq"></path>
+					<path d="M537.24 450.83L312.15 321.52" id="aOTTscD3s"></path>
+					<path d="M539.33 173.42L312.15 66.26" id="a5hX0shUV9"></path>
+					<path d="M312.15 596.86L312.15 328.8" id="f4aRsobM8F"></path>
+					<path d="M312.15 324.61L91.71 450.83" id="d4df3gG5KI"></path>
 					<path d="M90.39 176.17L309.93 66.26" id="a3f1xiOUe"></path>
-					<path
-						d="M539.33 450.83L539.33 180.06"
-						id="j2kppAtKaC"
-					></path>
-					<path
-						d="M312.15 596.86L539.33 450.83"
-						id="fmMlTgAod"
-					></path>
+					<path d="M539.33 450.83L539.33 180.06" id="j2kppAtKaC"></path>
+					<path d="M312.15 596.86L539.33 450.83" id="fmMlTgAod"></path>
 					<path d="M90.39 450.83L90.39 176.17" id="a4gSTNVKSn"></path>
 					<path d="M312.15 593.54L90.39 455.37" id="b3WdzhfVx"></path>
 					<path

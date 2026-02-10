@@ -35,8 +35,7 @@ const schemaHitModel = {
 		const now = new Date().getTime();
 
 		return (
-			msgDate.getTime() >
-			now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600
+			msgDate.getTime() > now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600
 		);
 	},
 
@@ -185,9 +184,7 @@ const schemaHitModel = {
 		}
 
 		await transact(async (trx) => {
-			client = await connection('clients')
-				.where({ name, version })
-				.first('id');
+			client = await connection('clients').where({ name, version }).first('id');
 
 			if (name && version && !client) {
 				client = {
@@ -223,9 +220,7 @@ const schemaHitModel = {
 	},
 
 	get: async function ({ entity, property }) {
-		const cachedResults = await redis.get(
-			`schema_hits.${entity}.${property}`
-		);
+		const cachedResults = await redis.get(`schema_hits.${entity}.${property}`);
 
 		if (cachedResults) {
 			return JSON.parse(cachedResults);

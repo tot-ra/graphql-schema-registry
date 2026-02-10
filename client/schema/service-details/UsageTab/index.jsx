@@ -40,8 +40,7 @@ export default function UsageTab({ schemaId }) {
 					<tbody>
 						{data.schema.fieldsUsage.map((row) => {
 							const selected =
-								entity === row.entity &&
-								property === row.property;
+								entity === row.entity && property === row.property;
 
 							return (
 								<tr key={`${row.entity}.${row.property}`}>
@@ -49,12 +48,8 @@ export default function UsageTab({ schemaId }) {
 										style={{
 											textDecoration: 'underline',
 											cursor: 'pointer',
-											color: selected
-												? '#3179e2'
-												: 'black',
-											fontWeight: selected
-												? 'bold'
-												: 'normal',
+											color: selected ? '#3179e2' : 'black',
+											fontWeight: selected ? 'bold' : 'normal',
 										}}
 										onClick={() => {
 											history.push(

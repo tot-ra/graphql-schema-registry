@@ -32,13 +32,9 @@ const Versions = ({
 							</FlexRow>
 							<div>
 								Updated{' '}
-								{formatDistance(
-									new Date(version.updatedTime),
-									new Date(),
-									{
-										addSuffix: true,
-									}
-								)}
+								{formatDistance(new Date(version.updatedTime), new Date(), {
+									addSuffix: true,
+								})}
 							</div>
 						</div>
 					</EntryGrid>

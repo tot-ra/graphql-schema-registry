@@ -5,9 +5,7 @@ const PersistedQueriesTab = () => {
 	const { data } = useQuery(PERSISTED_QUERIES_COUNT);
 
 	return (
-		<span>
-			Persisted queries {data && `(${data.persistedQueriesCount})`}
-		</span>
+		<span>Persisted queries {data && `(${data.persistedQueriesCount})`}</span>
 	);
 };
 

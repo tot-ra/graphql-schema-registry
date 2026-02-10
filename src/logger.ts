@@ -24,9 +24,7 @@ export const logger = createLogger({
 	level: process.env.LOG_LEVEL || 'info',
 	transports: logTransports,
 	format:
-		process.env.LOG_TYPE === 'json'
-			? buildJsonFormat()
-			: buildPrettyFormat(),
+		process.env.LOG_TYPE === 'json' ? buildJsonFormat() : buildPrettyFormat(),
 });
 
 function buildPrettyFormat() {

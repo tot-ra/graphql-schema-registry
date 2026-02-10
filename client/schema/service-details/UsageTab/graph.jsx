@@ -39,8 +39,7 @@ export default function UsageTabGraph({ entity, property }) {
 				}}
 			>
 				{hit.hits} hits by{' '}
-				{hit.clientName ? `${hit.clientName}` : 'unknown client'} on{' '}
-				{hit.day}
+				{hit.clientName ? `${hit.clientName}` : 'unknown client'} on {hit.day}
 			</div>
 		);
 	}
@@ -80,13 +79,7 @@ export default function UsageTabGraph({ entity, property }) {
 
 	return (
 		<div>
-			<Chart
-				width={450}
-				height={200}
-				series={series}
-				minY={0}
-				maxY={max * 1.3}
-			>
+			<Chart width={450} height={200} series={series} minY={0} maxY={max * 1.3}>
 				<Lines />
 				<Dots />
 			</Chart>

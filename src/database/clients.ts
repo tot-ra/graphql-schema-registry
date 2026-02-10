@@ -74,10 +74,7 @@ const clientsModel = {
 				version,
 			});
 
-			await clientsModel.savePQClientMapping(
-				persistedQueries,
-				clientVersionId
-			);
+			await clientsModel.savePQClientMapping(persistedQueries, clientVersionId);
 		}
 
 		// reset cache

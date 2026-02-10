@@ -60,10 +60,7 @@ const GlobalSearch = () => {
 						resultRow.href = `/schema/${row.service.name}/${row.id}/sdl`;
 						resultRow.location = `schema : ${row.service.name} > #${row.id}`;
 
-						const strMin = Math.max(
-							row.typeDefs.indexOf(filterValue) - 30,
-							0
-						);
+						const strMin = Math.max(row.typeDefs.indexOf(filterValue) - 30, 0);
 						const strMax = Math.min(
 							strMin + filterValue.length + 60,
 							row.typeDefs.length
@@ -80,7 +77,7 @@ const GlobalSearch = () => {
 								);
 					}
 					return resultRow;
-			  })
+				})
 			: [];
 
 	const handleKeyPress = //useCallback(
@@ -154,10 +151,7 @@ const GlobalSearch = () => {
 								key={i}
 								style={{
 									padding: '10px',
-									backgroundColor:
-										selectedResult === i
-											? '#ffe9d9'
-											: 'white',
+									backgroundColor: selectedResult === i ? '#ffe9d9' : 'white',
 								}}
 							>
 								<Link to={row.href}>

@@ -166,10 +166,7 @@ describe('app/graphql', () => {
 				const result = await resolvers.Query.clients();
 
 				// ASSERT
-				expect(result).toEqual([
-					{ name: 'client_a' },
-					{ name: 'client_b' },
-				]);
+				expect(result).toEqual([{ name: 'client_a' }, { name: 'client_b' }]);
 			});
 		});
 	});

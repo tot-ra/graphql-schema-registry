@@ -37,10 +37,13 @@ const analyzer = {
 			await analyzer.loadSchema(connection);
 
 			// update schema periodically
-			setInterval(async () => {
-				logger.info('reloading federated schema');
-				await analyzer.loadSchema(connection);
-			}, SCHEMA_UPDATE_PERIOD_MIN * 60 * 1000);
+			setInterval(
+				async () => {
+					logger.info('reloading federated schema');
+					await analyzer.loadSchema(connection);
+				},
+				SCHEMA_UPDATE_PERIOD_MIN * 60 * 1000
+			);
 
 			schemaHit.init();
 			clientsModel.init();
@@ -109,10 +112,7 @@ const analyzer = {
 	},
 
 	processSchemaQueryUsage: async ({ name, version, query, msgDate }) => {
-		const visitedFields = await extractQueryFields(
-			query,
-			analyzer.typeInfo
-		);
+		const visitedFields = await extractQueryFields(query, analyzer.typeInfo);
 		const day = msgDate.toISOString().slice(0, 10);
 
 		for await (const { entity, property } of visitedFields) {
