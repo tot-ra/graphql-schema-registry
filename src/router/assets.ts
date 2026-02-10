@@ -1,11 +1,13 @@
 import express from 'express';
 
 export function assetRouter(router) {
-	router.use(express.static('dist'));
+	router.use('/assets', express.static('dist/assets'));
+	// Also serve at root for backwards compatibility
+	router.use(express.static('dist/assets'));
 }
 
 export function indexHtml() {
-	const assetsRootUrl = process.env.ASSETS_URL || 'http://localhost:6001';
+	const assetsRootUrl = process.env.ASSETS_URL || '';
 	const assetsVersion = 'latest';
 
 	return function (req, res) {
@@ -18,7 +20,7 @@ export function indexHtml() {
     <meta name="referrer" content="no-referrer" />
     <title>Schema Registry</title>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i,700,700i" rel="stylesheet">
-    ${`<link rel="stylesheet" type="text/css" href="${assetsRootUrl}/assets/management-ui-standalone.css?v=${assetsVersion}">`}
+    ${`<link rel="stylesheet" type="text/css" href="${assetsRootUrl}/assets/style.css?v=${assetsVersion}">`}
   </script>
   </head>
   <body style="margin:0;padding:0;">
