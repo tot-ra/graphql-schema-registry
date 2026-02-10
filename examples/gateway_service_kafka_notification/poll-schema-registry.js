@@ -26,9 +26,7 @@ exports.getServiceListWithTypeDefs = async () => {
 	});
 
 	return get(serviceTypeDefinitions, 'data', []).map((schema) => {
-		const service = services.find(
-			(service) => service.name === schema.name
-		);
+		const service = services.find((service) => service.name === schema.name);
 
 		if (!service) {
 			console.warn(

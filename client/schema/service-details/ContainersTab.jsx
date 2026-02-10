@@ -17,13 +17,9 @@ export default function ContainersTab({ containers }) {
 							<tr key={row.version}>
 								<td align="center">{row.version}</td>
 								<td align="center">
-									{format(
-										new Date(row.addedTime),
-										'd MMMM yyyy, HH:mm',
-										{
-											timeZone: 'UTC',
-										}
-									)}
+									{format(new Date(row.addedTime), 'd MMMM yyyy, HH:mm', {
+										timeZone: 'UTC',
+									})}
 								</td>
 								<td align="center">
 									<a href={row.commitLink}>github</a>

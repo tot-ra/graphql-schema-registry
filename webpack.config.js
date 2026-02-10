@@ -62,9 +62,7 @@ module.exports = {
 				configOverwrite: {
 					compilerOptions: {
 						lib: ['ES2020', 'DOM', 'DOM.Iterable'],
-						sourceMap: isEnvProduction
-							? shouldUseSourceMap
-							: isEnvDevelopment,
+						sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
 						skipLibCheck: true,
 						inlineSourceMap: false,
 						declarationMap: false,

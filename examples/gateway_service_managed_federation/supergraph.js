@@ -66,8 +66,7 @@ class CustomSupergraphManager {
 		this.timerRef = setTimeout(async () => {
 			if (this.state === State.Polling) {
 				console.info('polling schema registry...');
-				const { supergraphSdl, schemaChanged } =
-					await this.buildSupergraph();
+				const { supergraphSdl, schemaChanged } = await this.buildSupergraph();
 
 				console.info('polling done');
 

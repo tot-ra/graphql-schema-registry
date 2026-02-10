@@ -3,6 +3,9 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - master
 
 permissions:
   contents: read
@@ -17,7 +20,18 @@ permissions:
   security-events: none
 
 jobs:
-  test:
+  biome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+      - name: Run Biome CI
+        run: biome ci --reporter=github .
+
+  oxlint:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
@@ -29,12 +43,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
-          cache: 'npm'
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+          cache: "npm"
 
       - uses: actions/cache@v4
         with:
-          path: '**/node_modules'
+          path: "**/node_modules"
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
 
       - run: npm install

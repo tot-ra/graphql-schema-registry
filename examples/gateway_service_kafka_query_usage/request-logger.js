@@ -29,9 +29,7 @@ const requestLogger = {
 
 			if (isNil(producer)) {
 				await requestLogger.connectToKafka();
-				console.error(
-					'Kafka producer is not connected, cannot log query'
-				);
+				console.error('Kafka producer is not connected, cannot log query');
 				// Do not return false, because:
 				// "If your plugin doesn't need to respond to any request lifecycle events
 				// requestDidStart should not return a value."

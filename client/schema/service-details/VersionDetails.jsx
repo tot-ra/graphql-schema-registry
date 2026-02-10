@@ -46,8 +46,7 @@ export default function VersionDetails() {
 		return null;
 	}
 
-	const { UUID, addedTime, typeDefs, previousSchema, containers } =
-		data.schema;
+	const { UUID, addedTime, typeDefs, previousSchema, containers } = data.schema;
 	const addedTimestamp = new Date(addedTime);
 	const url = data.schema.service.url;
 
@@ -109,9 +108,7 @@ export default function VersionDetails() {
 			<div>
 				<VersionHeader>
 					<div>
-						<VersionHeaderTitle noMargin>
-							Schema {UUID}
-						</VersionHeaderTitle>
+						<VersionHeaderTitle noMargin>Schema {UUID}</VersionHeaderTitle>
 						<VersionHeaderTime>
 							Added{' '}
 							{format(addedTimestamp, 'HH:mm, d MMMM yyyy (z)', {
@@ -165,9 +162,7 @@ export default function VersionDetails() {
 					<Tab
 						label={`Containers (${data.schema.containerCount})`}
 						onClick={() => {
-							history.push(
-								`/${serviceName}/${schemaId}/containers`
-							);
+							history.push(`/${serviceName}/${schemaId}/containers`);
 							setTab('containers');
 						}}
 						selected={activeTab === 'containers'}

@@ -1,0 +1,29 @@
+version: '3'
+services:
+  gql-schema-registry:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect
+    ports:
+      - 6001:3000
+      - 6002:5850
+    volumes:
+      - .:/app/
+    environment:
+      - ENV_ID=dev
+      - WITH_WEBPACK=${WITH_WEBPACK-1}
+      - DB_SCHEMA_REGISTRY=gql-schema-registry-db
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_SECRET=test
+      - DB_NAME=schema_registry
+      - REDIS_HOST=redis
+      - REDIS_SECRET=pass
+    networks:
+      - gratheon_default
+
+networks:
+  gratheon_default:
+    external: true

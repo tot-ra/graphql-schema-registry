@@ -91,10 +91,7 @@ const redisWrap = {
 	get: async (key) => {
 		try {
 			if (redis) {
-				return await Promise.race([
-					redis.get(key),
-					wait(GET_TIMEOUT_MS),
-				]);
+				return await Promise.race([redis.get(key), wait(GET_TIMEOUT_MS)]);
 			} else {
 				logger.warn('redis is not initialized');
 
@@ -154,9 +151,9 @@ const redisWrap = {
 		} catch (error) {
 			logger.error(error, 'Failed to process lock function');
 
-			lock.unlock().catch((error) =>
-				logger.error(error, 'Redis unlock failed')
-			);
+			lock
+				.unlock()
+				.catch((error) => logger.error(error, 'Redis unlock failed'));
 
 			throw error;
 		}

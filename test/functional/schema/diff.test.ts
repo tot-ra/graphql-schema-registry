@@ -56,10 +56,10 @@ describe('POST /schema/diff', function () {
 				{
 					criticality: {
 						level: 'DANGEROUS',
-						reason: 'Adding an enum value may break existing clients that were not programming defensively against an added case when querying an enum.',
+						reason:
+							'Adding an enum value may break existing clients that were not programming defensively against an added case when querying an enum.',
 					},
-					message:
-						"Enum value 'SERVICE_B' was added to enum 'join__Graph'",
+					message: "Enum value 'SERVICE_B' was added to enum 'join__Graph'",
 					path: 'join__Graph.SERVICE_B',
 					type: 'ENUM_VALUE_ADDED',
 				},
@@ -106,10 +106,10 @@ describe('POST /schema/diff', function () {
 				{
 					criticality: {
 						level: 'BREAKING',
-						reason: 'Removing a field is a breaking change. It is preferable to deprecate the field before removing it.',
+						reason:
+							'Removing a field is a breaking change. It is preferable to deprecate the field before removing it.',
 					},
-					message:
-						"Field 'world' was removed from object type 'Query'",
+					message: "Field 'world' was removed from object type 'Query'",
 					path: 'Query.world',
 					type: 'FIELD_REMOVED',
 				},

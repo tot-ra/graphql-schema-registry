@@ -23,10 +23,7 @@ const VersionsList = ({ service }) => {
 				const today = new Date();
 				const date = new Date(schema.addedTime);
 				const icon = schema.isDev ? (
-					<Tooltip
-						placement="right"
-						title="Registered by service in dev mode"
-					>
+					<Tooltip placement="right" title="Registered by service in dev mode">
 						<DeveloperModeIcon />
 					</Tooltip>
 				) : (
@@ -39,18 +36,14 @@ const VersionsList = ({ service }) => {
 						key={schema.id}
 						selected={selectedSchema === schema.id}
 						className={schema.isActive ? '' : 'deleted'}
-						onClick={() =>
-							history.push(`/${serviceName}/${schema.id}/sdl`)
-						}
+						onClick={() => history.push(`/${serviceName}/${schema.id}/sdl`)}
 					>
 						<EntryGrid>
 							<div>
 								<FlexRow>
 									<VersionTag>{schema.UUID}</VersionTag>
 								</FlexRow>
-								<VersionRow
-									selected={selectedSchema === schema.id}
-								>
+								<VersionRow selected={selectedSchema === schema.id}>
 									<VersionCharDelta
 										selected={selectedSchema === schema.id}
 										schema={schema}

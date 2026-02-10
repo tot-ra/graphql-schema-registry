@@ -1,11 +1,7 @@
 import { connection } from './index';
 
 const containersModel = {
-	getSchemaContainers: async function ({
-		schemaId,
-		limit = 100,
-		offset = 0,
-	}) {
+	getSchemaContainers: async function ({ schemaId, limit = 100, offset = 0 }) {
 		return connection('container_schema')
 			.select(
 				'container_schema.id',

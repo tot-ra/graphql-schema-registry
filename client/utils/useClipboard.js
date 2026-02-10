@@ -33,9 +33,7 @@ export function useClipboard() {
 function requestPermission() {
 	return navigator.permissions
 		.query({ name: 'clipboard-write' })
-		.then(
-			(result) => result.state === 'granted' || result.state === 'prompt'
-		);
+		.then((result) => result.state === 'granted' || result.state === 'prompt');
 }
 
 function updateClipboard(text) {

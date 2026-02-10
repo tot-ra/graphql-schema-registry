@@ -102,8 +102,7 @@ describe('app/controller/schema', () => {
 					body: {
 						name: 'service_a',
 						version: 'v1',
-						type_defs:
-							'type MyType { id: String} type Query { my: MyType }',
+						type_defs: 'type MyType { id: String} type Query { my: MyType }',
 						url: '',
 					},
 				},
@@ -198,9 +197,7 @@ type Query {
 					await push(req, res);
 					expect(false).toEqual(true);
 				} catch (e) {
-					expect(e.message).toEqual(
-						'"name" is not allowed to be empty'
-					);
+					expect(e.message).toEqual('"name" is not allowed to be empty');
 				}
 			});
 
@@ -218,9 +215,7 @@ type Query {
 					await push(req, res);
 					expect(false).toEqual(true);
 				} catch (e) {
-					expect(e.message).toEqual(
-						'"version" is not allowed to be empty'
-					);
+					expect(e.message).toEqual('"version" is not allowed to be empty');
 				}
 			});
 
@@ -238,9 +233,7 @@ type Query {
 					await push(req, res);
 					expect(false).toEqual(true);
 				} catch (e) {
-					expect(e.message).toEqual(
-						'"type_defs" is not allowed to be empty'
-					);
+					expect(e.message).toEqual('"type_defs" is not allowed to be empty');
 				}
 			});
 

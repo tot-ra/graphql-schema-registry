@@ -156,8 +156,7 @@ describe('POST /schema/push', function () {
 				body: {
 					name: 'service_c',
 					version: 'v1',
-					type_defs:
-						'\n\ttype Query {\n\t\tme: String\n\tyou:String\n\t}\n',
+					type_defs: '\n\ttype Query {\n\t\tme: String\n\tyou:String\n\t}\n',
 				},
 			});
 		} catch (err) {

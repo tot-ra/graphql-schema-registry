@@ -33,11 +33,7 @@ const schemaModel = {
 				'schema.*',
 				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
-			.leftJoin(
-				'container_schema',
-				'container_schema.schema_id',
-				'schema.id'
-			)
+			.leftJoin('container_schema', 'container_schema.schema_id', 'schema.id')
 			.where((builder) => {
 				const result = builder.where(
 					'container_schema.version',
@@ -176,15 +172,11 @@ const schemaModel = {
 			.where((query) => {
 				services.forEach((service) => {
 					const skip =
-						!service.name ||
-						!service.version ||
-						isDevVersion(service.version);
+						!service.name || !service.version || isDevVersion(service.version);
 
 					query.orWhere({
 						'services.name': skip ? null : service.name,
-						'container_schema.version': skip
-							? null
-							: service.version,
+						'container_schema.version': skip ? null : service.version,
 					});
 				});
 			})
@@ -256,11 +248,7 @@ const schemaModel = {
 		logger.info(`Registering schema with serviceId = ${serviceId}`);
 
 		// SCHEMA
-		let schemaId = await findExistingSchema(
-			trx,
-			serviceId,
-			service.type_defs
-		);
+		let schemaId = await findExistingSchema(trx, serviceId, service.type_defs);
 
 		if (
 			!isDevVersion(service.version) &&
@@ -378,11 +366,7 @@ const schemaModel = {
 				'schema.*',
 				connection.raw('CHAR_LENGTH(schema.type_defs) as characters')
 			)
-			.leftJoin(
-				'container_schema',
-				'container_schema.schema_id',
-				'schema.id'
-			)
+			.leftJoin('container_schema', 'container_schema.schema_id', 'schema.id')
 			.whereIn('schema.service_id', serviceIds)
 			.orderBy('schema.added_time', 'desc')
 			.groupBy('schema.id')
@@ -433,10 +417,7 @@ const schemaModel = {
 		let offset = 0;
 
 		while (count !== 0) {
-			const schemas = await schemaModel.listMigrateableSchemas(
-				knex,
-				limit
-			);
+			const schemas = await schemaModel.listMigrateableSchemas(knex, limit);
 
 			offset = offset + limit;
 			count = schemas ? schemas.length : 0;

@@ -3,9 +3,7 @@ import { assert } from 'chai';
 
 describe('app/database/sql-migration-source.js', () => {
 	it('should return available sql migrations as ordered list of objects', async () => {
-		const source = new CustomSqlMigrationSource(
-			'./test/unit/test-migrations'
-		);
+		const source = new CustomSqlMigrationSource('./test/unit/test-migrations');
 
 		const migrations = await source.getMigrations();
 
@@ -22,22 +20,14 @@ describe('app/database/sql-migration-source.js', () => {
 	});
 
 	it('should return migration as object with up and down functions', async () => {
-		const source = new CustomSqlMigrationSource(
-			'./test/unit/test-migrations'
-		);
+		const source = new CustomSqlMigrationSource('./test/unit/test-migrations');
 
 		const migrations = await source.getMigrations();
 		const migration = await source.getMigration(migrations[0]);
 
 		assert.isDefined(migration.up, 'migration should have an up function');
 		assert.isFunction(migration.up, 'migration.up should be a function');
-		assert.isDefined(
-			migration.down,
-			'migration should have a down function'
-		);
-		assert.isFunction(
-			migration.down,
-			'migration.down should be a function'
-		);
+		assert.isDefined(migration.down, 'migration should have a down function');
+		assert.isFunction(migration.down, 'migration.down should be a function');
 	});
 });
