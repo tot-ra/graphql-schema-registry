@@ -1,7 +1,5 @@
 FROM node:22-alpine
 
-USER nobody
-
 # ensure all directories exist
 WORKDIR /app
 

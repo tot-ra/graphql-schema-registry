@@ -16,7 +16,16 @@ Types of changes:
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove `USER nobody` from dev.Dockerfile to fix webpack permission errors in development
+
+### Added
+
+- Auto-create database if it doesn't exist during startup
+
 ### [5.5.4] 2025-05-11
+
 - Apollo v2 federation support
 
 ### [5.5.3] 2025-05-10
