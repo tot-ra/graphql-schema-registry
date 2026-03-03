@@ -1,7 +1,7 @@
 version: '3'
 services:
   gql-schema-registry-db:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

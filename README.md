@@ -59,7 +59,7 @@ docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 
 ```mermaid
 flowchart LR
-    GW[federated-gateway] == poll schema every 10 sec\n POST /schema/compose ==> SR["schema registry\n(gql-schema-registry)"] -- store schemas --> DB[("postgres 16\n(gql-schema-registry-db)")]
+    GW[federated-gateway] == poll schema every 10 sec\n POST /schema/compose ==> SR["schema registry\n(gql-schema-registry)"] -- store schemas --> DB[("postgres 18\n(gql-schema-registry-db)")]
     SR -- cache persisted queries\nstore & query last logs --> R[("redis 6\n(gql-schema-registry-redis)")]
     SR -- publish schema change --> KF1("kafka\n(gql-schema-registry-kafka)\ngraphql-schema-updates topic") -- listen schema updates --> GW
     GW -- publish queries --> KF2("kafka\n(gql-schema-registry-kafka)\ngraphql-queries topic")
@@ -98,7 +98,7 @@ flowchart LR
 | styled-components           | apollo-server-express, dataloader |
 |                             | redis 6                           |
 |                             | knex                              |
-|                             | postgres 16                       |
+|                             | postgres 18                       |
 
 ### DB structure
 
