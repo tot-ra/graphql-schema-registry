@@ -9,6 +9,26 @@ import { rowsFromRaw } from './database/raw-results';
 
 dotenv.config();
 
+function booleanFor(variable: string | undefined, defaultValue = 'false') {
+	return (variable || defaultValue).toLowerCase() === 'true';
+}
+
+function parseDbSsl() {
+	if (!booleanFor(process.env.DB_SSL)) {
+		return undefined;
+	}
+
+	const ssl: { rejectUnauthorized: boolean; ca?: string } = {
+		rejectUnauthorized: booleanFor(process.env.DB_SSL_REJECT_UNAUTHORIZED, 'true'),
+	};
+
+	if (process.env.DB_SSL_CA) {
+		ssl.ca = process.env.DB_SSL_CA.replace(/\\n/g, '\n');
+	}
+
+	return ssl;
+}
+
 process.on('unhandledRejection', (error: Error) => {
 	logger.error(`unhandledRejection: ${error.message}`, {
 		original_error: error,
@@ -29,6 +49,8 @@ async function createDatabaseIfNotExists() {
 	const dbConfig = config.serviceDiscovery['gql-schema-registry-db'];
 	const dbName = dbConfig.name;
 	const dbClient = dbConfig.client || 'pg';
+	const adminDatabase =
+		process.env.DB_ADMIN_DATABASE || (dbClient === 'pg' ? 'postgres' : undefined);
 
 	const adminConnection = knex({
 		client: dbClient,
@@ -37,7 +59,8 @@ async function createDatabaseIfNotExists() {
 			port: parseInt(dbConfig.port),
 			user: dbConfig.username,
 			password: dbConfig.secret,
-			database: dbClient === 'pg' ? 'postgres' : undefined,
+			database: adminDatabase,
+			ssl: parseDbSsl(),
 			connectTimeout: 5000,
 		},
 	});

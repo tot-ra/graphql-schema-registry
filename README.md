@@ -180,11 +180,16 @@ The following are the different environment variables that are looked up that al
 
 | Variable Name         | Description                                                                   | Default                   |
 | --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
+| DB_CLIENT             | DB driver used by knex                                                        | pg                        |
 | DB_HOST               | Host name of the Postgres server                                              | gql-schema-registry-db    |
 | DB_USERNAME           | Username to connect to Postgres                                               | postgres                  |
 | DB_SECRET             | Password used to connect to Postgres                                          | postgres                  |
 | DB_PORT               | Port used when connecting to Postgres                                         | 5432                      |
 | DB_NAME               | Name of the Postgres database to connect to                                   | schema_registry           |
+| DB_ADMIN_DATABASE     | Admin DB used for existence checks/creation before migrations                 | postgres                  |
+| DB_SSL                | Enables TLS for Postgres connections                                          | false                     |
+| DB_SSL_REJECT_UNAUTHORIZED | Controls server cert validation when DB_SSL=true                        | true                      |
+| DB_SSL_CA             | Optional CA certificate content for TLS (supports `\\n` escaped newlines)    | Empty                     |
 | DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
