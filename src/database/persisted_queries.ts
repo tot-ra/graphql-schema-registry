@@ -58,12 +58,10 @@ const PersistedQueriesModel = {
 	},
 
 	set: async function ({ persistedQuery, ttl = DEFAULT_TTL }) {
-		await connection.raw(
-			connection('persisted_queries')
-				.insert(persistedQuery)
-				.toString()
-				.replace(/^insert/i, 'insert ignore')
-		);
+		await connection('persisted_queries')
+			.insert(persistedQuery)
+			.onConflict('key')
+			.ignore();
 
 		// no need to wait until it finishes
 		await redis.set(persistedQuery.key, JSON.stringify(persistedQuery), ttl);

@@ -3,6 +3,7 @@ import { find } from 'lodash';
 
 import clientsModel from './clients';
 import { connection, transact } from './index';
+import { rowsFromRaw } from './raw-results';
 // import prometheus from '../prometheus';
 import redis from '../redis';
 
@@ -15,13 +16,13 @@ const schemaHitModel = {
 	MAX_RETENTION_DAYS: 5,
 
 	init: function () {
-		logger.info('starting schema hit entity memory-to-mysql synchronizer');
+		logger.info('starting schema hit entity memory-to-db synchronizer');
 		schemaHitModel.timer = setInterval(
 			schemaHitModel.syncUniqueClientsToDb,
 			schemaHitModel.SAVE_INTERVAL_MS
 		);
 
-		logger.info('starting schema hit entity periodic cleanup from mysql');
+		logger.info('starting schema hit entity periodic cleanup from db');
 		setInterval(async () => {
 			const now = new Date().getTime();
 
@@ -104,19 +105,29 @@ const schemaHitModel = {
 			)[0].cnt;
 
 			if (clientHitCount > 0) {
-				const incrementHitsSQL = incrementHits ? 'hits + ?' : '?';
-				await trx.raw(
-					`UPDATE schema_hit
-					 SET hits = ${incrementHitsSQL}, updated_time=FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)
-					 WHERE entity = ? AND property = ? AND day = ? AND client_id IS NULL`,
-					[hits, entity, property, day]
-				);
+				await trx('schema_hit')
+					.where({
+						entity,
+						property,
+						day,
+					})
+					.whereNull('client_id')
+					.update({
+						hits: incrementHits ? trx.raw('hits + ?', [hits]) : hits,
+						updated_time: Date.now(),
+					});
 			} else {
-				await trx.raw(
-					`INSERT IGNORE INTO schema_hit (entity, property, day, hits, client_id, updated_time)
-					 VALUES (?, ?, ?, ?, null, FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000))`,
-					[entity, property, day, hits]
-				);
+				await trx('schema_hit')
+					.insert({
+						entity,
+						property,
+						day,
+						hits,
+						client_id: null,
+						updated_time: Date.now(),
+					})
+					.onConflict(['client_id', 'entity', 'property', 'day'])
+					.ignore();
 			}
 		});
 	},
@@ -140,23 +151,29 @@ const schemaHitModel = {
 			)[0].cnt;
 
 			if (clientHitCount > 0) {
-				const incrementHitsSQL = incrementHits ? 'hits + ?' : '?';
-
-				await trx.raw(
-					`UPDATE schema_hit
-					 SET hits = ${incrementHitsSQL}, updated_time = FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000)
-					 WHERE entity = ?
-					   AND property = ?
-					   AND day = ?
-					   AND client_id = ?`,
-					[hits, entity, property, day, client.id]
-				);
+				await trx('schema_hit')
+					.where({
+						entity,
+						property,
+						day,
+						client_id: client.id,
+					})
+					.update({
+						hits: incrementHits ? trx.raw('hits + ?', [hits]) : hits,
+						updated_time: Date.now(),
+					});
 			} else {
-				await trx.raw(
-					`INSERT IGNORE INTO schema_hit (entity, property, day, hits, client_id, updated_time)
-					 VALUES (?, ?, ?, ?, ?, FLOOR(UNIX_TIMESTAMP(NOW(3)) * 1000))`,
-					[entity, property, day, hits, client.id]
-				);
+				await trx('schema_hit')
+					.insert({
+						entity,
+						property,
+						day,
+						hits,
+						client_id: client.id,
+						updated_time: Date.now(),
+					})
+					.onConflict(['client_id', 'entity', 'property', 'day'])
+					.ignore();
 			}
 		});
 	},
@@ -226,29 +243,29 @@ const schemaHitModel = {
 			return JSON.parse(cachedResults);
 		}
 
-		// @ts-ignore
 		const results = await connection.raw(
-			`SELECT DATE_FORMAT(sh.day, "%Y-%m-%d") as day,
+			`SELECT TO_CHAR(sh.day, 'YYYY-MM-DD') as day,
 					SUM(sh.hits)                    as hits,
 					sh.entity,
 					sh.property,
-					c.name                          as clientName
+					c.name                          as "clientName"
 			 FROM schema_hit sh
 					  LEFT JOIN clients c on sh.client_id = c.id
 			 WHERE sh.entity = ?
 			   AND sh.property = ?
-			 GROUP BY c.name, day
+			 GROUP BY c.name, day, sh.entity, sh.property
 			 ORDER BY c.name, day`,
 			[entity, property]
 		);
+		const rows = rowsFromRaw(results);
 
 		await redis.set(
 			`schema_hits.${entity}.${property}`,
-			JSON.stringify(results[0]),
+			JSON.stringify(rows),
 			60
 		);
 
-		return results[0];
+		return rows;
 	},
 
 	list: async function ({ since, limit = 500 }) {
@@ -256,12 +273,11 @@ const schemaHitModel = {
 			return [];
 		}
 
-		// @ts-ignore
 		const results = await connection.raw(
-			`SELECT DATE_FORMAT(day, "%Y-%m-%d") as day,
-					hits,
+			`SELECT TO_CHAR(day, 'YYYY-MM-DD') as day,
+					hits::int                      as hits,
 					client_id,
-					updated_time                 as updatedTime,
+					updated_time                 as "updatedTime",
 					entity,
 					property
 			 FROM schema_hit
@@ -271,7 +287,7 @@ const schemaHitModel = {
 			[since, limit]
 		);
 
-		return results[0];
+		return rowsFromRaw(results);
 	},
 
 	sum: async function ({ entity, property }) {
@@ -288,7 +304,6 @@ const schemaHitModel = {
 
 		logger.info(`Cleaning up schema usage older than ${dayFormatted}`);
 
-		// @ts-ignore
 		await connection.raw(
 			`DELETE
 			 FROM schema_hit

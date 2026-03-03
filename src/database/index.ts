@@ -24,9 +24,10 @@ function logQueryError(error, { sql }) {
 
 const { host, port, username, secret, name } =
 	diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
+const dbConfig = diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
 
 export const connection = knex({
-	client: 'mysql2',
+	client: dbConfig.client || 'pg',
 	log: {
 		warn: logger.info,
 		error: logger.error,
@@ -42,7 +43,6 @@ export const connection = knex({
 			database: name,
 			connectTimeout: 5000,
 			expirationChecker: () => true,
-			multipleStatements: true,
 		};
 	},
 });

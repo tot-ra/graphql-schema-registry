@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { print, parse } from 'graphql';
 
 import { connection } from './index';
+import { firstInsertId, rowsFromRaw } from './raw-results';
 import servicesModel from './services';
 import { PublicError } from '../helpers/error';
 import { logger } from '../logger';
@@ -15,7 +16,19 @@ function isDevVersion(version: string) {
 interface SchemaRecord {
 	id: string;
 	type_defs: string;
-	is_active: boolean;
+	is_active: boolean | number;
+}
+
+function normalizeSchemaRow<T extends Record<string, any>>(row: T): T {
+	const normalized: Record<string, any> = { ...row };
+
+	for (const key of ['id', 'service_id', 'schema_id']) {
+		if (normalized[key] !== undefined && normalized[key] !== null) {
+			normalized[key] = Number(normalized[key]);
+		}
+	}
+
+	return normalized as T;
 }
 
 const schemaModel = {
@@ -60,7 +73,7 @@ const schemaModel = {
 		return results.map((row) => {
 			return {
 				__typename: 'SchemaDefinition',
-				...row,
+				...normalizeSchemaRow(row),
 			};
 		});
 	},
@@ -88,34 +101,34 @@ const schemaModel = {
 					t4.added_time,
 					t4.type_defs,
 					t4.is_active
-			 FROM \`container_schema\` as t1
+			 FROM "container_schema" as t1
 					  INNER JOIN (
 				 SELECT MAX(cs1.added_time) as max_added_time,
 						MAX(cs1.id)         as max_id,
 						cs1.service_id
-				 FROM \`container_schema\` cs1
-						  INNER JOIN \`schema\` s1 on cs1.schema_id = s1.id
-				 WHERE s1.is_active <> 0
+				 FROM "container_schema" cs1
+						  INNER JOIN "schema" s1 on cs1.schema_id = s1.id
+				 WHERE s1.is_active::text IN ('1','t','true')
 				 GROUP BY cs1.service_id
 			 ) as t2 ON t2.service_id = t1.service_id
-					  INNER JOIN \`services\` t3 ON t3.id = t1.service_id
-					  INNER JOIN \`schema\` t4 ON t4.id = t1.schema_id
-			 WHERE t3.name IN (?)
+					  INNER JOIN "services" t3 ON t3.id = t1.service_id
+					  INNER JOIN "schema" t4 ON t4.id = t1.schema_id
+			 WHERE t3.name IN (${names.map(() => '?').join(',')})
 			   AND t3.id = t2.service_id
 			   AND (
 						 t4.added_time = t2.max_added_time OR
 						 t1.id = t2.max_id
 				 )
-			   AND t4.is_active = TRUE
+			   AND t4.is_active::text IN ('1','t','true')
 			 ORDER BY t1.service_id, t1.added_time DESC, t1.id DESC`,
-			[names]
+			names
 		);
 
-		if (!latestSchemaCandidates || !latestSchemaCandidates.length) {
+		const schemas = rowsFromRaw(latestSchemaCandidates).map(normalizeSchemaRow);
+
+		if (!schemas.length) {
 			return [];
 		}
-
-		const schemas = latestSchemaCandidates[0];
 		const result = {};
 
 		for (const next of schemas) {
@@ -159,7 +172,8 @@ const schemaModel = {
 			'name'
 		);
 
-		const schema = await trx('container_schema')
+		const schema = (
+			await trx('container_schema')
 			.select([
 				'container_schema.*',
 				'services.name',
@@ -180,9 +194,8 @@ const schemaModel = {
 					});
 				});
 			})
-			.andWhere({
-				'services.is_active': true,
-			});
+			.andWhereRaw(`services.is_active::text IN ('1','t','true')`)
+		).map(normalizeSchemaRow);
 
 		const servicesToFallback = services.reduce((result, service) => {
 			if (!schema.find((schema) => schema.name === service.name)) {
@@ -269,15 +282,16 @@ const schemaModel = {
 		} else {
 			const type_defs_normalized = normalizeTypeDefs(service.type_defs);
 
-			[schemaId] = await trx('schema').insert(
+			const inserted = await trx('schema').insert(
 				{
 					service_id: serviceId,
-					UUID: generateUUID(type_defs_normalized),
+					uuid: generateUUID(type_defs_normalized),
 					type_defs: type_defs_normalized,
 					added_time: addedTime,
 				},
 				['id']
 			);
+			schemaId = firstInsertId(inserted);
 		}
 
 		logger.info(`Registering schema with schemaId = ${schemaId}`);
@@ -315,7 +329,7 @@ const schemaModel = {
 		}
 
 		if (!containerId) {
-			containerId = await trx('container_schema').insert(
+			const insertedContainer = await trx('container_schema').insert(
 				{
 					schema_id: schemaId,
 					service_id: serviceId,
@@ -324,6 +338,7 @@ const schemaModel = {
 				},
 				['id']
 			);
+			containerId = firstInsertId(insertedContainer);
 		}
 
 		logger.info(`Registering schema with containerId = ${containerId}`);
@@ -342,7 +357,7 @@ const schemaModel = {
 	) {
 		return trx('schema')
 			.update({
-				is_active: isActive,
+				is_active: isActive ? 1 : 0,
 			})
 			.where({
 				id,
@@ -408,7 +423,7 @@ const schemaModel = {
 	listMigrateableSchemas: async function (knex, limit = 100) {
 		return await knex('schema')
 			.select(['schema.id', 'schema.type_defs', 'schema.is_active'])
-			.whereNull('schema.UUID')
+			.whereNull('schema.uuid')
 			.limit(limit);
 	},
 
@@ -428,7 +443,7 @@ const schemaModel = {
 				await knex('schema')
 					.where('id', '=', row.id)
 					.update({
-						UUID: generateUUID(type_defs),
+						uuid: generateUUID(type_defs),
 						type_defs, // make new type defs pretty
 						updated_time: row.updated_time, // keep old update time
 					});
@@ -456,7 +471,7 @@ async function findExistingSchema(trx, serviceId, type_defs) {
 			.select('id')
 			.where({
 				service_id: serviceId,
-				UUID: generateUUID(normalizeTypeDefs(type_defs)),
+				uuid: generateUUID(normalizeTypeDefs(type_defs)),
 			})
 	)[0]?.id;
 }

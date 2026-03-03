@@ -20,7 +20,7 @@ describe('app/database/schema', () => {
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA2 { name: String }`,
-			UUID: 'asd',
+			uuid: 'asd',
 		});
 
 		const result = await schemaModel.listMigrateableSchemas(knex);
@@ -46,7 +46,7 @@ describe('app/database/schema', () => {
 		await knex('schema').insert({
 			service_id: 1,
 			type_defs: `type UserA2 { name: String }`,
-			UUID: 'asd',
+			uuid: 'asd',
 		});
 
 		await knex('schema').insert({

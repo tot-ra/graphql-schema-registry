@@ -1,29 +1,62 @@
 version: '3'
 services:
+  gql-schema-registry-db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=schema_registry
+    volumes:
+      - gql-schema-registry-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d schema_registry']
+      timeout: 5s
+      retries: 10
+    networks:
+      gratheon_default:
+        aliases:
+          - gql-schema-registry-db
+
   gql-schema-registry:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect
+    command: sh -c "npm install && ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect"
     ports:
       - 6001:3000
       - 6002:5850
     volumes:
       - .:/app/
+      - /app/node_modules
     environment:
       - ENV_ID=dev
       - WITH_WEBPACK=${WITH_WEBPACK-1}
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_SECRET=test
+      - DB_CLIENT=pg
+      - DB_HOST=gql-schema-registry-db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_SECRET=postgres
       - DB_NAME=schema_registry
       - REDIS_HOST=redis
       - REDIS_SECRET=pass
+    depends_on:
+      - gql-schema-registry-db
+      - gql-schema-registry-redis
     networks:
       - gratheon_default
+
+  gql-schema-registry-redis:
+    image: redis:6-alpine
+    command: redis-server --requirepass pass
+    networks:
+      gratheon_default:
+        aliases:
+          - redis
 
 networks:
   gratheon_default:
     external: true
+
+volumes:
+  gql-schema-registry-db-volume:

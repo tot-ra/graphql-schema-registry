@@ -2,6 +2,9 @@ start:
 	mkdir -p tmp
 	rm -rf ./app
 	bash -c "source $HOME/.nvm/nvm.sh && nvm install 22 && nvm use && npm i && npm run build"
+	COMPOSE_PROJECT_NAME=gratheon docker compose -f docker-compose.gratheon.yml rm -sf gql-schema-registry gql-schema-registry-db || true
+	COMPOSE_PROJECT_NAME=graphql-schema-registry docker compose -f docker-compose.base.yml -f docker-compose.dev.yml rm -sf gql-schema-registry gql-schema-registry-worker gql-schema-registry-db gql-schema-registry-redis gql-schema-registry-kafka gql-schema-registry-zookeeper || true
+	COMPOSE_PROJECT_NAME=graphql-schema-registry docker compose -f docker-compose.gratheon.yml rm -sf gql-schema-registry gql-schema-registry-db || true
 	COMPOSE_PROJECT_NAME=gratheon docker compose -f docker-compose.gratheon.yml up --build
 
 stop:

@@ -64,12 +64,41 @@ describe('app/graphql', () => {
 				// ACT
 				const result = await resolvers.Query.service(
 					null,
-					{ id: addedService.id },
+					{ id: Number(addedService.id) },
 					{ dataloaders: dataloader(knex) }
 				);
 
 				// ASSERT
 				expect(result).toMatchObject({ name: 'service_a' });
+			});
+		});
+
+		describe('Service { schemas } ', () => {
+			it('returns schemas when service id is number and DB row id is string', async () => {
+				await servicesModel.insertService(knex, 'service_a', '');
+				await schemaModel.registerSchema({
+					trx: knex,
+					service: {
+						name: 'service_a',
+						version: 'v1',
+						url: '',
+						type_defs: 'type Query { hello: String }',
+					},
+				});
+
+				const service = await servicesModel.getService(knex, 'service_a');
+				const result = await resolvers.Service.schemas(
+					{ id: Number(service.id) },
+					{ limit: 100, offset: 0, filter: '' },
+					{ dataloaders: dataloader(knex) }
+				);
+
+				expect(result).toHaveLength(1);
+				expect(result[0]).toMatchObject({
+					type_defs: `type Query {
+  hello: String
+}`,
+				});
 			});
 		});
 

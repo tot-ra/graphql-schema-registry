@@ -21,14 +21,21 @@ export default (connection): DataloaderSet => ({
 			});
 
 			const byIds = new Map(
-				keys.map(({ serviceId }) => [
-					serviceId,
-					schemas.filter((schema) => schema.service_id === serviceId),
-				])
+				keys.map(({ serviceId }) => {
+					const normalizedServiceId = String(serviceId);
+					return [
+						normalizedServiceId,
+						schemas.filter(
+							(schema) =>
+								String((schema as Record<string, unknown>).service_id) ===
+								normalizedServiceId
+						),
+					];
+				})
 			);
 
 			return serviceIds.map((id) => {
-				const r = byIds.get(id);
+				const r = byIds.get(String(id));
 				return r ? r : null;
 			});
 		},
@@ -39,10 +46,12 @@ export default (connection): DataloaderSet => ({
 
 	services: new Dataloader(async (ids: string[]) => {
 		const services = await servicesModel.getServicesByIds(connection, ids);
-		const byIds = new Map(services.map((service) => [service.id, service]));
+		const byIds = new Map(
+			services.map((service) => [String(service.id), service])
+		);
 
 		return ids.map((id) => {
-			const r = byIds.get(id);
+			const r = byIds.get(String(id));
 			return r ? r : null;
 		});
 	}),

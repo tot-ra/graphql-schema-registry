@@ -14,7 +14,6 @@ module.exports = {
 		database: name,
 		user: username,
 		password: secret,
-		multipleStatements: true,
 	},
 	migrations: {
 		//Required to prevent Knex from complaining that the original js based migrations are not found by CustomSqlMigrationSource

@@ -1,3 +1,2 @@
-ALTER TABLE `services`
-    ADD `url` varchar(255) DEFAULT NULL
-    COMMENT 'Url for a specific service';
+ALTER TABLE services
+    ADD COLUMN IF NOT EXISTS url VARCHAR(255) DEFAULT NULL;

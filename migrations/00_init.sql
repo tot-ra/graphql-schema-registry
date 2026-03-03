@@ -1,47 +1,37 @@
-CREATE TABLE IF NOT EXISTS persisted_queries
-(
-    `key`          varchar(100) NOT NULL,
-    query        text         NOT NULL,
-    is_active    int          NOT NULL DEFAULT '1',
-    updated_time datetime              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    added_time   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`key`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS persisted_queries (
+    id BIGSERIAL PRIMARY KEY,
+    key VARCHAR(100) NOT NULL UNIQUE,
+    query TEXT NOT NULL,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    updated_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    added_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE IF NOT EXISTS services
-(
-    id           int unsigned NOT NULL AUTO_INCREMENT,
-    name         varchar(255) NOT NULL DEFAULT '',
-    is_active    int          NOT NULL DEFAULT '1',
-    updated_time datetime              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    added_time   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY name (name)
-) ENGINE = InnoDB AUTO_INCREMENT = 3 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS services (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL DEFAULT '' UNIQUE,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    updated_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    added_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE IF NOT EXISTS `schema`
-(
-    id           int unsigned NOT NULL AUTO_INCREMENT,
-    service_id   int unsigned          DEFAULT NULL,
-    is_active    tinyint               DEFAULT '1' COMMENT 'If schema is deleted, this is set to 0',
-    type_defs    text COMMENT 'Graphql schema definition for specific service',
-    added_time   datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time of first registration',
-    updated_time datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Time of last registration OR deactivation',
-    PRIMARY KEY (id),
-    KEY service_id (service_id),
-    CONSTRAINT schema_ibfk_1 FOREIGN KEY (service_id) REFERENCES services (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS "schema" (
+    id BIGSERIAL PRIMARY KEY,
+    service_id BIGINT NULL REFERENCES services(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    type_defs TEXT,
+    added_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TABLE IF NOT EXISTS container_schema
-(
-    id         int unsigned NOT NULL AUTO_INCREMENT,
-    service_id int unsigned NOT NULL,
-    schema_id  int unsigned NOT NULL,
-    version    varchar(100) NOT NULL DEFAULT '',
-    added_time datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY service_id (service_id, version),
-    KEY schema_id (schema_id),
-    CONSTRAINT container_schema_ibfk_1 FOREIGN KEY (service_id) REFERENCES services (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT container_schema_ibfk_2 FOREIGN KEY (schema_id) REFERENCES `schema` (id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+CREATE TABLE IF NOT EXISTS container_schema (
+    id BIGSERIAL PRIMARY KEY,
+    service_id BIGINT NOT NULL REFERENCES services(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    schema_id BIGINT NOT NULL REFERENCES "schema"(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    version VARCHAR(100) NOT NULL DEFAULT '',
+    added_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (service_id, version)
+);
+
+CREATE INDEX IF NOT EXISTS idx_schema_service_id ON "schema"(service_id);
+CREATE INDEX IF NOT EXISTS idx_container_schema_schema_id ON container_schema(schema_id);
