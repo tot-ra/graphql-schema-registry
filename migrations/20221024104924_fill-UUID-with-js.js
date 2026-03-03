@@ -1,7 +1,10 @@
 const crypto = require('crypto');
 
 function generateUUID(typeDefs) {
-	return crypto.createHash('md5').update(typeDefs || '').digest('hex');
+	return crypto
+		.createHash('md5')
+		.update(typeDefs || '')
+		.digest('hex');
 }
 
 module.exports.up = async function (knex) {
@@ -11,9 +14,11 @@ module.exports.up = async function (knex) {
 			.whereNull('uuid');
 
 		for (const row of rows) {
-			await knex('schema').where({ id: row.id }).update({
-				uuid: generateUUID(row.type_defs),
-			});
+			await knex('schema')
+				.where({ id: row.id })
+				.update({
+					uuid: generateUUID(row.type_defs),
+				});
 		}
 	} catch (e) {
 		// eslint-disable-next-line

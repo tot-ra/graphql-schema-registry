@@ -174,27 +174,29 @@ const schemaModel = {
 
 		const schema = (
 			await trx('container_schema')
-			.select([
-				'container_schema.*',
-				'services.name',
-				'services.url',
-				'schema.is_active',
-				'schema.type_defs',
-			])
-			.innerJoin('services', 'container_schema.service_id', 'services.id')
-			.innerJoin('schema', 'container_schema.schema_id', 'schema.id')
-			.where((query) => {
-				services.forEach((service) => {
-					const skip =
-						!service.name || !service.version || isDevVersion(service.version);
+				.select([
+					'container_schema.*',
+					'services.name',
+					'services.url',
+					'schema.is_active',
+					'schema.type_defs',
+				])
+				.innerJoin('services', 'container_schema.service_id', 'services.id')
+				.innerJoin('schema', 'container_schema.schema_id', 'schema.id')
+				.where((query) => {
+					services.forEach((service) => {
+						const skip =
+							!service.name ||
+							!service.version ||
+							isDevVersion(service.version);
 
-					query.orWhere({
-						'services.name': skip ? null : service.name,
-						'container_schema.version': skip ? null : service.version,
+						query.orWhere({
+							'services.name': skip ? null : service.name,
+							'container_schema.version': skip ? null : service.version,
+						});
 					});
-				});
-			})
-			.andWhereRaw(`services.is_active::text IN ('1','t','true')`)
+				})
+				.andWhereRaw(`services.is_active::text IN ('1','t','true')`)
 		).map(normalizeSchemaRow);
 
 		const servicesToFallback = services.reduce((result, service) => {
