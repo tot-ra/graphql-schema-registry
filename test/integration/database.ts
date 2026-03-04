@@ -1,15 +1,15 @@
 const { services, discovery } = require('./discovery');
 
 const knex = require('knex')({
-	client: 'mysql2',
+	client: 'pg',
 	connection: async () => {
-		const { host, port } = await discovery(services.mysql);
+		const { host, port } = await discovery(services.db);
 
 		return {
 			host,
 			port,
-			user: 'root',
-			password: 'root',
+			user: 'postgres',
+			password: 'postgres',
 			database: 'schema_registry',
 			pool: { min: 0, max: 30, acquireTimeoutMillis: 30 * 1000 },
 		};
@@ -17,13 +17,13 @@ const knex = require('knex')({
 });
 
 export async function cleanTables() {
-	await knex.raw('DELETE FROM `schema_hit`;');
-	await knex.raw('DELETE FROM `clients_persisted_queries_rel`;');
-	await knex.raw('DELETE FROM `clients`;');
-	await knex.raw('DELETE FROM `container_schema`;');
-	await knex.raw('DELETE FROM `schema`;');
-	await knex.raw('DELETE FROM `services`;');
-	await knex.raw('DELETE FROM `persisted_queries`;');
+	await knex('schema_hit').delete();
+	await knex('clients_persisted_queries_rel').delete();
+	await knex('clients').delete();
+	await knex('container_schema').delete();
+	await knex('schema').delete();
+	await knex('services').delete();
+	await knex('persisted_queries').delete();
 }
 
 export default knex;

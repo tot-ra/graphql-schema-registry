@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect
+    command: sh -c "npm install && ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect"
     ports:
       - 6001:3000
       - 6002:5850
@@ -12,7 +12,7 @@ services:
       - ENV_ID=dev
       - WITH_WEBPACK=${WITH_WEBPACK-1}
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
-      - ASYNC_SCHEMA_UPDATES=true
+      - ASYNC_SCHEMA_UPDATES=false
       - KAFKA_CLIENT=graphql-schema-registry-server
       - KAFKA_BROKER_HOST=gql-schema-registry-kafka
       - KAFKA_BROKER_PORT=9092
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: ./node_modules/.bin/ts-node-dev --respawn src/worker/index.ts --watch src --inspect
+    command: sh -c "npm install && until wget -q -O- http://gql-schema-registry:3000/health >/dev/null 2>&1; do echo 'waiting for gql-schema-registry...'; sleep 2; done && ./node_modules/.bin/ts-node-dev --respawn src/worker/index.ts --watch src --inspect"
     environment:
       - ENV_ID=dev
       - SERVICE_NAME=gql-schema-registry-worker
@@ -47,6 +47,7 @@ services:
       - .:/app/
     restart: always
     depends_on:
+      - gql-schema-registry
       - gql-schema-registry-redis
       - gql-schema-registry-db
       - gql-schema-registry-kafka

@@ -1,7 +1,10 @@
 FROM node:22-alpine
 
-# ensure all directories exist
 WORKDIR /app
+
+# Install dependencies for build
+COPY package.json package-lock.json ./
+RUN npm install
 
 EXPOSE 3000
 

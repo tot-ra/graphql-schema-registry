@@ -6,6 +6,26 @@ const DB_SCHEMA_REGISTRY =
 
 import knex from 'knex';
 
+function booleanFor(variable: string | undefined, defaultValue = 'false') {
+	return (variable || defaultValue).toLowerCase() === 'true';
+}
+
+function parseDbSsl() {
+	if (!booleanFor(process.env.DB_SSL)) {
+		return undefined;
+	}
+
+	const ssl: { rejectUnauthorized: boolean; ca?: string } = {
+		rejectUnauthorized: booleanFor(process.env.DB_SSL_REJECT_UNAUTHORIZED, 'true'),
+	};
+
+	if (process.env.DB_SSL_CA) {
+		ssl.ca = process.env.DB_SSL_CA.replace(/\\n/g, '\n');
+	}
+
+	return ssl;
+}
+
 function cleanupSQL(sql) {
 	return sql.replace(
 		/(\(\?(?:, \?)+\))(, \(\?(?:, \?)+\))+/,
@@ -24,9 +44,10 @@ function logQueryError(error, { sql }) {
 
 const { host, port, username, secret, name } =
 	diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
+const dbConfig = diplomat.getServiceInstance(DB_SCHEMA_REGISTRY);
 
 export const connection = knex({
-	client: 'mysql2',
+	client: dbConfig.client || 'pg',
 	log: {
 		warn: logger.info,
 		error: logger.error,
@@ -40,9 +61,9 @@ export const connection = knex({
 			user: username,
 			password: secret,
 			database: name,
+			ssl: parseDbSsl(),
 			connectTimeout: 5000,
 			expirationChecker: () => true,
-			multipleStatements: true,
 		};
 	},
 });

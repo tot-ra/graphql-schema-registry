@@ -1,19 +1,17 @@
 version: '3'
 services:
   gql-schema-registry-db:
-    image: mysql:8.2
-    command: mysqld --default-authentication-plugin=mysql_native_password --skip-mysqlx
+    image: postgres:18-alpine
     environment:
-      SERVICE_3306_NAME: gql-schema-registry-db
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: schema_registry
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: schema_registry
     ports:
-      - 6000:3306
+      - 6000:5432
     volumes:
-      - gql-schema-registry-db-volume:/var/lib/mysql
+      - gql-schema-registry-db-volume:/var/lib/postgresql/data
     healthcheck:
-      test:
-        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'healthcheck']
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d schema_registry']
       timeout: 5s
       retries: 10
     networks:

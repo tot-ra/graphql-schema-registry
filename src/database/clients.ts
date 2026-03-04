@@ -10,7 +10,7 @@ const clientsModel = {
 	SAVE_INTERVAL_MS: 30 * 1000,
 
 	init: () => {
-		logger.info('starting clients entity memory-to-mysql synchronizer');
+		logger.info('starting clients entity memory-to-db synchronizer');
 		clientsModel.timer = setInterval(
 			clientsModel.syncUniqueClientsToDb,
 			clientsModel.SAVE_INTERVAL_MS
@@ -91,10 +91,10 @@ const clientsModel = {
 			}
 
 			try {
-				await connection.raw(
-					'INSERT IGNORE INTO clients_persisted_queries_rel (version_id, pq_key) VALUES (?, ?)',
-					[clientVersionId, pqKey]
-				);
+				await connection('clients_persisted_queries_rel')
+					.insert({ version_id: clientVersionId, pq_key: pqKey })
+					.onConflict(['version_id', 'pq_key'])
+					.ignore();
 			} catch (e) {
 				logger.warn(e, { version_id: clientVersionId, pqKey });
 			}
@@ -107,16 +107,19 @@ const clientsModel = {
 		version,
 		addedTime = null,
 	}) => {
-		const sql = await trx('clients')
-			.insert({
-				name,
-				version,
-				added_time: addedTime,
-			})
-			.toString()
-			.replace('insert', 'INSERT IGNORE');
+		const payload = {
+			name,
+			version,
+		} as Record<string, any>;
 
-		await trx.raw(sql);
+		if (addedTime !== null && typeof addedTime !== 'undefined') {
+			payload.added_time = addedTime;
+		}
+
+		await trx('clients')
+			.insert(payload)
+			.onConflict(['name', 'version'])
+			.ignore();
 
 		const result = await trx('clients')
 			.select('id')

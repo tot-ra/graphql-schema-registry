@@ -39,11 +39,11 @@ node app/schema-registry.js
 
 ### Docker image
 
-We have [docker image published](https://hub.docker.com/r/artjomkurapov/graphql-schema-registry) for main node service. It assumes you have mysql/redis running separately. Use exact IP instead of localhost. Use exact docker image tag to avoid breaking changes.
+We have [docker image published](https://hub.docker.com/r/artjomkurapov/graphql-schema-registry) for main node service. It assumes you have postgres/redis running separately. Use exact IP instead of localhost. Use exact docker image tag to avoid breaking changes.
 
 ```
 docker pull artjomkurapov/graphql-schema-registry:5.5.1
-docker run -e DB_HOST=localhost -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 artjomkurapov/graphql-schema-registry
+docker run -e DB_CLIENT=pg -e DB_HOST=localhost -e DB_USERNAME=postgres -e DB_SECRET=postgres -e DB_PORT=5432 -e DB_NAME=schema_registry -p 6001:3000 artjomkurapov/graphql-schema-registry
 ```
 
 ### Docker-compose
@@ -59,7 +59,7 @@ docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 
 ```mermaid
 flowchart LR
-    GW[federated-gateway] == poll schema every 10 sec\n POST /schema/compose ==> SR["schema registry\n(gql-schema-registry)"] -- store schemas --> DB[("mysql 8\n(gql-schema-registry-db)")]
+    GW[federated-gateway] == poll schema every 10 sec\n POST /schema/compose ==> SR["schema registry\n(gql-schema-registry)"] -- store schemas --> DB[("postgres 18\n(gql-schema-registry-db)")]
     SR -- cache persisted queries\nstore & query last logs --> R[("redis 6\n(gql-schema-registry-redis)")]
     SR -- publish schema change --> KF1("kafka\n(gql-schema-registry-kafka)\ngraphql-schema-updates topic") -- listen schema updates --> GW
     GW -- publish queries --> KF2("kafka\n(gql-schema-registry-kafka)\ngraphql-queries topic")
@@ -84,7 +84,7 @@ flowchart LR
 | ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | federated gateway | Required | Apollo server running in federated mode. You should have your own. Check [examples folder](examples/README.md) how to configure it. Note however, that gateway is very simplified and does not have proper error handling, [query cost limit checks](https://github.com/tot-ra/graphql-query-cost) or fail-safe mechanisms. |
 | schema registry   | Required | Main service that we provide                                                                                                                                                                                                                                                                                                |
-| mysql             | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                      |
+| postgres          | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                      |
 | query analyzer    | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder                                                                                                                                                                                                                             |
 | kafka             | Optional | Ties schema-registry and federated gateway with async messaging. Required for fast schema updates and for usage tracking                                                                                                                                                                                                    |
 | redis             | Optional | Caching layer for APQs. Not used much atm                                                                                                                                                                                                                                                                                   |
@@ -98,7 +98,7 @@ flowchart LR
 | styled-components           | apollo-server-express, dataloader |
 |                             | redis 6                           |
 |                             | knex                              |
-|                             | mysql 8                           |
+|                             | postgres 18                       |
 
 ### DB structure
 
@@ -180,11 +180,16 @@ The following are the different environment variables that are looked up that al
 
 | Variable Name         | Description                                                                   | Default                   |
 | --------------------- | ----------------------------------------------------------------------------- | ------------------------- |
-| DB_HOST               | Host name of the MySQL server                                                 | gql-schema-registry-db    |
-| DB_USERNAME           | Username to connect to MySQL                                                  | root                      |
-| DB_SECRET             | Password used to connect to MySQL                                             | root                      |
-| DB_PORT               | Port used when connecting to MySQL                                            | 3306                      |
-| DB_NAME               | Name of the MySQL database to connect to                                      | schema-registry           |
+| DB_CLIENT             | DB driver used by knex                                                        | pg                        |
+| DB_HOST               | Host name of the Postgres server                                              | gql-schema-registry-db    |
+| DB_USERNAME           | Username to connect to Postgres                                               | postgres                  |
+| DB_SECRET             | Password used to connect to Postgres                                          | postgres                  |
+| DB_PORT               | Port used when connecting to Postgres                                         | 5432                      |
+| DB_NAME               | Name of the Postgres database to connect to                                   | schema_registry           |
+| DB_ADMIN_DATABASE     | Admin DB used for existence checks/creation before migrations                 | postgres                  |
+| DB_SSL                | Enables TLS for Postgres connections                                          | false                     |
+| DB_SSL_REJECT_UNAUTHORIZED | Controls server cert validation when DB_SSL=true                        | true                      |
+| DB_SSL_CA             | Optional CA certificate content for TLS (supports `\\n` escaped newlines)    | Empty                     |
 | DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
@@ -202,7 +207,7 @@ The following are the different environment variables that are looked up that al
 | REDIS_DB              | Index of the logical redis database                                           | 2                         |
 
 For development we rely on docker network and use hostnames from `docker-compose.yml`.
-Node service uses to connect to mysql & redis and change it if you install it with own setup.
+Node service uses it to connect to postgres & redis and change it if you install it with your own setup.
 For dynamic service discovery (if you need multiple hosts for scaling), override `app/config.js` and `diplomat.js`
 
 ## Use cases / FAQ
@@ -266,7 +271,7 @@ docker-compose  -f docker-compose.base.yml  -f docker-compose.dev.yml up
 
 ### Running in light mode
 
-To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only mysql & redis
+To have fast iteration of working on UI changes, you can avoid running node service in docker, and run only postgres & redis
 
 ```
 docker-compose -f docker-compose.base.yml up -d
@@ -292,8 +297,16 @@ npm run migrate-db
 The command can be prefixed with any environment variable necessary to configure DB connection (in case you ALTER DB with another user), such as:
 
 ```bash
-DB_HOST=my-db-host DB_PORT=6000 npm run migrate-db
+DB_HOST=my-db-host DB_PORT=5432 npm run migrate-db
 ```
+
+If you need to migrate existing data from MySQL to Postgres, use:
+
+```bash
+npm run migrate:mysql-to-postgres
+```
+
+Detailed guide: [docs/POSTGRES_MIGRATION.md](docs/POSTGRES_MIGRATION.md)
 
 ## Testing
 
@@ -309,7 +322,7 @@ npm run test:unit
 
 ### Integration tests
 
-require docker, but mostly whitebox type - these call specific internal functions that do rely on real mysql/redis connections. Some tests mimic functional tests - main benefit is that we get test coverage reported without extra http calls.
+require docker, but mostly whitebox type - these call specific internal functions that do rely on real postgres/redis connections. Some tests mimic functional tests - main benefit is that we get test coverage reported without extra http calls.
 
 ```
 npm run test:integration
@@ -355,7 +368,7 @@ docker-compose -f docker-compose.light.yml up
 docker build -t local/graphql-schema-registry .
 
 # try to run it
-docker run -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=root -e DB_PORT=6000 -p 6001:3000 local/graphql-schema-registry
+docker run -e DB_CLIENT=pg -e DB_HOST=$(ipconfig getifaddr en0) -e DB_USERNAME=postgres -e DB_SECRET=postgres -e DB_PORT=5432 -e DB_NAME=schema_registry -p 6001:3000 local/graphql-schema-registry
 
 
 # build official image

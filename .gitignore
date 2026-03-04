@@ -22,3 +22,6 @@ dist
 # Snyk
 .dccache
 .eslintcache
+
+# Local-only compose override
+docker-compose.gratheon.yml

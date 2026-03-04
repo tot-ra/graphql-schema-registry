@@ -1,6 +1,6 @@
-ALTER TABLE `clients_persisted_queries_rel` ADD `added_time` DATETIME  NULL  DEFAULT CURRENT_TIMESTAMP AFTER `pq_key`;
+ALTER TABLE clients_persisted_queries_rel
+    ADD COLUMN IF NOT EXISTS added_time TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;
 
-ALTER TABLE `clients_persisted_queries_rel` 
-CHANGE `pq_key` `pq_key` VARCHAR(100) 
-CHARACTER SET utf8mb4  
-COLLATE utf8mb4_general_ci  NOT NULL  DEFAULT '';
+ALTER TABLE clients_persisted_queries_rel
+    ALTER COLUMN pq_key TYPE VARCHAR(100),
+    ALTER COLUMN pq_key SET DEFAULT '';

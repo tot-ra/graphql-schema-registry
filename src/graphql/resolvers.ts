@@ -29,8 +29,21 @@ export default {
 		service: async (_, { id }, { dataloaders }) =>
 			await dataloaders.services.load(id),
 		serviceCount: async () => await servicesModel.count(),
-		schema: async (_, { id }) =>
-			await schemaModel.getSchemaById(connection, id),
+		schema: async (_, { id }) => {
+			const schema = await schemaModel.getSchemaById(connection, id);
+
+			if (schema?.uuid && !schema?.UUID) {
+				const { uuid, ...rest } = schema;
+				const { id, ...otherFields } = rest;
+				return {
+					id,
+					UUID: uuid,
+					...otherFields,
+				};
+			}
+
+			return schema;
+		},
 		schemaPropertyHitsByClient: async (_, { entity, property }) =>
 			await schemaHit.get({ entity, property }),
 
@@ -181,6 +194,7 @@ export default {
 
 			return result;
 		},
+		UUID: (parent) => parent.UUID || parent.uuid || null,
 	},
 	SchemaField: {
 		hitsSum: async (parent) => {
