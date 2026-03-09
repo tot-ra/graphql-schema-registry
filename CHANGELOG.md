@@ -16,6 +16,27 @@ Types of changes:
 
 ## [Unreleased]
 
+## [6.0.0-rc] 2026-03-09
+
+### Changed
+
+- Upgraded runtime and build environment to Node.js 25
+  - Updated `.nvmrc` to 25
+  - Updated Docker images from `node:22-alpine` to `node:25-alpine`
+- Migrated package management workflow from npm to pnpm
+  - Added `packageManager: pnpm@10.29.2`
+  - Replaced npm commands with pnpm in `justfile`, Dockerfiles, and docker-compose startup commands
+  - Added `pnpm-lock.yaml` and removed `package-lock.json`
+- Updated docker-compose development services to run non-interactive pnpm installs in containers
+  - Added `CI=true pnpm install --force` in container startup commands
+  - Added `/app/node_modules` volume mounts for container-local dependencies
+- Updated Postgres volume mounts to use `/var/lib/postgresql` for compatibility with Postgres 18 images
+  - Fixed startup failures caused by legacy data directory mount layout
+
+### Fixed
+
+- Resolved npm dependency resolution errors during install (`ERESOLVE` with Material UI / React type peer constraints) by switching service install/build flow to pnpm
+
 ### Changed
 
 - Migrated frontend build from Webpack 5 to Vite for faster development startup and build times

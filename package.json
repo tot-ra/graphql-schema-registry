@@ -1,12 +1,13 @@
 {
   "name": "graphql-schema-registry",
-  "version": "5.5.1",
+  "version": "6.0.0-rc",
   "description": "Graphql schema registry",
   "main": "app/schema-registry.js",
   "engines": {
-    "node": ">=16",
-    "npm": ">=8"
+    "node": ">=25.0.0",
+    "pnpm": ">=10"
   },
+  "packageManager": "pnpm@10.29.2",
   "scripts": {
     "develop": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/schema-registry.ts --watch src --inspect",
     "develop-frontend": "vite",
@@ -27,7 +28,7 @@
     "format:check": "biome format .",
     "format:biomeignore": "biome format --write --config-path=. .",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md",
-    "build": "npm run build-backend && npm run build-frontend",
+    "build": "pnpm run build-backend && pnpm run build-frontend",
     "build-backend": "rimraf app && mkdir app && tsc",
     "build-frontend": "vite build",
     "docker-compose-validate": "docker-comply compose --file ./docker-compose.deploy.yml",
@@ -49,8 +50,8 @@
   ],
   "husky": {
     "hooks": {
-      "pre-commit": "npm run format",
-      "pre-push": "npm run format"
+      "pre-commit": "pnpm run format",
+      "pre-push": "pnpm run format"
     }
   },
   "license": "MIT",
@@ -61,6 +62,7 @@
     "@graphql-inspector/core": "3.3.0",
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "4.11.2",
+    "@pierre/diffs": "1.0.11",
     "apollo-server-express": "3.10.1",
     "body-parser": "1.20.1",
     "dataloader": "2.0.0",
@@ -77,9 +79,8 @@
     "pg": "8.16.3",
     "prismjs": "1.28.0",
     "prop-types": "15.8.1",
-    "react": "16.14.0",
-    "react-diff-viewer": "3.1.1",
-    "react-dom": "16.14.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-router-dom": "5.3.0",
     "redlock": "5.0.0-beta.2",
     "rumble-charts": "3.1.2",
@@ -94,13 +95,13 @@
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-typescript": "^7.16.7",
     "@biomejs/biome": "2.3.14",
+    "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^12.1.5",
-    "@testing-library/react-hooks": "^8.0.0",
+    "@testing-library/react": "16.3.0",
     "@types/jest": "^27.4.1",
     "@types/node": "20.14.8",
-    "@types/react": "^17.0.45",
-    "@types/react-dom": "^17.0.17",
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.25",
     "@vitejs/plugin-react": "^4.2.0",

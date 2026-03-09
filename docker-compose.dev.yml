@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: sh -c "npm install && ./node_modules/.bin/ts-node-dev --respawn src/schema-registry.ts --watch src --inspect"
+    command: sh -c "npm install -g pnpm@10.29.2 && CI=true pnpm install --force && pnpm exec ts-node-dev --respawn src/schema-registry.ts --watch src --inspect"
     ports:
       - 6001:3000
       - 6002:5850
@@ -21,6 +21,7 @@ services:
       - REDIS_SECRET=password
     volumes:
       - .:/app/
+      - /app/node_modules
     restart: always
     depends_on:
       - gql-schema-registry-redis
@@ -34,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: sh -c "npm install && until wget -q -O- http://gql-schema-registry:3000/health >/dev/null 2>&1; do echo 'waiting for gql-schema-registry...'; sleep 2; done && ./node_modules/.bin/ts-node-dev --respawn src/worker/index.ts --watch src --inspect"
+    command: sh -c "npm install -g pnpm@10.29.2 && CI=true pnpm install --force && until wget -q -O- http://gql-schema-registry:3000/health >/dev/null 2>&1; do echo 'waiting for gql-schema-registry...'; sleep 2; done && pnpm exec ts-node-dev --respawn src/worker/index.ts --watch src --inspect"
     environment:
       - ENV_ID=dev
       - SERVICE_NAME=gql-schema-registry-worker
@@ -45,6 +46,7 @@ services:
       - KAFKA_QUERIES_TOPIC=graphql-queries
     volumes:
       - .:/app/
+      - /app/node_modules
     restart: always
     depends_on:
       - gql-schema-registry
