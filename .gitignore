@@ -3,6 +3,7 @@ app
 
 # Dependency directories
 node_modules/
+.pnpm-store/
 
 # Optional npm cache directory
 .npm

@@ -1,26 +1,28 @@
 # 1. BUILD FRONTEND source with webpack
-FROM node:22-alpine as builder-frontend
+FROM node:25-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
-COPY git_src/package.json git_src/package-lock.json ./
-RUN npm install
+COPY git_src/package.json git_src/pnpm-lock.yaml ./
+RUN npm install -g pnpm@10.29.2
+RUN pnpm install --frozen-lockfile
 COPY git_src/webpack.config.js git_src/babel.config.js git_src/tsconfig.json git_src/.eslintrc git_src/.editorconfig ./
 COPY git_src/client ./client
-RUN npm run build-frontend
+RUN pnpm run build-frontend
 
 # 2. BUILD BACKEND source from .ts, uses dev-dependencies
-FROM node:22-alpine as builder-backend
+FROM node:25-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
-COPY git_src/package.json git_src/package-lock.json git_src/tsconfig.json git_src/webpack.config.js ./
-RUN npm install
+COPY git_src/package.json git_src/pnpm-lock.yaml git_src/tsconfig.json git_src/webpack.config.js ./
+RUN npm install -g pnpm@10.29.2
+RUN pnpm install --frozen-lockfile
 COPY git_src/src ./src
-RUN npm run build-backend
+RUN pnpm run build-backend
 
 # 3. BUILD FINAL IMAGE
-FROM node:22-alpine
+FROM node:25-alpine
 ARG env=production
 ENV NODE_ENV=${env}
 RUN mkdir -p /app && \
@@ -34,12 +36,11 @@ COPY --chown=nobody:nobody git_src/migrations /app/migrations
 COPY --chown=nobody:nobody git_src/container-health.js /app/container-health.js
 COPY --chown=nobody:nobody git_src/knexfile.js /app/knexfile.js
 COPY --chown=nobody:nobody git_src/package.json /app/package.json
-COPY --chown=nobody:nobody git_src/package-lock.json /app/package-lock.json
+COPY --chown=nobody:nobody git_src/pnpm-lock.yaml /app/pnpm-lock.yaml
 
 # 3.2 install production dependencies only. Cleanup cache after that
-RUN mkdir -p /.npm && \
-npm ci && \
-rm -rf /.npm
+RUN npm install -g pnpm@10.29.2
+RUN pnpm install --frozen-lockfile --prod
 
 USER nobody
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]

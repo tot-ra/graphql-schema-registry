@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import usePrism from '../usePrism';
 
 describe('tests for usePrism', () => {

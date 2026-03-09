@@ -1,26 +1,28 @@
 # 1. BUILD FRONTEND source with webpack
-FROM node:22-alpine as builder-frontend
+FROM node:25-alpine as builder-frontend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g pnpm@10.29.2
+RUN pnpm install --frozen-lockfile
 COPY webpack.config.js babel.config.js tsconfig.json .eslintrc .editorconfig ./
 COPY client ./client
-RUN npm run build-frontend
+RUN pnpm run build-frontend
 
 # 2. BUILD BACKEND source from .ts, uses dev-dependencies
-FROM node:22-alpine as builder-backend
+FROM node:25-alpine as builder-backend
 ARG env=production
 ENV npm_config_cache=/tmp/.npm
 WORKDIR /app
-COPY package.json package-lock.json tsconfig.json ./
-RUN npm install
+COPY package.json pnpm-lock.yaml tsconfig.json ./
+RUN npm install -g pnpm@10.29.2
+RUN pnpm install --frozen-lockfile
 COPY src ./src
-RUN npm run build-backend
+RUN pnpm run build-backend
 
 # 3. BUILD FINAL IMAGE
-FROM node:22-alpine
+FROM node:25-alpine
 ARG env=production
 ENV NODE_ENV=${env}
 RUN mkdir -p /app && \
@@ -34,12 +36,11 @@ COPY --chown=nobody:nobody ./migrations /app/migrations
 COPY --chown=nobody:nobody ./container-health.js /app/container-health.js
 COPY --chown=nobody:nobody ./knexfile.js /app/knexfile.js
 COPY --chown=nobody:nobody  ./package.json /app/package.json
-COPY --chown=nobody:nobody ./package-lock.json /app/package-lock.json
+COPY --chown=nobody:nobody ./pnpm-lock.yaml /app/pnpm-lock.yaml
 
 # 3.2 install production dependencies only. Cleanup cache after that
-RUN mkdir -p /.npm \
-&& npm ci \
-&& rm -rf /.npm
+RUN npm install -g pnpm@10.29.2
+RUN pnpm install --frozen-lockfile --prod
 
 USER nobody
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 CMD [ "node", "container-health.js" ]

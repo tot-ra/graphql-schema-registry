@@ -19,7 +19,10 @@ function parseDbSsl() {
 	}
 
 	const ssl: { rejectUnauthorized: boolean; ca?: string } = {
-		rejectUnauthorized: booleanFor(process.env.DB_SSL_REJECT_UNAUTHORIZED, 'true'),
+		rejectUnauthorized: booleanFor(
+			process.env.DB_SSL_REJECT_UNAUTHORIZED,
+			'true'
+		),
 	};
 
 	if (process.env.DB_SSL_CA) {
@@ -50,7 +53,8 @@ async function createDatabaseIfNotExists() {
 	const dbName = dbConfig.name;
 	const dbClient = dbConfig.client || 'pg';
 	const adminDatabase =
-		process.env.DB_ADMIN_DATABASE || (dbClient === 'pg' ? 'postgres' : undefined);
+		process.env.DB_ADMIN_DATABASE ||
+		(dbClient === 'pg' ? 'postgres' : undefined);
 
 	const adminConnection = knex({
 		client: dbClient,

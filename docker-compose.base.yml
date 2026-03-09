@@ -9,7 +9,7 @@ services:
     ports:
       - 6000:5432
     volumes:
-      - gql-schema-registry-db-volume:/var/lib/postgresql/data
+      - gql-schema-registry-db-volume:/var/lib/postgresql
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres -d schema_registry']
       timeout: 5s
