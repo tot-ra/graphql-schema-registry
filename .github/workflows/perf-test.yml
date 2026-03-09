@@ -39,13 +39,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
-          cache: 'npm'
+          cache: 'pnpm'
+          cache-dependency-path: 'pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          npm install -g pnpm@10.29.2
+          pnpm install --frozen-lockfile
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
       - name: Start service + stub services
         run: docker compose -f "docker-compose.perf-tests.yml" up -d --build

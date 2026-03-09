@@ -44,12 +44,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
-          cache: "npm"
+          cache: "pnpm"
+          cache-dependency-path: "pnpm-lock.yaml"
 
       - uses: actions/cache@v4
         with:
           path: "**/node_modules"
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - run: npm install
-      - run: npm run lint
+      - run: npm install -g pnpm@10.29.2
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
