@@ -16,7 +16,10 @@ function parseDbSsl() {
 	}
 
 	const ssl: { rejectUnauthorized: boolean; ca?: string } = {
-		rejectUnauthorized: booleanFor(process.env.DB_SSL_REJECT_UNAUTHORIZED, 'true'),
+		rejectUnauthorized: booleanFor(
+			process.env.DB_SSL_REJECT_UNAUTHORIZED,
+			'true'
+		),
 	};
 
 	if (process.env.DB_SSL_CA) {
