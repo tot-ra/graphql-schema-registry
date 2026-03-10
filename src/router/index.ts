@@ -9,6 +9,7 @@ import { indexHtml, assetRouter } from './assets';
 import * as schema from './schema';
 import * as service from './service';
 import * as persistedQuery from './persisted-queries';
+import * as subscriptions from './subscriptions';
 import { logger } from '../logger';
 import servicesModel from '../database/services';
 
@@ -67,6 +68,8 @@ router.delete(
 	asyncWrap(schema.remove)
 );
 router.post('/schema/validate', asyncWrap(schema.validate));
+router.get('/subscriptions/latest', asyncWrap(subscriptions.listLatest));
+router.post('/subscriptions/push', asyncWrap(subscriptions.push));
 
 router.delete(
 	'/service/:name',

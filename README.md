@@ -215,6 +215,28 @@ Make sure to handle failure.
 
 See [example](examples/schema_registration_client/index.js) for nodejs/ESM.
 
+### How do I register GraphQL subscriptions from event-stream services?
+
+If you have a dedicated websocket/event service (for example `event-stream-filter`) that exposes GraphQL `Subscription` operations, register that SDL separately with:
+
+- `POST /subscriptions/push`
+
+This subscription catalog is intentionally separate from federated supergraph composition:
+
+- `POST /schema/push` is for federated gateway service schemas
+- `POST /subscriptions/push` is for event-stream subscription visibility in UI and analytics
+
+Minimal runtime payload example:
+
+```json
+{
+  "name": "event-stream-filter",
+  "version": "latest",
+  "ws_url": "ws://event-stream-filter:8350/graphql",
+  "type_defs": "type Subscription { onApiaryUpdated: ApiaryEvent } type ApiaryEvent { id: String name: String } type Query { hello: String }"
+}
+```
+
 ### How do I register schema that is being developed?
 
 Usually in production, `POST /schema/push` requires unique `version` that should be unique git or docker hash.
@@ -514,6 +536,44 @@ URL is optional if you use urls from schema-registry as service discovery
 ```
 
 - ❌ 400 "You should not register different type_defs with same version."
+</details>
+
+<details>
+  <summary><h3>🟡 POST /subscriptions/push</h3></summary>
+
+Registers or updates GraphQL subscription SDL for event-stream services.
+This endpoint does not affect federated supergraph composition.
+
+#### Request params (raw body)
+
+```json
+{
+  "name": "event-stream-filter",
+  "version": "latest",
+  "ws_url": "ws://event-stream-filter:8350/graphql",
+  "type_defs": "type Subscription { onApiaryUpdated: ApiaryEvent } type ApiaryEvent { id: String name: String } type Query { hello: String }"
+}
+```
+
+#### Notes
+
+- `name`: service name
+- `version`: runtime/deploy version (`latest` is acceptable for dev)
+- `ws_url`: websocket endpoint for subscriptions
+- `type_defs`: SDL containing `Subscription` definition
+
+</details>
+
+<details>
+  <summary><h3>🟢 GET /subscriptions/latest</h3></summary>
+
+Returns latest registered subscription source per service and extracted subscription definitions.
+
+#### Response shape
+
+- `data.sources[]`: latest subscription source rows (name/version/wsUrl/typeDefs/definitionsCount)
+- `data.definitions[]`: extracted subscription fields (name/payloadType/arguments/source metadata)
+
 </details>
 
 <details>

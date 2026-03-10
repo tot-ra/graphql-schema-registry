@@ -9,12 +9,14 @@ import {
 	PersistedQueriesIcon,
 	LogsIcon,
 	ChangeLogIcon,
+	SubscriptionsIcon,
 } from './MenuIcons';
 import Services from '../schema';
 import Analytics from '../analytics';
 import SupergraphSchema from '../supergraph';
 import PersistedQueries from '../persisted-queries';
 import SchemaChangeLog from '../schema-change-log';
+import Subscriptions from '../subscriptions';
 
 import ServicesTab from '../schema/Tab';
 import PersistedQueriesTab from '../persisted-queries/Tab';
@@ -38,6 +40,12 @@ const UITabs = [
 		icon: <AnalyticsIcon />,
 		href: '/analytics',
 		component: Analytics,
+	},
+	{
+		Title: <span>Subscriptions</span>,
+		icon: <SubscriptionsIcon />,
+		href: '/subscriptions',
+		component: Subscriptions,
 	},
 	{
 		Title: <PersistedQueriesTab />,

@@ -17,6 +17,7 @@ import servicesModel from '../database/services';
 import schemaHit from '../database/schema_hits';
 import operationHit from '../database/operation_hits';
 import clientsModel from '../database/clients';
+import subscriptionsModel from '../database/subscriptions';
 
 import PersistedQueriesModel from '../database/persisted_queries';
 import { getServiceHealthStatus } from './service-health';
@@ -35,6 +36,10 @@ export default {
 		service: async (_, { id }, { dataloaders }) =>
 			await dataloaders.services.load(id),
 		serviceCount: async () => await servicesModel.count(),
+		subscriptionSources: async () =>
+			await subscriptionsModel.listLatestSources(),
+		subscriptionDefinitions: async (_, { sourceName }) =>
+			await subscriptionsModel.listDefinitions({ sourceName }),
 		supergraphSDL: async () => await composeSupergraph(connection),
 		schema: async (_, { id }) => {
 			const schema = await schemaModel.getSchemaById(connection, id);

@@ -214,6 +214,38 @@ export const SCHEMA_CHANGE_LOG = gql`
 	}
 `;
 
+export const SUBSCRIPTION_SOURCES = gql`
+	query getSubscriptionSources {
+		subscriptionSources {
+			id
+			name
+			version
+			wsUrl
+			typeDefs
+			addedTime
+			updatedTime
+			definitionsCount
+		}
+	}
+`;
+
+export const SUBSCRIPTION_DEFINITIONS = gql`
+	query getSubscriptionDefinitions($sourceName: String) {
+		subscriptionDefinitions(sourceName: $sourceName) {
+			id
+			sourceId
+			sourceName
+			sourceVersion
+			wsUrl
+			name
+			payloadType
+			arguments
+			addedTime
+			updatedTime
+		}
+	}
+`;
+
 export const SEARCH = gql`
 	query getSearch($query: String!) {
 		search(filter: $query) {
