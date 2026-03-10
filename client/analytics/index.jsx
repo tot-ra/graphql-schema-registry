@@ -106,12 +106,14 @@ function AnalyticsContent() {
 	const [operationSortDirection, setOperationSortDirection] = useState('desc');
 	const [clientSortBy, setClientSortBy] = useState('hits24h');
 	const [clientSortDirection, setClientSortDirection] = useState('desc');
-	const [subscriptionSortBy, setSubscriptionSortBy] =
-		useState('estimatedSubscriptions24h');
+	const [subscriptionSortBy, setSubscriptionSortBy] = useState(
+		'estimatedSubscriptions24h'
+	);
 	const [subscriptionSortDirection, setSubscriptionSortDirection] =
 		useState('desc');
-	const [subscriptionChartMetric, setSubscriptionChartMetric] =
-		useState('estimatedSubscriptions');
+	const [subscriptionChartMetric, setSubscriptionChartMetric] = useState(
+		'estimatedSubscriptions'
+	);
 
 	const { data: fieldsData, loading: fieldsLoading } =
 		useQuery(SCHEMA_FIELDS_USAGE);
@@ -345,7 +347,10 @@ function AnalyticsContent() {
 			}
 
 			if (!bySubscription.has(subscriptionName)) {
-				bySubscription.set(subscriptionName, { title: subscriptionName, data: [] });
+				bySubscription.set(subscriptionName, {
+					title: subscriptionName,
+					data: [],
+				});
 			}
 
 			const value =
@@ -580,7 +585,8 @@ function AnalyticsContent() {
 			entry.completedSessions24h += completedSessions;
 			entry.transportedEvents24h += transportedEvents;
 			entry.weightedDurationSecSum += avgDurationSec * completedSessions;
-			entry.weightedEventsPerSessionSum += avgEventsPerSession * completedSessions;
+			entry.weightedEventsPerSessionSum +=
+				avgEventsPerSession * completedSessions;
 
 			if (bucketSec !== null && bucketSec >= last1hCutoffSec) {
 				entry.estimatedSubscriptions1h += estimatedSubscriptions;
@@ -693,10 +699,7 @@ function AnalyticsContent() {
 		setClientSortDirection(defaultDirection);
 	};
 
-	const onSubscriptionSortChange = (
-		nextSortBy,
-		defaultDirection = 'desc'
-	) => {
+	const onSubscriptionSortChange = (nextSortBy, defaultDirection = 'desc') => {
 		if (subscriptionSortBy === nextSortBy) {
 			setSubscriptionSortDirection(
 				subscriptionSortDirection === 'asc' ? 'desc' : 'asc'
@@ -801,7 +804,7 @@ function AnalyticsContent() {
 									? 'Client hits (last 24h, 1h buckets)'
 									: isSubscriptionTab
 										? 'Subscription metrics (last 24h, 1h buckets, sampled)'
-									: 'Entity hits (last 24h, 1h buckets)'}
+										: 'Entity hits (last 24h, 1h buckets)'}
 						</div>
 						{isSubscriptionTab && (
 							<label>
@@ -1493,7 +1496,9 @@ function AnalyticsContent() {
 								<th>
 									<button
 										type="button"
-										onClick={() => onSubscriptionSortChange('subscription', 'asc')}
+										onClick={() =>
+											onSubscriptionSortChange('subscription', 'asc')
+										}
 										style={{
 											cursor: 'pointer',
 											background: 'transparent',
@@ -1551,7 +1556,9 @@ function AnalyticsContent() {
 								<th>
 									<button
 										type="button"
-										onClick={() => onSubscriptionSortChange('avgSessionDurationSec')}
+										onClick={() =>
+											onSubscriptionSortChange('avgSessionDurationSec')
+										}
 										style={{
 											cursor: 'pointer',
 											background: 'transparent',
@@ -1569,7 +1576,9 @@ function AnalyticsContent() {
 								<th>
 									<button
 										type="button"
-										onClick={() => onSubscriptionSortChange('avgEventsPerSession')}
+										onClick={() =>
+											onSubscriptionSortChange('avgEventsPerSession')
+										}
 										style={{
 											cursor: 'pointer',
 											background: 'transparent',

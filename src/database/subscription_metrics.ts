@@ -114,7 +114,9 @@ const subscriptionMetricModel = {
 						hour,
 					})
 					.update({
-						sampled_sessions: trx.raw('sampled_sessions + ?', [sampledSessions]),
+						sampled_sessions: trx.raw('sampled_sessions + ?', [
+							sampledSessions,
+						]),
 						completed_sessions: trx.raw('completed_sessions + ?', [
 							completedSessions,
 						]),
