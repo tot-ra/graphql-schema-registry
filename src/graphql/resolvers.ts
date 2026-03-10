@@ -16,6 +16,7 @@ import servicesModel from '../database/services';
 
 import schemaHit from '../database/schema_hits';
 import operationHit from '../database/operation_hits';
+import subscriptionMetrics from '../database/subscription_metrics';
 import clientsModel from '../database/clients';
 import subscriptionsModel from '../database/subscriptions';
 
@@ -72,6 +73,8 @@ export default {
 			await schemaHit.getClientHits({ granularity, hours }),
 		schemaOperationHits: async (_, { granularity, hours }) =>
 			await operationHit.getHits({ granularity, hours }),
+		schemaSubscriptionMetrics: async (_, { granularity, hours }) =>
+			await subscriptionMetrics.getHits({ granularity, hours }),
 		schemaTopOperations: async (_, { hours, limit }) =>
 			await operationHit.getTopOperations({ hours, limit }),
 

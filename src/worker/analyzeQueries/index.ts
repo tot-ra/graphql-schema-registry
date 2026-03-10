@@ -11,12 +11,14 @@ import schemaModel from '../../database/schema';
 import clientsModel from '../../database/clients';
 import schemaHit from '../../database/schema_hits';
 import operationHit from '../../database/operation_hits';
+import subscriptionMetrics from '../../database/subscription_metrics';
 import persistedQueries from '../../database/persisted_queries';
 
 import extractQueryFields from './extract-query-properties';
 import { connection } from '../../database';
 
 const SCHEMA_UPDATE_PERIOD_MIN = 5;
+const CLIENT_FIELD_MAX_LEN = 50;
 const QUERIES_CHANNEL =
 	process.env.REDIS_QUERIES_CHANNEL ||
 	process.env.KAFKA_QUERIES_TOPIC ||
@@ -59,6 +61,7 @@ const analyzer = {
 
 			schemaHit.init();
 			operationHit.init();
+			subscriptionMetrics.init();
 			clientsModel.init();
 
 			await redis.initRedis();
@@ -127,6 +130,9 @@ const analyzer = {
 					'unknown';
 			}
 
+			name = normalizeClientField(name);
+			version = normalizeClientField(version);
+
 			if (!parsedData.query) {
 				const pq = await persistedQueries.get(persistedQueryHash);
 
@@ -153,6 +159,71 @@ const analyzer = {
 		const msgDate = Number.isFinite(parsedTimestamp)
 			? new Date(parsedTimestamp)
 			: new Date();
+		const hour = `${msgDate.toISOString().slice(0, 13)}:00:00.000Z`;
+		const eventType = String(parsedData.eventType || '');
+
+		if (
+			eventType === 'subscription_start' ||
+			eventType === 'subscription_end'
+		) {
+			const sampleRate = sanitizeSampleRate(parsedData.sampleRate);
+			const sampleMultiplier = 1 / sampleRate;
+			const subscriptionName =
+				String(parsedData.subscriptionName || '').trim() ||
+				getSubscriptionFieldName(
+					parsedData.query || '',
+					parsedData.operationName || null
+				) ||
+				'anonymous';
+
+			if (eventType === 'subscription_start') {
+				await subscriptionMetrics.add({
+					subscriptionName,
+					hour,
+					sampledSessions: 1,
+					estimatedSubscriptions: sampleMultiplier,
+				});
+
+				logger.info('Recorded subscription metric event', {
+					eventType,
+					subscriptionName,
+					hour,
+					sampleRate,
+					estimatedSubscriptions: sampleMultiplier,
+					operationName: parsedData.operationName || null,
+				});
+			}
+
+			if (eventType === 'subscription_end') {
+				const transportedEvents = Number.isFinite(
+					Number(parsedData.transportedEvents)
+				)
+					? Math.max(0, Math.floor(Number(parsedData.transportedEvents)))
+					: 0;
+				const sessionDurationMs = Number.isFinite(
+					Number(parsedData.sessionDurationMs)
+				)
+					? Math.max(0, Math.floor(Number(parsedData.sessionDurationMs)))
+					: 0;
+
+				await subscriptionMetrics.add({
+					subscriptionName,
+					hour,
+					completedSessions: 1,
+					transportedEvents,
+					sessionDurationMs,
+				});
+
+				logger.info('Recorded subscription metric event', {
+					eventType,
+					subscriptionName,
+					hour,
+					transportedEvents,
+					sessionDurationMs,
+					operationName: parsedData.operationName || null,
+				});
+			}
+		}
 
 		if (parsedData.query && schemaHit.allowNewHitWithTime(msgDate)) {
 			logger.info('Processing schema-hit', {
@@ -163,7 +234,6 @@ const analyzer = {
 					parsedData.query,
 					parsedData.operationName
 				);
-				const hour = `${msgDate.toISOString().slice(0, 13)}:00:00.000Z`;
 
 				await operationHit.add({
 					name,
@@ -269,6 +339,70 @@ function getOperationType(query, operationName) {
 	}
 
 	return 'UNKNOWN';
+}
+
+function getSubscriptionFieldName(query, operationName) {
+	try {
+		const parsedQuery = parse(query);
+		const operationDefinition = parsedQuery.definitions.find((definition) => {
+			if (definition.kind !== Kind.OPERATION_DEFINITION) {
+				return false;
+			}
+
+			if (definition.operation !== 'subscription') {
+				return false;
+			}
+
+			if (!operationName) {
+				return true;
+			}
+
+			return definition.name?.value === operationName;
+		});
+
+		if (
+			operationDefinition &&
+			operationDefinition.kind === Kind.OPERATION_DEFINITION
+		) {
+			const selectedField = operationDefinition.selectionSet.selections.find(
+				(selection) => selection.kind === Kind.FIELD
+			);
+
+			if (selectedField && selectedField.kind === Kind.FIELD) {
+				return selectedField.name.value;
+			}
+		}
+	} catch (_) {
+		// ignore parse failures and fallback to operationName
+	}
+
+	return operationName || null;
+}
+
+function sanitizeSampleRate(value) {
+	const parsed = Number(value);
+	if (!Number.isFinite(parsed) || parsed <= 0) {
+		return 1;
+	}
+
+	return Math.min(1, parsed);
+}
+
+function normalizeClientField(value) {
+	if (isNil(value)) {
+		return value;
+	}
+
+	const normalized = String(value).trim();
+	if (!normalized) {
+		return null;
+	}
+
+	if (normalized.length <= CLIENT_FIELD_MAX_LEN) {
+		return normalized;
+	}
+
+	return normalized.slice(0, CLIENT_FIELD_MAX_LEN);
 }
 
 export default analyzer;

@@ -4,11 +4,13 @@ import { logger } from '../logger';
 import diplomat from '../diplomat';
 
 const DEFAULT_TTL = 24 * 3600;
-const GET_TIMEOUT_MS = 30;
-const SET_TIMEOUT_MS = 50;
+const GET_TIMEOUT_MS = Number(process.env.REDIS_GET_TIMEOUT_MS || 150);
+const SET_TIMEOUT_MS = Number(process.env.REDIS_SET_TIMEOUT_MS || 200);
 const DEFAULT_LOCK_TTL = 60 * 1000;
 
 let redis, redisSubscriber, redlockClient;
+let lastGetTimeoutWarnAt = 0;
+let lastSetTimeoutWarnAt = 0;
 
 async function wait(ms) {
 	return new Promise((resolve, reject) => {
@@ -103,7 +105,18 @@ const redisWrap = {
 				return null;
 			}
 		} catch (e) {
-			logger.error('redis.get failed', e);
+			const isTimeout = String(e?.message || '').includes('Executed timeout');
+			if (isTimeout) {
+				const now = Date.now();
+				if (now - lastGetTimeoutWarnAt > 60 * 1000) {
+					lastGetTimeoutWarnAt = now;
+					logger.warn(
+						`redis.get timed out after ${GET_TIMEOUT_MS}ms, falling back to DB`
+					);
+				}
+			} else {
+				logger.error('redis.get failed', e);
+			}
 
 			return null;
 		}
@@ -120,7 +133,18 @@ const redisWrap = {
 				logger.warn('redis is not initialized');
 			}
 		} catch (e) {
-			logger.error('redis.set failed', e);
+			const isTimeout = String(e?.message || '').includes('Executed timeout');
+			if (isTimeout) {
+				const now = Date.now();
+				if (now - lastSetTimeoutWarnAt > 60 * 1000) {
+					lastSetTimeoutWarnAt = now;
+					logger.warn(
+						`redis.set timed out after ${SET_TIMEOUT_MS}ms, continuing without cache write`
+					);
+				}
+			} else {
+				logger.error('redis.set failed', e);
+			}
 		}
 	},
 
