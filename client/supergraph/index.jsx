@@ -51,7 +51,7 @@ export default function SupergraphSchema() {
 	}
 
 	return (
-		<div style={{ padding: '12px 18px' }}>
+		<div>
 			<Tabs
 				value={tabValue}
 				onChange={(_, nextTabValue) => setTabValue(nextTabValue)}

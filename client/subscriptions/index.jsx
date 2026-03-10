@@ -157,10 +157,10 @@ export default function Subscriptions() {
 
 	return (
 		<div>
-			<Info>
+			<p className="registry-muted-note">
 				Subscription catalog from event-stream services. This list is separate
 				from federated schema composition.
-			</Info>
+			</p>
 
 			<h3 style={{ margin: '8px 0' }}>Sources</h3>
 			<table
@@ -281,7 +281,9 @@ export default function Subscriptions() {
 					<SourceCodeWithHighlight code={selectedPayloadSdl} />
 				</div>
 			) : (
-				<Info>Click a payload type to preview SDL.</Info>
+				<p className="registry-muted-note" style={{ marginTop: 0 }}>
+					Click a payload type to preview SDL.
+				</p>
 			)}
 		</div>
 	);

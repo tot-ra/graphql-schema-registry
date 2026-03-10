@@ -29,6 +29,24 @@ body {
 	overflow: auto;
 }
 
+.registry-page-shell {
+	padding: 12px 18px 24px;
+}
+
+.registry-page-title {
+	margin: 0 0 14px;
+	font-size: 24px;
+	font-weight: 700;
+	color: #1f2937;
+}
+
+.registry-muted-note {
+	margin: 0 0 12px;
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1.45;
+}
+
 @media (max-width: 900px) {
 	.registry-layout {
 		flex-direction: column;
