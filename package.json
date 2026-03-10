@@ -9,6 +9,7 @@
   },
   "packageManager": "pnpm@10.29.2",
   "scripts": {
+    "prepare": "sh ./setup-hooks.sh",
     "develop": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/schema-registry.ts --watch src --inspect",
     "develop-frontend": "vite",
     "develop-worker": "DB_HOST=localhost DB_PORT=6000 REDIS_HOST=localhost REDIS_PORT=6004 PORT=6001 NODE_ENV=development ts-node-dev --respawn --transpile-only src/worker/index.ts --watch src --inspect",
@@ -49,12 +50,6 @@
   "keywords": [
     "graphql"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "pnpm run format",
-      "pre-push": "pnpm run lint:ci"
-    }
-  },
   "license": "MIT",
   "private": false,
   "dependencies": {
