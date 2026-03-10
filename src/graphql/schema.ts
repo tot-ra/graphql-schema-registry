@@ -38,6 +38,10 @@ export default gql`
 			granularity: UsageGranularity = HOUR
 			hours: Int = 24
 		): [SchemaOperationHit]
+		schemaSubscriptionMetrics(
+			granularity: UsageGranularity = HOUR
+			hours: Int = 24
+		): [SchemaSubscriptionMetricHit]
 		schemaTopOperations(hours: Int = 24, limit: Int = 20): [SchemaOperationSummary]
 
 		persistedQueries(
@@ -158,6 +162,17 @@ export default gql`
 		operationName: String!
 		operationType: String!
 		hits: Int!
+	}
+
+	type SchemaSubscriptionMetricHit {
+		subscriptionName: String!
+		bucket: String!
+		sampledSessions: Int!
+		completedSessions: Int!
+		estimatedSubscriptions: Float!
+		transportedEvents: Int!
+		avgSessionDurationSec: Float!
+		avgEventsPerSession: Float!
 	}
 
 	type Container {

@@ -15,6 +15,7 @@ import {
 	SCHEMA_ENTITY_HITS,
 	SCHEMA_FIELDS_USAGE,
 	SCHEMA_OPERATION_HITS,
+	SCHEMA_SUBSCRIPTION_METRICS,
 } from '../utils/queries';
 
 const numberFormatter = new Intl.NumberFormat('en-US');
@@ -105,6 +106,14 @@ function AnalyticsContent() {
 	const [operationSortDirection, setOperationSortDirection] = useState('desc');
 	const [clientSortBy, setClientSortBy] = useState('hits24h');
 	const [clientSortDirection, setClientSortDirection] = useState('desc');
+	const [subscriptionSortBy, setSubscriptionSortBy] = useState(
+		'estimatedSubscriptions24h'
+	);
+	const [subscriptionSortDirection, setSubscriptionSortDirection] =
+		useState('desc');
+	const [subscriptionChartMetric, setSubscriptionChartMetric] = useState(
+		'estimatedSubscriptions'
+	);
 
 	const { data: fieldsData, loading: fieldsLoading } =
 		useQuery(SCHEMA_FIELDS_USAGE);
@@ -135,6 +144,13 @@ function AnalyticsContent() {
 			},
 		}
 	);
+	const { data: subscriptionMetricsData, loading: subscriptionMetricsLoading } =
+		useQuery(SCHEMA_SUBSCRIPTION_METRICS, {
+			variables: {
+				granularity: 'HOUR',
+				hours: 24,
+			},
+		});
 	const allPropertyRows = fieldsData?.schemaFieldsUsage || [];
 	const allEntityRows = useMemo(() => {
 		const entityMap = new Map();
@@ -161,6 +177,7 @@ function AnalyticsContent() {
 	const isPropertyTab = activeTab === 'property';
 	const isOperationTab = activeTab === 'operation';
 	const isClientTab = activeTab === 'client';
+	const isSubscriptionTab = activeTab === 'subscription';
 	const baseRows = isEntityTab ? allEntityRows : allPropertyRows;
 	const filteredRows = useMemo(() => {
 		const normalizedTerm = searchTerm.trim().toLowerCase();
@@ -310,12 +327,62 @@ function AnalyticsContent() {
 		result.sort((a, b) => a.title.localeCompare(b.title));
 		return result;
 	}, [clientHitsData, searchTerm]);
+	const subscriptionChartSeries = useMemo(() => {
+		const normalizedTerm = searchTerm.trim().toLowerCase();
+		const rows = subscriptionMetricsData?.schemaSubscriptionMetrics || [];
+		const bySubscription = new Map();
+
+		for (const row of rows) {
+			const subscriptionName = row.subscriptionName || 'anonymous';
+			if (
+				normalizedTerm &&
+				!subscriptionName.toLowerCase().includes(normalizedTerm)
+			) {
+				continue;
+			}
+
+			const time = bucketToTimestamp(row.bucket);
+			if (time === null) {
+				continue;
+			}
+
+			if (!bySubscription.has(subscriptionName)) {
+				bySubscription.set(subscriptionName, {
+					title: subscriptionName,
+					data: [],
+				});
+			}
+
+			const value =
+				subscriptionChartMetric === 'avgSessionDurationSec'
+					? Number(row.avgSessionDurationSec) || 0
+					: subscriptionChartMetric === 'avgEventsPerSession'
+						? Number(row.avgEventsPerSession) || 0
+						: Number(row.estimatedSubscriptions) || 0;
+
+			bySubscription.get(subscriptionName).data.push({
+				time,
+				value,
+			});
+		}
+
+		const result = [];
+		for (const [key, series] of bySubscription.entries()) {
+			series.data.sort((a, b) => a.time - b.time);
+			result.push({ key, title: series.title, data: series.data });
+		}
+
+		result.sort((a, b) => a.title.localeCompare(b.title));
+		return result;
+	}, [subscriptionMetricsData, searchTerm, subscriptionChartMetric]);
 
 	const chartSeries = isOperationTab
 		? operationChartSeries
 		: isClientTab
 			? clientChartSeries
-			: entityChartSeries;
+			: isSubscriptionTab
+				? subscriptionChartSeries
+				: entityChartSeries;
 
 	const operationRows = useMemo(() => {
 		const byOperation = new Map();
@@ -475,12 +542,118 @@ function AnalyticsContent() {
 
 		return sortedClientRows.slice(0, parsedTopLimit);
 	}, [sortedClientRows, topLimit]);
+	const subscriptionRows = useMemo(() => {
+		const bySubscription = new Map();
+		const normalizedTerm = searchTerm.trim().toLowerCase();
+		const nowSec = Math.floor(Date.now() / 1000);
+		const last1hCutoffSec = nowSec - 60 * 60;
+		const rows = subscriptionMetricsData?.schemaSubscriptionMetrics || [];
+
+		for (const row of rows) {
+			const subscriptionName = row.subscriptionName || 'anonymous';
+			if (
+				normalizedTerm &&
+				!subscriptionName.toLowerCase().includes(normalizedTerm)
+			) {
+				continue;
+			}
+
+			const bucketSec = bucketToTimestamp(row.bucket);
+			const estimatedSubscriptions = Number(row.estimatedSubscriptions) || 0;
+			const sampledSessions = Number(row.sampledSessions) || 0;
+			const completedSessions = Number(row.completedSessions) || 0;
+			const transportedEvents = Number(row.transportedEvents) || 0;
+			const avgDurationSec = Number(row.avgSessionDurationSec) || 0;
+			const avgEventsPerSession = Number(row.avgEventsPerSession) || 0;
+
+			if (!bySubscription.has(subscriptionName)) {
+				bySubscription.set(subscriptionName, {
+					subscriptionName,
+					estimatedSubscriptions1h: 0,
+					estimatedSubscriptions24h: 0,
+					sampledSessions24h: 0,
+					completedSessions24h: 0,
+					transportedEvents24h: 0,
+					weightedDurationSecSum: 0,
+					weightedEventsPerSessionSum: 0,
+				});
+			}
+
+			const entry = bySubscription.get(subscriptionName);
+			entry.estimatedSubscriptions24h += estimatedSubscriptions;
+			entry.sampledSessions24h += sampledSessions;
+			entry.completedSessions24h += completedSessions;
+			entry.transportedEvents24h += transportedEvents;
+			entry.weightedDurationSecSum += avgDurationSec * completedSessions;
+			entry.weightedEventsPerSessionSum +=
+				avgEventsPerSession * completedSessions;
+
+			if (bucketSec !== null && bucketSec >= last1hCutoffSec) {
+				entry.estimatedSubscriptions1h += estimatedSubscriptions;
+			}
+		}
+
+		return Array.from(bySubscription.values()).map((row) => ({
+			subscriptionName: row.subscriptionName,
+			estimatedSubscriptions1h: row.estimatedSubscriptions1h,
+			estimatedSubscriptions24h: row.estimatedSubscriptions24h,
+			sampledSessions24h: row.sampledSessions24h,
+			completedSessions24h: row.completedSessions24h,
+			transportedEvents24h: row.transportedEvents24h,
+			avgSessionDurationSec:
+				row.completedSessions24h > 0
+					? row.weightedDurationSecSum / row.completedSessions24h
+					: 0,
+			avgEventsPerSession:
+				row.completedSessions24h > 0
+					? row.weightedEventsPerSessionSum / row.completedSessions24h
+					: 0,
+		}));
+	}, [subscriptionMetricsData, searchTerm]);
+
+	const sortedSubscriptionRows = useMemo(() => {
+		const rows = [...subscriptionRows];
+
+		rows.sort((rowA, rowB) => {
+			if (subscriptionSortBy === 'subscription') {
+				return subscriptionSortDirection === 'asc'
+					? rowA.subscriptionName.localeCompare(rowB.subscriptionName)
+					: rowB.subscriptionName.localeCompare(rowA.subscriptionName);
+			}
+
+			const valueA = Number(rowA[subscriptionSortBy]) || 0;
+			const valueB = Number(rowB[subscriptionSortBy]) || 0;
+			if (valueA === valueB) {
+				return rowA.subscriptionName.localeCompare(rowB.subscriptionName);
+			}
+
+			return subscriptionSortDirection === 'asc'
+				? valueA - valueB
+				: valueB - valueA;
+		});
+
+		return rows;
+	}, [subscriptionRows, subscriptionSortBy, subscriptionSortDirection]);
+
+	const visibleSubscriptionRows = useMemo(() => {
+		if (topLimit === 'all') {
+			return sortedSubscriptionRows;
+		}
+
+		const parsedTopLimit = Number(topLimit);
+		if (!parsedTopLimit || parsedTopLimit <= 0) {
+			return sortedSubscriptionRows;
+		}
+
+		return sortedSubscriptionRows.slice(0, parsedTopLimit);
+	}, [sortedSubscriptionRows, topLimit]);
 
 	if (
 		fieldsLoading ||
 		entityHitsLoading ||
 		operationHitsLoading ||
-		clientHitsLoading
+		clientHitsLoading ||
+		subscriptionMetricsLoading
 	) {
 		return <SpinnerCenter />;
 	}
@@ -488,7 +661,8 @@ function AnalyticsContent() {
 	if (
 		!allPropertyRows.length &&
 		!(operationHitsData?.schemaOperationHits || []).length &&
-		!(clientHitsData?.schemaClientHits || []).length
+		!(clientHitsData?.schemaClientHits || []).length &&
+		!(subscriptionMetricsData?.schemaSubscriptionMetrics || []).length
 	) {
 		return <Info>No usage data logged yet</Info>;
 	}
@@ -525,8 +699,20 @@ function AnalyticsContent() {
 		setClientSortDirection(defaultDirection);
 	};
 
+	const onSubscriptionSortChange = (nextSortBy, defaultDirection = 'desc') => {
+		if (subscriptionSortBy === nextSortBy) {
+			setSubscriptionSortDirection(
+				subscriptionSortDirection === 'asc' ? 'desc' : 'asc'
+			);
+			return;
+		}
+
+		setSubscriptionSortBy(nextSortBy);
+		setSubscriptionSortDirection(defaultDirection);
+	};
+
 	return (
-		<div style={{ padding: '16px' }}>
+		<div>
 			<div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
 				<button
 					type="button"
@@ -580,6 +766,19 @@ function AnalyticsContent() {
 				>
 					Operations
 				</button>
+				<button
+					type="button"
+					onClick={() => setActiveTab('subscription')}
+					style={{
+						padding: '8px 12px',
+						border: '1px solid #DDDDDD',
+						background: isSubscriptionTab ? '#F0F6FF' : '#FFFFFF',
+						cursor: 'pointer',
+						fontWeight: isSubscriptionTab ? 'bold' : 'normal',
+					}}
+				>
+					Subscriptions
+				</button>
 			</div>
 
 			{!isPropertyTab && (
@@ -603,8 +802,32 @@ function AnalyticsContent() {
 								? 'Operation hits (last 24h, 1h buckets)'
 								: isClientTab
 									? 'Client hits (last 24h, 1h buckets)'
-									: 'Entity hits (last 24h, 1h buckets)'}
+									: isSubscriptionTab
+										? 'Subscription metrics (last 24h, 1h buckets, sampled)'
+										: 'Entity hits (last 24h, 1h buckets)'}
 						</div>
+						{isSubscriptionTab && (
+							<label>
+								Metric
+								<select
+									value={subscriptionChartMetric}
+									onChange={(event) =>
+										setSubscriptionChartMetric(event.target.value)
+									}
+									style={{ marginLeft: '8px' }}
+								>
+									<option value="estimatedSubscriptions">
+										Estimated subscriptions
+									</option>
+									<option value="avgSessionDurationSec">
+										Avg duration (sec)
+									</option>
+									<option value="avgEventsPerSession">
+										Avg events/session
+									</option>
+								</select>
+							</label>
+						)}
 					</div>
 					{chartSeries.length === 0 ? (
 						<Info>No chart data for selected filters</Info>
@@ -821,6 +1044,114 @@ function AnalyticsContent() {
 				</div>
 			)}
 
+			{isSubscriptionTab && (
+				<div
+					style={{
+						display: 'flex',
+						gap: '12px',
+						marginBottom: '16px',
+						flexWrap: 'wrap',
+					}}
+				>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '180px',
+						}}
+					>
+						<div>Subscriptions (shown)</div>
+						<strong>
+							{numberFormatter.format(visibleSubscriptionRows.length)}
+						</strong>
+					</div>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '180px',
+						}}
+					>
+						<div>Estimated subscriptions (1h)</div>
+						<strong>
+							{numberFormatter.format(
+								Math.round(
+									visibleSubscriptionRows.reduce(
+										(sum, row) => sum + row.estimatedSubscriptions1h,
+										0
+									)
+								)
+							)}
+						</strong>
+					</div>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '180px',
+						}}
+					>
+						<div>Estimated subscriptions (24h)</div>
+						<strong>
+							{numberFormatter.format(
+								Math.round(
+									visibleSubscriptionRows.reduce(
+										(sum, row) => sum + row.estimatedSubscriptions24h,
+										0
+									)
+								)
+							)}
+						</strong>
+					</div>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '180px',
+						}}
+					>
+						<div>Avg duration (sec)</div>
+						<strong>
+							{numberFormatter.format(
+								visibleSubscriptionRows.length
+									? Math.round(
+											(visibleSubscriptionRows.reduce(
+												(sum, row) => sum + row.avgSessionDurationSec,
+												0
+											) /
+												visibleSubscriptionRows.length) *
+												100
+										) / 100
+									: 0
+							)}
+						</strong>
+					</div>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '180px',
+						}}
+					>
+						<div>Avg events/session</div>
+						<strong>
+							{numberFormatter.format(
+								visibleSubscriptionRows.length
+									? Math.round(
+											(visibleSubscriptionRows.reduce(
+												(sum, row) => sum + row.avgEventsPerSession,
+												0
+											) /
+												visibleSubscriptionRows.length) *
+												100
+										) / 100
+									: 0
+							)}
+						</strong>
+					</div>
+				</div>
+			)}
+
 			<div
 				style={{
 					display: 'flex',
@@ -837,9 +1168,11 @@ function AnalyticsContent() {
 							? 'Search operation'
 							: isClientTab
 								? 'Search client@version'
-								: isEntityTab
-									? 'Search entity'
-									: 'Search entity.field'
+								: isSubscriptionTab
+									? 'Search subscription'
+									: isEntityTab
+										? 'Search entity'
+										: 'Search entity.field'
 					}
 					value={searchTerm}
 					onChange={(event) => setSearchTerm(event.target.value)}
@@ -1151,6 +1484,151 @@ function AnalyticsContent() {
 					</table>
 					{!visibleClientRows.length && (
 						<Info>No client versions match current filters</Info>
+					)}
+				</div>
+			)}
+
+			{isSubscriptionTab && (
+				<div style={{ width: '100%' }}>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>
+									<button
+										type="button"
+										onClick={() =>
+											onSubscriptionSortChange('subscription', 'asc')
+										}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Subscription{' '}
+										{subscriptionSortBy === 'subscription'
+											? `(${subscriptionSortDirection})`
+											: ''}
+									</button>
+								</th>
+								<th>
+									<button
+										type="button"
+										onClick={() =>
+											onSubscriptionSortChange('estimatedSubscriptions1h')
+										}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Estimated (1h){' '}
+										{subscriptionSortBy === 'estimatedSubscriptions1h'
+											? `(${subscriptionSortDirection})`
+											: ''}
+									</button>
+								</th>
+								<th>
+									<button
+										type="button"
+										onClick={() =>
+											onSubscriptionSortChange('estimatedSubscriptions24h')
+										}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Estimated (24h){' '}
+										{subscriptionSortBy === 'estimatedSubscriptions24h'
+											? `(${subscriptionSortDirection})`
+											: ''}
+									</button>
+								</th>
+								<th>
+									<button
+										type="button"
+										onClick={() =>
+											onSubscriptionSortChange('avgSessionDurationSec')
+										}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Avg duration (sec){' '}
+										{subscriptionSortBy === 'avgSessionDurationSec'
+											? `(${subscriptionSortDirection})`
+											: ''}
+									</button>
+								</th>
+								<th>
+									<button
+										type="button"
+										onClick={() =>
+											onSubscriptionSortChange('avgEventsPerSession')
+										}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Avg events/session{' '}
+										{subscriptionSortBy === 'avgEventsPerSession'
+											? `(${subscriptionSortDirection})`
+											: ''}
+									</button>
+								</th>
+								<th>Sampled sessions (24h)</th>
+							</tr>
+						</thead>
+						<tbody>
+							{visibleSubscriptionRows.map((row) => (
+								<tr key={row.subscriptionName}>
+									<td>{row.subscriptionName}</td>
+									<td align="center">
+										{numberFormatter.format(
+											Math.round(row.estimatedSubscriptions1h)
+										)}
+									</td>
+									<td align="center">
+										{numberFormatter.format(
+											Math.round(row.estimatedSubscriptions24h)
+										)}
+									</td>
+									<td align="center">
+										{numberFormatter.format(
+											Math.round(row.avgSessionDurationSec * 100) / 100
+										)}
+									</td>
+									<td align="center">
+										{numberFormatter.format(
+											Math.round(row.avgEventsPerSession * 100) / 100
+										)}
+									</td>
+									<td align="center">
+										{numberFormatter.format(row.sampledSessions24h)}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+					{!visibleSubscriptionRows.length && (
+						<Info>No subscriptions match current filters</Info>
 					)}
 				</div>
 			)}

@@ -163,6 +163,24 @@ export const SCHEMA_CLIENT_HITS = gql`
 	}
 `;
 
+export const SCHEMA_SUBSCRIPTION_METRICS = gql`
+	query getSchemaSubscriptionMetrics(
+		$granularity: UsageGranularity
+		$hours: Int
+	) {
+		schemaSubscriptionMetrics(granularity: $granularity, hours: $hours) {
+			subscriptionName
+			bucket
+			sampledSessions
+			completedSessions
+			estimatedSubscriptions
+			transportedEvents
+			avgSessionDurationSec
+			avgEventsPerSession
+		}
+	}
+`;
+
 export const SCHEMA_TOP_OPERATIONS = gql`
 	query getSchemaTopOperations($hours: Int, $limit: Int) {
 		schemaTopOperations(hours: $hours, limit: $limit) {

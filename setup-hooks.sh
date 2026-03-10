@@ -11,6 +11,16 @@ if [ ! -d "$HOOKS_DIR" ]; then
   exit 1
 fi
 
+if ! command -v git >/dev/null 2>&1; then
+  echo "Git is not available, skipping hook setup."
+  exit 0
+fi
+
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "Not inside a git work tree, skipping hook setup."
+  exit 0
+fi
+
 chmod +x "$HOOKS_DIR"/*
 git config core.hooksPath .githooks
 
