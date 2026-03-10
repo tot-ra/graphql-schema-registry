@@ -116,9 +116,7 @@ export default function VersionDetails() {
 						</VersionHeaderTime>
 						{urlInfo}
 					</div>
-					<div>
-						{commitButton}
-					</div>
+					<div>{commitButton}</div>
 				</VersionHeader>
 
 				<Tabs
