@@ -283,6 +283,7 @@ sequenceDiagram
 ```
 nvm use
 npm install
+./setup-hooks.sh
 npm run build
 docker-compose  -f docker-compose.base.yml  -f docker-compose.dev.yml up
 ```

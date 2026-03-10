@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+cd "$ROOT_DIR"
+
+echo "Running Biome checks..."
+
+if [ -x "./node_modules/.bin/biome" ]; then
+  ./node_modules/.bin/biome ci .
+elif command -v pnpm >/dev/null 2>&1; then
+  pnpm exec biome ci .
+elif command -v npx >/dev/null 2>&1; then
+  npx biome ci .
+else
+  echo "Biome is not available. Install dependencies first."
+  exit 1
+fi

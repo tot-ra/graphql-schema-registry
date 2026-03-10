@@ -41,7 +41,7 @@ function unwrapTypeName(payloadType) {
 		return '';
 	}
 
-	return String(payloadType).replaceAll(/[!\[\]\s]/g, '');
+	return String(payloadType).replaceAll(/[![\]\s]/g, '');
 }
 
 function getPayloadSdlSnippet({ sourceSdl, subscriptionName, payloadType }) {
@@ -108,9 +108,8 @@ function getPayloadSdlSnippet({ sourceSdl, subscriptionName, payloadType }) {
 
 export default function Subscriptions() {
 	const [selectedPayload, setSelectedPayload] = useState(null);
-	const { data: sourcesData, loading: sourcesLoading } = useQuery(
-		SUBSCRIPTION_SOURCES
-	);
+	const { data: sourcesData, loading: sourcesLoading } =
+		useQuery(SUBSCRIPTION_SOURCES);
 	const { data: definitionsData, loading: definitionsLoading } = useQuery(
 		SUBSCRIPTION_DEFINITIONS
 	);
@@ -150,8 +149,7 @@ export default function Subscriptions() {
 	if (!sources.length) {
 		return (
 			<Info>
-				No subscription sources registered yet. Push with POST
-				{' '}
+				No subscription sources registered yet. Push with POST{' '}
 				<code>/subscriptions/push</code>
 			</Info>
 		);
@@ -165,32 +163,46 @@ export default function Subscriptions() {
 			</Info>
 
 			<h3 style={{ margin: '8px 0' }}>Sources</h3>
-			<table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 18 }}>
+			<table
+				style={{ width: '100%', borderCollapse: 'collapse', marginBottom: 18 }}
+			>
 				<thead>
 					<tr>
 						<th style={{ textAlign: 'left', padding: '6px 8px' }}>Name</th>
 						<th style={{ textAlign: 'left', padding: '6px 8px' }}>Version</th>
 						<th style={{ textAlign: 'left', padding: '6px 8px' }}>WS URL</th>
-						<th style={{ textAlign: 'left', padding: '6px 8px' }}>Definitions</th>
+						<th style={{ textAlign: 'left', padding: '6px 8px' }}>
+							Definitions
+						</th>
 						<th style={{ textAlign: 'left', padding: '6px 8px' }}>Updated</th>
 					</tr>
 				</thead>
 				<tbody>
 					{sources.map((source) => (
 						<tr key={source.id}>
-							<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+							<td
+								style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+							>
 								{source.name}
 							</td>
-							<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+							<td
+								style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+							>
 								{source.version}
 							</td>
-							<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+							<td
+								style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+							>
 								<code>{source.wsUrl || '-'}</code>
 							</td>
-							<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+							<td
+								style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+							>
 								{source.definitionsCount}
 							</td>
-							<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+							<td
+								style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+							>
 								{formatDate(source.updatedTime || source.addedTime)}
 							</td>
 						</tr>
@@ -205,8 +217,12 @@ export default function Subscriptions() {
 				<table style={{ width: '100%', borderCollapse: 'collapse' }}>
 					<thead>
 						<tr>
-							<th style={{ textAlign: 'left', padding: '6px 8px' }}>Subscription</th>
-							<th style={{ textAlign: 'left', padding: '6px 8px' }}>Arguments</th>
+							<th style={{ textAlign: 'left', padding: '6px 8px' }}>
+								Subscription
+							</th>
+							<th style={{ textAlign: 'left', padding: '6px 8px' }}>
+								Arguments
+							</th>
 							<th style={{ textAlign: 'left', padding: '6px 8px' }}>Payload</th>
 							<th style={{ textAlign: 'left', padding: '6px 8px' }}>Updated</th>
 						</tr>
@@ -214,13 +230,19 @@ export default function Subscriptions() {
 					<tbody>
 						{filteredDefinitions.map((row) => (
 							<tr key={`${row.id}-${row.sourceName}`}>
-								<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+								<td
+									style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+								>
 									<code>{row.name}</code>
 								</td>
-								<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+								<td
+									style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+								>
 									<code>{formatArguments(row.arguments)}</code>
 								</td>
-								<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+								<td
+									style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+								>
 									<button
 										type="button"
 										onClick={() => setSelectedPayload(row)}
@@ -237,7 +259,9 @@ export default function Subscriptions() {
 										<code>{row.payloadType}</code>
 									</button>
 								</td>
-								<td style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}>
+								<td
+									style={{ borderTop: '1px solid #e5e7eb', padding: '6px 8px' }}
+								>
 									{formatDate(row.updatedTime || row.addedTime)}
 								</td>
 							</tr>
@@ -259,7 +283,6 @@ export default function Subscriptions() {
 			) : (
 				<Info>Click a payload type to preview SDL.</Info>
 			)}
-
 		</div>
 	);
 }
