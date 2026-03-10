@@ -18,7 +18,13 @@ export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 				height: '100%',
 			}}
 		>
-			<div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 8px' }}>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'center',
+					padding: '12px 0 8px',
+				}}
+			>
 				<ReactLogo />
 			</div>
 
@@ -43,7 +49,11 @@ export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 					<Tab
 						key={i}
 						onClick={() => history.push(tab.href)}
-						label={<span style={{ width: '100%', textAlign: 'left' }}>{tab.Title}</span>}
+						label={
+							<span style={{ width: '100%', textAlign: 'left' }}>
+								{tab.Title}
+							</span>
+						}
 						style={{
 							width: '100%',
 							maxWidth: 'none',

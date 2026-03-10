@@ -45,7 +45,9 @@ export default function SupergraphSchema() {
 	}
 
 	if (!sdl.trim()) {
-		return <Info>No active service schemas were found to compose a supergraph.</Info>;
+		return (
+			<Info>No active service schemas were found to compose a supergraph.</Info>
+		);
 	}
 
 	return (
@@ -72,8 +74,12 @@ function EntityGraph({ sdl }) {
 	const { graph, parseError } = useMemo(() => buildEntityGraph(sdl), [sdl]);
 	const [selectedNodeId, setSelectedNodeId] = useState(null);
 	const [colorMode, setColorMode] = useState('service');
-	const serviceColors = useMemo(() => buildServiceColors(graph.nodes), [graph.nodes]);
-	const selectedEntity = graph.nodes.find((node) => node.id === selectedNodeId) || null;
+	const serviceColors = useMemo(
+		() => buildServiceColors(graph.nodes),
+		[graph.nodes]
+	);
+	const selectedEntity =
+		graph.nodes.find((node) => node.id === selectedNodeId) || null;
 
 	const getNodeColor = useCallback(
 		(node) => {
@@ -88,7 +94,10 @@ function EntityGraph({ sdl }) {
 
 	const legendEntries =
 		colorMode === 'service'
-			? Object.entries(serviceColors).map(([label, color]) => ({ label, color }))
+			? Object.entries(serviceColors).map(([label, color]) => ({
+					label,
+					color,
+				}))
 			: Object.entries(NODE_COLORS).map(([label, color]) => ({ label, color }));
 
 	if (parseError) {
@@ -302,7 +311,9 @@ function ForceGraphCanvas({
 			vy: 0,
 		}));
 		simulationRef.current = simulationNodes;
-		const nodeIndex = new Map(simulationNodes.map((node, index) => [node.id, index]));
+		const nodeIndex = new Map(
+			simulationNodes.map((node, index) => [node.id, index])
+		);
 		const simulationLinks = links
 			.map((link) => {
 				const sourceIndex = nodeIndex.get(link.source);
@@ -472,7 +483,8 @@ function ForceGraphCanvas({
 
 		if (!interactionRef.current.moved) {
 			const { x, y } = toGraphCoords(event.clientX, event.clientY);
-			const selectedNodeId = pickNode(x, y) || interactionRef.current.downNodeId;
+			const selectedNodeId =
+				pickNode(x, y) || interactionRef.current.downNodeId;
 			onSelectNode(selectedNodeId);
 		}
 
@@ -483,7 +495,11 @@ function ForceGraphCanvas({
 		<div ref={containerRef} style={{ width: '100%' }}>
 			<canvas
 				ref={canvasRef}
-				style={{ border: '1px solid #d9d9d9', borderRadius: 4, background: '#fdfdfd' }}
+				style={{
+					border: '1px solid #d9d9d9',
+					borderRadius: 4,
+					background: '#fdfdfd',
+				}}
 				onMouseDown={onMouseDown}
 				onMouseMove={onMouseMove}
 				onMouseUp={onMouseUp}
@@ -776,7 +792,10 @@ function getDefinitionServiceNames(definition, graphIdToServiceName) {
 	};
 
 	for (const directive of definition.directives || []) {
-		if (directive.name.value !== 'join__type' && directive.name.value !== 'join__owner') {
+		if (
+			directive.name.value !== 'join__type' &&
+			directive.name.value !== 'join__owner'
+		) {
 			continue;
 		}
 		const graphArg = getDirectiveArgValue(directive, 'graph');
@@ -790,7 +809,9 @@ function getDefinitionServiceNames(definition, graphIdToServiceName) {
 }
 
 function getDirectiveArgValue(directive, argName) {
-	const arg = (directive.arguments || []).find((row) => row.name.value === argName);
+	const arg = (directive.arguments || []).find(
+		(row) => row.name.value === argName
+	);
 	if (!arg || !arg.value) {
 		return null;
 	}
