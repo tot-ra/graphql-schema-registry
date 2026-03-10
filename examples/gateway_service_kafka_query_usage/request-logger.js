@@ -52,7 +52,10 @@ const requestLogger = {
 				}
 
 				console.log('Publishing query event to redis', eventPayload);
-				await redisPublisher.publish(queriesChannel, JSON.stringify(eventPayload));
+				await redisPublisher.publish(
+					queriesChannel,
+					JSON.stringify(eventPayload)
+				);
 			} catch (e) {
 				console.error(e);
 			}

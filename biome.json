@@ -6,7 +6,15 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/coverage",
+      "!**/dist",
+      "!**/.pnpm-store",
+      "!**/node_modules",
+      "!**/app"
+    ]
   },
   "formatter": {
     "enabled": true,
