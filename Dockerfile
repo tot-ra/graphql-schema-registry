@@ -6,7 +6,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm@10.29.2
 RUN pnpm install --frozen-lockfile
-COPY webpack.config.js babel.config.js tsconfig.json .eslintrc .editorconfig ./
+COPY webpack.config.js babel.config.js tsconfig.json .editorconfig ./
 COPY client ./client
 RUN pnpm run build-frontend
 
