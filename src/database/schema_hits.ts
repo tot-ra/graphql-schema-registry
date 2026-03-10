@@ -36,14 +36,17 @@ const schemaHitModel = {
 		const now = new Date().getTime();
 
 		return (
-			msgDate.getTime() > now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600
+			msgDate.getTime() >
+			now - schemaHitModel.MAX_RETENTION_DAYS * 24 * 3600 * 1000
 		);
 	},
 
 	syncUniqueClientsToDb: async function () {
-		logger.debug(
-			`Hydrating collected schema usage statistics (${schemaHitModel.internalCache.length}) properties`
-		);
+		if (schemaHitModel.internalCache.length > 0) {
+			logger.info(
+				`Hydrating collected schema usage statistics (${schemaHitModel.internalCache.length}) properties`
+			);
+		}
 		for (const row of schemaHitModel.internalCache) {
 			await schemaHitModel.storeInDb(row);
 		}
@@ -266,6 +269,19 @@ const schemaHitModel = {
 		);
 
 		return rows;
+	},
+
+	listFields: async function () {
+		const results = await connection.raw(
+			`SELECT sh.entity,
+					sh.property,
+					SUM(sh.hits)::int as "hitsSum"
+			 FROM schema_hit sh
+			 GROUP BY sh.entity, sh.property
+			 ORDER BY "hitsSum" DESC, sh.entity, sh.property`
+		);
+
+		return rowsFromRaw(results);
 	},
 
 	list: async function ({ since, limit = 500 }) {

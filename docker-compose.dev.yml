@@ -13,10 +13,7 @@ services:
       - WITH_WEBPACK=${WITH_WEBPACK-1}
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
       - ASYNC_SCHEMA_UPDATES=false
-      - KAFKA_CLIENT=graphql-schema-registry-server
-      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
-      - KAFKA_BROKER_PORT=9092
-      - KAFKA_SCHEMA_TOPIC=graphql-schema-updates
+      - REDIS_SCHEMA_UPDATES_CHANNEL=graphql-schema-updates
       - REDIS_HOST=gql-schema-registry-redis
       - REDIS_SECRET=password
     volumes:
@@ -40,10 +37,9 @@ services:
       - ENV_ID=dev
       - SERVICE_NAME=gql-schema-registry-worker
       - DB_SCHEMA_REGISTRY=gql-schema-registry-db
-      - KAFKA_CLIENT=graphql-schema-registry-server
-      - KAFKA_BROKER_HOST=gql-schema-registry-kafka
-      - KAFKA_BROKER_PORT=9092
-      - KAFKA_QUERIES_TOPIC=graphql-queries
+      - REDIS_HOST=gql-schema-registry-redis
+      - REDIS_SECRET=password
+      - REDIS_QUERIES_CHANNEL=graphql-queries
     volumes:
       - .:/app/
       - /app/node_modules
@@ -52,7 +48,6 @@ services:
       - gql-schema-registry
       - gql-schema-registry-redis
       - gql-schema-registry-db
-      - gql-schema-registry-kafka
     networks:
       gql-schema:
         aliases:

@@ -1,13 +1,10 @@
 const { getServiceListWithTypeDefs } = require('./poll-schema-registry');
 const { composeServices } = require('@apollo/composition');
-const { Kafka } = require('kafkajs');
+const Redis = require('ioredis');
 
-const kafka = new Kafka({
-	clientId: 'graphql-schema-registry-client',
-	brokers: ['localhost:29092'],
-});
-
-const consumer = kafka.consumer({ groupId: 'test-group' });
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6004');
+const schemaUpdatesChannel =
+	process.env.REDIS_SCHEMA_UPDATES_CHANNEL || 'graphql-schema-updates';
 
 const defaultService = {
 	name: 'default',
@@ -18,25 +15,18 @@ const defaultService = {
 
 class CustomSupergraphManager {
 	constructor() {
-		this.consumer = null;
 		const that = this;
-		consumer.connect().then(async () => {
-			await consumer.subscribe({
-				topic: 'graphql-schema-updates',
-				fromBeginning: true,
-			});
-			await consumer.run({
-				eachMessage: async ({ topic, partition, message }) => {
-					console.log({
-						partition,
-						offset: message.offset,
-						value: message.value.toString(),
-					});
-					const supergraphSdl = await that.buildSupergraph();
+		redis.on('message', async (channel, message) => {
+			if (channel !== schemaUpdatesChannel) {
+				return;
+			}
 
-					that.update(supergraphSdl);
-				},
-			});
+			console.log('Received schema update event', message);
+			const supergraphSdl = await that.buildSupergraph();
+			that.update(supergraphSdl);
+		});
+		redis.subscribe(schemaUpdatesChannel).then(() => {
+			console.log(`Subscribed to redis channel ${schemaUpdatesChannel}`);
 		});
 	}
 

@@ -17,6 +17,7 @@ export default gql`
 			entity: String!
 			property: String!
 		): [SchemaHitByClient]
+		schemaFieldsUsage: [SchemaField]
 
 		persistedQueries(
 			searchFragment: String

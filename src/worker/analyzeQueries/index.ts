@@ -4,7 +4,7 @@ import { TypeInfo } from 'graphql';
 import { Knex } from 'knex';
 
 import { logger } from '../../logger';
-import { initConsumer } from '../../kafka';
+import redis from '../../redis';
 import { composeAndValidateSchema } from '../../helpers/federation';
 
 import schemaModel from '../../database/schema';
@@ -16,6 +16,17 @@ import extractQueryFields from './extract-query-properties';
 import { connection } from '../../database';
 
 const SCHEMA_UPDATE_PERIOD_MIN = 5;
+const QUERIES_CHANNEL =
+	process.env.REDIS_QUERIES_CHANNEL ||
+	process.env.KAFKA_QUERIES_TOPIC ||
+	'graphql-queries';
+
+function firstHeaderValue(value) {
+	if (Array.isArray(value)) {
+		return value[0];
+	}
+	return value;
+}
 
 const analyzer = {
 	typeInfo: null,
@@ -48,25 +59,29 @@ const analyzer = {
 			schemaHit.init();
 			clientsModel.init();
 
-			const consumer = await initConsumer();
-
-			await consumer.subscribe({
-				topic: process.env.KAFKA_QUERIES_TOPIC || 'graphql-queries',
-				fromBeginning: true,
-			});
-			await consumer.run({
-				partitionsConsumedConcurrently: 3,
-				eachMessage: analyzer.processRequest,
-			});
+			await redis.initRedis();
+			await redis.subscribe(QUERIES_CHANNEL, analyzer.processRequest);
+			logger.info(
+				`query analyzer subscribed to redis channel ${QUERIES_CHANNEL}`
+			);
 		} catch (e) {
-			// kafka is not mandatory
+			// Redis pub/sub is optional
 			logger.error(e);
 		}
 	},
 
-	// topic, message.offset, partition, message.key
-	processRequest: async ({ message }) => {
-		const parsedData = JSON.parse(String(message.value));
+	processRequest: async (message) => {
+		logger.info('query analyzer received message from redis', {
+			payloadSize: String(message || '').length,
+		});
+
+		let parsedData;
+		try {
+			parsedData = JSON.parse(String(message));
+		} catch (error) {
+			logger.warn(`Skipping malformed query event payload`, { message, error });
+			return;
+		}
 
 		let name;
 		let version;
@@ -77,8 +92,38 @@ const analyzer = {
 				'persistedQueryHash.sha256Hash'
 			);
 
-			name = parsedData.headers['apollographql-client-name'];
-			version = parsedData.headers['apollographql-client-version'];
+			name = firstHeaderValue(parsedData.headers['apollographql-client-name']);
+			version = firstHeaderValue(
+				parsedData.headers['apollographql-client-version']
+			);
+
+			// Fallback for clients that don't send Apollo client headers.
+			if (isNil(name)) {
+				const origin = firstHeaderValue(parsedData.headers.origin);
+				const referer = firstHeaderValue(parsedData.headers.referer);
+				const userAgent = firstHeaderValue(parsedData.headers['user-agent']);
+
+				try {
+					const source = origin || referer;
+					if (source) {
+						name = new URL(source).host;
+					}
+				} catch (_) {
+					// ignore URL parsing errors and fallback below
+				}
+
+				if (isNil(name) && userAgent) {
+					name = 'browser';
+				}
+			}
+
+			if (isNil(version) && !isNil(name)) {
+				version =
+					firstHeaderValue(parsedData.headers['x-client-version']) ||
+					firstHeaderValue(parsedData.headers['x-app-version']) ||
+					firstHeaderValue(parsedData.headers['sec-ch-ua']) ||
+					'unknown';
+			}
 
 			if (!parsedData.query) {
 				const pq = await persistedQueries.get(persistedQueryHash);
@@ -90,19 +135,53 @@ const analyzer = {
 
 			if (!isNil(name) && !isNil(version)) {
 				clientsModel.add({ name, version, persistedQueryHash });
+				logger.info('Tracked client usage', { name, version });
+			} else {
+				logger.info(
+					'Client headers missing, skipping client tracking for this query',
+					{
+						operationName: parsedData.operationName || null,
+						availableHeaderKeys: Object.keys(parsedData.headers || {}),
+					}
+				);
 			}
 		}
 
-		const msgDate = new Date(Math.floor(message.timestamp));
+		const parsedTimestamp = Number(parsedData.timestamp);
+		const msgDate = Number.isFinite(parsedTimestamp)
+			? new Date(parsedTimestamp)
+			: new Date();
 
 		if (parsedData.query && schemaHit.allowNewHitWithTime(msgDate)) {
-			logger.debug('Processing schema-hit');
-			await analyzer.processSchemaQueryUsage({
-				name,
-				version,
-				query: parsedData.query,
-				msgDate,
+			logger.info('Processing schema-hit', {
+				operationName: parsedData.operationName || null,
 			});
+			try {
+				const processedFields = await analyzer.processSchemaQueryUsage({
+					name,
+					version,
+					query: parsedData.query,
+					msgDate,
+				});
+
+				if (processedFields === 0) {
+					logger.warn('Query analyzer extracted 0 schema fields', {
+						operationName: parsedData.operationName,
+						clientName: name,
+						clientVersion: version,
+					});
+				} else {
+					logger.info('Query analyzer extracted schema fields', {
+						operationName: parsedData.operationName || null,
+						fields: processedFields,
+					});
+				}
+			} catch (error) {
+				logger.error('Failed to process schema query usage', {
+					error,
+					operationName: parsedData.operationName,
+				});
+			}
 		} else {
 			logger.debug(
 				'Skipping schema-hit - either no query or old msgDate',
@@ -131,6 +210,8 @@ const analyzer = {
 				day,
 			});
 		}
+
+		return visitedFields.length;
 	},
 };
 

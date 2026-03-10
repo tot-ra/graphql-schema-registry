@@ -20,10 +20,6 @@ export default {
 			secret: process.env.REDIS_SECRET || '',
 			db: intFor(process.env.REDIS_DB, '2'),
 		},
-		'gql-schema-registry-kafka': {
-			host: process.env.KAFKA_BROKER_HOST || 'gql-schema-registry-kafka',
-			port: process.env.KAFKA_BROKER_PORT || '9092',
-		},
 	},
 	asyncSchemaUpdates: booleanFor(process.env.ASYNC_SCHEMA_UPDATES),
 	logStreamingEnabled:

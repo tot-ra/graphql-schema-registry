@@ -13,7 +13,7 @@
     "@apollo/gateway": "2.0.5",
     "apollo-server": "3.10.1",
     "graphql": "16.6.0",
-    "kafkajs": "^1.15.0",
+    "ioredis": "^5.8.1",
     "lodash": "^4.17.20",
     "request-promise-native": "^1.0.9"
   }

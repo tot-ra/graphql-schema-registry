@@ -1,7 +1,6 @@
 import express from 'express';
 import { get } from 'lodash';
 import initGraphql from './graphql';
-import * as kafka from './kafka';
 import config from './config';
 import router from './router';
 import { logger } from './logger';
@@ -105,11 +104,7 @@ export default async function init() {
 	const redisConfig = diplomat.getServiceInstance('gql-schema-registry-redis');
 
 	if (redisConfig.host) {
-		redis.initRedis();
-	}
-
-	if (config.asyncSchemaUpdates) {
-		kafka.init();
+		await redis.initRedis();
 	}
 
 	server = app.listen(config.port, () => {

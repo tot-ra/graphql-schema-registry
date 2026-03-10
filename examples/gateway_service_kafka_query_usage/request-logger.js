@@ -1,23 +1,19 @@
 /* eslint-disable camelcase */
-const { Kafka } = require('kafkajs');
+const Redis = require('ioredis');
 const { isNil, get } = require('lodash');
 
-let producer;
+let redisPublisher;
+const queriesChannel = process.env.REDIS_QUERIES_CHANNEL || 'graphql-queries';
 
 const requestLogger = {
-	connectToKafka: async () => {
+	connectToRedis: async () => {
 		try {
-			console.info('Connecting to kafka');
-
-			const kafka = new Kafka({
-				clientId: 'graphql-service',
-				brokers: ['localhost:29092'],
-			});
-
-			producer = kafka.producer();
-
-			// TODO make sure to reconnect to kafka if connection is lost
-			await producer.connect();
+			console.info('Connecting to redis');
+			redisPublisher = new Redis(
+				process.env.REDIS_URL || 'redis://localhost:6004',
+				{ lazyConnect: true }
+			);
+			await redisPublisher.connect();
 		} catch (e) {
 			console.error(e);
 		}
@@ -27,9 +23,11 @@ const requestLogger = {
 		requestDidStart: async (requestContext) => {
 			console.log('requestDidStart');
 
-			if (isNil(producer)) {
-				await requestLogger.connectToKafka();
-				console.error('Kafka producer is not connected, cannot log query');
+			if (isNil(redisPublisher)) {
+				await requestLogger.connectToRedis();
+				console.error(
+					'Redis publisher is not connected, cannot log query event'
+				);
 				// Do not return false, because:
 				// "If your plugin doesn't need to respond to any request lifecycle events
 				// requestDidStart should not return a value."
@@ -44,6 +42,7 @@ const requestLogger = {
 						requestContext,
 						'request.extensions.persistedQuery'
 					),
+					timestamp: Date.now(),
 				};
 
 				if (get(requestContext, 'request.http.headers')) {
@@ -52,17 +51,11 @@ const requestLogger = {
 					);
 				}
 
-				console.log('Sending message to kafka', eventPayload);
-				// validate that event matches declared schema
-				await producer.send({
-					topic: 'graphql-queries', // will be changed to local.mytopic + region added automatically
-					messages: [
-						{
-							headers: {},
-							value: JSON.stringify(eventPayload),
-						},
-					],
-				});
+				console.log('Publishing query event to redis', eventPayload);
+				await redisPublisher.publish(
+					queriesChannel,
+					JSON.stringify(eventPayload)
+				);
 			} catch (e) {
 				console.error(e);
 			}

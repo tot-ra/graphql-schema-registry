@@ -8,7 +8,7 @@ const GET_TIMEOUT_MS = 30;
 const SET_TIMEOUT_MS = 50;
 const DEFAULT_LOCK_TTL = 60 * 1000;
 
-let redis, redlockClient;
+let redis, redisSubscriber, redlockClient;
 
 async function wait(ms) {
 	return new Promise((resolve, reject) => {
@@ -38,6 +38,10 @@ async function resolveInstance(service) {
 
 async function initRedis() {
 	try {
+		if (redis && redis.status !== 'end') {
+			return redis;
+		}
+
 		// @ts-ignore
 		redis = new Redis({
 			maxRetriesPerRequest: 1,
@@ -86,6 +90,7 @@ const redisWrap = {
 
 	disconnect: () => {
 		redis?.disconnect();
+		redisSubscriber?.disconnect();
 	},
 
 	get: async (key) => {
@@ -156,6 +161,64 @@ const redisWrap = {
 				.catch((error) => logger.error(error, 'Redis unlock failed'));
 
 			throw error;
+		}
+	},
+
+	publish: async (channel, payload) => {
+		try {
+			if (!redis) {
+				await initRedis();
+			}
+
+			if (redis) {
+				await redis.publish(channel, payload);
+			} else {
+				logger.warn(`redis is not initialized, publish skipped for ${channel}`);
+			}
+		} catch (e) {
+			logger.error(`redis.publish failed for channel ${channel}`, e);
+		}
+	},
+
+	subscribe: async (channel, onMessage) => {
+		try {
+			if (!redis) {
+				await initRedis();
+			}
+
+			if (!redis) {
+				logger.warn(
+					`redis is not initialized, subscribe skipped for ${channel}`
+				);
+				return async () => {};
+			}
+
+			if (!redisSubscriber || redisSubscriber.status === 'end') {
+				redisSubscriber = redis.duplicate();
+				redisSubscriber.on('error', (e) =>
+					logger.error(`Redis subscriber error`, e)
+				);
+				await redisSubscriber.connect();
+			}
+
+			const handler = async (incomingChannel, message) => {
+				if (incomingChannel === channel) {
+					await onMessage(message);
+				}
+			};
+
+			redisSubscriber.on('message', handler);
+			await redisSubscriber.subscribe(channel);
+
+			return async () => {
+				if (redisSubscriber) {
+					redisSubscriber.off('message', handler);
+					await redisSubscriber.unsubscribe(channel);
+				}
+			};
+		} catch (e) {
+			logger.error(`redis.subscribe failed for channel ${channel}`, e);
+			return async () => {};
 		}
 	},
 };

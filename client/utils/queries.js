@@ -109,6 +109,16 @@ export const SCHEMA_USAGE_SDL = gql`
 	}
 `;
 
+export const SCHEMA_FIELDS_USAGE = gql`
+	query getSchemaFieldsUsage {
+		schemaFieldsUsage {
+			entity
+			property
+			hitsSum
+		}
+	}
+`;
+
 export const CLIENTS_LIST = gql`
 	query getClients {
 		clients {
