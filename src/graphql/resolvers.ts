@@ -51,6 +51,7 @@ export default {
 		},
 		schemaPropertyHitsByClient: async (_, { entity, property }) =>
 			await schemaHit.get({ entity, property }),
+		schemaFieldsUsage: async () => await schemaHit.listFields(),
 
 		persistedQueries: async (
 			parent,
@@ -203,6 +204,10 @@ export default {
 	},
 	SchemaField: {
 		hitsSum: async (parent) => {
+			if (!isUndefined(parent.hitsSum) && parent.hitsSum !== null) {
+				return parent.hitsSum;
+			}
+
 			return await schemaHit.sum({
 				entity: parent.entity,
 				property: parent.property,

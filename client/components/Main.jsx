@@ -2,7 +2,16 @@ import { Route, useLocation, Switch, Redirect } from 'react-router-dom';
 
 import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
+import {
+	SchemaIcon,
+	ServicesIcon,
+	AnalyticsIcon,
+	ClientsIcon,
+	PersistedQueriesIcon,
+	LogsIcon,
+} from './MenuIcons';
 import Services from '../schema';
+import Analytics from '../analytics';
 import SupergraphSchema from '../supergraph';
 import PersistedQueries from '../persisted-queries';
 import Clients from '../clients';
@@ -14,26 +23,37 @@ import Logs from '../logs';
 const UITabs = [
 	{
 		Title: <span>Schema</span>,
+		icon: <SchemaIcon />,
 		href: '/schema',
 		component: SupergraphSchema,
 	},
 	{
 		Title: <ServicesTab />,
+		icon: <ServicesIcon />,
 		href: '/services',
 		component: Services,
 	},
 	{
+		Title: <span>Analytics</span>,
+		icon: <AnalyticsIcon />,
+		href: '/analytics',
+		component: Analytics,
+	},
+	{
 		Title: <span>Clients</span>,
+		icon: <ClientsIcon />,
 		href: '/clients',
 		component: Clients,
 	},
 	{
 		Title: <PersistedQueriesTab />,
+		icon: <PersistedQueriesIcon />,
 		href: '/persisted-queries',
 		component: PersistedQueries,
 	},
 	{
 		Title: <span>Logs</span>,
+		icon: <LogsIcon />,
 		href: '/logs',
 		component: Logs,
 	},

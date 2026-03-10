@@ -26,7 +26,7 @@ export default function Clients() {
 		return (
 			<Info>
 				No clients found. Use gql-schema-registry-worker to process queries from
-				KAFKA_QUERIES_TOPIC
+				REDIS_QUERIES_CHANNEL
 			</Info>
 		);
 	}

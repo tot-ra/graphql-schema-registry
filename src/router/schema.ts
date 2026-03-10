@@ -9,7 +9,12 @@ import {
 } from '../controller/schema';
 import { connection } from '../database';
 import config from '../config';
-import * as kafka from '../kafka';
+import redis from '../redis';
+
+const SCHEMA_UPDATES_CHANNEL =
+	process.env.REDIS_SCHEMA_UPDATES_CHANNEL ||
+	process.env.KAFKA_SCHEMA_TOPIC ||
+	'graphql-schema-updates';
 
 export async function composeLatest(req, res) {
 	const schema = await getAndValidateSchema(connection, false, false);
@@ -66,7 +71,7 @@ export async function push(req, res) {
 	const data = await pushAndValidateSchema({ service });
 
 	if (config.asyncSchemaUpdates) {
-		await kafka.send(data);
+		await redis.publish(SCHEMA_UPDATES_CHANNEL, JSON.stringify(data));
 	}
 
 	return res.json({

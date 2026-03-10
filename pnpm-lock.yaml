@@ -53,9 +53,6 @@ importers:
       joi:
         specifier: 17.6.0
         version: 17.6.0
-      kafkajs:
-        specifier: 1.15.0
-        version: 1.15.0
       knex:
         specifier: 2.4.2
         version: 2.4.2(mysql2@3.14.1)(pg@8.16.3)
@@ -3404,10 +3401,6 @@ packages:
 
   k6@0.0.0:
     resolution: {integrity: sha512-GAQSWayS2+LjbH5bkRi+pMPYyP1JSp7o+4j58ANZ762N/RH/SdlAT3CHHztnn8s/xgg8kYNM24Gd2IPo9b5W+g==}
-
-  kafkajs@1.15.0:
-    resolution: {integrity: sha512-yjPyEnQCkPxAuQLIJnY5dI+xnmmgXmhuOQ1GVxClG5KTOV/rJcW1qA3UfvyEJKTp/RTSqQnUR3HJsKFvHyTpNg==}
-    engines: {node: '>=10.13.0'}
 
   kleur@3.0.3:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
@@ -8699,8 +8692,6 @@ snapshots:
   just-extend@4.2.1: {}
 
   k6@0.0.0: {}
-
-  kafkajs@1.15.0: {}
 
   kleur@3.0.3: {}
 

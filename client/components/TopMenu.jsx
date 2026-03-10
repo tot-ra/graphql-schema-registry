@@ -50,8 +50,27 @@ export default function TopMenu({ UITabs, selectedTab, handleChange }) {
 						key={i}
 						onClick={() => history.push(tab.href)}
 						label={
-							<span style={{ width: '100%', textAlign: 'left' }}>
-								{tab.Title}
+							<span
+								style={{
+									width: '100%',
+									textAlign: 'left',
+									display: 'inline-flex',
+									alignItems: 'center',
+									gap: 10,
+								}}
+							>
+								<span
+									style={{
+										width: 18,
+										height: 18,
+										display: 'inline-flex',
+										alignItems: 'center',
+										justifyContent: 'center',
+									}}
+								>
+									{tab.icon}
+								</span>
+								<span>{tab.Title}</span>
 							</span>
 						}
 						style={{

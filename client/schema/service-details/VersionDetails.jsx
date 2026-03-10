@@ -17,14 +17,12 @@ import { format } from 'date-fns';
 import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighlightAndCopy';
 
 import CodeDiff from './CodeDiff';
-import UsageTab from './UsageTab';
 import ContainersTab from './ContainersTab';
 
 // eslint-disable-next-line complexity
 export default function VersionDetails() {
 	const history = useHistory();
-	const { serviceName, schemaId, subtab, selectedEntity, selectedProperty } =
-		useSchemaParam();
+	const { serviceName, schemaId, subtab } = useSchemaParam();
 
 	const [revealed, setRevealed] = useState(null);
 	const [activeTab, setTab] = useState(subtab ? subtab : 'sdl');
@@ -73,12 +71,8 @@ export default function VersionDetails() {
 			);
 			break;
 		case 'containers':
-			selectedTab = 3;
-			panelContent = <ContainersTab containers={containers} />;
-			break;
-		case 'usage':
 			selectedTab = 2;
-			panelContent = <UsageTab schemaId={data.schema.id} />;
+			panelContent = <ContainersTab containers={containers} />;
 			break;
 		default:
 			break;
@@ -97,10 +91,6 @@ export default function VersionDetails() {
 			</Button>
 		);
 	}
-
-	const selectedEntityUrlPath = selectedEntity
-		? `/${selectedEntity}/${selectedProperty}`
-		: '';
 
 	return (
 		<Container>
@@ -143,17 +133,6 @@ export default function VersionDetails() {
 					/>
 
 					<Tab
-						label="Usage"
-						onClick={() => {
-							history.push(
-								`/${serviceName}/${schemaId}/usage${selectedEntityUrlPath}`
-							);
-							setTab('usage');
-						}}
-						selected={activeTab === 'usage'}
-					/>
-
-					<Tab
 						label={`Containers (${data.schema.containerCount})`}
 						onClick={() => {
 							history.push(`/${serviceName}/${schemaId}/containers`);
@@ -169,13 +148,9 @@ export default function VersionDetails() {
 }
 
 function useSchemaParam() {
-	const match = useRouteMatch(
-		'/:serviceName/:schemaId/:subtab/:selectedEntity?/:selectedProperty?'
-	);
+	const match = useRouteMatch('/:serviceName/:schemaId/:subtab');
 	const schemaId = match?.params?.schemaId;
 	const subtab = match?.params?.subtab;
-	const selectedEntity = match?.params?.selectedEntity;
-	const selectedProperty = match?.params?.selectedProperty;
 
 	const { serviceName } = useParams();
 
@@ -183,7 +158,5 @@ function useSchemaParam() {
 		serviceName,
 		subtab,
 		schemaId: schemaId ? parseInt(schemaId, 10) : null,
-		selectedEntity,
-		selectedProperty,
 	};
 }

@@ -60,17 +60,16 @@ docker-compose -f docker-compose.base.yml -f docker-compose.prod.yml up
 ```mermaid
 flowchart LR
     GW[federated-gateway] == poll schema every 10 sec\n POST /schema/compose ==> SR["schema registry\n(gql-schema-registry)"] -- store schemas --> DB[("postgres 18\n(gql-schema-registry-db)")]
-    SR -- cache persisted queries\nstore & query last logs --> R[("redis 6\n(gql-schema-registry-redis)")]
-    SR -- publish schema change --> KF1("kafka\n(gql-schema-registry-kafka)\ngraphql-schema-updates topic") -- listen schema updates --> GW
-    GW -- publish queries --> KF2("kafka\n(gql-schema-registry-kafka)\ngraphql-queries topic")
-    KF2 --> QA["query analyzer\n(gql-schema-registry-worker)"]
+    SR -- cache persisted queries\nstore & query last logs --> R[("redis 8\n(gql-schema-registry-redis)")]
+    SR -- publish schema change --> R
+    GW -- subscribe schema updates --> R
+    GW -- publish queries --> R
+    R --> QA["query analyzer\n(gql-schema-registry-worker)"]
     QA --update schema hits --> DB
     GW -- query A --> S1["service A"] -- register schema in runtime --> SR
     GW -- query B --> S2["service B"] -- register schema in runtime --> SR
     S2["service B"] -. validate schema \n on commit/cli/CI .-> SR
 
-    style KF1 fill:#0672e6,color:white
-    style KF2 fill:#0672e6,color:white
     style DB fill:#0672e6,color:white
     style R fill:#0672e6,color:white
     style SR fill:#ffe43e
@@ -86,8 +85,7 @@ flowchart LR
 | schema registry   | Required | Main service that we provide                                                                                                                                                                                                                                                                                                |
 | postgres          | Required | Main data storage of schemas and other derivative data                                                                                                                                                                                                                                                                      |
 | query analyzer    | Optional | Processes queries in async mode, required for usage tracking. Main code in `/src/worker` folder                                                                                                                                                                                                                             |
-| kafka             | Optional | Ties schema-registry and federated gateway with async messaging. Required for fast schema updates and for usage tracking                                                                                                                                                                                                    |
-| redis             | Optional | Caching layer for APQs. Not used much atm                                                                                                                                                                                                                                                                                   |
+| redis             | Required | Shared cache and pub/sub layer used for APQ cache, schema update notifications, and query usage event ingestion                                                                                                                                                                                                             |
 
 #### Tech stack
 
@@ -96,7 +94,7 @@ flowchart LR
 | react                       | nodejs 22                         |
 | apollo client               | express, hapi/joi                 |
 | styled-components           | apollo-server-express, dataloader |
-|                             | redis 6                           |
+|                             | redis 8                           |
 |                             | knex                              |
 |                             | postgres 18                       |
 
@@ -194,10 +192,8 @@ The following are the different environment variables that are looked up that al
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |
 | ASYNC_SCHEMA_UPDATES  | Specifies if async achema updates is enabled                                  | false                     |
-| KAFKA_BROKER_HOST     | Host name of the Kafka broker, used if ASYNC_SCHEMA_UPDATES = true            | gql-schema-registry-kafka |
-| KAFKA_BROKER_PORT     | Port used when connecting to Kafka, used if ASYNC_SCHEMA_UPDATES = true       | 9092                      |
-| KAFKA_SCHEMA_TOPIC    | Topic with new schema                                                         | graphql-schema-updates    |
-| KAFKA_QUERIES_TOPIC   | Topic with new schema                                                         | graphql-queries           |
+| REDIS_SCHEMA_UPDATES_CHANNEL | Redis pub/sub channel used for schema update notifications               | graphql-schema-updates    |
+| REDIS_QUERIES_CHANNEL | Redis pub/sub channel used by gateway request logging and query analyzer       | graphql-queries           |
 | LOG_LEVEL             | Minimum level of logs to output                                               | info                      |
 | LOG_TYPE              | Output log type, supports pretty or json.                                     | pretty                    |
 | LOG_STREAMING_ENABLED | Controls whether logs are streamed over Redis to be presented in UI           | true                      |
