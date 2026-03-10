@@ -10,6 +10,7 @@ export default gql`
 		services(limit: Int, offset: Int): [Service]
 		service(id: Int!): Service
 		serviceCount: Int!
+		supergraphSDL: String!
 		schema(id: Int!): SchemaDefinition!
 		schemas(since: DateTime): [SchemaDefinition]
 		schemaPropertyHitsByClient(

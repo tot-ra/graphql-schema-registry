@@ -3,7 +3,11 @@ import { parse } from 'graphql';
 
 import { logger } from '../logger';
 
-import { deactivateSchema, activateSchema } from '../controller/schema';
+import {
+	deactivateSchema,
+	activateSchema,
+	composeSupergraph,
+} from '../controller/schema';
 import config from '../config';
 import { connection } from '../database';
 import schemaModel from '../database/schema';
@@ -29,6 +33,7 @@ export default {
 		service: async (_, { id }, { dataloaders }) =>
 			await dataloaders.services.load(id),
 		serviceCount: async () => await servicesModel.count(),
+		supergraphSDL: async () => await composeSupergraph(connection),
 		schema: async (_, { id }) => {
 			const schema = await schemaModel.getSchemaById(connection, id);
 

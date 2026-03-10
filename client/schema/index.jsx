@@ -16,7 +16,7 @@ const History = () => {
 	}
 
 	return (
-		<Router basename="/schema">
+		<Router basename="/services">
 			<FlexRow>
 				<ServiceList />
 				<Route path="/:serviceName?/:schemaId?" component={ServiceDetails} />

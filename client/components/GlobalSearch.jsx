@@ -51,13 +51,13 @@ const GlobalSearch = () => {
 					const resultRow = { ...row };
 
 					if (row.__typename === 'Service') {
-						resultRow.href = `/schema/${row.name}`;
+						resultRow.href = `/services/${row.name}`;
 						resultRow.preview = row.name;
 						resultRow.location = 'service : ';
 					}
 
 					if (row.__typename === 'SchemaDefinition') {
-						resultRow.href = `/schema/${row.service.name}/${row.id}/sdl`;
+						resultRow.href = `/services/${row.service.name}/${row.id}/sdl`;
 						resultRow.location = `schema : ${row.service.name} > #${row.id}`;
 
 						const strMin = Math.max(row.typeDefs.indexOf(filterValue) - 30, 0);
@@ -116,7 +116,7 @@ const GlobalSearch = () => {
 	const classes = useStyles();
 
 	return (
-		<div>
+		<div style={{ position: 'relative', width: '100%' }}>
 			<TextField
 				className={classes.root}
 				inputProps={{ className: classes.input }}
@@ -127,7 +127,7 @@ const GlobalSearch = () => {
 				onChange={(e) => setFilterValue(e.target.value)}
 				onKeyDown={handleKeyPress}
 				variant="filled"
-				style={{ color: 'white' }}
+				style={{ color: 'white', width: '100%' }}
 				label="Search.."
 			/>
 
@@ -136,13 +136,17 @@ const GlobalSearch = () => {
 					style={{
 						position: 'absolute',
 						background: 'white',
-						width: '60%',
-						right: 0,
-						top: 49,
+						width: '100%',
+						left: 0,
+						top: '100%',
+						marginTop: 4,
 						border: '1px solid #999',
 						borderRadius: '0 0 5px 5px',
 						color: 'black',
 						zIndex: '2',
+						maxHeight: 340,
+						overflowY: 'auto',
+						boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
 					}}
 				>
 					{searchResults.map((row, i) => {
