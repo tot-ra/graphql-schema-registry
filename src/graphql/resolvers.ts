@@ -15,9 +15,11 @@ import containersModel from '../database/containers';
 import servicesModel from '../database/services';
 
 import schemaHit from '../database/schema_hits';
+import operationHit from '../database/operation_hits';
 import clientsModel from '../database/clients';
 
 import PersistedQueriesModel from '../database/persisted_queries';
+import { getServiceHealthStatus } from './service-health';
 
 const dateTime = new Intl.DateTimeFormat('en-GB', {
 	weekday: 'long',
@@ -49,9 +51,22 @@ export default {
 
 			return schema;
 		},
-		schemaPropertyHitsByClient: async (_, { entity, property }) =>
-			await schemaHit.get({ entity, property }),
+		schemaPropertyHitsByClient: async (_, { entity, property, granularity }) =>
+			await schemaHit.get({ entity, property, granularity }),
 		schemaFieldsUsage: async () => await schemaHit.listFields(),
+		schemaChangeLog: async (_, { limit, offset, serviceName }) =>
+			await schemaModel.getSchemaChangeLog({
+				trx: connection,
+				limit,
+				offset,
+				serviceName,
+			}),
+		schemaEntityHits: async (_, { granularity, hours }) =>
+			await schemaHit.getEntityHits({ granularity, hours }),
+		schemaOperationHits: async (_, { granularity, hours }) =>
+			await operationHit.getHits({ granularity, hours }),
+		schemaTopOperations: async (_, { hours, limit }) =>
+			await operationHit.getTopOperations({ hours, limit }),
 
 		persistedQueries: async (
 			parent,
@@ -156,6 +171,7 @@ export default {
 
 			return schemas;
 		},
+		healthStatus: async (parent) => getServiceHealthStatus(parent.url),
 	},
 	SchemaDefinition: {
 		service: (parent, args, { dataloaders }) =>

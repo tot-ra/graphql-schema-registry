@@ -43,7 +43,7 @@ router.get(
 	})
 );
 
-router.get('/', indexHtml());
+router.get('/', asyncWrap(indexHtml()));
 assetRouter(router);
 
 const supergraphKey = 'supergraph';

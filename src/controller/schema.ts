@@ -15,7 +15,7 @@ export async function getAndValidateSchema(
 		? await schemaModel.getSchemaByServiceVersions({ trx, services })
 		: await schemaModel.getLastUpdatedForActiveServices({ trx });
 
-	logger.info('Validating schema. Got services schemas from DB transaction..', {
+	logger.info('Validating schema set loaded from transaction', {
 		schemas,
 	});
 
@@ -29,7 +29,7 @@ export async function getAndValidateSchema(
 export async function composeSupergraph(trx) {
 	const schemas = await schemaModel.getLastUpdatedForActiveServices({ trx });
 
-	logger.info('Composing graph. Got services schemas from DB transaction..', {
+	logger.info('Composing supergraph from active service schemas', {
 		schemas,
 	});
 
@@ -44,7 +44,7 @@ export async function pushAndValidateSchema({ service }) {
 	return await transact(async (trx) => {
 		const schema = await schemaModel.registerSchema({ trx, service });
 
-		logger.info('Registered service new schema in DB transaction..', {
+		logger.info('Registered new service schema in transaction', {
 			schema,
 		});
 

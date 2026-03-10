@@ -56,6 +56,12 @@ importers:
       knex:
         specifier: 2.4.2
         version: 2.4.2(mysql2@3.14.1)(pg@8.16.3)
+      lightweight-charts:
+        specifier: 5.0.9
+        version: 5.0.9
+      lightweight-charts-react-components:
+        specifier: 1.4.0
+        version: 1.4.0(lightweight-charts@5.0.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -2720,6 +2726,9 @@ packages:
     resolution: {integrity: sha512-11Ndz7Nv+mvAC1j0ktTa7fAb0vLyGGX+rMHNBYQviQDGU0Hw7lhctJANqbPhu9nV9/izT/IntTgZ7Im/9LJs9g==}
     engines: {'0': node >=0.6.0}
 
+  fancy-canvas@2.1.0:
+    resolution: {integrity: sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==}
+
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -3444,6 +3453,16 @@ packages:
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
+
+  lightweight-charts-react-components@1.4.0:
+    resolution: {integrity: sha512-FWzEiQDhQaQ04l6kV2fzsODK6jCrzbLOai+r6oEvCqC3tniXjKUAFHbTUlemII7PfiWYwyVAVgl1XRv72Q8Phw==}
+    peerDependencies:
+      lightweight-charts: '>=5 < 6'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+
+  lightweight-charts@5.0.9:
+    resolution: {integrity: sha512-8oQIis8jfZVfSwz8j9Z5x3O79dIRTkEYI9UY7DKtE4O3ZxlHjMK3L0+4nOVOOFq4FHI/oSIzz1RHeNImCk6/Jg==}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
@@ -7731,6 +7750,8 @@ snapshots:
 
   extsprintf@1.3.0: {}
 
+  fancy-canvas@2.1.0: {}
+
   fast-deep-equal@3.1.3: {}
 
   fast-json-stable-stringify@2.1.0: {}
@@ -8722,6 +8743,16 @@ snapshots:
   lcov-parse@1.0.0: {}
 
   leven@3.1.0: {}
+
+  lightweight-charts-react-components@1.4.0(lightweight-charts@5.0.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      lightweight-charts: 5.0.9
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  lightweight-charts@5.0.9:
+    dependencies:
+      fancy-canvas: 2.1.0
 
   lines-and-columns@1.2.4: {}
 

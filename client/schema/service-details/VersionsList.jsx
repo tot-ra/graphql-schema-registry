@@ -3,10 +3,19 @@ import { formatDistance } from 'date-fns';
 
 import { EntryGrid } from '../../components/styled';
 import { FlexRow, VersionRow, VersionTag } from '../styled';
-import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { List, ListItem, Tooltip } from '@material-ui/core';
 import VersionCharDelta from './VersionCharDelta';
+
+const VERSION_PREVIEW_LENGTH = 6;
+
+function getVersionPreview(version) {
+	if (!version) {
+		return '';
+	}
+
+	return version.slice(0, VERSION_PREVIEW_LENGTH);
+}
 
 const VersionsList = ({ service }) => {
 	const { serviceName, schemaId } = useParams();
@@ -22,9 +31,10 @@ const VersionsList = ({ service }) => {
 			{service.schemas.map((schema) => {
 				const today = new Date();
 				const date = new Date(schema.addedTime);
+				const versionPreview = getVersionPreview(schema.UUID);
 				const icon = schema.isDev ? (
 					<Tooltip placement="right" title="Registered by service in dev mode">
-						<DeveloperModeIcon />
+						<span role="img" aria-label="Registered by service in dev mode">🛠️</span>
 					</Tooltip>
 				) : (
 					<ChevronRightIcon />
@@ -41,7 +51,7 @@ const VersionsList = ({ service }) => {
 						<EntryGrid>
 							<div>
 								<FlexRow>
-									<VersionTag>{schema.UUID}</VersionTag>
+									<VersionTag title={schema.UUID}>{versionPreview}</VersionTag>
 								</FlexRow>
 								<VersionRow selected={selectedSchema === schema.id}>
 									<VersionCharDelta

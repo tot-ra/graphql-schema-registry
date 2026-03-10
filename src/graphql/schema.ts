@@ -16,8 +16,23 @@ export default gql`
 		schemaPropertyHitsByClient(
 			entity: String!
 			property: String!
+			granularity: UsageGranularity = DAY
 		): [SchemaHitByClient]
 		schemaFieldsUsage: [SchemaField]
+		schemaChangeLog(
+			limit: Int = 200
+			offset: Int = 0
+			serviceName: String
+		): [SchemaChangeLogEntry!]!
+		schemaEntityHits(
+			granularity: UsageGranularity = HOUR
+			hours: Int = 24
+		): [SchemaEntityHit]
+		schemaOperationHits(
+			granularity: UsageGranularity = HOUR
+			hours: Int = 24
+		): [SchemaOperationHit]
+		schemaTopOperations(hours: Int = 24, limit: Int = 20): [SchemaOperationSummary]
 
 		persistedQueries(
 			searchFragment: String
@@ -31,6 +46,11 @@ export default gql`
 		clientVersions(since: DateTime): [ClientVersion]
 		logs: JSON
 		search(filter: String!): [SearchResult]
+	}
+
+	enum UsageGranularity {
+		DAY
+		HOUR
 	}
 
 	union SearchResult = Service | SchemaDefinition
@@ -47,6 +67,7 @@ export default gql`
 		hits: Int!
 
 		day: Date!
+		bucket: String!
 		clientName: String
 	}
 	type SchemaHitByClientVersion {
@@ -94,6 +115,36 @@ export default gql`
 		property: String!
 		clientVersionId: Int
 		hitsSum: Int
+		hits1h: Int
+		hits24h: Int
+	}
+
+	type SchemaChangeLogEntry {
+		serviceName: String!
+		schemaId: Int!
+		schemaUUID: String
+		addedTime: DateTime!
+		changeType: String!
+		change: String!
+	}
+
+	type SchemaEntityHit {
+		entity: String!
+		bucket: String!
+		hits: Int!
+	}
+
+	type SchemaOperationHit {
+		operationName: String!
+		operationType: String!
+		bucket: String!
+		hits: Int!
+	}
+
+	type SchemaOperationSummary {
+		operationName: String!
+		operationType: String!
+		hits: Int!
 	}
 
 	type Container {
@@ -107,8 +158,14 @@ export default gql`
 		id: Int!
 		name: String!
 		url: String
+		healthStatus: ServiceHealthStatus!
 
 		schemas(limit: Int, offset: Int, filter: String): [SchemaDefinition!]!
+	}
+
+	enum ServiceHealthStatus {
+		UP
+		DOWN
 	}
 
 	type PersistedQuery {
