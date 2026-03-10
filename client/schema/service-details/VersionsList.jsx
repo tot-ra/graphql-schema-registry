@@ -34,7 +34,9 @@ const VersionsList = ({ service }) => {
 				const versionPreview = getVersionPreview(schema.UUID);
 				const icon = schema.isDev ? (
 					<Tooltip placement="right" title="Registered by service in dev mode">
-						<span role="img" aria-label="Registered by service in dev mode">🛠️</span>
+						<span role="img" aria-label="Registered by service in dev mode">
+							🛠️
+						</span>
 					</Tooltip>
 				) : (
 					<ChevronRightIcon />

@@ -130,9 +130,7 @@ export default function Logs() {
 
 	return (
 		<div>
-			<Info>
-				Recent schema-registry backend logs (UTC, latest first)
-			</Info>
+			<Info>Recent schema-registry backend logs (UTC, latest first)</Info>
 
 			<table
 				style={{

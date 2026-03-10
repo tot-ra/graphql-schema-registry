@@ -37,7 +37,10 @@ export function indexHtml() {
   </html>`;
 
 		if (!isProduction && req.app?.locals?.vite) {
-			html = await req.app.locals.vite.transformIndexHtml(req.originalUrl, html);
+			html = await req.app.locals.vite.transformIndexHtml(
+				req.originalUrl,
+				html
+			);
 		}
 
 		res.send(html);

@@ -201,7 +201,7 @@ const operationHitModel = {
 						 GROUP BY operation_name, operation_type, hour
 						 ORDER BY hour, operation_name`,
 						[sanitizedHours]
-				  )
+					)
 				: await connection.raw(
 						`SELECT operation_name as "operationName",
 								operation_type as "operationType",
@@ -212,7 +212,7 @@ const operationHitModel = {
 						 GROUP BY operation_name, operation_type, DATE_TRUNC('day', hour)
 						 ORDER BY DATE_TRUNC('day', hour), operation_name`,
 						[sanitizedHours]
-				  );
+					);
 
 		const rows = rowsFromRaw(results);
 		await redis.set(cacheKey, JSON.stringify(rows), 60);

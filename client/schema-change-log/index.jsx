@@ -52,9 +52,7 @@ export default function SchemaChangeLog() {
 
 	return (
 		<div>
-			<Info>
-				Chronological schema changes across subgraphs (latest first)
-			</Info>
+			<Info>Chronological schema changes across subgraphs (latest first)</Info>
 			<table
 				style={{
 					width: '100%',

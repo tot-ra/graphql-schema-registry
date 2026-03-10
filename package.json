@@ -39,7 +39,8 @@
     "lint": "oxlint client src",
     "lint:fix": "oxlint client src --fix",
     "lint:biome": "biome lint client src",
-    "lint:biome:fix": "biome lint --write client src"
+    "lint:biome:fix": "biome lint --write client src",
+    "lint:ci": "biome ci . && pnpm run lint"
   },
   "repository": {
     "type": "git",
@@ -51,7 +52,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pnpm run format",
-      "pre-push": "pnpm run format"
+      "pre-push": "pnpm run lint:ci"
     }
   },
   "license": "MIT",

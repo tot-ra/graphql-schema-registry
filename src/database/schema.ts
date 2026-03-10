@@ -492,7 +492,8 @@ const schemaModel = {
 
 		entries.sort((left, right) => {
 			const timeDiff =
-				new Date(right.addedTime).getTime() - new Date(left.addedTime).getTime();
+				new Date(right.addedTime).getTime() -
+				new Date(left.addedTime).getTime();
 
 			if (timeDiff !== 0) {
 				return timeDiff;

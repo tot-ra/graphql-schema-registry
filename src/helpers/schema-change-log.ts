@@ -78,7 +78,10 @@ function addField(
 	typeEntry.fields.set(fieldNode.name.value, typeNodeToString(fieldNode.type));
 }
 
-function addFieldArguments(typeEntry: ParsedType, fieldNode: FieldDefinitionNode) {
+function addFieldArguments(
+	typeEntry: ParsedType,
+	fieldNode: FieldDefinitionNode
+) {
 	if (!fieldNode.arguments || !fieldNode.arguments.length) {
 		return;
 	}
@@ -105,7 +108,10 @@ function parseSchema(typeDefs: string): ParsedSchema {
 	return parsedSchema;
 }
 
-function consumeDefinition(parsedSchema: ParsedSchema, definition: DefinitionNode) {
+function consumeDefinition(
+	parsedSchema: ParsedSchema,
+	definition: DefinitionNode
+) {
 	switch (definition.kind) {
 		case 'ObjectTypeDefinition':
 		case 'ObjectTypeExtension': {
@@ -191,9 +197,13 @@ function compareFieldArguments(
 	afterArgs: Map<string, string> | undefined,
 	rows: SchemaDiffRow[]
 ) {
-	const beforeArgNames = new Set(beforeArgs ? Array.from(beforeArgs.keys()) : []);
+	const beforeArgNames = new Set(
+		beforeArgs ? Array.from(beforeArgs.keys()) : []
+	);
 	const afterArgNames = new Set(afterArgs ? Array.from(afterArgs.keys()) : []);
-	const argNames = Array.from(new Set([...beforeArgNames, ...afterArgNames])).sort();
+	const argNames = Array.from(
+		new Set([...beforeArgNames, ...afterArgNames])
+	).sort();
 
 	for (const argName of argNames) {
 		const hadArg = beforeArgs?.has(argName);
@@ -322,7 +332,9 @@ function compareUnionMembers(
 ) {
 	const beforeMembers = new Set(Array.from(beforeType.unionMembers));
 	const afterMembers = new Set(Array.from(afterType.unionMembers));
-	const members = Array.from(new Set([...beforeMembers, ...afterMembers])).sort();
+	const members = Array.from(
+		new Set([...beforeMembers, ...afterMembers])
+	).sort();
 
 	for (const member of members) {
 		const hadMember = beforeType.unionMembers.has(member);

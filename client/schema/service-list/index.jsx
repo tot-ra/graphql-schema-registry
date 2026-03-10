@@ -71,7 +71,9 @@ const ServiceList = () => {
 									<ServiceStatusDot
 										status={service.healthStatus}
 										title={
-											service.healthStatus === 'UP' ? 'Service is up' : 'Service is down'
+											service.healthStatus === 'UP'
+												? 'Service is up'
+												: 'Service is down'
 										}
 									/>
 									<span>{service.name}</span>

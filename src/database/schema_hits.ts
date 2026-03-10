@@ -106,11 +106,13 @@ const schemaHitModel = {
 	}) {
 		await transact(async (trx) => {
 			const clientHitCount = (
-				await trx(table).count('entity', { as: 'cnt' }).where({
-					entity,
-					property,
-					[bucketColumn]: bucketValue,
-				})
+				await trx(table)
+					.count('entity', { as: 'cnt' })
+					.where({
+						entity,
+						property,
+						[bucketColumn]: bucketValue,
+					})
 					.modify((queryBuilder) => {
 						if (clientId === null) {
 							queryBuilder.whereNull('client_id');
@@ -313,7 +315,7 @@ const schemaHitModel = {
 						 GROUP BY c.name, sh.hour, sh.entity, sh.property
 						 ORDER BY c.name, sh.hour`,
 						[entity, property]
-				  )
+					)
 				: await connection.raw(
 						`SELECT TO_CHAR(sh.day, 'YYYY-MM-DD') as day,
 								TO_CHAR(sh.day, 'YYYY-MM-DD') as bucket,
@@ -328,7 +330,7 @@ const schemaHitModel = {
 						 GROUP BY c.name, day, sh.entity, sh.property
 						 ORDER BY c.name, day`,
 						[entity, property]
-				  );
+					);
 
 		const rows = rowsFromRaw(results);
 
@@ -370,7 +372,7 @@ const schemaHitModel = {
 						 GROUP BY sh.entity, sh.hour
 						 ORDER BY sh.hour, sh.entity`,
 						[sanitizedHours]
-				  )
+					)
 				: await connection.raw(
 						`SELECT sh.entity,
 								TO_CHAR(sh.day, 'YYYY-MM-DD') as bucket,
@@ -380,7 +382,7 @@ const schemaHitModel = {
 						 GROUP BY sh.entity, sh.day
 						 ORDER BY sh.day, sh.entity`,
 						[Math.max(1, Math.ceil(sanitizedHours / 24))]
-				  );
+					);
 
 		const rows = rowsFromRaw(results);
 
@@ -420,7 +422,7 @@ const schemaHitModel = {
 						 GROUP BY c.name, c.version, sh.hour
 						 ORDER BY sh.hour, c.name, c.version`,
 						[sanitizedHours]
-				  )
+					)
 				: await connection.raw(
 						`SELECT c.name as "clientName",
 								c.version as "clientVersion",
@@ -432,7 +434,7 @@ const schemaHitModel = {
 						 GROUP BY c.name, c.version, DATE_TRUNC('day', sh.hour)
 						 ORDER BY DATE_TRUNC('day', sh.hour), c.name, c.version`,
 						[sanitizedHours]
-				  );
+					);
 
 		const rows = rowsFromRaw(results);
 		await redis.set(cacheKey, JSON.stringify(rows), 60);

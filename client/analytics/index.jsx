@@ -32,7 +32,9 @@ const lineColors = [
 ];
 
 function bucketToTimestamp(bucket) {
-	const parsedMs = Date.parse(bucket.includes('T') ? bucket : `${bucket}T00:00:00Z`);
+	const parsedMs = Date.parse(
+		bucket.includes('T') ? bucket : `${bucket}T00:00:00Z`
+	);
 
 	if (Number.isNaN(parsedMs)) {
 		return null;
@@ -58,8 +60,12 @@ function sortRows(rows, sortBy, sortDirection) {
 
 	sortedRows.sort((rowA, rowB) => {
 		if (sortBy === 'entity') {
-			const keyA = rowA.property ? `${rowA.entity}.${rowA.property}` : rowA.entity;
-			const keyB = rowB.property ? `${rowB.entity}.${rowB.property}` : rowB.entity;
+			const keyA = rowA.property
+				? `${rowA.entity}.${rowA.property}`
+				: rowA.entity;
+			const keyB = rowB.property
+				? `${rowB.entity}.${rowB.property}`
+				: rowB.entity;
 
 			return sortDirection === 'asc'
 				? keyA.localeCompare(keyB)
@@ -70,8 +76,12 @@ function sortRows(rows, sortBy, sortDirection) {
 		const hitsB = hitsByKey(rowB, sortBy);
 
 		if (hitsA === hitsB) {
-			const keyA = rowA.property ? `${rowA.entity}.${rowA.property}` : rowA.entity;
-			const keyB = rowB.property ? `${rowB.entity}.${rowB.property}` : rowB.entity;
+			const keyA = rowA.property
+				? `${rowA.entity}.${rowA.property}`
+				: rowA.entity;
+			const keyB = rowB.property
+				? `${rowB.entity}.${rowB.property}`
+				: rowB.entity;
 			return keyA.localeCompare(keyB);
 		}
 
@@ -96,7 +106,8 @@ function AnalyticsContent() {
 	const [clientSortBy, setClientSortBy] = useState('hits24h');
 	const [clientSortDirection, setClientSortDirection] = useState('desc');
 
-	const { data: fieldsData, loading: fieldsLoading } = useQuery(SCHEMA_FIELDS_USAGE);
+	const { data: fieldsData, loading: fieldsLoading } =
+		useQuery(SCHEMA_FIELDS_USAGE);
 	const { data: entityHitsData, loading: entityHitsLoading } = useQuery(
 		SCHEMA_ENTITY_HITS,
 		{
@@ -233,10 +244,7 @@ function AnalyticsContent() {
 			const key = `${row.operationType}:${row.operationName}`;
 			const label = `${row.operationType} ${row.operationName}`;
 
-			if (
-				normalizedTerm &&
-				!label.toLowerCase().includes(normalizedTerm)
-			) {
+			if (normalizedTerm && !label.toLowerCase().includes(normalizedTerm)) {
 				continue;
 			}
 
@@ -497,7 +505,9 @@ function AnalyticsContent() {
 
 	const onOperationSortChange = (nextSortBy, defaultDirection = 'desc') => {
 		if (operationSortBy === nextSortBy) {
-			setOperationSortDirection(operationSortDirection === 'asc' ? 'desc' : 'asc');
+			setOperationSortDirection(
+				operationSortDirection === 'asc' ? 'desc' : 'asc'
+			);
 			return;
 		}
 
@@ -593,7 +603,7 @@ function AnalyticsContent() {
 								? 'Operation hits (last 24h, 1h buckets)'
 								: isClientTab
 									? 'Client hits (last 24h, 1h buckets)'
-								: 'Entity hits (last 24h, 1h buckets)'}
+									: 'Entity hits (last 24h, 1h buckets)'}
 						</div>
 					</div>
 					{chartSeries.length === 0 ? (
@@ -663,7 +673,10 @@ function AnalyticsContent() {
 						<div>Hits (1h)</div>
 						<strong>
 							{numberFormatter.format(
-								visibleRows.reduce((sum, row) => sum + (Number(row.hits1h) || 0), 0)
+								visibleRows.reduce(
+									(sum, row) => sum + (Number(row.hits1h) || 0),
+									0
+								)
 							)}
 						</strong>
 					</div>
@@ -677,7 +690,10 @@ function AnalyticsContent() {
 						<div>Hits (24h)</div>
 						<strong>
 							{numberFormatter.format(
-								visibleRows.reduce((sum, row) => sum + (Number(row.hits24h) || 0), 0)
+								visibleRows.reduce(
+									(sum, row) => sum + (Number(row.hits24h) || 0),
+									0
+								)
 							)}
 						</strong>
 					</div>
@@ -692,7 +708,10 @@ function AnalyticsContent() {
 							<div>Hits (total)</div>
 							<strong>
 								{numberFormatter.format(
-									visibleRows.reduce((sum, row) => sum + (Number(row.hitsSum) || 0), 0)
+									visibleRows.reduce(
+										(sum, row) => sum + (Number(row.hitsSum) || 0),
+										0
+									)
 								)}
 							</strong>
 						</div>
@@ -717,7 +736,9 @@ function AnalyticsContent() {
 						}}
 					>
 						<div>Operations (shown)</div>
-						<strong>{numberFormatter.format(visibleOperationRows.length)}</strong>
+						<strong>
+							{numberFormatter.format(visibleOperationRows.length)}
+						</strong>
 					</div>
 					<div
 						style={{
@@ -816,9 +837,9 @@ function AnalyticsContent() {
 							? 'Search operation'
 							: isClientTab
 								? 'Search client@version'
-							: isEntityTab
-								? 'Search entity'
-								: 'Search entity.field'
+								: isEntityTab
+									? 'Search entity'
+									: 'Search entity.field'
 					}
 					value={searchTerm}
 					onChange={(event) => setSearchTerm(event.target.value)}
@@ -889,7 +910,8 @@ function AnalyticsContent() {
 											fontWeight: 'bold',
 										}}
 									>
-										Hits (24h) {sortBy === 'hits24h' ? `(${sortDirection})` : ''}
+										Hits (24h){' '}
+										{sortBy === 'hits24h' ? `(${sortDirection})` : ''}
 									</button>
 								</th>
 								<th>
@@ -904,7 +926,8 @@ function AnalyticsContent() {
 											fontWeight: 'bold',
 										}}
 									>
-										Hits (total) {sortBy === 'hitsSum' ? `(${sortDirection})` : ''}
+										Hits (total){' '}
+										{sortBy === 'hitsSum' ? `(${sortDirection})` : ''}
 									</button>
 								</th>
 							</tr>
@@ -912,11 +935,18 @@ function AnalyticsContent() {
 						<tbody>
 							{visibleRows.map((row) => {
 								const isSelected = isPropertyTab
-									? selectedEntity === row.entity && selectedProperty === row.property
+									? selectedEntity === row.entity &&
+										selectedProperty === row.property
 									: selectedEntity === row.entity && !selectedProperty;
 
 								return (
-									<tr key={isPropertyTab ? `${row.entity}.${row.property}` : row.entity}>
+									<tr
+										key={
+											isPropertyTab
+												? `${row.entity}.${row.property}`
+												: row.entity
+										}
+									>
 										<td>
 											<button
 												type="button"
@@ -938,12 +968,20 @@ function AnalyticsContent() {
 													textAlign: 'left',
 												}}
 											>
-												{isPropertyTab ? `${row.entity}.${row.property}` : row.entity}
+												{isPropertyTab
+													? `${row.entity}.${row.property}`
+													: row.entity}
 											</button>
 										</td>
-										<td align="center">{numberFormatter.format(Number(row.hits1h) || 0)}</td>
-										<td align="center">{numberFormatter.format(Number(row.hits24h) || 0)}</td>
-										<td align="center">{numberFormatter.format(Number(row.hitsSum) || 0)}</td>
+										<td align="center">
+											{numberFormatter.format(Number(row.hits1h) || 0)}
+										</td>
+										<td align="center">
+											{numberFormatter.format(Number(row.hits24h) || 0)}
+										</td>
+										<td align="center">
+											{numberFormatter.format(Number(row.hitsSum) || 0)}
+										</td>
 									</tr>
 								);
 							})}
@@ -1023,7 +1061,9 @@ function AnalyticsContent() {
 						<tbody>
 							{visibleOperationRows.map((row) => (
 								<tr key={`${row.operationType}:${row.operationName}`}>
-									<td>{row.operationType} {row.operationName}</td>
+									<td>
+										{row.operationType} {row.operationName}
+									</td>
 									<td align="center">{numberFormatter.format(row.hits1h)}</td>
 									<td align="center">{numberFormatter.format(row.hits24h)}</td>
 								</tr>
@@ -1054,7 +1094,9 @@ function AnalyticsContent() {
 										}}
 									>
 										Client Version{' '}
-										{clientSortBy === 'client' ? `(${clientSortDirection})` : ''}
+										{clientSortBy === 'client'
+											? `(${clientSortDirection})`
+											: ''}
 									</button>
 								</th>
 								<th>
@@ -1069,7 +1111,10 @@ function AnalyticsContent() {
 											fontWeight: 'bold',
 										}}
 									>
-										Hits (1h) {clientSortBy === 'hits1h' ? `(${clientSortDirection})` : ''}
+										Hits (1h){' '}
+										{clientSortBy === 'hits1h'
+											? `(${clientSortDirection})`
+											: ''}
 									</button>
 								</th>
 								<th>
@@ -1084,7 +1129,10 @@ function AnalyticsContent() {
 											fontWeight: 'bold',
 										}}
 									>
-										Hits (24h) {clientSortBy === 'hits24h' ? `(${clientSortDirection})` : ''}
+										Hits (24h){' '}
+										{clientSortBy === 'hits24h'
+											? `(${clientSortDirection})`
+											: ''}
 									</button>
 								</th>
 							</tr>
@@ -1092,7 +1140,9 @@ function AnalyticsContent() {
 						<tbody>
 							{visibleClientRows.map((row) => (
 								<tr key={`${row.clientName}@${row.clientVersion}`}>
-									<td>{row.clientName}@{row.clientVersion}</td>
+									<td>
+										{row.clientName}@{row.clientVersion}
+									</td>
 									<td align="center">{numberFormatter.format(row.hits1h)}</td>
 									<td align="center">{numberFormatter.format(row.hits24h)}</td>
 								</tr>
