@@ -11,6 +11,7 @@ import { Chart, LineSeries } from 'lightweight-charts-react-components';
 import SpinnerCenter from '../components/SpinnerCenter';
 import Info from '../components/Info';
 import {
+	SCHEMA_CLIENT_HITS,
 	SCHEMA_ENTITY_HITS,
 	SCHEMA_FIELDS_USAGE,
 	SCHEMA_OPERATION_HITS,
@@ -92,6 +93,8 @@ function AnalyticsContent() {
 	const [sortDirection, setSortDirection] = useState('desc');
 	const [operationSortBy, setOperationSortBy] = useState('hits24h');
 	const [operationSortDirection, setOperationSortDirection] = useState('desc');
+	const [clientSortBy, setClientSortBy] = useState('hits24h');
+	const [clientSortDirection, setClientSortDirection] = useState('desc');
 
 	const { data: fieldsData, loading: fieldsLoading } = useQuery(SCHEMA_FIELDS_USAGE);
 	const { data: entityHitsData, loading: entityHitsLoading } = useQuery(
@@ -105,6 +108,15 @@ function AnalyticsContent() {
 	);
 	const { data: operationHitsData, loading: operationHitsLoading } = useQuery(
 		SCHEMA_OPERATION_HITS,
+		{
+			variables: {
+				granularity: 'HOUR',
+				hours: 24,
+			},
+		}
+	);
+	const { data: clientHitsData, loading: clientHitsLoading } = useQuery(
+		SCHEMA_CLIENT_HITS,
 		{
 			variables: {
 				granularity: 'HOUR',
@@ -137,6 +149,7 @@ function AnalyticsContent() {
 	const isEntityTab = activeTab === 'entity';
 	const isPropertyTab = activeTab === 'property';
 	const isOperationTab = activeTab === 'operation';
+	const isClientTab = activeTab === 'client';
 	const baseRows = isEntityTab ? allEntityRows : allPropertyRows;
 	const filteredRows = useMemo(() => {
 		const normalizedTerm = searchTerm.trim().toLowerCase();
@@ -251,8 +264,50 @@ function AnalyticsContent() {
 		result.sort((a, b) => a.title.localeCompare(b.title));
 		return result;
 	}, [operationHitsData, searchTerm]);
+	const clientChartSeries = useMemo(() => {
+		const normalizedTerm = searchTerm.trim().toLowerCase();
+		const hitsRows = clientHitsData?.schemaClientHits || [];
+		const byClient = new Map();
 
-	const chartSeries = isOperationTab ? operationChartSeries : entityChartSeries;
+		for (const row of hitsRows) {
+			const clientName = row.clientName || 'unknown';
+			const clientVersion = row.clientVersion || 'unknown';
+			const label = `${clientName}@${clientVersion}`;
+
+			if (normalizedTerm && !label.toLowerCase().includes(normalizedTerm)) {
+				continue;
+			}
+
+			const time = bucketToTimestamp(row.bucket);
+			if (time === null) {
+				continue;
+			}
+
+			if (!byClient.has(label)) {
+				byClient.set(label, { title: label, data: [] });
+			}
+
+			byClient.get(label).data.push({
+				time,
+				value: Number(row.hits) || 0,
+			});
+		}
+
+		const result = [];
+		for (const [key, series] of byClient.entries()) {
+			series.data.sort((a, b) => a.time - b.time);
+			result.push({ key, title: series.title, data: series.data });
+		}
+
+		result.sort((a, b) => a.title.localeCompare(b.title));
+		return result;
+	}, [clientHitsData, searchTerm]);
+
+	const chartSeries = isOperationTab
+		? operationChartSeries
+		: isClientTab
+			? clientChartSeries
+			: entityChartSeries;
 
 	const operationRows = useMemo(() => {
 		const byOperation = new Map();
@@ -332,16 +387,101 @@ function AnalyticsContent() {
 
 		return sortedOperationRows.slice(0, parsedTopLimit);
 	}, [sortedOperationRows, topLimit]);
+	const clientRows = useMemo(() => {
+		const byClient = new Map();
+		const normalizedTerm = searchTerm.trim().toLowerCase();
+		const nowSec = Math.floor(Date.now() / 1000);
+		const last1hCutoffSec = nowSec - 60 * 60;
+		const rows = clientHitsData?.schemaClientHits || [];
+
+		for (const row of rows) {
+			const clientName = row.clientName || 'unknown';
+			const clientVersion = row.clientVersion || 'unknown';
+			const label = `${clientName}@${clientVersion}`;
+
+			if (normalizedTerm && !label.toLowerCase().includes(normalizedTerm)) {
+				continue;
+			}
+
+			const key = label;
+			const bucketSec = bucketToTimestamp(row.bucket);
+			const hits = Number(row.hits) || 0;
+
+			if (!byClient.has(key)) {
+				byClient.set(key, {
+					clientName,
+					clientVersion,
+					hits1h: 0,
+					hits24h: 0,
+				});
+			}
+
+			const entry = byClient.get(key);
+			entry.hits24h += hits;
+
+			if (bucketSec !== null && bucketSec >= last1hCutoffSec) {
+				entry.hits1h += hits;
+			}
+		}
+
+		return Array.from(byClient.values());
+	}, [clientHitsData, searchTerm]);
+
+	const sortedClientRows = useMemo(() => {
+		const rows = [...clientRows];
+
+		rows.sort((rowA, rowB) => {
+			if (clientSortBy === 'client') {
+				const labelA = `${rowA.clientName}@${rowA.clientVersion}`;
+				const labelB = `${rowB.clientName}@${rowB.clientVersion}`;
+
+				return clientSortDirection === 'asc'
+					? labelA.localeCompare(labelB)
+					: labelB.localeCompare(labelA);
+			}
+
+			const hitsA = clientSortBy === 'hits1h' ? rowA.hits1h : rowA.hits24h;
+			const hitsB = clientSortBy === 'hits1h' ? rowB.hits1h : rowB.hits24h;
+
+			if (hitsA === hitsB) {
+				const labelA = `${rowA.clientName}@${rowA.clientVersion}`;
+				const labelB = `${rowB.clientName}@${rowB.clientVersion}`;
+				return labelA.localeCompare(labelB);
+			}
+
+			return clientSortDirection === 'asc' ? hitsA - hitsB : hitsB - hitsA;
+		});
+
+		return rows;
+	}, [clientRows, clientSortBy, clientSortDirection]);
+
+	const visibleClientRows = useMemo(() => {
+		if (topLimit === 'all') {
+			return sortedClientRows;
+		}
+
+		const parsedTopLimit = Number(topLimit);
+		if (!parsedTopLimit || parsedTopLimit <= 0) {
+			return sortedClientRows;
+		}
+
+		return sortedClientRows.slice(0, parsedTopLimit);
+	}, [sortedClientRows, topLimit]);
 
 	if (
 		fieldsLoading ||
 		entityHitsLoading ||
-		operationHitsLoading
+		operationHitsLoading ||
+		clientHitsLoading
 	) {
 		return <SpinnerCenter />;
 	}
 
-	if (!allPropertyRows.length) {
+	if (
+		!allPropertyRows.length &&
+		!(operationHitsData?.schemaOperationHits || []).length &&
+		!(clientHitsData?.schemaClientHits || []).length
+	) {
 		return <Info>No usage data logged yet</Info>;
 	}
 
@@ -363,6 +503,16 @@ function AnalyticsContent() {
 
 		setOperationSortBy(nextSortBy);
 		setOperationSortDirection(defaultDirection);
+	};
+
+	const onClientSortChange = (nextSortBy, defaultDirection = 'desc') => {
+		if (clientSortBy === nextSortBy) {
+			setClientSortDirection(clientSortDirection === 'asc' ? 'desc' : 'asc');
+			return;
+		}
+
+		setClientSortBy(nextSortBy);
+		setClientSortDirection(defaultDirection);
 	};
 
 	return (
@@ -393,6 +543,19 @@ function AnalyticsContent() {
 					}}
 				>
 					Properties
+				</button>
+				<button
+					type="button"
+					onClick={() => setActiveTab('client')}
+					style={{
+						padding: '8px 12px',
+						border: '1px solid #DDDDDD',
+						background: isClientTab ? '#F0F6FF' : '#FFFFFF',
+						cursor: 'pointer',
+						fontWeight: isClientTab ? 'bold' : 'normal',
+					}}
+				>
+					Clients
 				</button>
 				<button
 					type="button"
@@ -428,6 +591,8 @@ function AnalyticsContent() {
 						<div style={{ fontWeight: 'bold' }}>
 							{isOperationTab
 								? 'Operation hits (last 24h, 1h buckets)'
+								: isClientTab
+									? 'Client hits (last 24h, 1h buckets)'
 								: 'Entity hits (last 24h, 1h buckets)'}
 						</div>
 					</div>
@@ -585,6 +750,56 @@ function AnalyticsContent() {
 				</div>
 			)}
 
+			{isClientTab && (
+				<div
+					style={{
+						display: 'flex',
+						gap: '12px',
+						marginBottom: '16px',
+						flexWrap: 'wrap',
+					}}
+				>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '150px',
+						}}
+					>
+						<div>Client Versions (shown)</div>
+						<strong>{numberFormatter.format(visibleClientRows.length)}</strong>
+					</div>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '150px',
+						}}
+					>
+						<div>Hits (1h)</div>
+						<strong>
+							{numberFormatter.format(
+								visibleClientRows.reduce((sum, row) => sum + row.hits1h, 0)
+							)}
+						</strong>
+					</div>
+					<div
+						style={{
+							border: '1px solid #EEEEEE',
+							padding: '12px 16px',
+							minWidth: '150px',
+						}}
+					>
+						<div>Hits (24h)</div>
+						<strong>
+							{numberFormatter.format(
+								visibleClientRows.reduce((sum, row) => sum + row.hits24h, 0)
+							)}
+						</strong>
+					</div>
+				</div>
+			)}
+
 			<div
 				style={{
 					display: 'flex',
@@ -599,6 +814,8 @@ function AnalyticsContent() {
 					placeholder={
 						isOperationTab
 							? 'Search operation'
+							: isClientTab
+								? 'Search client@version'
 							: isEntityTab
 								? 'Search entity'
 								: 'Search entity.field'
@@ -815,6 +1032,75 @@ function AnalyticsContent() {
 					</table>
 					{!visibleOperationRows.length && (
 						<Info>No operations match current filters</Info>
+					)}
+				</div>
+			)}
+
+			{isClientTab && (
+				<div style={{ width: '100%' }}>
+					<table width="100%">
+						<thead>
+							<tr>
+								<th>
+									<button
+										type="button"
+										onClick={() => onClientSortChange('client', 'asc')}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Client Version{' '}
+										{clientSortBy === 'client' ? `(${clientSortDirection})` : ''}
+									</button>
+								</th>
+								<th>
+									<button
+										type="button"
+										onClick={() => onClientSortChange('hits1h')}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Hits (1h) {clientSortBy === 'hits1h' ? `(${clientSortDirection})` : ''}
+									</button>
+								</th>
+								<th>
+									<button
+										type="button"
+										onClick={() => onClientSortChange('hits24h')}
+										style={{
+											cursor: 'pointer',
+											background: 'transparent',
+											border: 0,
+											padding: 0,
+											fontWeight: 'bold',
+										}}
+									>
+										Hits (24h) {clientSortBy === 'hits24h' ? `(${clientSortDirection})` : ''}
+									</button>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{visibleClientRows.map((row) => (
+								<tr key={`${row.clientName}@${row.clientVersion}`}>
+									<td>{row.clientName}@{row.clientVersion}</td>
+									<td align="center">{numberFormatter.format(row.hits1h)}</td>
+									<td align="center">{numberFormatter.format(row.hits24h)}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+					{!visibleClientRows.length && (
+						<Info>No client versions match current filters</Info>
 					)}
 				</div>
 			)}

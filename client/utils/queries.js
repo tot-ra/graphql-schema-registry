@@ -152,6 +152,17 @@ export const SCHEMA_OPERATION_HITS = gql`
 	}
 `;
 
+export const SCHEMA_CLIENT_HITS = gql`
+	query getSchemaClientHits($granularity: UsageGranularity, $hours: Int) {
+		schemaClientHits(granularity: $granularity, hours: $hours) {
+			clientName
+			clientVersion
+			bucket
+			hits
+		}
+	}
+`;
+
 export const SCHEMA_TOP_OPERATIONS = gql`
 	query getSchemaTopOperations($hours: Int, $limit: Int) {
 		schemaTopOperations(hours: $hours, limit: $limit) {

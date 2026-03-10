@@ -63,6 +63,8 @@ export default {
 			}),
 		schemaEntityHits: async (_, { granularity, hours }) =>
 			await schemaHit.getEntityHits({ granularity, hours }),
+		schemaClientHits: async (_, { granularity, hours }) =>
+			await schemaHit.getClientHits({ granularity, hours }),
 		schemaOperationHits: async (_, { granularity, hours }) =>
 			await operationHit.getHits({ granularity, hours }),
 		schemaTopOperations: async (_, { hours, limit }) =>

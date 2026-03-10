@@ -6,7 +6,6 @@ import {
 	SchemaIcon,
 	ServicesIcon,
 	AnalyticsIcon,
-	ClientsIcon,
 	PersistedQueriesIcon,
 	LogsIcon,
 	ChangeLogIcon,
@@ -15,7 +14,6 @@ import Services from '../schema';
 import Analytics from '../analytics';
 import SupergraphSchema from '../supergraph';
 import PersistedQueries from '../persisted-queries';
-import Clients from '../clients';
 import SchemaChangeLog from '../schema-change-log';
 
 import ServicesTab from '../schema/Tab';
@@ -40,12 +38,6 @@ const UITabs = [
 		icon: <AnalyticsIcon />,
 		href: '/analytics',
 		component: Analytics,
-	},
-	{
-		Title: <span>Clients</span>,
-		icon: <ClientsIcon />,
-		href: '/clients',
-		component: Clients,
 	},
 	{
 		Title: <PersistedQueriesTab />,

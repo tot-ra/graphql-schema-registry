@@ -28,6 +28,10 @@ export default gql`
 			granularity: UsageGranularity = HOUR
 			hours: Int = 24
 		): [SchemaEntityHit]
+		schemaClientHits(
+			granularity: UsageGranularity = HOUR
+			hours: Int = 24
+		): [SchemaClientHit]
 		schemaOperationHits(
 			granularity: UsageGranularity = HOUR
 			hours: Int = 24
@@ -130,6 +134,13 @@ export default gql`
 
 	type SchemaEntityHit {
 		entity: String!
+		bucket: String!
+		hits: Int!
+	}
+
+	type SchemaClientHit {
+		clientName: String
+		clientVersion: String
 		bucket: String!
 		hits: Int!
 	}

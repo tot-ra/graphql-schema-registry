@@ -389,6 +389,56 @@ const schemaHitModel = {
 		return rows;
 	},
 
+	getClientHits: async function ({
+		granularity = 'HOUR',
+		hours = 24,
+	}: {
+		granularity?: 'DAY' | 'HOUR';
+		hours?: number;
+	}) {
+		const sanitizedHours = Number.isFinite(hours)
+			? Math.max(1, Math.min(24 * 30, Math.floor(hours)))
+			: 24;
+
+		const cacheKey = `schema_hits_client.${granularity}.${sanitizedHours}`;
+		const cachedResults = await redis.get(cacheKey);
+
+		if (cachedResults) {
+			return JSON.parse(cachedResults);
+		}
+
+		const results =
+			granularity === 'HOUR'
+				? await connection.raw(
+						`SELECT c.name as "clientName",
+								c.version as "clientVersion",
+								TO_CHAR(sh.hour, 'YYYY-MM-DD"T"HH24:00:00"Z"') as bucket,
+								SUM(sh.hits)::int as hits
+						 FROM schema_hit_hourly sh
+								  LEFT JOIN clients c on sh.client_id = c.id
+						 WHERE sh.hour >= NOW() - (? || ' hour')::interval
+						 GROUP BY c.name, c.version, sh.hour
+						 ORDER BY sh.hour, c.name, c.version`,
+						[sanitizedHours]
+				  )
+				: await connection.raw(
+						`SELECT c.name as "clientName",
+								c.version as "clientVersion",
+								TO_CHAR(DATE_TRUNC('day', sh.hour), 'YYYY-MM-DD') as bucket,
+								SUM(sh.hits)::int as hits
+						 FROM schema_hit_hourly sh
+								  LEFT JOIN clients c on sh.client_id = c.id
+						 WHERE sh.hour >= NOW() - (? || ' hour')::interval
+						 GROUP BY c.name, c.version, DATE_TRUNC('day', sh.hour)
+						 ORDER BY DATE_TRUNC('day', sh.hour), c.name, c.version`,
+						[sanitizedHours]
+				  );
+
+		const rows = rowsFromRaw(results);
+		await redis.set(cacheKey, JSON.stringify(rows), 60);
+		return rows;
+	},
+
 	listFields: async function () {
 		const results = await connection.raw(
 			`SELECT daily.entity,
