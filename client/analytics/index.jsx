@@ -1,4 +1,9 @@
-import { HashRouter as Router, Route, useHistory, useRouteMatch } from 'react-router-dom';
+import {
+	HashRouter as Router,
+	Route,
+	useHistory,
+	useRouteMatch,
+} from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 
 import SpinnerCenter from '../components/SpinnerCenter';
@@ -83,7 +88,10 @@ function AnalyticsContent() {
 export default function Analytics() {
 	return (
 		<Router basename="/analytics">
-			<Route path="/:selectedEntity?/:selectedProperty?" component={AnalyticsContent} />
+			<Route
+				path="/:selectedEntity?/:selectedProperty?"
+				component={AnalyticsContent}
+			/>
 		</Router>
 	);
 }

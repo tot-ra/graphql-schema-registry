@@ -92,9 +92,7 @@ const analyzer = {
 				'persistedQueryHash.sha256Hash'
 			);
 
-			name = firstHeaderValue(
-				parsedData.headers['apollographql-client-name']
-			);
+			name = firstHeaderValue(parsedData.headers['apollographql-client-name']);
 			version = firstHeaderValue(
 				parsedData.headers['apollographql-client-version']
 			);

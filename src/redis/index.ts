@@ -187,7 +187,9 @@ const redisWrap = {
 			}
 
 			if (!redis) {
-				logger.warn(`redis is not initialized, subscribe skipped for ${channel}`);
+				logger.warn(
+					`redis is not initialized, subscribe skipped for ${channel}`
+				);
 				return async () => {};
 			}
 
