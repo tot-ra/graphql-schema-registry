@@ -80,3 +80,16 @@ export function LogsIcon() {
 		</svg>
 	);
 }
+
+export function ChangeLogIcon() {
+	return (
+		<svg {...iconProps}>
+			<path d="M6 6h12" />
+			<path d="M6 12h12" />
+			<path d="M6 18h12" />
+			<circle cx="4" cy="6" r="1" fill="currentColor" stroke="none" />
+			<circle cx="4" cy="12" r="1" fill="currentColor" stroke="none" />
+			<circle cx="4" cy="18" r="1" fill="currentColor" stroke="none" />
+		</svg>
+	);
+}

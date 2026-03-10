@@ -1,5 +1,5 @@
 import { get, isNil } from 'lodash';
-import { TypeInfo } from 'graphql';
+import { Kind, TypeInfo, parse } from 'graphql';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Knex } from 'knex';
 
@@ -10,6 +10,7 @@ import { composeAndValidateSchema } from '../../helpers/federation';
 import schemaModel from '../../database/schema';
 import clientsModel from '../../database/clients';
 import schemaHit from '../../database/schema_hits';
+import operationHit from '../../database/operation_hits';
 import persistedQueries from '../../database/persisted_queries';
 
 import extractQueryFields from './extract-query-properties';
@@ -57,6 +58,7 @@ const analyzer = {
 			);
 
 			schemaHit.init();
+			operationHit.init();
 			clientsModel.init();
 
 			await redis.initRedis();
@@ -157,6 +159,20 @@ const analyzer = {
 				operationName: parsedData.operationName || null,
 			});
 			try {
+				const operationType = getOperationType(
+					parsedData.query,
+					parsedData.operationName
+				);
+				const hour = `${msgDate.toISOString().slice(0, 13)}:00:00.000Z`;
+
+				await operationHit.add({
+					name,
+					version,
+					operationName: parsedData.operationName || 'anonymous',
+					operationType,
+					hour,
+				});
+
 				const processedFields = await analyzer.processSchemaQueryUsage({
 					name,
 					version,
@@ -193,6 +209,7 @@ const analyzer = {
 	processSchemaQueryUsage: async ({ name, version, query, msgDate }) => {
 		const visitedFields = await extractQueryFields(query, analyzer.typeInfo);
 		const day = msgDate.toISOString().slice(0, 10);
+		const hour = `${msgDate.toISOString().slice(0, 13)}:00:00.000Z`;
 
 		for await (const { entity, property } of visitedFields) {
 			// prometheus.logUsedProperty({
@@ -208,11 +225,40 @@ const analyzer = {
 				entity,
 				property,
 				day,
+				hour,
 			});
 		}
 
 		return visitedFields.length;
 	},
 };
+
+function getOperationType(query, operationName) {
+	try {
+		const parsedQuery = parse(query);
+		const operationDefinition = parsedQuery.definitions.find((definition) => {
+			if (definition.kind !== Kind.OPERATION_DEFINITION) {
+				return false;
+			}
+
+			if (!operationName) {
+				return true;
+			}
+
+			return definition.name?.value === operationName;
+		});
+
+		if (
+			operationDefinition &&
+			operationDefinition.kind === Kind.OPERATION_DEFINITION
+		) {
+			return String(operationDefinition.operation || 'UNKNOWN').toUpperCase();
+		}
+	} catch (_) {
+		// ignore parse failures and fallback to UNKNOWN
+	}
+
+	return 'UNKNOWN';
+}
 
 export default analyzer;

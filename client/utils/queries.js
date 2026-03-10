@@ -33,6 +33,7 @@ export const SERVICES_LIST = gql`
 		services {
 			id
 			name
+			healthStatus
 		}
 	}
 `;
@@ -100,10 +101,19 @@ export const SCHEMA_SDL = gql`
 	}
 `;
 export const SCHEMA_USAGE_SDL = gql`
-	query getSchemaUsageSDL($entity: String!, $property: String!) {
-		schemaPropertyHitsByClient(entity: $entity, property: $property) {
+	query getSchemaUsageSDL(
+		$entity: String!
+		$property: String!
+		$granularity: UsageGranularity
+	) {
+		schemaPropertyHitsByClient(
+			entity: $entity
+			property: $property
+			granularity: $granularity
+		) {
 			hits
 			day
+			bucket
 			clientName
 		}
 	}
@@ -115,6 +125,50 @@ export const SCHEMA_FIELDS_USAGE = gql`
 			entity
 			property
 			hitsSum
+			hits1h
+			hits24h
+		}
+	}
+`;
+
+export const SCHEMA_ENTITY_HITS = gql`
+	query getSchemaEntityHits($granularity: UsageGranularity, $hours: Int) {
+		schemaEntityHits(granularity: $granularity, hours: $hours) {
+			entity
+			bucket
+			hits
+		}
+	}
+`;
+
+export const SCHEMA_OPERATION_HITS = gql`
+	query getSchemaOperationHits($granularity: UsageGranularity, $hours: Int) {
+		schemaOperationHits(granularity: $granularity, hours: $hours) {
+			operationName
+			operationType
+			bucket
+			hits
+		}
+	}
+`;
+
+export const SCHEMA_CLIENT_HITS = gql`
+	query getSchemaClientHits($granularity: UsageGranularity, $hours: Int) {
+		schemaClientHits(granularity: $granularity, hours: $hours) {
+			clientName
+			clientVersion
+			bucket
+			hits
+		}
+	}
+`;
+
+export const SCHEMA_TOP_OPERATIONS = gql`
+	query getSchemaTopOperations($hours: Int, $limit: Int) {
+		schemaTopOperations(hours: $hours, limit: $limit) {
+			operationName
+			operationType
+			hits
 		}
 	}
 `;
@@ -144,6 +198,19 @@ export const CLIENT_VERSION_PERSISTED_QUERIES = gql`
 export const LOGS = gql`
 	query getLogs {
 		logs
+	}
+`;
+
+export const SCHEMA_CHANGE_LOG = gql`
+	query getSchemaChangeLog($limit: Int, $offset: Int, $serviceName: String) {
+		schemaChangeLog(limit: $limit, offset: $offset, serviceName: $serviceName) {
+			serviceName
+			schemaId
+			schemaUUID
+			addedTime
+			changeType
+			change
+		}
 	}
 `;
 

@@ -7,6 +7,7 @@ import { connection } from './index';
 import { firstInsertId, rowsFromRaw } from './raw-results';
 import servicesModel from './services';
 import { PublicError } from '../helpers/error';
+import { diffSchemaTypeDefs } from '../helpers/schema-change-log';
 import { logger } from '../logger';
 
 function isDevVersion(version: string) {
@@ -17,6 +18,15 @@ interface SchemaRecord {
 	id: string;
 	type_defs: string;
 	is_active: boolean | number;
+}
+
+interface SchemaHistoryRow {
+	id: number;
+	uuid: string | null;
+	type_defs: string;
+	added_time: string;
+	service_name: string;
+	service_id: number;
 }
 
 function normalizeSchemaRow<T extends Record<string, any>>(row: T): T {
@@ -420,6 +430,79 @@ const schemaModel = {
 		}
 
 		return schema;
+	},
+
+	getSchemaChangeLog: async function ({
+		trx,
+		limit = 200,
+		offset = 0,
+		serviceName,
+	}: {
+		trx: Knex<SchemaRecord>;
+		limit?: number;
+		offset?: number;
+		serviceName?: string;
+	}) {
+		const historyQuery = trx('schema')
+			.select(
+				'schema.id',
+				'schema.uuid',
+				'schema.type_defs',
+				'schema.added_time',
+				'schema.service_id',
+				'services.name as service_name'
+			)
+			.innerJoin('services', 'services.id', 'schema.service_id')
+			.orderBy('schema.added_time', 'asc')
+			.orderBy('schema.id', 'asc');
+
+		if (serviceName) {
+			historyQuery.where('services.name', serviceName);
+		}
+
+		const historyRows = (await historyQuery) as SchemaHistoryRow[];
+		const previousTypeDefsByService = new Map<string, string | null>();
+		const entries: Array<{
+			serviceName: string;
+			schemaId: number;
+			schemaUUID: string | null;
+			addedTime: string;
+			changeType: string;
+			change: string;
+		}> = [];
+
+		for (const row of historyRows) {
+			const previousTypeDefs =
+				previousTypeDefsByService.get(row.service_name) || null;
+			const changes = diffSchemaTypeDefs(previousTypeDefs, row.type_defs);
+
+			for (const entry of changes) {
+				entries.push({
+					serviceName: row.service_name,
+					schemaId: row.id,
+					schemaUUID: row.uuid || null,
+					addedTime: row.added_time,
+					changeType: entry.changeType,
+					change: entry.change,
+				});
+			}
+
+			previousTypeDefsByService.set(row.service_name, row.type_defs);
+		}
+
+		entries.sort((left, right) => {
+			const timeDiff =
+				new Date(right.addedTime).getTime() -
+				new Date(left.addedTime).getTime();
+
+			if (timeDiff !== 0) {
+				return timeDiff;
+			}
+
+			return right.schemaId - left.schemaId;
+		});
+
+		return entries.slice(offset, offset + limit);
 	},
 
 	listMigrateableSchemas: async function (knex, limit = 100) {

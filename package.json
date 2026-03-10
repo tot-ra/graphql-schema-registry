@@ -39,7 +39,8 @@
     "lint": "oxlint client src",
     "lint:fix": "oxlint client src --fix",
     "lint:biome": "biome lint client src",
-    "lint:biome:fix": "biome lint --write client src"
+    "lint:biome:fix": "biome lint --write client src",
+    "lint:ci": "biome ci . && pnpm run lint"
   },
   "repository": {
     "type": "git",
@@ -51,7 +52,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "pnpm run format",
-      "pre-push": "pnpm run format"
+      "pre-push": "pnpm run lint:ci"
     }
   },
   "license": "MIT",
@@ -73,6 +74,8 @@
     "ioredis": "5.0.2",
     "joi": "17.6.0",
     "knex": "2.4.2",
+    "lightweight-charts": "5.0.9",
+    "lightweight-charts-react-components": "1.4.0",
     "lodash": "4.17.21",
     "mysql2": "3.14.1",
     "pg": "8.16.3",

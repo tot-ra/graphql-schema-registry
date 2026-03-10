@@ -6,15 +6,15 @@ import {
 	SchemaIcon,
 	ServicesIcon,
 	AnalyticsIcon,
-	ClientsIcon,
 	PersistedQueriesIcon,
 	LogsIcon,
+	ChangeLogIcon,
 } from './MenuIcons';
 import Services from '../schema';
 import Analytics from '../analytics';
 import SupergraphSchema from '../supergraph';
 import PersistedQueries from '../persisted-queries';
-import Clients from '../clients';
+import SchemaChangeLog from '../schema-change-log';
 
 import ServicesTab from '../schema/Tab';
 import PersistedQueriesTab from '../persisted-queries/Tab';
@@ -40,16 +40,16 @@ const UITabs = [
 		component: Analytics,
 	},
 	{
-		Title: <span>Clients</span>,
-		icon: <ClientsIcon />,
-		href: '/clients',
-		component: Clients,
-	},
-	{
 		Title: <PersistedQueriesTab />,
 		icon: <PersistedQueriesIcon />,
 		href: '/persisted-queries',
 		component: PersistedQueries,
+	},
+	{
+		Title: <span>Change Log</span>,
+		icon: <ChangeLogIcon />,
+		href: '/changes',
+		component: SchemaChangeLog,
 	},
 	{
 		Title: <span>Logs</span>,
@@ -88,6 +88,7 @@ const Main = () => {
 			<main className="registry-content">
 				<Switch>
 					<Redirect exact from="/" to="/schema" />
+					<Redirect exact from="/schema-change-log" to="/changes" />
 					{UITabs.map((tab, index) => (
 						<Route
 							key={tab.href}

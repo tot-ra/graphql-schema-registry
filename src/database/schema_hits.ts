@@ -61,12 +61,14 @@ const schemaHitModel = {
 		entity,
 		property,
 		day,
+		hour = null,
 	}: {
 		name: string | null;
 		version: string | null;
 		entity: string;
 		property: string;
 		day: string;
+		hour?: string | null;
 	}) {
 		const row = find(schemaHitModel.internalCache, {
 			name,
@@ -74,6 +76,7 @@ const schemaHitModel = {
 			entity,
 			property,
 			day,
+			hour,
 		});
 
 		if (row) {
@@ -85,53 +88,108 @@ const schemaHitModel = {
 				entity,
 				property,
 				day,
+				hour,
 				hits: 1,
 			});
 		}
+	},
+
+	upsertSchemaHit: async function ({
+		table,
+		bucketColumn,
+		bucketValue,
+		entity,
+		property,
+		clientId = null,
+		incrementHits,
+		hits,
+	}) {
+		await transact(async (trx) => {
+			const clientHitCount = (
+				await trx(table)
+					.count('entity', { as: 'cnt' })
+					.where({
+						entity,
+						property,
+						[bucketColumn]: bucketValue,
+					})
+					.modify((queryBuilder) => {
+						if (clientId === null) {
+							queryBuilder.whereNull('client_id');
+							return;
+						}
+
+						queryBuilder.where({ client_id: clientId });
+					})
+			)[0].cnt;
+
+			if (clientHitCount > 0) {
+				await trx(table)
+					.where({
+						entity,
+						property,
+						[bucketColumn]: bucketValue,
+					})
+					.modify((queryBuilder) => {
+						if (clientId === null) {
+							queryBuilder.whereNull('client_id');
+							return;
+						}
+
+						queryBuilder.where({ client_id: clientId });
+					})
+					.update({
+						hits: incrementHits ? trx.raw('hits + ?', [hits]) : hits,
+						updated_time: Date.now(),
+					});
+			} else {
+				await trx(table)
+					.insert({
+						entity,
+						property,
+						[bucketColumn]: bucketValue,
+						hits,
+						client_id: clientId,
+						updated_time: Date.now(),
+					})
+					.onConflict(['client_id', 'entity', 'property', bucketColumn])
+					.ignore();
+			}
+		});
 	},
 
 	addSchemaHitForNewClient: async function ({
 		entity,
 		property,
 		day,
+		hour,
 		incrementHits,
 		hits,
 	}) {
-		await transact(async (trx) => {
-			const clientHitCount = (
-				await trx('schema_hit').count('entity', { as: 'cnt' }).where({
-					entity,
-					property,
-					day,
-					client_id: null,
-				})
-			)[0].cnt;
+		await this.upsertSchemaHit({
+			table: 'schema_hit',
+			bucketColumn: 'day',
+			bucketValue: day,
+			entity,
+			property,
+			clientId: null,
+			incrementHits,
+			hits,
+		});
 
-			if (clientHitCount > 0) {
-				await trx('schema_hit')
-					.where({
-						entity,
-						property,
-						day,
-					})
-					.whereNull('client_id')
-					.update({
-						hits: incrementHits ? trx.raw('hits + ?', [hits]) : hits,
-						updated_time: Date.now(),
-					});
-			} else {
-				await trx('schema_hit')
-					.insert({
-						entity,
-						property,
-						day,
-						hits,
-						client_id: null,
-						updated_time: Date.now(),
-					})
-					.onConflict(['client_id', 'entity', 'property', 'day'])
-					.ignore();
-			}
+		if (!hour) {
+			return;
+		}
+
+		await this.upsertSchemaHit({
+			table: 'schema_hit_hourly',
+			bucketColumn: 'hour',
+			bucketValue: hour,
+			entity,
+			property,
+			clientId: null,
+			incrementHits,
+			hits,
 		});
 	},
 
@@ -139,45 +197,35 @@ const schemaHitModel = {
 		entity,
 		property,
 		day,
+		hour,
 		client,
 		incrementHits,
 		hits,
 	}) {
-		await transact(async (trx) => {
-			const clientHitCount = (
-				await trx('schema_hit').count('entity', { as: 'cnt' }).where({
-					entity,
-					property,
-					day,
-					client_id: client.id,
-				})
-			)[0].cnt;
+		await this.upsertSchemaHit({
+			table: 'schema_hit',
+			bucketColumn: 'day',
+			bucketValue: day,
+			entity,
+			property,
+			clientId: client.id,
+			incrementHits,
+			hits,
+		});
 
-			if (clientHitCount > 0) {
-				await trx('schema_hit')
-					.where({
-						entity,
-						property,
-						day,
-						client_id: client.id,
-					})
-					.update({
-						hits: incrementHits ? trx.raw('hits + ?', [hits]) : hits,
-						updated_time: Date.now(),
-					});
-			} else {
-				await trx('schema_hit')
-					.insert({
-						entity,
-						property,
-						day,
-						hits,
-						client_id: client.id,
-						updated_time: Date.now(),
-					})
-					.onConflict(['client_id', 'entity', 'property', 'day'])
-					.ignore();
-			}
+		if (!hour) {
+			return;
+		}
+
+		await this.upsertSchemaHit({
+			table: 'schema_hit_hourly',
+			bucketColumn: 'hour',
+			bucketValue: hour,
+			entity,
+			property,
+			clientId: client.id,
+			incrementHits,
+			hits,
 		});
 	},
 	storeInDb: async function ({
@@ -187,6 +235,7 @@ const schemaHitModel = {
 		entity,
 		property,
 		day,
+		hour = null,
 		hits,
 	}) {
 		let client;
@@ -222,6 +271,7 @@ const schemaHitModel = {
 				entity,
 				property,
 				day,
+				hour,
 				client,
 				incrementHits,
 				hits,
@@ -231,6 +281,7 @@ const schemaHitModel = {
 				entity,
 				property,
 				day,
+				hour,
 				incrementHits,
 				hits,
 			});
@@ -239,31 +290,52 @@ const schemaHitModel = {
 		return true;
 	},
 
-	get: async function ({ entity, property }) {
-		const cachedResults = await redis.get(`schema_hits.${entity}.${property}`);
+	get: async function ({ entity, property, granularity = 'DAY' }) {
+		const cachedResults = await redis.get(
+			`schema_hits.${granularity}.${entity}.${property}`
+		);
 
 		if (cachedResults) {
 			return JSON.parse(cachedResults);
 		}
 
-		const results = await connection.raw(
-			`SELECT TO_CHAR(sh.day, 'YYYY-MM-DD') as day,
-					SUM(sh.hits)                    as hits,
-					sh.entity,
-					sh.property,
-					c.name                          as "clientName"
-			 FROM schema_hit sh
-					  LEFT JOIN clients c on sh.client_id = c.id
-			 WHERE sh.entity = ?
-			   AND sh.property = ?
-			 GROUP BY c.name, day, sh.entity, sh.property
-			 ORDER BY c.name, day`,
-			[entity, property]
-		);
+		const results =
+			granularity === 'HOUR'
+				? await connection.raw(
+						`SELECT TO_CHAR(sh.hour, 'YYYY-MM-DD') as day,
+								TO_CHAR(sh.hour, 'YYYY-MM-DD"T"HH24:00:00"Z"') as bucket,
+								SUM(sh.hits)                                    as hits,
+								sh.entity,
+								sh.property,
+								c.name                                           as "clientName"
+						 FROM schema_hit_hourly sh
+								  LEFT JOIN clients c on sh.client_id = c.id
+						 WHERE sh.entity = ?
+						   AND sh.property = ?
+						 GROUP BY c.name, sh.hour, sh.entity, sh.property
+						 ORDER BY c.name, sh.hour`,
+						[entity, property]
+					)
+				: await connection.raw(
+						`SELECT TO_CHAR(sh.day, 'YYYY-MM-DD') as day,
+								TO_CHAR(sh.day, 'YYYY-MM-DD') as bucket,
+								SUM(sh.hits)                    as hits,
+								sh.entity,
+								sh.property,
+								c.name                          as "clientName"
+						 FROM schema_hit sh
+								  LEFT JOIN clients c on sh.client_id = c.id
+						 WHERE sh.entity = ?
+						   AND sh.property = ?
+						 GROUP BY c.name, day, sh.entity, sh.property
+						 ORDER BY c.name, day`,
+						[entity, property]
+					);
+
 		const rows = rowsFromRaw(results);
 
 		await redis.set(
-			`schema_hits.${entity}.${property}`,
+			`schema_hits.${granularity}.${entity}.${property}`,
 			JSON.stringify(rows),
 			60
 		);
@@ -271,14 +343,139 @@ const schemaHitModel = {
 		return rows;
 	},
 
+	getEntityHits: async function ({
+		granularity = 'HOUR',
+		hours = 24,
+	}: {
+		granularity?: 'DAY' | 'HOUR';
+		hours?: number;
+	}) {
+		const sanitizedHours = Number.isFinite(hours)
+			? Math.max(1, Math.min(24 * 30, Math.floor(hours)))
+			: 24;
+
+		const cacheKey = `schema_hits_entity.${granularity}.${sanitizedHours}`;
+		const cachedResults = await redis.get(cacheKey);
+
+		if (cachedResults) {
+			return JSON.parse(cachedResults);
+		}
+
+		const results =
+			granularity === 'HOUR'
+				? await connection.raw(
+						`SELECT sh.entity,
+								TO_CHAR(sh.hour, 'YYYY-MM-DD"T"HH24:00:00"Z"') as bucket,
+								SUM(sh.hits)::int as hits
+						 FROM schema_hit_hourly sh
+						 WHERE sh.hour >= NOW() - (? || ' hour')::interval
+						 GROUP BY sh.entity, sh.hour
+						 ORDER BY sh.hour, sh.entity`,
+						[sanitizedHours]
+					)
+				: await connection.raw(
+						`SELECT sh.entity,
+								TO_CHAR(sh.day, 'YYYY-MM-DD') as bucket,
+								SUM(sh.hits)::int as hits
+						 FROM schema_hit sh
+						 WHERE sh.day >= CURRENT_DATE - (? || ' day')::interval
+						 GROUP BY sh.entity, sh.day
+						 ORDER BY sh.day, sh.entity`,
+						[Math.max(1, Math.ceil(sanitizedHours / 24))]
+					);
+
+		const rows = rowsFromRaw(results);
+
+		await redis.set(cacheKey, JSON.stringify(rows), 60);
+
+		return rows;
+	},
+
+	getClientHits: async function ({
+		granularity = 'HOUR',
+		hours = 24,
+	}: {
+		granularity?: 'DAY' | 'HOUR';
+		hours?: number;
+	}) {
+		const sanitizedHours = Number.isFinite(hours)
+			? Math.max(1, Math.min(24 * 30, Math.floor(hours)))
+			: 24;
+
+		const cacheKey = `schema_hits_client.${granularity}.${sanitizedHours}`;
+		const cachedResults = await redis.get(cacheKey);
+
+		if (cachedResults) {
+			return JSON.parse(cachedResults);
+		}
+
+		const results =
+			granularity === 'HOUR'
+				? await connection.raw(
+						`SELECT c.name as "clientName",
+								c.version as "clientVersion",
+								TO_CHAR(sh.hour, 'YYYY-MM-DD"T"HH24:00:00"Z"') as bucket,
+								SUM(sh.hits)::int as hits
+						 FROM schema_hit_hourly sh
+								  LEFT JOIN clients c on sh.client_id = c.id
+						 WHERE sh.hour >= NOW() - (? || ' hour')::interval
+						 GROUP BY c.name, c.version, sh.hour
+						 ORDER BY sh.hour, c.name, c.version`,
+						[sanitizedHours]
+					)
+				: await connection.raw(
+						`SELECT c.name as "clientName",
+								c.version as "clientVersion",
+								TO_CHAR(DATE_TRUNC('day', sh.hour), 'YYYY-MM-DD') as bucket,
+								SUM(sh.hits)::int as hits
+						 FROM schema_hit_hourly sh
+								  LEFT JOIN clients c on sh.client_id = c.id
+						 WHERE sh.hour >= NOW() - (? || ' hour')::interval
+						 GROUP BY c.name, c.version, DATE_TRUNC('day', sh.hour)
+						 ORDER BY DATE_TRUNC('day', sh.hour), c.name, c.version`,
+						[sanitizedHours]
+					);
+
+		const rows = rowsFromRaw(results);
+		await redis.set(cacheKey, JSON.stringify(rows), 60);
+		return rows;
+	},
+
 	listFields: async function () {
 		const results = await connection.raw(
-			`SELECT sh.entity,
-					sh.property,
-					SUM(sh.hits)::int as "hitsSum"
-			 FROM schema_hit sh
-			 GROUP BY sh.entity, sh.property
-			 ORDER BY "hitsSum" DESC, sh.entity, sh.property`
+			`SELECT daily.entity,
+					daily.property,
+					daily."hitsSum",
+					COALESCE(hourly_1h."hits1h", 0)::int as "hits1h",
+					COALESCE(hourly_24h."hits24h", 0)::int as "hits24h"
+			 FROM (
+					  SELECT sh.entity,
+							 sh.property,
+							 SUM(sh.hits)::int as "hitsSum"
+					  FROM schema_hit sh
+					  GROUP BY sh.entity, sh.property
+				  ) daily
+					  LEFT JOIN (
+				 SELECT sh.entity,
+						sh.property,
+						SUM(sh.hits)::int as "hits1h"
+				 FROM schema_hit_hourly sh
+				 WHERE sh.hour >= NOW() - INTERVAL '1 hour'
+				 GROUP BY sh.entity, sh.property
+			 ) hourly_1h
+								ON daily.entity = hourly_1h.entity
+									AND daily.property = hourly_1h.property
+					  LEFT JOIN (
+				 SELECT sh.entity,
+						sh.property,
+						SUM(sh.hits)::int as "hits24h"
+				 FROM schema_hit_hourly sh
+				 WHERE sh.hour >= NOW() - INTERVAL '24 hour'
+				 GROUP BY sh.entity, sh.property
+			 ) hourly_24h
+								ON daily.entity = hourly_24h.entity
+									AND daily.property = hourly_24h.property
+			 ORDER BY "hits24h" DESC, "hitsSum" DESC, daily.entity, daily.property`
 		);
 
 		return rowsFromRaw(results);
@@ -317,6 +514,7 @@ const schemaHitModel = {
 
 	deleteOlderThan: async function (timestampMs) {
 		const dayFormatted = new Date(timestampMs).toISOString().slice(0, 10);
+		const hourFormatted = new Date(timestampMs).toISOString();
 
 		logger.info(`Cleaning up schema usage older than ${dayFormatted}`);
 
@@ -325,6 +523,12 @@ const schemaHitModel = {
 			 FROM schema_hit
 			 WHERE day < ?`,
 			[dayFormatted]
+		);
+		await connection.raw(
+			`DELETE
+			 FROM schema_hit_hourly
+			 WHERE hour < ?`,
+			[hourFormatted]
 		);
 
 		// prometheus.logHitsCleanup(dayFormatted);

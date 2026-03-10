@@ -11,7 +11,25 @@ const useStyles = makeStyles(() => ({
 	input: {
 		color: '#FFFFFF',
 	},
+	label: {
+		color: 'rgba(255, 255, 255, 0.85)',
+	},
 	root: {
+		'& .MuiFilledInput-root': {
+			backgroundColor: 'rgba(255, 255, 255, 0.18)',
+		},
+		'& .MuiFilledInput-root:hover': {
+			backgroundColor: 'rgba(255, 255, 255, 0.24)',
+		},
+		'& .MuiFilledInput-root.Mui-focused': {
+			backgroundColor: 'rgba(255, 255, 255, 0.3)',
+		},
+		'& .MuiFilledInput-root:before': {
+			borderBottomColor: 'rgba(255, 255, 255, 0.55)',
+		},
+		'& .MuiFilledInput-root:hover:not(.Mui-disabled):before': {
+			borderBottomColor: 'rgba(255, 255, 255, 0.8)',
+		},
 		'& label.Mui-focused': {
 			color: focusedColor,
 		},
@@ -120,6 +138,7 @@ const GlobalSearch = () => {
 			<TextField
 				className={classes.root}
 				inputProps={{ className: classes.input }}
+				InputLabelProps={{ className: classes.label }}
 				size={'small'}
 				inputRef={setTextInputRef}
 				// inputRef={(input) => input?.focus()}
