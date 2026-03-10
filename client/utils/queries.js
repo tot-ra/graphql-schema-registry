@@ -5,6 +5,13 @@ export const SERVICE_COUNT = gql`
 		serviceCount
 	}
 `;
+
+export const SUPERGRAPH_SDL = gql`
+	query getSupergraphSDL {
+		supergraphSDL
+	}
+`;
+
 export const PERSISTED_QUERIES_COUNT = gql`
 	query persistedQueriesCount {
 		persistedQueriesCount

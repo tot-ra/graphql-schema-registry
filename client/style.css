@@ -5,4 +5,38 @@ body a {
 
 body {
 	font-family: Source Sans Pro;
+	margin: 0;
+}
+
+#root {
+	min-height: 100vh;
+}
+
+.registry-layout {
+	display: flex;
+	min-height: 100vh;
+}
+
+.registry-sidebar {
+	width: 240px;
+	flex-shrink: 0;
+	border-right: 1px solid #e5e5e5;
+}
+
+.registry-content {
+	flex: 1;
+	min-width: 0;
+	overflow: auto;
+}
+
+@media (max-width: 900px) {
+	.registry-layout {
+		flex-direction: column;
+	}
+
+	.registry-sidebar {
+		width: 100%;
+		border-right: 0;
+		border-bottom: 1px solid #e5e5e5;
+	}
 }

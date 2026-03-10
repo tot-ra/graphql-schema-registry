@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, ButtonGroup, Tabs, Tab } from '@material-ui/core';
+import { Button, Tabs, Tab } from '@material-ui/core';
 
 import { useQuery } from '@apollo/client';
 import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
@@ -16,7 +16,6 @@ import { SCHEMA_DETAILS } from '../../utils/queries';
 import { format } from 'date-fns';
 import SourceCodeWithHighlightAndCopy from '../../components/SourceCodeWithHighlightAndCopy';
 
-import DeactivateButton from './DeactivateSchemaButton';
 import CodeDiff from './CodeDiff';
 import UsageTab from './UsageTab';
 import ContainersTab from './ContainersTab';
@@ -117,12 +116,7 @@ export default function VersionDetails() {
 						</VersionHeaderTime>
 						{urlInfo}
 					</div>
-					<div>
-						<ButtonGroup>
-							<DeactivateButton schema={data.schema} />
-							{commitButton}
-						</ButtonGroup>
-					</div>
+					<div>{commitButton}</div>
 				</VersionHeader>
 
 				<Tabs

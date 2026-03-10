@@ -2,7 +2,8 @@ import { Route, useLocation, Switch, Redirect } from 'react-router-dom';
 
 import TopMenu from './TopMenu';
 import TabPanel from './TabPanel';
-import Schema from '../schema';
+import Services from '../schema';
+import SupergraphSchema from '../supergraph';
 import PersistedQueries from '../persisted-queries';
 import Clients from '../clients';
 
@@ -12,9 +13,14 @@ import Logs from '../logs';
 
 const UITabs = [
 	{
-		Title: <ServicesTab />,
+		Title: <span>Schema</span>,
 		href: '/schema',
-		component: Schema,
+		component: SupergraphSchema,
+	},
+	{
+		Title: <ServicesTab />,
+		href: '/services',
+		component: Services,
 	},
 	{
 		Title: <span>Clients</span>,
@@ -38,7 +44,10 @@ const Main = () => {
 	const location = useLocation();
 
 	UITabs.forEach((tab, i) => {
-		if (location.pathname === tab.href) {
+		if (
+			location.pathname === tab.href ||
+			location.pathname.startsWith(`${tab.href}/`)
+		) {
 			selectedTab = i;
 		}
 	});
@@ -48,13 +57,15 @@ const Main = () => {
 	};
 
 	return (
-		<div>
-			<TopMenu
-				UITabs={UITabs}
-				selectedTab={selectedTab}
-				handleChange={handleChange}
-			/>
-			<div>
+		<div className="registry-layout">
+			<aside className="registry-sidebar">
+				<TopMenu
+					UITabs={UITabs}
+					selectedTab={selectedTab}
+					handleChange={handleChange}
+				/>
+			</aside>
+			<main className="registry-content">
 				<Switch>
 					<Redirect exact from="/" to="/schema" />
 					{UITabs.map((tab, index) => (
@@ -69,7 +80,7 @@ const Main = () => {
 						/>
 					))}
 				</Switch>
-			</div>
+			</main>
 		</div>
 	);
 };
