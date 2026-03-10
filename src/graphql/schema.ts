@@ -10,6 +10,8 @@ export default gql`
 		services(limit: Int, offset: Int): [Service]
 		service(id: Int!): Service
 		serviceCount: Int!
+		subscriptionSources: [SubscriptionSource]
+		subscriptionDefinitions(sourceName: String): [SubscriptionDefinition]
 		supergraphSDL: String!
 		schema(id: Int!): SchemaDefinition!
 		schemas(since: DateTime): [SchemaDefinition]
@@ -172,6 +174,30 @@ export default gql`
 		healthStatus: ServiceHealthStatus!
 
 		schemas(limit: Int, offset: Int, filter: String): [SchemaDefinition!]!
+	}
+
+	type SubscriptionSource {
+		id: Int!
+		name: String!
+		version: String!
+		wsUrl: String
+		typeDefs: String
+		addedTime: DateTime
+		updatedTime: DateTime
+		definitionsCount: Int!
+	}
+
+	type SubscriptionDefinition {
+		id: Int!
+		sourceId: Int!
+		sourceName: String!
+		sourceVersion: String!
+		wsUrl: String
+		name: String!
+		payloadType: String!
+		arguments: JSON
+		addedTime: DateTime
+		updatedTime: DateTime
 	}
 
 	enum ServiceHealthStatus {

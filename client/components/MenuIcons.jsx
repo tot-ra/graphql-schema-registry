@@ -93,3 +93,15 @@ export function ChangeLogIcon() {
 		</svg>
 	);
 }
+
+export function SubscriptionsIcon() {
+	return (
+		<svg {...iconProps}>
+			<path d="M5 7h14" />
+			<path d="M5 12h9" />
+			<path d="M5 17h6" />
+			<path d="M17 10a3 3 0 1 1 0 6" />
+			<path d="M17 13h2.5" />
+		</svg>
+	);
+}

@@ -173,6 +173,16 @@ const analyzer = {
 					hour,
 				});
 
+				// Subscription operations are tracked on operation level.
+				// Field-level schema usage is based on federated query schema
+				// and does not apply to event-stream subscription schema.
+				if (operationType === 'SUBSCRIPTION') {
+					logger.info('Recorded subscription operation hit', {
+						operationName: parsedData.operationName || null,
+					});
+					return;
+				}
+
 				const processedFields = await analyzer.processSchemaQueryUsage({
 					name,
 					version,
