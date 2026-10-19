@@ -29,6 +29,26 @@ function parseDbSsl() {
 	return ssl;
 }
 
+function intFromEnv(variable: string | undefined, defaultValue: number) {
+	const parsed = parseInt(variable || '', 10);
+	return Number.isNaN(parsed) ? defaultValue : parsed;
+}
+
+// The knex default (min 2, max 10) keeps 2 connections open forever and can open 10 per process,
+// which is too much when the Postgres server is shared with other services (small max_connections).
+// max stays >= 2: knex migrations hold a lock transaction on one connection and migrate on another
+function poolConfig() {
+	const max = Math.max(2, intFromEnv(process.env.DB_POOL_MAX, 4));
+	const min = Math.min(max, Math.max(0, intFromEnv(process.env.DB_POOL_MIN, 0)));
+	const idleTimeoutMillis = intFromEnv(process.env.DB_POOL_IDLE_TIMEOUT_MS, 10000);
+
+	return {
+		min,
+		max,
+		idleTimeoutMillis: idleTimeoutMillis >= 1000 ? idleTimeoutMillis : 10000,
+	};
+}
+
 function cleanupSQL(sql) {
 	return sql.replace(
 		/(\(\?(?:, \?)+\))(, \(\?(?:, \?)+\))+/,
@@ -69,6 +89,7 @@ export const connection = knex({
 			expirationChecker: () => true,
 		};
 	},
+	pool: poolConfig(),
 });
 
 if (process.env.NODE_ENV !== 'production') {
