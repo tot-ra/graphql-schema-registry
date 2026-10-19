@@ -188,6 +188,9 @@ The following are the different environment variables that are looked up that al
 | DB_SSL                | Enables TLS for Postgres connections                                          | false                     |
 | DB_SSL_REJECT_UNAUTHORIZED | Controls server cert validation when DB_SSL=true                        | true                      |
 | DB_SSL_CA             | Optional CA certificate content for TLS (supports `\\n` escaped newlines)    | Empty                     |
+| DB_POOL_MIN           | Minimum number of pooled DB connections kept open per process                 | 0                         |
+| DB_POOL_MAX           | Maximum number of pooled DB connections per process (at least 2, migrations need two) | 4                 |
+| DB_POOL_IDLE_TIMEOUT_MS | Idle time after which a pooled DB connection is closed                      | 10000                     |
 | DB_EXECUTE_MIGRATIONS | Controls whether DB migrations are executed upon registry startup or not      | true                      |
 | ASSETS_URL            | Controls the url that web assets are served from                              | localhost:6001            |
 | NODE_ENV              | Specifies the environment. Use _production_ to load js/css from `dist/assets` | Empty                     |

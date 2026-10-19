@@ -67,6 +67,8 @@ async function createDatabaseIfNotExists() {
 			ssl: parseDbSsl(),
 			connectTimeout: 5000,
 		},
+		// one short-lived connection for the existence check, not the knex default of min 2
+		pool: { min: 0, max: 1 },
 	});
 
 	try {
